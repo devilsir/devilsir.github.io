@@ -1,20 +1,17 @@
-#playground-root:is([data-game="basketball"], [data-game="basketball-virada"]) .pg-mission {
+#playground-root:is([data-game=basketball], [data-game=basketball-virada]) .pg-mission {
   padding-block: 3px 4px;
 }
-
-#playground-root:is([data-game="basketball"], [data-game="basketball-virada"]) .pg-progress {
+#playground-root:is([data-game=basketball], [data-game=basketball-virada]) .pg-progress {
   display: none;
 }
-
 .pg-basket-strip {
   display: grid;
-  grid-template-columns: minmax(0,1fr) minmax(0,1.36fr) minmax(0,1fr) minmax(0,1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.36fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: 5px;
   width: min(100%, 620px);
   margin: 0 auto 4px;
   font-variant-numeric: tabular-nums;
 }
-
 .pg-basket-strip > span {
   display: flex;
   flex-direction: column;
@@ -27,7 +24,6 @@
   background: #132c29;
   color: #f5e9cc;
 }
-
 .pg-basket-strip small {
   font-size: clamp(8px, 1.4vw, 11px);
   font-weight: 750;
@@ -35,23 +31,29 @@
   text-align: center;
   overflow-wrap: anywhere;
 }
-
 .pg-basket-strip strong {
-  font: 750 clamp(16px, 3vw, 25px)/1.05 ui-monospace,monospace;
+  font: 750 clamp(16px, 3vw, 25px)/1.05 ui-monospace, monospace;
 }
-
-.pg-basket-strip .basket-aurora { color: #8be9cf; border-color: #5bc3a5; }
-.pg-basket-strip .basket-tambor { color: #ffbb9b; border-color: #bd806e; }
-.pg-basket-strip [data-urgent="true"] { color: #ffc0a6; border-color: #de896e; }
-
-#playground-root:is([data-game="basketball"], [data-game="basketball-virada"]) #pg-scene { position: relative; }
-
-#playground-root:is([data-game="basketball"], [data-game="basketball-virada"]) .pg-bottom {
+.pg-basket-strip .basket-aurora {
+  color: #8be9cf;
+  border-color: #5bc3a5;
+}
+.pg-basket-strip .basket-tambor {
+  color: #ffbb9b;
+  border-color: #bd806e;
+}
+.pg-basket-strip [data-urgent=true] {
+  color: #ffc0a6;
+  border-color: #de896e;
+}
+#playground-root:is([data-game=basketball], [data-game=basketball-virada]) #pg-scene {
+  position: relative;
+}
+#playground-root:is([data-game=basketball], [data-game=basketball-virada]) .pg-bottom {
   padding: 0;
   border: 0;
 }
-
-#playground-root:is([data-game="basketball"], [data-game="basketball-virada"]) #pg-feedback {
+#playground-root:is([data-game=basketball], [data-game=basketball-virada]) #pg-feedback {
   position: absolute;
   inset: auto auto clamp(6px, 1.1vh, 12px) 50%;
   transform: translateX(-50%);
@@ -62,8 +64,7 @@
   background: #132e2bd8;
   font-size: 11px;
 }
-
-#playground-root:is([data-game="basketball"], [data-game="basketball-virada"]) #pg-controls {
+#playground-root:is([data-game=basketball], [data-game=basketball-virada]) #pg-controls {
   position: absolute;
   inset: auto clamp(5px, 1.3vw, 20px) clamp(5px, 1.7vh, 18px);
   display: flex;
@@ -73,18 +74,22 @@
   flex-wrap: nowrap;
   z-index: 2;
 }
-
 .pg-basket-pad {
   display: grid;
-  grid-template-columns: repeat(3,auto);
+  grid-template-columns: repeat(3, auto);
   gap: 3px;
   flex: none;
 }
-
-.pg-basket-pad [data-direction="up"] { grid-column: 2; }
-.pg-basket-pad [data-direction="left"] { grid-column: 1; }
-.pg-basket-pad #basket-sprint { grid-column: 3; grid-row: 1; }
-
+.pg-basket-pad [data-direction=up] {
+  grid-column: 2;
+}
+.pg-basket-pad [data-direction=left] {
+  grid-column: 1;
+}
+.pg-basket-pad #basket-sprint {
+  grid-column: 3;
+  grid-row: 1;
+}
 .pg-basket-actions {
   display: flex;
   align-items: center;
@@ -92,8 +97,7 @@
   gap: 4px;
   min-width: 0;
 }
-
-#playground-root #pg-controls :is(.pg-basket-pad,.pg-basket-actions) button {
+#playground-root #pg-controls :is(.pg-basket-pad, .pg-basket-actions) button {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -105,17 +109,39 @@
   box-shadow: none;
   text-shadow: 0 1px #102723;
 }
-
-#playground-root #pg-controls .pg-basket-actions button.primary { background: #665334dc; }
-#playground-root #pg-controls :is(.pg-basket-pad,.pg-basket-actions) button:is(:hover,:active,:focus-visible) { background: #34594af4; }
-#playground-root #pg-controls :is(.pg-basket-pad,.pg-basket-actions) button:disabled { opacity: .43; }
-
+#playground-root #pg-controls .pg-basket-actions button.primary {
+  background: #665334dc;
+}
+#playground-root #pg-controls :is(.pg-basket-pad, .pg-basket-actions) button:is(:hover, :active, :focus-visible) {
+  background: #34594af4;
+}
+#playground-root #pg-controls :is(.pg-basket-pad, .pg-basket-actions) button:disabled {
+  opacity: .43;
+}
 .pg-basket-actions kbd,
-.pg-basket-pad kbd { font: 700 9px/1.1 ui-monospace,monospace; color: #f0d5a0; }
-
-#playground-root #pg-controls #basket-sprint { width: auto; padding-inline: 5px; font-size: 10px; position: relative; }
-#basket-sprint::after { content: ''; position: absolute; left: 3px; right: 3px; bottom: 2px; height: 2px; background: linear-gradient(to right,#9fe1bd var(--burst,100%),#52675a var(--burst,100%)); }
-
+.pg-basket-pad kbd {
+  font: 700 9px/1.1 ui-monospace, monospace;
+  color: #f0d5a0;
+}
+#playground-root #pg-controls #basket-sprint {
+  width: auto;
+  padding-inline: 5px;
+  font-size: 10px;
+  position: relative;
+}
+#basket-sprint::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  bottom: 2px;
+  height: 2px;
+  background:
+    linear-gradient(
+      to right,
+      #9fe1bd var(--burst,100%),
+      #52675a var(--burst,100%));
+}
 #playground-root #pg-controls .pg-basket-pad button {
   width: 39px;
   min-width: 0;
@@ -123,16 +149,15 @@
   padding: 0;
   touch-action: none;
 }
-
 #playground-root #pg-controls .pg-basket-actions button {
   padding: 5px 8px;
   min-width: 56px;
   min-height: 37px;
   font-size: clamp(10px, 1.5vw, 14px);
 }
-
-#playground-root #pg-controls .pg-basket-actions #pg-action { min-width: 82px; }
-
+#playground-root #pg-controls .pg-basket-actions #pg-action {
+  min-width: 82px;
+}
 .pg-basket-meter {
   position: absolute;
   top: 9px;
@@ -140,7 +165,7 @@
   transform: translateX(-50%);
   display: grid;
   width: min(83%, 385px);
-  grid-template-columns: auto minmax(0,1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 7px;
   padding: 5px 8px;
@@ -151,10 +176,17 @@
   font-weight: 750;
   visibility: hidden;
 }
-
-.pg-basket-meter[data-active="true"] { visibility: visible; }
-.pg-basket-announcement { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-
+.pg-basket-meter[data-active=true] {
+  visibility: visible;
+}
+.pg-basket-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 .pg-basket-meter > div {
   height: 12px;
   background: #46645b;
@@ -162,10 +194,11 @@
   position: relative;
   border-radius: 4px;
 }
-
 .pg-basket-meter i,
-.pg-basket-meter b { position: absolute; display: block; }
-
+.pg-basket-meter b {
+  position: absolute;
+  display: block;
+}
 .pg-basket-meter i {
   inset-block: 0;
   left: var(--zone-start, 60%);
@@ -173,7 +206,6 @@
   background: #75d5a8;
   border-inline: 1px solid #d1f0bb;
 }
-
 .pg-basket-meter b {
   inset-block: -3px;
   left: var(--needle, 0%);
@@ -182,35 +214,48 @@
   background: #fff4d1;
   transform: translateX(-50%);
 }
-
-.pg-basket-meter[data-good="true"] b {
+.pg-basket-meter[data-good=true] b {
   background: #fff;
   box-shadow: 0 0 4px #eeffd2;
 }
-
 @media (max-width: 540px) {
   #playground-root #pg-controls .pg-basket-pad button {
     width: clamp(29px, 9vw, 42px);
     min-height: 35px;
   }
-
-  #playground-root #pg-controls .pg-basket-actions button { min-width: 0; padding-inline: 5px; }
-  #playground-root #pg-controls .pg-basket-actions #pg-action { min-width: 68px; }
-  #playground-root:is([data-game="basketball"], [data-game="basketball-virada"]) #pg-feedback { bottom: 48px; max-width: 66%; }
+  #playground-root #pg-controls .pg-basket-actions button {
+    min-width: 0;
+    padding-inline: 5px;
+  }
+  #playground-root #pg-controls .pg-basket-actions #pg-action {
+    min-width: 68px;
+  }
+  #playground-root:is([data-game=basketball], [data-game=basketball-virada]) #pg-feedback {
+    bottom: 48px;
+    max-width: 66%;
+  }
 }
-
 @media (max-height: 510px) and (orientation: landscape) {
-  .pg-basket-pad { display: flex; }
-
+  .pg-basket-pad {
+    display: flex;
+  }
   #playground-root #pg-controls .pg-basket-pad button,
-  #playground-root #pg-controls .pg-basket-actions button { min-height: 32px; }
-
-  .pg-basket-strip { margin-bottom: 2px; }
-  .pg-basket-strip > span { padding-block: 2px; }
-  .pg-basket-strip strong { font-size: 17px; }
-  .pg-basket-meter { height: 13px; }
+  #playground-root #pg-controls .pg-basket-actions button {
+    min-height: 32px;
+  }
+  .pg-basket-strip {
+    margin-bottom: 2px;
+  }
+  .pg-basket-strip > span {
+    padding-block: 2px;
+  }
+  .pg-basket-strip strong {
+    font-size: 17px;
+  }
+  .pg-basket-meter {
+    height: 13px;
+  }
 }
-
 .gym-live-court {
   display: block;
   width: 100%;
@@ -219,7 +264,6 @@
   border-radius: 8px;
   background: #203e3e;
 }
-
 #gym-live-score {
   margin: 10px 0 0;
   font-variant-numeric: tabular-nums;

@@ -53,8 +53,8 @@
       "src": "js/adventure-editor.js?v=20261114-museu1",
       "requires": [
         "adventure-combat",
-        "room-editor",
-        "atelier-access"
+        "atelier-access",
+        "room-editor"
       ]
     },
     {
@@ -62,7 +62,6 @@
       "src": "js/adventure-environment.js?v=20261113-arteclima1",
       "requires": [
         "adventure-architecture",
-        "adventure-core",
         "season-cycle"
       ]
     },
@@ -80,8 +79,7 @@
       "src": "js/adventure-story.js?v=20261112-equip1",
       "requires": [
         "adventure-environment",
-        "adventure-navigation",
-        "city-chronicle"
+        "adventure-navigation"
       ]
     },
     {
@@ -91,7 +89,6 @@
         "african-word-origins",
         "capoeira-art",
         "home-editor-upgrade",
-        "museum-biographies",
         "player-profiles"
       ]
     },
@@ -99,8 +96,7 @@
       "id": "african-museum-curation",
       "src": "js/african-museum-curation.js?v=20261114-editor-praca1",
       "requires": [
-        "african-museum",
-        "museum-studies"
+        "african-museum"
       ]
     },
     {
@@ -139,8 +135,7 @@
       "id": "african-play-museum",
       "src": "js/african-play-museum.js?v=20261114-editor-praca1",
       "requires": [
-        "african-play-games",
-        "museum-studies"
+        "african-play-games"
       ]
     },
     {
@@ -174,8 +169,7 @@
       "src": "js/ancestral-mask.js?v=20261113-carga1",
       "requires": [
         "house-window-lights",
-        "illustrated-interface",
-        "turn-interface-art"
+        "illustrated-interface"
       ]
     },
     {
@@ -198,8 +192,7 @@
       "src": "js/animal-museum.js?v=20261114-editor-praca1",
       "requires": [
         "duo-sleep",
-        "food-museum",
-        "museum-studies"
+        "food-museum"
       ]
     },
     {
@@ -228,10 +221,7 @@
       "id": "asset-demand-upgrade",
       "src": "js/asset-demand-upgrade.js?v=20261113-combate1",
       "requires": [
-        "adventure-combat",
-        "map-streaming",
-        "content",
-        "campus-content"
+        "map-streaming"
       ]
     },
     {
@@ -266,8 +256,7 @@
       "id": "atlas-explorer",
       "src": "js/atlas-explorer.js?v=20261111-chronicles1",
       "requires": [
-        "atlas-travel",
-        "city-chronicle"
+        "atlas-travel"
       ]
     },
     {
@@ -293,8 +282,8 @@
       "id": "basketball-art",
       "src": "js/basketball-art.js?v=20261122-basquete-opaco1",
       "requires": [
-        "basketball-match",
         "asset-loader",
+        "basketball-match",
         "performance"
       ]
     },
@@ -304,9 +293,7 @@
       "requires": [
         "basketball-shot-art",
         "campus-basketball",
-        "challenge-catalog",
-        "challenge-economy",
-        "motorcycle-delivery"
+        "challenge-economy"
       ]
     },
     {
@@ -320,8 +307,8 @@
       "id": "basketball-shot-art",
       "src": "js/basketball-shot-art.js?v=20261122-aro1",
       "requires": [
-        "basketball-match",
-        "asset-loader"
+        "asset-loader",
+        "basketball-match"
       ]
     },
     {
@@ -350,9 +337,7 @@
       "src": "js/campus-basketball.js?v=20261122-ia-quadra",
       "requires": [
         "basketball-art",
-        "campus-renewal",
-        "map-streaming",
-        "duo-world"
+        "campus-renewal"
       ]
     },
     {
@@ -364,9 +349,9 @@
       "id": "campus-renewal",
       "src": "js/campus-renewal.js?v=20261122-ia-quadra",
       "requires": [
+        "basketball-match",
         "legacy-art-polish",
-        "world-signs",
-        "basketball-match"
+        "world-signs"
       ]
     },
     {
@@ -380,8 +365,7 @@
       "requires": [
         "campus-content",
         "campus-water-data",
-        "cultural-pack",
-        "museum-biographies"
+        "cultural-pack"
       ]
     },
     {
@@ -395,10 +379,8 @@
       "id": "cape-market-design",
       "src": "js/cape-market-design.js?v=20261113-fachadas1",
       "requires": [
-        "home-design-collection",
-        "food-expansion",
-        "cooking-world",
-        "food-museum-gallery"
+        "food-museum-gallery",
+        "home-design-collection"
       ]
     },
     {
@@ -512,9 +494,9 @@
       "id": "city-battle",
       "src": "js/city-battle.js?v=20261113-combate1",
       "requires": [
+        "battle-automation",
         "city-life",
         "city-motion",
-        "battle-automation",
         "turn-interface-art"
       ]
     },
@@ -623,8 +605,7 @@
       "id": "combat-gear",
       "src": "js/combat-gear.js?v=20261113-combate1",
       "requires": [
-        "trail-companions",
-        "duo-navigation"
+        "trail-companions"
       ]
     },
     {
@@ -675,8 +656,7 @@
       "id": "companion-formation",
       "src": "js/companion-formation.js?v=20261112-equip1",
       "requires": [
-        "ancestral-mask",
-        "pix-presence"
+        "ancestral-mask"
       ]
     },
     {
@@ -862,17 +842,12 @@
       "id": "daily-world",
       "src": "js/daily-world.js?v=20261111-seasons1",
       "requires": [
-        "daily-world-data",
-        "marine-behavior",
-        "home-daily-collection",
-        "neighbourhood-life",
-        "place-life",
-        "world-preferences",
-        "duo-world",
-        "neighborhood-balloons",
         "cape-market-design",
+        "daily-world-data",
         "fossil-gallery-design",
-        "city-routing"
+        "home-daily-collection",
+        "marine-behavior",
+        "place-life"
       ]
     },
     {
@@ -885,7 +860,6 @@
       "src": "js/dialogue.js?v=20261113-carga1",
       "requires": [
         "asset-loader",
-        "content",
         "save"
       ]
     },
@@ -894,8 +868,7 @@
       "src": "js/duo-challenges.js?v=20261113-carga1",
       "requires": [
         "home-construction",
-        "map-streaming",
-        "content"
+        "map-streaming"
       ]
     },
     {
@@ -938,8 +911,7 @@
       "src": "js/duo-world.js?v=20261113-carga1",
       "requires": [
         "duo-challenges",
-        "market-world",
-        "content"
+        "market-world"
       ]
     },
     {
@@ -1002,7 +974,9 @@
     {
       "id": "engine",
       "src": "js/engine.js?v=20261113-carga1",
-      "requires": []
+      "requires": [
+        "runtime-hooks"
+      ]
     },
     {
       "id": "english-vocabulary",
@@ -1050,7 +1024,6 @@
       "src": "js/food-museum.js?v=20261114-editor-praca1",
       "requires": [
         "food-museum-data",
-        "museum-studies",
         "nature-challenge"
       ]
     },
@@ -1071,8 +1044,6 @@
       "id": "fossil-gallery-design",
       "src": "js/fossil-gallery-design.js?v=20261114-editor-praca1",
       "requires": [
-        "animal-sanctuary",
-        "sanctuary-neighbors",
         "food-museum-gallery",
         "home-design-collection"
       ]
@@ -1113,8 +1084,7 @@
       "id": "fragment-forest",
       "src": "js/fragment-forest.js?v=20261114-placas1",
       "requires": [
-        "fragment-combat",
-        "harmony-atlas"
+        "fragment-combat"
       ]
     },
     {
@@ -1149,12 +1119,9 @@
       "id": "game",
       "src": "js/game.js?v=20261114-editor-praca1",
       "requires": [
-        "quests",
         "cozy-world",
         "minigames",
-        "museum-biographies",
-        "museum-studies",
-        "content"
+        "museum-studies"
       ]
     },
     {
@@ -1181,9 +1148,7 @@
       "id": "guard-village",
       "src": "js/guard-village.js?v=20261113-fachadas1",
       "requires": [
-        "cape-visuals",
-        "place-life",
-        "sanctuary-neighbors"
+        "place-life"
       ]
     },
     {
@@ -1204,11 +1169,7 @@
       "id": "harmony-atlas",
       "src": "js/harmony-atlas.js?v=20261112-fragment1",
       "requires": [
-        "asset-demand-upgrade",
-        "atlas-explorer",
-        "duo-panels",
-        "maritime-geography",
-        "turn-interface-art"
+        "duo-panels"
       ]
     },
     {
@@ -1222,8 +1183,7 @@
       "id": "heritage-world",
       "src": "js/heritage-world.js?v=20261114-museu1",
       "requires": [
-        "editor-actions",
-        "museum-biographies"
+        "editor-actions"
       ]
     },
     {
@@ -1231,8 +1191,8 @@
       "src": "js/historio-workbench.js?v=20261111-turns1",
       "requires": [
         "special-presences",
-        "workshop-fishing",
-        "turn-interface-art"
+        "turn-interface-art",
+        "workshop-fishing"
       ]
     },
     {
@@ -1273,14 +1233,9 @@
       "id": "home-design-collection",
       "src": "js/home-design-collection.js?v=20261111-interiors1",
       "requires": [
-        "home-design-art-data",
-        "home-variations",
-        "community-furniture",
-        "home-editor-upgrade",
-        "home-construction",
-        "fountain-floor-upgrade",
         "asset-demand-upgrade",
-        "residential-plans"
+        "home-construction",
+        "home-design-art-data"
       ]
     },
     {
@@ -1301,9 +1256,7 @@
       "id": "homestead-activities",
       "src": "js/homestead-activities.js?v=20261113-carga1",
       "requires": [
-        "homestead-life",
-        "campus-content",
-        "content"
+        "homestead-life"
       ]
     },
     {
@@ -1368,12 +1321,7 @@
       "id": "interface-polish",
       "src": "js/interface-polish.js?v=20261111-polish1",
       "requires": [
-        "asset-demand-upgrade",
-        "daily-world",
-        "duo-panels",
-        "homestead-activities",
-        "neighbourhood-life",
-        "player-appearance"
+        "daily-world"
       ]
     },
     {
@@ -1417,7 +1365,6 @@
         "city-chronicle",
         "field-guide",
         "learning-content",
-        "museum-biographies",
         "teacher"
       ]
     },
@@ -1489,8 +1436,7 @@
       "id": "maritime-voyage",
       "src": "js/maritime-voyage.js?v=transit2-20261027-cape2",
       "requires": [
-        "maritime-fishing",
-        "maritime-geography"
+        "maritime-fishing"
       ]
     },
     {
@@ -1681,9 +1627,7 @@
       "id": "npc-art",
       "src": "js/npc-art.js?v=20261113-praca1",
       "requires": [
-        "cape-art-data",
-        "guard-village",
-        "professional-kitchen"
+        "guard-village"
       ]
     },
     {
@@ -1803,10 +1747,9 @@
       "id": "playable-art",
       "src": "js/playable-art.js?v=20261113-elenco2",
       "requires": [
+        "npc-art",
         "playable-art-data",
-        "sprite-readiness",
-        "content",
-        "npc-art"
+        "sprite-readiness"
       ]
     },
     {
@@ -1826,9 +1769,7 @@
       "src": "js/player-appearance.js?v=20261113-elenco1",
       "requires": [
         "cape-region-world",
-        "salon-culture-data",
-        "salon-fit-data",
-        "content"
+        "salon-culture-data"
       ]
     },
     {
@@ -1836,8 +1777,7 @@
       "src": "js/player-profiles.js?v=20261113-perfis1",
       "requires": [
         "playground-integration",
-        "world-preferences",
-        "content"
+        "world-preferences"
       ]
     },
     {
@@ -1965,8 +1905,7 @@
       "id": "professor-mode",
       "src": "js/professor-mode.js?v=20261114-professor-atalho",
       "requires": [
-        "editorial-links",
-        "professor-ui-catalog"
+        "editorial-links"
       ]
     },
     {
@@ -2034,19 +1973,15 @@
       "id": "residential-art",
       "src": "js/residential-art.js?v=20261114-portas-internas1",
       "requires": [
-        "home-daily-collection",
-        "residential-plans"
+        "home-daily-collection"
       ]
     },
     {
       "id": "residential-interiors",
       "src": "js/residential-interiors.js?v=20261111-atlas-homes2",
       "requires": [
-        "residential-art",
-        "residential-plans",
-        "sanctuary-neighbors",
-        "city-facades",
-        "daily-world"
+        "daily-world",
+        "residential-art"
       ]
     },
     {
@@ -2123,8 +2058,7 @@
       "src": "js/salon-world.js?v=20261114-editor-praca1",
       "requires": [
         "grounded-art",
-        "player-appearance",
-        "content"
+        "player-appearance"
       ]
     },
     {
@@ -2160,8 +2094,7 @@
       "id": "scene-editor",
       "src": "js/scene-editor.js?v=20261114-editor-praca1",
       "requires": [
-        "neighborhood-design",
-        "runtime-hooks"
+        "neighborhood-design"
       ]
     },
     {
@@ -2195,15 +2128,8 @@
       "id": "season-visuals",
       "src": "js/season-visuals.js?v=20261113-arteclima1",
       "requires": [
-        "season-art-data",
-        "adventure-environment",
-        "daily-world",
-        "city-facade-polish",
-        "plaza-visuals",
-        "cape-visuals",
-        "duo-sleep",
         "house-window-lights",
-        "words-respect",
+        "season-art-data",
         "world-finalize"
       ]
     },
@@ -2213,8 +2139,7 @@
       "requires": [
         "companions",
         "culture-stage",
-        "guardian-presence",
-        "presence-frames"
+        "guardian-presence"
       ]
     },
     {
@@ -2233,7 +2158,6 @@
       "id": "teacher",
       "src": "js/teacher.js?v=20261112-trilhas2",
       "requires": [
-        "content",
         "save"
       ]
     },
@@ -2246,11 +2170,8 @@
       "id": "team-world",
       "src": "js/team-world.js?v=20261114-editor-praca1",
       "requires": [
-        "battle-automation",
-        "city-battle",
-        "team-data",
-        "world-finalize",
-        "fragment-art"
+        "fragment-art",
+        "world-finalize"
       ]
     },
     {
@@ -2277,8 +2198,7 @@
       "id": "trail-companions",
       "src": "js/trail-companions.js?v=20261113-carga1",
       "requires": [
-        "infinity-trails",
-        "team-world"
+        "infinity-trails"
       ]
     },
     {
@@ -2340,7 +2260,6 @@
       "src": "js/words-respect.js?v=20261114-editor-praca1",
       "requires": [
         "cooking-workshop",
-        "museum-studies",
         "words-respect-art",
         "words-respect-data"
       ]
@@ -2405,7 +2324,6 @@
       "id": "world",
       "src": "js/world.js?v=20261113-praca1",
       "requires": [
-        "content",
         "ground-cache",
         "player",
         "save"
@@ -2415,21 +2333,19 @@
       "id": "world-assembly",
       "src": "js/world-assembly.js",
       "requires": [
-        "infinity-trails",
-        "campus-basketball"
+        "campus-basketball",
+        "infinity-trails"
       ]
     },
     {
       "id": "world-finalize",
       "src": "js/world-finalize.js?v=20261114-portas-internas1",
       "requires": [
-        "place-life",
-        "residential-interiors",
+        "ancestral-bounds",
+        "guard-village",
         "harmony-atlas",
         "interface-polish",
-        "residential-studio",
-        "guard-village",
-        "ancestral-bounds"
+        "residential-studio"
       ]
     },
     {
@@ -2484,6 +2400,13 @@
       ]
     },
     {
+      "id": "image-delivery-data",
+      "src": "js/image-delivery-data.js?v=20261101-duo1",
+      "requires": [
+        "optimized-images"
+      ]
+    },
+    {
       "id": "optimized-images",
       "src": "js/optimized-images.js?v=20261030-imageopt1",
       "requires": []
@@ -2499,6 +2422,7 @@
       "id": "sprite-editor",
       "src": "js/sprite-editor.js?v=20261030-imageopt1",
       "requires": [
+        "image-delivery-data",
         "optimized-images",
         "terreiros-sprite-data"
       ]
@@ -2517,17 +2441,76 @@
     }
   ],
   "features": {
+    "basketball": {
+      "modules": [],
+      "styles": [
+        "css/basketball.css?v=20261122-fechamento1"
+      ]
+    },
+    "challenges": {
+      "modules": [],
+      "styles": [
+        "css/playground.css?v=20261023-final-polish2",
+        "css/playground-enhanced.css?v=20261024-challenges1",
+        "css/playground-platform-upgrade.css?v=20261024-platform2",
+        "css/platform-journey.css?v=20261029-journey1",
+        "css/arcade-expansion.css?v=20261110-moto3",
+        "css/challenge-catalog.css?v=20261030-play1",
+        "css/challenge-presentation.css?v=20261102-sharp1",
+        "css/challenge-economy.css?v=20261102-balance1",
+        "css/minigame-praise.css?v=20261027-praise1",
+        "css/fishing-challenge.css?v=20261029-moto2"
+      ]
+    },
     "combat": {
       "modules": [
         "city-battle-render"
       ],
-      "styles": []
+      "styles": [
+        "css/turn-interface.css?v=20261113-combate1",
+        "css/combat-gear.css?v=20261113-combate1",
+        "css/fragment-expedition.css?v=20261112-fragment1",
+        "css/infinity-trails.css?v=20261112-infinity1",
+        "css/trail-companions.css?v=20261112-trilhas2",
+        "css/team.css?v=20261111-team1"
+      ]
     },
     "cooking-art": {
       "modules": [
         "cooking-crops"
       ],
-      "styles": []
+      "styles": [
+        "css/cooking.css?v=20261101-cook1",
+        "css/cooking-workshop.css?v=20261102-workshop3"
+      ]
+    },
+    "credits": {
+      "modules": [
+        "credits"
+      ],
+      "styles": [
+        "css/credits.css?v=20261103-credits1"
+      ]
+    },
+    "duo-mode": {
+      "modules": [],
+      "styles": [
+        "css/duo-world.css?v=20261101-duo5",
+        "css/duo-tutorial.css?v=20261101-duo5",
+        "css/duo-panels.css?v=20261101-invite4",
+        "css/duo-sessions.css?v=20261101-invite4",
+        "css/duo-navigation.css?v=20261101-harbor6",
+        "css/duo-sleep.css?v=20261101-sleep2"
+      ]
+    },
+    "maritime-geography": {
+      "modules": [
+        "maritime-geography"
+      ],
+      "styles": [
+        "css/maritime.css?v=20261027-sea1",
+        "css/cape-region.css?v=20261027-cape2"
+      ]
     },
     "museum-biographies": {
       "modules": [
@@ -2535,11 +2518,55 @@
       ],
       "styles": []
     },
+    "museums": {
+      "modules": [],
+      "styles": [
+        "css/african-museum.css?v=20261027-imagegen2",
+        "css/african-museum-curation.css?v=20261027-curation1",
+        "css/african-play.css?v=20261030-play1",
+        "css/food-museum.css?v=20261102-nature2",
+        "css/food-gallery.css?v=20261102-gallery1",
+        "css/animal-museum.css?v=20261102-visual1",
+        "css/words-respect.css?v=20261102-respect1",
+        "css/museum-studies.css?v=20261111-museums1"
+      ]
+    },
+    "presences": {
+      "modules": [
+        "presence-frames"
+      ],
+      "styles": []
+    },
+    "professor-library": {
+      "modules": [
+        "professor-ui-catalog"
+      ],
+      "styles": [
+        "css/professor-library-v2.css?v=20261017c"
+      ]
+    },
+    "professor-studio": {
+      "modules": [],
+      "styles": [
+        "css/professor-mode.css?v=20261114-professor-atalho"
+      ]
+    },
+    "salon": {
+      "modules": [
+        "salon-art-data",
+        "salon-culture-art",
+        "salon-fit-data"
+      ],
+      "styles": [
+        "css/salon.css?v=20261029-fit1"
+      ]
+    },
     "scene-editor": {
       "modules": [],
       "styles": [
         "css/scene-editor.css",
-        "css/editor-layout.css?v=20261029-layout1"
+        "css/editor-layout.css?v=20261029-layout1",
+        "css/room-editor.css"
       ]
     }
   }

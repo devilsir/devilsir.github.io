@@ -110,14 +110,11 @@
 .map-waypoints form .map-waypoint-actions { margin-top: 9px; }
 .map-waypoints [hidden], .map-guide[hidden] { display: none; }
 .map-guide {
-  position: absolute;
-  left: 50%;
-  top: 15px;
-  transform: translateX(-50%);
+  position: relative;
   display: flex;
   align-items: center;
   gap: 9px;
-  max-width: min(46vw, 360px);
+  max-width: min(100%, 360px);
   padding: 5px 11px 5px 5px;
   border: 1px solid #f7c97094;
   border-radius: 9px;
@@ -158,7 +155,7 @@
   .map-waypoints { margin-top: 7px; padding: 8px; }
   .map-waypoints header { margin-bottom: 5px; }
   #mapWaypointStatus { min-height: 0; }
-  .map-guide { top: 68px; max-width: 56vw; }
+  .map-guide { max-width: 100%; }
 }
 @media (max-width: 510px) {
   .map-header, .map-footer { padding: 11px 13px; }

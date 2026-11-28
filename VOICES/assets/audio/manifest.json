@@ -3,106 +3,116 @@
   "method": "Original synthetic sonification; no recordings or external samples.",
   "loops": [
     {
-      "file": "plaza.wav",
+      "file": "plaza.mp3",
       "duration": 16,
       "sampleRate": 22050,
       "channels": 1,
-      "bits": 16,
       "peak": 0.088,
       "original": true,
-      "seed": 901
+      "seed": 901,
+      "codec": "mp3",
+      "bitrateKbps": 96
     },
     {
-      "file": "library.wav",
+      "file": "library.mp3",
       "duration": 16,
       "sampleRate": 22050,
       "channels": 1,
-      "bits": 16,
       "peak": 0.0269,
       "original": true,
-      "seed": 902
+      "seed": 902,
+      "codec": "mp3",
+      "bitrateKbps": 96
     },
     {
-      "file": "park.wav",
+      "file": "park.mp3",
       "duration": 16,
       "sampleRate": 22050,
       "channels": 1,
-      "bits": 16,
       "peak": 0.0704,
       "original": true,
-      "seed": 903
+      "seed": 903,
+      "codec": "mp3",
+      "bitrateKbps": 96
     },
     {
-      "file": "market.wav",
+      "file": "market.mp3",
       "duration": 16,
       "sampleRate": 22050,
       "channels": 1,
-      "bits": 16,
       "peak": 0.0632,
       "original": true,
-      "seed": 904
+      "seed": 904,
+      "codec": "mp3",
+      "bitrateKbps": 96
     },
     {
-      "file": "studio.wav",
+      "file": "studio.mp3",
       "duration": 16,
       "sampleRate": 22050,
       "channels": 1,
-      "bits": 16,
       "peak": 0.0266,
       "original": true,
-      "seed": 905
+      "seed": 905,
+      "codec": "mp3",
+      "bitrateKbps": 96
     },
     {
-      "file": "lab.wav",
+      "file": "lab.mp3",
       "duration": 16,
       "sampleRate": 22050,
       "channels": 1,
-      "bits": 16,
       "peak": 0.0315,
       "original": true,
-      "seed": 906
+      "seed": 906,
+      "codec": "mp3",
+      "bitrateKbps": 96
     },
     {
-      "file": "garden.wav",
+      "file": "garden.mp3",
       "duration": 16,
       "sampleRate": 22050,
       "channels": 1,
-      "bits": 16,
       "peak": 0.0269,
       "original": true,
-      "seed": 907
+      "seed": 907,
+      "codec": "mp3",
+      "bitrateKbps": 96
     },
     {
-      "file": "archive.wav",
+      "file": "archive.mp3",
       "duration": 16,
       "sampleRate": 22050,
       "channels": 1,
-      "bits": 16,
       "peak": 0.0178,
       "original": true,
-      "seed": 908
+      "seed": 908,
+      "codec": "mp3",
+      "bitrateKbps": 96
     },
     {
-      "file": "newsroom.wav",
+      "file": "newsroom.mp3",
       "duration": 16,
       "sampleRate": 22050,
       "channels": 1,
-      "bits": 16,
       "peak": 0.0186,
       "original": true,
-      "seed": 909
+      "seed": 909,
+      "codec": "mp3",
+      "bitrateKbps": 96
     },
     {
-      "file": "beach.wav",
+      "file": "beach.mp3",
       "duration": 18,
       "sampleRate": 22050,
       "channels": 1,
-      "bits": 16,
       "peak": 0.0668,
       "original": true,
       "seed": 1828,
       "license": "MIT",
-      "description": "Ondas e uma chamada discreta de ave; síntese original, sem amostras externas."
+      "description": "Ondas e uma chamada discreta de ave; síntese original, sem amostras externas.",
+      "codec": "mp3",
+      "bitrateKbps": 96
     }
   ],
   "licenseURL": "https://opensource.org/license/mit",

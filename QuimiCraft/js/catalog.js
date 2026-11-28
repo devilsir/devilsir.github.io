@@ -4,7 +4,7 @@
 globalThis.QuimiCraftCatalog=(()=>{
   const normalize=text=>text.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
   const pageSize=18;
-  const inCategory=(entry,key)=>key==="all"||entry.category===key||key==="plants"&&entry.plant||key==="food"&&entry.food||key==="item"&&entry.category==="produce"||key==="npc"&&entry.resident||key==="extermination"&&entry.extermination;
+  const inCategory=(entry,key)=>key==="all"||entry.category===key||key==="plants"&&entry.plant||key==="food"&&entry.food||key==="item"&&entry.category==="produce"||key==="npc"&&entry.resident||key==="extermination"&&entry.extermination||key.startsWith("faction_")&&entry.factionGroup===key.slice(8);
   const width=192,height=132;
   const thumbnailBlue=0x14262e;
   const defaultZoom=1.10;
@@ -94,7 +94,7 @@ globalThis.QuimiCraftCatalog=(()=>{
       model.landscape=landscape;
       model.surfaceScene=model.aquatic&&(clip==="breach"||clip==="spout");
       const waterline=entry.boat||model.surfaceScene;
-      context.scene.background.setHex(landscape?(waterline?0x326c87:0xaec9d2):thumbnailBlue);
+      context.scene.background.setHex(entry.previewBackground??(landscape?(waterline?0x326c87:0xaec9d2):thumbnailBlue));
       context.scene.fog=null;
       context.ambient.color.setHex(0xecf5ff);
       const lighting=entry.lighting;
@@ -320,9 +320,21 @@ globalThis.QuimiCraftCatalog=(()=>{
       animationToggle.textContent=inspection.playing?"Pausar":"Reproduzir";
       inspector.querySelector("#catalogItemTitle").textContent=entry.name;
       inspector.querySelector("#catalogItemDetail").textContent=entry.detail||"";
-      const {story,curiosity,clue}=QuimiCraftCatalogLore.describe(entry,byKey);
+      const {story,curiosity,insight,links}=QuimiCraftCatalogLore.describe(entry,byKey);
       inspector.querySelector("#catalogStory").textContent=story;
-      inspector.querySelector("#catalogTrivia").textContent=curiosity??clue??"";
+      const trivia=inspector.querySelector("#catalogTrivia");
+      trivia.textContent=curiosity;
+      trivia.hidden=inspector.querySelector("#catalogTriviaTitle").hidden=!curiosity;
+      inspector.querySelector("#catalogInsight").hidden=!insight;
+      inspector.querySelector("#catalogInsightTitle").textContent=insight?.title||"";
+      inspector.querySelector("#catalogInsightText").textContent=insight?.text||"";
+      const sources=inspector.querySelector("#catalogInsightSources");
+      sources.replaceChildren(...links.map(({label,url})=>{
+        const item=document.createElement("li"),link=document.createElement("a");
+        link.textContent=label;link.href=url;link.target="_blank";link.rel="noopener noreferrer";
+        item.append(link);return item;
+      }));
+      sources.hidden=!links.length;
       if(biologyBox&&bioGrid){
         const bio=entry.biology;
         biologyBox.hidden=!bio;
@@ -394,7 +406,8 @@ globalThis.QuimiCraftCatalog=(()=>{
       const version=++revision;
       const terms=normalize(search.value).split(/\s+/).filter(Boolean);
       const blocks=category==="block";
-      const matches=list.filter(e=>inCategory(e,category)&&(!blocks||blockFilter==="all"||e.blockType===blockFilter)&&terms.every(term=>e.query.includes(term)));
+      const faction=category.startsWith("faction_");
+      const matches=list.filter(e=>inCategory(e,category)&&(!(blocks||faction)||blockFilter==="all"||(faction&&blockFilter==="units"?["npc","fantasy","animal","aquatic","summon","vehicle"].includes(e.category):faction&&blockFilter==="building"?e.category==="block"&&e.blockType!=="decoration":e.blockType===blockFilter))&&terms.every(term=>e.query.includes(term)));
       const totalPages=Math.max(1,Math.ceil(matches.length/pageSize));
       page=Math.min(page,totalPages-1);
       count.textContent=matches.length+" "+(matches.length===1?"registro":"registros");
@@ -404,8 +417,14 @@ globalThis.QuimiCraftCatalog=(()=>{
       grid.replaceChildren();
       grid.scrollTop=0;
       for(const button of categories)button.setAttribute("aria-pressed",String(button.dataset.category===category));
-      if(blockFilters)blockFilters.hidden=!blocks;
-      for(const button of blockButtons)button.setAttribute("aria-pressed",String(button.dataset.blockFilter===blockFilter));
+      if(blockFilters)blockFilters.hidden=!(blocks||faction);
+      for(const button of blockButtons){
+        const type=button.dataset.blockFilter;
+        button.hidden=faction?!(type==="all"||type==="building"||type==="decoration"||type==="units"):type==="units";
+        if(type==="building")button.textContent=faction?"Blocos":"Construção";
+        if(type==="all")button.textContent=faction?"Todos":"Todos os tipos";
+        button.setAttribute("aria-pressed",String(type===blockFilter));
+      }
       if(!matches.length){
         const blank=document.createElement("p");
         blank.className="catalog-empty";
@@ -473,7 +492,9 @@ globalThis.QuimiCraftCatalog=(()=>{
     search.addEventListener("input",()=>{page=0;render()});
     root.querySelector("[data-catalog-close]").onclick=close;
     for(const button of categories)button.onclick=()=>{
-      category=button.dataset.category;page=0;render();
+      const next=button.dataset.category;
+      if(next!==category&&!(category.startsWith("faction_")&&next.startsWith("faction_")))blockFilter="all";
+      category=next;page=0;render();
     };
     for(const button of blockButtons)button.onclick=()=>{
       blockFilter=button.dataset.blockFilter;page=0;render();

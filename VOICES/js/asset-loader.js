@@ -1,42 +1,307 @@
 /* Registered module: asset-loader */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("asset-loader", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function(){
-'use strict';
-const V=window.V,source=Object.getOwnPropertyDescriptor(HTMLImageElement.prototype,'src');
-const L=V.AssetLoader={limit:8,maxAttempts:3,timeout:15000,active:0,peak:0,queue:[],records:new Set(),byImage:new WeakMap(),failed:new Set(),serial:0,progressTimer:null,
-group(key){if(key.startsWith('assets/african-play/'))return 'african-play';if(key.startsWith('assets/ancestral/presences/'))return 'presence:'+key.split('/').pop().replace(/-(actions|ready)\.png$/,'');if(key.startsWith('assets/ancestral/'))return 'roots';if(key.startsWith('assets/maritime/'))return 'maritime';if(key.endsWith('/museum-facade.png')||key.endsWith('/salon-facade.png'))return null;if(key.startsWith('assets/african-museum/words/'))return 'museum-words';if(key.startsWith('assets/african-museum/instruments/'))return 'instruments';if(key.startsWith('assets/african-museum/capoeiristas/')||key.endsWith('/capoeira-background.png'))return 'capoeira';if(key.startsWith('assets/african-museum/'))return 'museum';if(key.startsWith('assets/salon/'))return 'salon';if(key.startsWith('assets/fishing/'))return 'fishing';if(key.startsWith('assets/arcade-expansion/'))return key.includes('/fish-')?'fishing':'moto';if(key.startsWith('assets/platform-journey/')||key.startsWith('assets/challenges/platform/'))return 'platform';return null;},
-register(img,resolve){const r=this.byImage.get(img);if(r?.state==='deferred')resolve();},
-request(img){
- const r=this.byImage.get(img);
- if(!r)return Promise.resolve(V.Assets.ready(img));
- if(r.state==='deferred')this.enqueue(r,true);
- return r.promise.then(()=>r.state==='loaded');
-},
-key(value){try{const u=new URL(value,document.baseURI),n=u.pathname.indexOf('/assets/');const key=n>=0?decodeURIComponent(u.pathname.slice(n+1)):null;return V.ImageFormats?.canonical(key)||key;}catch{return null;}},
-image(){const img=new Image();let record=null;Object.defineProperty(img,'src',{configurable:true,get(){return source.get.call(img);},set(value){const key=L.key(String(value));if(record){L.cancel(record);record=null;}if(!key){source.set.call(img,value);return;}record=L.make(img,V.ImageFormats?.resolve(String(value))||String(value),key);L.enqueue(record);}});img.addEventListener('load',event=>{if(record)L.loaded(record,event);},true);img.addEventListener('error',event=>{if(record)L.errored(record,event);},true);return img;},
-make(img,url,key){const r={img,url,key,group:this.group(key),attempt:0,round:++this.serial,state:'new',slot:false,timer:null,delay:null,errorNames:new Set([key]),finish:null,promise:null};this.cycle(r);this.records.add(r);this.byImage.set(img,r);return r;},
-cycle(r){r.promise=new Promise(resolve=>r.finish=resolve);},
-release(r){clearTimeout(r.timer);r.timer=null;if(r.slot){r.slot=false;this.active=Math.max(0,this.active-1);}},
-cancel(r){this.release(r);clearTimeout(r.delay);r.state='cancelled';this.failed.delete(r);this.queue=this.queue.filter(x=>x!==r);r.finish();this.records.delete(r);this.pump();},
-enqueue(r,force=false){if(r.state==='new'&&r.group&&!force){r.state='deferred';return;}clearTimeout(r.delay);r.delay=null;r.state='queued';if(!this.queue.includes(r))this.queue.push(r);this.pump();},
-pump(){while(this.active<this.limit&&this.queue.length){const r=this.queue.shift();if(r.state!=='queued')continue;r.state='loading';r.slot=true;r.attempt++;this.active++;this.peak=Math.max(this.peak,this.active);let url=r.url;if(r.attempt>1||r.manual){const u=new URL(r.url,document.baseURI);u.searchParams.set('_voices_retry',r.round+'-'+r.attempt);url=u.href;}r.timer=setTimeout(()=>{if(r.state!=='loading')return;r.img.dispatchEvent(new Event('error'));},this.timeout);try{source.set.call(r.img,url);}catch{r.img.dispatchEvent(new Event('error'));}}this.progress();},
-loaded(r,event){if(r.state==='cancelled')return;if(r.state==='loaded')return;if(!r.img.naturalWidth){this.errored(r,event);return;}this.release(r);clearTimeout(r.delay);r.delay=null;this.queue=this.queue.filter(x=>x!==r);r.state='loaded';this.failed.delete(r);this.clearErrors(r);r.finish();this.pump();},
-errored(r,event){if(r.state==='loaded'||r.state==='cancelled')return;if(r.state!=='loading'){event.stopImmediatePropagation();return;}this.release(r);if(r.attempt<this.maxAttempts){event.stopImmediatePropagation();r.state='waiting';r.delay=setTimeout(()=>{if(r.state==='waiting')this.enqueue(r);},400*Math.pow(2,r.attempt-1));this.pump();return;}const before=V.Assets.errors.length;r.state='failed';this.failed.add(r);setTimeout(()=>{if(r.state!=='failed')return;for(const name of V.Assets.errors.slice(before))if(!this.key(name)||this.key(name)===r.key)r.errorNames.add(name);if(!V.Assets.errors.some(name=>r.errorNames.has(name)||this.key(name)===r.key))V.Assets.errors.push(r.key);r.finish();this.progress();},0);this.pump();},
-clearErrors(r){const errors=V.Assets.errors;for(let i=errors.length-1;i>=0;i--){const name=errors[i],match=r.errorNames.has(name)||this.key(name)===r.key||String(name).split('?')[0]===r.key;if(!match)continue;const stillFailed=[...this.failed].some(other=>other!==r&&(other.errorNames.has(name)||other.key===this.key(name)||other.key===String(name).split('?')[0]));if(!stillFailed)errors.splice(i,1);}},
-counts(){const files=new Map();for(const r of this.records){if(r.state==='deferred'||r.state==='cancelled')continue;files.set(r.key,(files.get(r.key)??true)&&r.state==='loaded');}return{done:[...files.values()].filter(Boolean).length,total:files.size};},
-renderProgress(){const root=V.$('#loading'),p=root?.querySelector('p');if(!root||root.hidden||!p)return;const{done,total}=this.counts();p.textContent=(done===total?'Imagens carregadas: ':'Carregando as imagens… ')+done+' / '+total;p.setAttribute('role','status');p.setAttribute('aria-live','polite');const bar=root.querySelector('progress');if(bar){bar.max=Math.max(1,total);bar.value=done;bar.setAttribute('aria-valuetext',done+' de '+total+' imagens carregadas');}root.setAttribute('aria-busy',String(done<total));},
-progress(immediate=false){if(immediate){clearTimeout(this.progressTimer);this.progressTimer=null;this.renderProgress();return;}if(this.progressTimer)return;this.progressTimer=setTimeout(()=>{this.progressTimer=null;this.renderProgress();},120);},
-async settle(){await Promise.all([...this.records].filter(r=>!r.group).map(r=>r.promise));},
-async retryFailed(){const rows=[...this.failed].filter(r=>!r.group);if(!rows.length){V.Assets.errors=V.Assets.errors.filter(path=>this.group(this.key(path)||path));await V.Assets.load();await this.settle();return;}for(const r of rows){this.failed.delete(r);r.attempt=0;r.manual=true;r.round=++this.serial;this.cycle(r);this.enqueue(r);}await Promise.all(rows.map(r=>r.promise));},
-async ready(){await this.settle();while([...this.failed].some(r=>!r.group)||V.Assets.errors.some(path=>!this.group(this.key(path)||path))){V.$('#loading').hidden=true;this.waiting=true;await new Promise(resolve=>{const errors=[...new Set([...V.Assets.errors.filter(path=>!this.group(this.key(path)||path)),...[...this.failed].filter(r=>!r.group).map(r=>r.key)])];V.UI.modal('Algumas imagens não carregaram','SEU PROGRESSO CONTINUA GUARDADO',`<p>A conexão pode ter sido interrompida ou algum arquivo pode estar indisponível. Tente carregar novamente as imagens que faltaram.</p><p>Se estiver usando o ZIP no computador, mantenha a pasta <b>assets</b> junto do jogo e extraia todos os arquivos.</p><details><summary>${errors.length} arquivo(s) para conferir</summary><ul class="asset-load-errors" style="overflow-wrap:anywhere;max-height:30vh;overflow-y:auto">${errors.slice(0,20).map(path=>'<li>'+V.escape(path)+'</li>').join('')}</ul>${errors.length>20?'<p>Mais '+(errors.length-20)+' arquivos.</p>':''}</details>`,'<button id="asset-load-retry" class="primary">Tentar novamente</button><button id="asset-load-reload" class="secondary">Recarregar página</button>',true);V.$('.close-modal').hidden=true;V.$('#asset-load-retry').onclick=()=>{V.$('#asset-load-retry').disabled=true;V.UI.close();V.$('#loading').hidden=false;this.progress();this.waiting=false;resolve();};V.$('#asset-load-reload').onclick=()=>location.reload();});await this.retryFailed();}V.ProfessorStudio?.registerAssetImages?.();this.progress(true);}
-};
-V.Assets.image=()=>L.image();
-document.addEventListener('keydown',event=>{if(L.waiting&&event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();V.$('#asset-load-retry')?.focus();}},true);
-window.addEventListener('online',()=>{for(const r of L.records)if(r.state==='waiting')L.enqueue(r);});
-})();
-
+})(function() {
+  (function() {
+    "use strict";
+    const V = window.V, source = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src");
+    const L = V.AssetLoader = {
+      limit: 8,
+      maxAttempts: 3,
+      timeout: 15e3,
+      active: 0,
+      peak: 0,
+      queue: [],
+      records: new Set(),
+      byImage: new WeakMap(),
+      failed: new Set(),
+      serial: 0,
+      progressTimer: null,
+      groupRules: [],
+      addGroupRule(name, fn) {
+        if (typeof fn !== "function") throw new TypeError("Invalid asset group rule: " + name);
+        if (this.groupRules.some((item) => item.name === name)) throw new Error("Duplicate asset group rule: " + name);
+        this.groupRules.push({ name, fn });
+      },
+      group(key) {
+        for (let i = this.groupRules.length - 1; i >= 0; i--) {
+          const match = this.groupRules[i].fn(key);
+          if (match !== void 0) return match;
+        }
+        if (key.startsWith("assets/african-play/")) return "african-play";
+        if (key.startsWith("assets/ancestral/presences/")) return "presence:" + key.split("/").pop().replace(/-(actions|ready)\.png$/, "");
+        if (key.startsWith("assets/ancestral/")) return "roots";
+        if (key.startsWith("assets/maritime/")) return "maritime";
+        if (key.endsWith("/museum-facade.png") || key.endsWith("/salon-facade.png")) return null;
+        if (key.startsWith("assets/african-museum/words/")) return "museum-words";
+        if (key.startsWith("assets/african-museum/instruments/")) return "instruments";
+        if (key.startsWith("assets/african-museum/capoeiristas/") || key.endsWith("/capoeira-background.png")) return "capoeira";
+        if (key.startsWith("assets/african-museum/")) return "museum";
+        if (key.startsWith("assets/salon/")) return "salon";
+        if (key.startsWith("assets/fishing/")) return "fishing";
+        if (key.startsWith("assets/arcade-expansion/")) return key.includes("/fish-") ? "fishing" : "moto";
+        if (key.startsWith("assets/platform-journey/") || key.startsWith("assets/challenges/platform/")) return "platform";
+        return null;
+      },
+      register(img, resolve) {
+        const r = this.byImage.get(img);
+        if (r?.state === "deferred") resolve();
+      },
+      request(img) {
+        const r = this.byImage.get(img);
+        if (!r) return Promise.resolve(V.Assets.ready(img));
+        if (r.state === "deferred") this.enqueue(r, true);
+        return r.promise.then(() => r.state === "loaded");
+      },
+      key(value) {
+        try {
+          const u = new URL(value, document.baseURI), n = u.pathname.indexOf("/assets/");
+          const key = n >= 0 ? decodeURIComponent(u.pathname.slice(n + 1)) : null;
+          return V.ImageFormats?.canonical(key) || key;
+        } catch {
+          return null;
+        }
+      },
+      image() {
+        const img = new Image();
+        let record = null;
+        Object.defineProperty(img, "src", { configurable: true, get() {
+          return source.get.call(img);
+        }, set(value) {
+          const key = L.key(String(value));
+          if (record) {
+            L.cancel(record);
+            record = null;
+          }
+          if (!key) {
+            source.set.call(img, value);
+            return;
+          }
+          record = L.make(img, V.ImageFormats?.resolve(String(value)) || String(value), key);
+          L.enqueue(record);
+        } });
+        img.addEventListener("load", (event) => {
+          if (record) L.loaded(record, event);
+        }, true);
+        img.addEventListener("error", (event) => {
+          if (record) L.errored(record, event);
+        }, true);
+        return img;
+      },
+      make(img, url, key) {
+        const r = { img, url, key, group: this.group(key), attempt: 0, round: ++this.serial, state: "new", slot: false, timer: null, delay: null, errorNames: new Set([key]), finish: null, promise: null };
+        this.cycle(r);
+        this.records.add(r);
+        this.byImage.set(img, r);
+        return r;
+      },
+      cycle(r) {
+        r.promise = new Promise((resolve) => r.finish = resolve);
+      },
+      release(r) {
+        clearTimeout(r.timer);
+        r.timer = null;
+        if (r.slot) {
+          r.slot = false;
+          this.active = Math.max(0, this.active - 1);
+        }
+      },
+      cancel(r) {
+        this.release(r);
+        clearTimeout(r.delay);
+        r.state = "cancelled";
+        this.failed.delete(r);
+        this.queue = this.queue.filter((x) => x !== r);
+        r.finish();
+        this.records.delete(r);
+        this.pump();
+      },
+      enqueue(r, force = false) {
+        if (r.state === "new" && r.group && !force) {
+          r.state = "deferred";
+          return;
+        }
+        clearTimeout(r.delay);
+        r.delay = null;
+        r.state = "queued";
+        if (!this.queue.includes(r)) this.queue.push(r);
+        this.pump();
+      },
+      pump() {
+        while (this.active < this.limit && this.queue.length) {
+          const r = this.queue.shift();
+          if (r.state !== "queued") continue;
+          r.state = "loading";
+          r.slot = true;
+          r.attempt++;
+          this.active++;
+          this.peak = Math.max(this.peak, this.active);
+          let url = r.url;
+          if (r.attempt > 1 || r.manual) {
+            const u = new URL(r.url, document.baseURI);
+            u.searchParams.set("_voices_retry", r.round + "-" + r.attempt);
+            url = u.href;
+          }
+          r.timer = setTimeout(() => {
+            if (r.state !== "loading") return;
+            r.img.dispatchEvent(new Event("error"));
+          }, this.timeout);
+          try {
+            source.set.call(r.img, url);
+          } catch {
+            r.img.dispatchEvent(new Event("error"));
+          }
+        }
+        this.progress();
+      },
+      loaded(r, event) {
+        if (r.state === "cancelled") return;
+        if (r.state === "loaded") return;
+        if (!r.img.naturalWidth) {
+          this.errored(r, event);
+          return;
+        }
+        this.release(r);
+        clearTimeout(r.delay);
+        r.delay = null;
+        this.queue = this.queue.filter((x) => x !== r);
+        r.state = "loaded";
+        this.failed.delete(r);
+        this.clearErrors(r);
+        r.finish();
+        this.pump();
+      },
+      errored(r, event) {
+        if (r.state === "loaded" || r.state === "cancelled") return;
+        if (r.state !== "loading") {
+          event.stopImmediatePropagation();
+          return;
+        }
+        this.release(r);
+        if (r.attempt < this.maxAttempts) {
+          event.stopImmediatePropagation();
+          r.state = "waiting";
+          r.delay = setTimeout(() => {
+            if (r.state === "waiting") this.enqueue(r);
+          }, 400 * Math.pow(2, r.attempt - 1));
+          this.pump();
+          return;
+        }
+        const before = V.Assets.errors.length;
+        r.state = "failed";
+        this.failed.add(r);
+        setTimeout(() => {
+          if (r.state !== "failed") return;
+          for (const name of V.Assets.errors.slice(before)) if (!this.key(name) || this.key(name) === r.key) r.errorNames.add(name);
+          if (!V.Assets.errors.some((name) => r.errorNames.has(name) || this.key(name) === r.key)) V.Assets.errors.push(r.key);
+          r.finish();
+          this.progress();
+        }, 0);
+        this.pump();
+      },
+      clearErrors(r) {
+        const errors = V.Assets.errors;
+        for (let i = errors.length - 1; i >= 0; i--) {
+          const name = errors[i], match = r.errorNames.has(name) || this.key(name) === r.key || String(name).split("?")[0] === r.key;
+          if (!match) continue;
+          const stillFailed = [...this.failed].some((other) => other !== r && (other.errorNames.has(name) || other.key === this.key(name) || other.key === String(name).split("?")[0]));
+          if (!stillFailed) errors.splice(i, 1);
+        }
+      },
+      counts() {
+        const files = new Map();
+        for (const r of this.records) {
+          if (r.state === "deferred" || r.state === "cancelled") continue;
+          files.set(r.key, (files.get(r.key) ?? true) && r.state === "loaded");
+        }
+        return { done: [...files.values()].filter(Boolean).length, total: files.size };
+      },
+      renderProgress() {
+        const root = V.$("#loading"), p = root?.querySelector("p");
+        if (!root || root.hidden || !p) return;
+        const { done, total } = this.counts();
+        p.textContent = (done === total ? "Imagens carregadas: " : "Carregando as imagens\u2026 ") + done + " / " + total;
+        p.setAttribute("role", "status");
+        p.setAttribute("aria-live", "polite");
+        const bar = root.querySelector("progress");
+        if (bar) {
+          bar.max = Math.max(1, total);
+          bar.value = done;
+          bar.setAttribute("aria-valuetext", done + " de " + total + " imagens carregadas");
+        }
+        root.setAttribute("aria-busy", String(done < total));
+      },
+      progress(immediate = false) {
+        if (immediate) {
+          clearTimeout(this.progressTimer);
+          this.progressTimer = null;
+          this.renderProgress();
+          return;
+        }
+        if (this.progressTimer) return;
+        this.progressTimer = setTimeout(() => {
+          this.progressTimer = null;
+          this.renderProgress();
+        }, 120);
+      },
+      async settle() {
+        await Promise.all([...this.records].filter((r) => !r.group).map((r) => r.promise));
+      },
+      async retryFailed() {
+        const rows = [...this.failed].filter((r) => !r.group);
+        if (!rows.length) {
+          V.Assets.errors = V.Assets.errors.filter((path) => this.group(this.key(path) || path));
+          await V.Assets.load();
+          await this.settle();
+          return;
+        }
+        for (const r of rows) {
+          this.failed.delete(r);
+          r.attempt = 0;
+          r.manual = true;
+          r.round = ++this.serial;
+          this.cycle(r);
+          this.enqueue(r);
+        }
+        await Promise.all(rows.map((r) => r.promise));
+      },
+      async ready() {
+        await this.settle();
+        while ([...this.failed].some((r) => !r.group) || V.Assets.errors.some((path) => !this.group(this.key(path) || path))) {
+          V.$("#loading").hidden = true;
+          this.waiting = true;
+          await new Promise((resolve) => {
+            const errors = [...new Set([...V.Assets.errors.filter((path) => !this.group(this.key(path) || path)), ...[...this.failed].filter((r) => !r.group).map((r) => r.key)])];
+            V.UI.modal("Algumas imagens n\xE3o carregaram", "SEU PROGRESSO CONTINUA GUARDADO", `<p>A conex\xE3o pode ter sido interrompida ou algum arquivo pode estar indispon\xEDvel. Tente carregar novamente as imagens que faltaram.</p><p>Se estiver usando o ZIP no computador, mantenha a pasta <b>assets</b> junto do jogo e extraia todos os arquivos.</p><details><summary>${errors.length} arquivo(s) para conferir</summary><ul class="asset-load-errors" style="overflow-wrap:anywhere;max-height:30vh;overflow-y:auto">${errors.slice(0, 20).map((path) => "<li>" + V.escape(path) + "</li>").join("")}</ul>${errors.length > 20 ? "<p>Mais " + (errors.length - 20) + " arquivos.</p>" : ""}</details>`, '<button id="asset-load-retry" class="primary">Tentar novamente</button><button id="asset-load-reload" class="secondary">Recarregar p\xE1gina</button>', true);
+            V.$(".close-modal").hidden = true;
+            V.$("#asset-load-retry").onclick = () => {
+              V.$("#asset-load-retry").disabled = true;
+              V.UI.close();
+              V.$("#loading").hidden = false;
+              this.progress();
+              this.waiting = false;
+              resolve();
+            };
+            V.$("#asset-load-reload").onclick = () => location.reload();
+          });
+          await this.retryFailed();
+        }
+        V.ProfessorStudio?.registerAssetImages?.();
+        this.progress(true);
+      }
+    };
+    V.Assets.image = () => L.image();
+    document.addEventListener("keydown", (event) => {
+      if (L.waiting && event.key === "Escape") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        V.$("#asset-load-retry")?.focus();
+      }
+    }, true);
+    window.addEventListener("online", () => {
+      for (const r of L.records) if (r.state === "waiting") L.enqueue(r);
+    });
+  })();
 });

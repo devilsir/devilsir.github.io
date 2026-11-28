@@ -118,14 +118,10 @@
     if(frame.sheet===props)frame.rows=2;
     return frame;
   };
-  const group=V.AssetLoader.group.bind(V.AssetLoader);
-  V.AssetLoader.group=key=>key.startsWith('assets/nature/sanctuary-village-')?family:group(key);
-  const groups=V.MapAssets.groups.bind(V.MapAssets);
-  V.MapAssets.groups=function(m){
-    const list=groups(m);
-    if(m?.id===map||m?.decor?.some(o=>o.family===family))list.push(family);
-    return [...new Set(list)];
-  };
+  
+  V.AssetLoader.addGroupRule("guard-village:group:1", key => key.startsWith('assets/nature/sanctuary-village-')?family:undefined);
+  
+  V.MapAssets.addGroupRule("guard-village:groups:1", function (m, list) { if(m?.id===map||m?.decor?.some(o=>o.family===family))list.push(family); });
   const prop=C.prop.bind(C);
   C.prop=function(c,name,index,x,y,size,...args){
     if(name===family)return A.frame(c,props,Math.floor(index/4),index%4,x,y,size,size);

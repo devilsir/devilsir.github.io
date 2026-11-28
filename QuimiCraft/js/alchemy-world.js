@@ -1,7 +1,8 @@
 "use strict";
 
 globalThis.QuimiCraftAlchemyWorld = (() => {
-  const CELL=176, FIRST_BLOCK=210;
+  const CELL=320, FIRST_BLOCK=210, FIRST_TILE=448, villageReach=23;
+  // Keep alchemy materials separate from the glass/ice tiles 210-217.
   const furniture=[
     ["ALCHEMY_BORDER","Tijolo da guilda","#4c7573"],
     ["ALCHEMY_SIGN","Brasão alquímico","#d2ba7b"],
@@ -29,12 +30,14 @@ globalThis.QuimiCraftAlchemyWorld = (() => {
       const id=FIRST_BLOCK+i;
       if(defs[id])throw Error("ID de bloco alquímico já registrado.");
       B[key]=id;
-      defs[id]={name,icon,tex:id+1,hard:i<2?1.3:1,solid:true,alchemy:i>=2,station:i>=2};
+      defs[id]={name,icon,tex:FIRST_TILE+i,hard:i<2?1.3:1,solid:true,alchemy:i>=2,station:i>=2};
     });
   }
   function paint(tile,x,y,hash){
-    const color=palette[tile-FIRST_BLOCK-1]||palette[0],seam=x%16===0||y%8===0;
-    const seal=tile===FIRST_BLOCK+2&&(Math.abs(x-16)+Math.abs(y-15)<8);
+    const index=tile-FIRST_TILE,color=palette[index];
+    if(!color)return null;
+    const seam=x%16===0||y%8===0;
+    const seal=index===1&&(Math.abs(x-16)+Math.abs(y-15)<8);
     const grain=(hash(x,y,tile)-.5)*23;
     return [...color.map((v,i)=>v+grain+(seal?[31,45,62][i]:seam?-19:0)),255];
   }
@@ -51,7 +54,7 @@ globalThis.QuimiCraftAlchemyWorld = (() => {
     const roll=(x,z,salt)=>hash(x+seed%1901,z-seed%2579,salt);
     const key=(x,z)=>x+","+z;
     const starter=legacyOrigin?null:[
-      [spawn.x+48,spawn.z+5],[spawn.x+47,spawn.z+22],[spawn.x-43,spawn.z+16],[spawn.x-36,spawn.z-31],
+      [spawn.x+108,spawn.z+18],[spawn.x+96,spawn.z+68],[spawn.x-98,spawn.z+54],[spawn.x-86,spawn.z-78],
     ].map(pair=>pair.map(Math.floor));
     function anchor(ix,iz){
       const k=key(ix,iz);
@@ -92,7 +95,7 @@ globalThis.QuimiCraftAlchemyWorld = (() => {
       const build=(u,v,level,top)=>{
         const [xx,zz]=point(u,v);
         const low=Math.max(1,Math.min(terrainHeight(xx,zz),level)-1);
-        const blocks=new Uint8Array(top-low+1);
+        const blocks=new Uint16Array(top-low+1);
         for(let y=low;y<level;y++)blocks[y-low]=B.FIELDSTONE;
         blocks[level-low]=floor;
         const entry={site,low,top,blocks};
@@ -172,6 +175,69 @@ globalThis.QuimiCraftAlchemyWorld = (() => {
         x:ax+.5,y:base+1,z:az+.5,scale:.94};
       site.apprentice={...site.resident,id:site.resident.id+":apprentice",name:childName,
         x:kx+.5,y:base+1,z:kz+.5,role:"child",age:"child",apprentice:true,scale:.63,accessory:null};
+      site.entry={x:gx+.5,y:terrainHeight(gx,gz)+1,z:gz+.5};
+      site.villagers=[];
+      site.buildings=[{kind:"laboratory",x,z}];
+      const plots=[[-11,4,3,3,"casa","Moradia"],[11,4,3,3,"oficina","Oficina"],
+        [0,12,4,3,"salao","Salão"],[-11,14,3,3,"estufa","Estufa"],[11,14,3,3,"alojamento","Alojamento"]];
+      const plotBounds=(u,v,hw,hd)=>{
+        const corners=[point(u-hw,v-hd),point(u+hw,v-hd),point(u-hw,v+hd),point(u+hw,v+hd)];
+        return {left:Math.min(...corners.map(([px])=>px)),right:Math.max(...corners.map(([px])=>px)),
+          front:Math.min(...corners.map(([,pz])=>pz)),rear:Math.max(...corners.map(([,pz])=>pz))};
+      };
+      const available=(u,v)=>{
+        const [px,pz]=point(u,v),ground=terrainHeight(px,pz);
+        return !blocked(px,pz)&&ground>=waterLevel-2&&Math.abs(ground-base)<=9;
+      };
+      function path(u,v){
+        if(!available(u,v)||columns.has(key(...point(u,v))))return;
+        build(u,v,base,Math.max(base+4,terrainHeight(...point(u,v))+1));
+        set(u,v,base,B.COBBLE_PATH);
+      }
+      for(const [u,v,hw,hd,kind,label] of plots){
+        const extent=plotBounds(u,v,hw+1,hd+1);
+        if(!established&&hasEdits(extent))continue;
+        let fits=true;
+        for(let dx=-hw-1;dx<=hw+1&&fits;dx++)for(let dz=-hd-1;dz<=hd+1;dz++)
+          if(!available(u+dx,v+dz)){fits=false;break}
+        if(!fits)continue;
+        for(let dx=-hw-1;dx<=hw+1;dx++)for(let dz=-hd;dz<=hd;dz++){
+          const a=u+dx,b=v+dz,h=kind==="salao"?5:4;
+          build(a,b,base,Math.max(base+h+3,terrainHeight(...point(a,b))+1));
+          const perimeter=Math.abs(dx)===hw||Math.abs(dz)===hd;
+          if(Math.abs(dx)<=hw){
+            set(a,b,base,perimeter?B.ALCHEMY_BORDER:floor);
+            for(let dy=1;dy<h;dy++)if(perimeter&&!(dz===hd&&Math.abs(dx)<=1&&dy<=2))
+              set(a,b,base+dy,dy===2&&((dx===-hw||dx===hw)&&Math.abs(dz)===1||kind==="estufa")?B.WINDOW_LEADED:wall);
+          }
+          set(a,b,base+h+(Math.abs(dx)<=hw-2?1:0),kind==="estufa"?B.GLASS:roof);
+          if(Math.abs(dx)===hw&&Math.abs(dz)===hd)for(let dy=1;dy<h;dy++)set(a,b,base+dy,post);
+        }
+        set(u-2,v-hd+1,base+1,kind==="oficina"?B.ALCHEMY_BENCH:kind==="estufa"?B.GARDEN_BOX:B.ALCHEMIST_WALL_BAROMETER??B.ALCHEMY_VIAL_RACK);
+        set(u+2,v-hd+1,base+1,kind==="oficina"?B.ALCHEMY_STILL:kind==="estufa"?B.GARDEN_BOX:B.ALCHEMIST_ATOM_MODEL);
+        set(u-2,v+hd-1,base+3,B.VILLAGE_LANTERN);
+        if(kind==="casa"||kind==="alojamento"){
+          const [fx,fz]=point(u+2,v+hd-2),[hx,hz]=point(u+2,v+hd-3);
+          const axis=QuimiCraftSurvival.headings.findIndex(([dx,dz])=>dx===hx-fx&&dz===hz-fz);
+          set(u+2,v+hd-2,base+1,B.BED+axis);set(u+2,v+hd-3,base+1,B.BED+4+axis);
+        }
+        if(kind==="estufa"){
+          set(u-2,v-hd+1,base+2,B.ORCHID);set(u+2,v-hd+1,base+2,B.LAVENDER);
+        }
+        const [px,pz]=point(u,v);
+        site.buildings.push({kind,label,x:px,z:pz});
+        site.villagers.push({...site.resident,id:`alchemy:${id}:${kind}`,name:`${label} · ${config.person.split(" ")[0]}`,
+          x:px+.5,y:base+1,z:pz+.5,civic:true,scale:.91+site.buildings.length*.015});
+        for(let dx=-1;dx<=1;dx++)for(let dz=hd+1;dz<=hd+3;dz++)path(u+dx,v+dz);
+      }
+      if(site.buildings.length>1){
+        for(const side of [-1,1])for(let v=-d-3;v<=19;v++)for(let offset=-1;offset<=1;offset++)path(side*(w+3)+offset,v);
+        for(const v of [-d-3,9,17])for(let u=-13;u<=13;u++)path(u,v);
+        for(const {left,right,front,rear} of plots.map(([u,v,hw,hd])=>plotBounds(u,v,hw+1,hd+3))){
+          bounds.left=Math.min(bounds.left,left);bounds.right=Math.max(bounds.right,right);
+          bounds.front=Math.min(bounds.front,front);bounds.rear=Math.max(bounds.rear,rear);
+        }
+      }
       return site;
     }
     function resolve(id,candidates){
@@ -189,7 +255,7 @@ globalThis.QuimiCraftAlchemyWorld = (() => {
     }
     function locationNear(x,z,range=0){
       const nearby=[];
-      const limit=16+range;
+      const limit=villageReach+range;
       const within=(sx,sz,dist)=>Math.abs(x-sx)<=dist&&Math.abs(z-sz)<=dist;
       if(starter?.some(([sx,sz])=>within(sx,sz,limit))){
         const site=resolve("starter",starter);
@@ -208,12 +274,12 @@ globalThis.QuimiCraftAlchemyWorld = (() => {
     }
     function columnAt(x,z){
       const within=(sx,sz,limit)=>Math.abs(x-sx)<=limit&&Math.abs(z-sz)<=limit;
-      if(starter?.some(([sx,sz])=>within(sx,sz,16))){
+      if(starter?.some(([sx,sz])=>within(sx,sz,villageReach))){
         const column=resolve("starter",starter)?.columns.get(key(x,z));
         if(column)return column;
       }
       const base=anchor(Math.floor(x/CELL),Math.floor(z/CELL));
-      if(!within(base.x,base.z,39))return null;
+      if(!within(base.x,base.z,villageReach+23))return null;
       const {x:sx,z:sz,key:id}=base;
       const site=resolve(id,[[sx,sz],[sx+20,sz],[sx-20,sz],[sx,sz+20],[sx,sz-20],[sx+15,sz+15]]);
       return site?.columns.get(key(x,z))??null;
@@ -221,7 +287,15 @@ globalThis.QuimiCraftAlchemyWorld = (() => {
     function blockAt(column,y){return column&&y>=column.low&&y<=column.top?column.blocks[y-column.low]:null}
     function doorAt(x,y,z){return columnAt(x,z)?.site.doors.get(x+"|"+y+"|"+z)}
     function remember(site){if(!sitePositions[site.key])sitePositions[site.key]=[site.x,site.z]}
-    return {around:locationNear,columnAt,blockAt,doorAt,remember};
+    function destination(x,z,indices=null){
+      if(indices){
+        const {x:sx,z:sz,key:id}=anchor(...indices);
+        return resolve(id,[[sx,sz],[sx+20,sz],[sx-20,sz],[sx,sz+20],[sx,sz-20],[sx+15,sz+15]]);
+      }
+      const nearby=locationNear(x,z,CELL*2).filter(site=>site.buildings.length>1);
+      return nearby.sort((a,b)=>Math.hypot(x-a.x,z-a.z)-Math.hypot(x-b.x,z-b.z))[0]??null;
+    }
+    return {around:locationNear,columnAt,blockAt,doorAt,remember,destination};
   }
   return {register,paint,create,specialization};
 })();

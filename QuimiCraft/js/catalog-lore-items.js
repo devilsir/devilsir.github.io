@@ -21,8 +21,8 @@ QuimiCraftCatalogLore.extend({
 
   // === EQUIPAMENTOS, FERRAMENTAS E TRAJES ===
   shield:[
-    "Escudo circular de bronze batido usado na mão secundária para aparar investidas físicas de monstros e feras territoriais.",
-    "O bronze absorve impactos repetidos sem trincar facilmente porque o estanho endurece a rede cristalina do cobre sem torná-lo quebradiço."
+    "Armeiros moldaram esta chapa convexa de bronze e reforçaram sua borda com rebites para aparar investidas de monstros e feras territoriais.",
+    "O ressalto no centro é o umbão. Seu polimento produz reflexos mais nítidos que os da chapa escovada."
   ],
   chainmail:[
     "Malha flexível de anéis metálicos entrelaçados que protege o torso contra cortes mantendo mobilidade em trilhas longas.",

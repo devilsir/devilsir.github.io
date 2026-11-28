@@ -20,10 +20,10 @@
 }
 
 .science-hud-actions {
-  position: absolute;
-  top: 197px;
-  right: 22px;
+  position: relative;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 6px;
   pointer-events: auto;
 }
@@ -65,19 +65,20 @@
 }
 
 .temperature-hud {
-  position: absolute;
-  left: 22px;
-  bottom: 168px;
+  position: relative;
   width: 188px;
+  max-width: 100%;
   padding: 9px 11px;
   border: 1px solid rgba(128, 216, 202, .12);
   border-radius: 11px;
   background: rgba(3, 10, 14, .52);
   box-shadow: 0 10px 24px rgba(0, 0, 0, .18);
-  opacity: 0;
-  transform: translateY(7px);
   transition: opacity .25s, transform .25s, border-color .25s;
   backdrop-filter: blur(10px);
+}
+
+.temperature-hud:not(.show) {
+  display: none;
 }
 
 .temperature-hud.show {
@@ -143,14 +144,17 @@
 }
 
 .left-hazard-stack {
-  position: absolute;
-  top: 104px;
-  left: 22px;
+  position: relative;
   display: grid;
   gap: 7px;
-  width: min(310px, calc(100vw - 44px));
-  max-height: calc(100vh - 300px);
+  width: 100%;
+  max-height: 36vh;
+  overflow: hidden;
   pointer-events: none;
+}
+
+.left-hazard-stack:not(:has(.show)) {
+  display: none;
 }
 
 .hazard-hud {
@@ -158,9 +162,12 @@
   display: grid;
   gap: 5px;
   width: 100%;
-  opacity: 0;
-  transform: translateX(-8px);
   transition: opacity .24s, transform .24s;
+}
+
+.hazard-hud:not(.show),
+.hazard-hud:empty {
+  display: none;
 }
 
 .hazard-hud.show {
@@ -225,8 +232,12 @@
   align-items: flex-start;
   gap: 5px;
   width: 100%;
-  opacity: 0;
   transition: opacity .2s;
+}
+
+.status-effects:not(.show),
+.status-effects:empty {
+  display: none;
 }
 
 .status-effects.show {
@@ -1582,16 +1593,39 @@
     display: none;
   }
 
-  .vitals {
-    bottom: 126px;
-  }
-
-  .temperature-hud {
-    bottom: 270px;
-  }
-
   .hotbar {
-    bottom: 18px;
+    pointer-events: auto;
+  }
+
+  .hud-bottom-left {
+    bottom: 122px;
+  }
+
+  .hud-bottom-right {
+    bottom: 176px;
+  }
+}
+
+@media (hover: none) and (max-width: 760px), (pointer: coarse) and (max-width: 760px) {
+  .mobile-move,
+  .mobile-actions {
+    bottom: 98px;
+  }
+
+  .mobile-move {
+    left: 10px;
+  }
+
+  .mobile-actions {
+    right: 10px;
+  }
+
+  .hud-bottom-left {
+    bottom: 204px;
+  }
+
+  .hud-bottom-right {
+    bottom: 256px;
   }
 }
 
@@ -1656,19 +1690,6 @@
     grid-template-columns: 1fr;
   }
 
-  .science-hud-actions {
-    top: 174px;
-    right: 12px;
-  }
-
-  .history-hud-button {
-    top: 139px;
-  }
-
-  .hazard-hud {
-    top: 124px;
-  }
-
   .sample-meta {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1725,15 +1746,12 @@
   }
 
   .temperature-hud {
-    left: 10px;
-    width: 164px;
+    width: 156px;
+    max-width: 100%;
   }
 
   .left-hazard-stack {
-    top: 92px;
-    left: 10px;
-    width: min(290px, calc(100vw - 20px));
-    max-height: calc(100vh - 380px);
+    max-height: 24vh;
   }
 
   .mc-inventory-card .inv-slot.touch-selected {

@@ -50,17 +50,17 @@
   D.item=o=>collections.get(o?.scene?.family)?.[o.scene.prop]||item(o);
   const prop=C.prop.bind(C);
   C.prop=function(c,name,index,x,y,size,...rest){return collections.has(name)?D.art(c,name,index,x,y,size):prop(c,name,index,x,y,size,...rest);};
-  const group=V.AssetLoader.group.bind(V.AssetLoader);
-  V.AssetLoader.group=key=>furnitureFiles.has(key)?'home-collection':group(key);
-  const load=V.Assets.load.bind(V.Assets);
+  
+  V.AssetLoader.addGroupRule("residential-studio:group:1", key => furnitureFiles.has(key)?'home-collection':undefined);
+  
   let atlas;
-  V.Assets.load=async function(...args){
+  V.Hooks.around(V.Assets, "load", "residential-studio:load:1", load => async function(...args){
     const doors=new Promise(resolve=>{
       atlas=V.Assets.image();atlas.onload=atlas.onerror=resolve;atlas.src=doorFile;
       V.AssetLoader.register(atlas,resolve);
     });
     const [result]=await Promise.all([load(...args),doors]);return result;
-  };
+  });
 
   const addresses=new Set(V.ResidentialPlans.plans.map(([id])=>id));
   const frames=new WeakMap(),trim=['#8d603c','#647d7d','#75866a','#c6ac82','#a87843','#557991','#836645','#b47b5f'];
@@ -111,11 +111,11 @@
     c.restore();
     if(V.World.nearest?.id===o.id)V.Living.marker(c,x,y,d.locked?'×':d.mode==='auto'?'→':'E','#eed39e');
   }
-  const draw=C.drawObject.bind(C);
-  C.drawObject=function(c,o,cam,t){
+  
+  V.Hooks.around(V.Cozy, "drawObject", "residential-studio:drawObject:1", draw => function(c,o,cam,t){
     const id=V.SceneEditor.active?V.SceneEditor.mapId:V.World.current?.id;
     if(o.type==='room-door'&&o.door.wall&&addresses.has(id)&&atlas?.naturalWidth)return renderDoor(c,o,cam,t,V.SceneEditor.active?V.SceneEditor.preview:V.World.maps[id]);
     return draw(c,o,cam,t);
-  };
+  });
   V.ResidentialStudio={items:collections.get('home-studio'),ready:()=>!!atlas?.naturalWidth};
 });

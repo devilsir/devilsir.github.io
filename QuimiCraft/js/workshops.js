@@ -124,6 +124,8 @@ globalThis.QuimiCraftWorkshops=(()=>{
       forge("Recuperar zinco da esfalerita",[[B.SPHALERITE,2]],"zinc_ingot",2),
       forge("Processar minério de cobalto",[[B.COBALT_ORE,2]],"cobalt_ingot",2),
       forge("Processar minério de níquel",[[B.NICKEL_ORE,2]],"nickel_ingot",2),
+      ...(Number.isInteger(B.CORRUPTED_ORE)?[forge("Fundir minério corrompido",[[B.CORRUPTED_ORE,2]],"corrupted_ingot",2)]:[]),
+      forge("Forjar liga corrompida",[["corrupted_shard",3],["iron_ingot",1]],"corrupted_ingot",1,"alloy"),
       forge("Ligar cuproníquel",[["copper_ingot",2],["nickel_ingot",1]],"cupronickel_ingot",3,"alloy"),
       forge("Ligar estanho e cobre",[["tin_ingot",3],["copper_ingot",1]],"pewter_ingot",4,"alloy"),
       forge("Moldar bloco de cobalto",[["cobalt_ingot",4]],B.COBALT_BLOCK,1,"mold"),

@@ -22,7 +22,7 @@ globalThis.QuimiCraftEffects = (() => {
     const particles=[];
     const palette={wind:0x85fbdf,cyclone:0xa0efd0,arrow:0xd3edd2,guard:0xf2deb2,enemy:0xc69aff,
       cook:0xe7c69c,forge:0xffad4b,glass:0x90e3e1,hit:0xffcc77,catch:0x81e9f1,bite:0x50d0f0,land:0x9ddffa,cast:0x87eddc,
-      fire:0xff7850,ice:0x82d9ff,earth:0xe5a372,time:0xffcb69,nature:0xa6ed6b,mirror:0xc8f9ff,stone:0x9ba499,venom:0x97db57};
+      fire:0xff7850,ice:0x82d9ff,earth:0xe5a372,time:0xffcb69,nature:0xa6ed6b,storm:0x7fe6ff,arcane:0xa58bff,mirror:0xc8f9ff,stone:0x9ba499,venom:0x97db57};
     const shotGeometry={
       ember:new THREE.IcosahedronGeometry(1,1),rock:new THREE.DodecahedronGeometry(1,0),
       shard:new THREE.OctahedronGeometry(1,0),band:new THREE.TorusGeometry(1,.085,5,28)
@@ -109,6 +109,20 @@ globalThis.QuimiCraftEffects = (() => {
           chip.rotation.y=i*.62;
         }
         count=5;
+      }else if(element==="storm"){
+        part("shard",light,[.16,.16,.58]);
+        for(const side of [-1,1]){
+          const bolt=part("shard",edge,[.09,.09,.44],[side*.12,side*.05,.04]);
+          bolt.rotation.set(.18,side*.45,side*.65);
+        }
+        count=7;
+      }else if(element==="arcane"){
+        part("ember",light,[.16,.16,.24]);
+        for(let i=0;i<2;i++){
+          const band=part("band",i?edge:light,[.33,.33,.33]);
+          band.rotation.set(i*.85,.6-i*1.2,i*.5);
+        }
+        count=7;
       }else{
         part("ember",light,[.15,.16,.21]);
         for(let i=0;i<3;i++){

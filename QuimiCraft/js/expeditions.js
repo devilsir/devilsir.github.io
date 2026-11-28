@@ -4,18 +4,33 @@
 globalThis.QuimiCraftExpeditions=(()=>{
   const names={den:"Covil dracônico",temple:"Templo das Dunas",lab:"Laboratório Soterrado",grove:"Aldeia das Copas"};
   const table={
-    den:{chance:.68,reach:15},
-    temple:{chance:.57,reach:13,regions:["deserto","salinas","badlands","chapadas ocres","savana","cânion calcário"]},
-    lab:{chance:.64,reach:24},
-    grove:{chance:.72,reach:19,regions:["floresta","floresta de sequoias","selva tropical","bosque de cerejeiras","bosque lilás","taiga","planície florida","manguezal","delta salobro"]}
+    den:{chance:.46,reach:15},
+    temple:{chance:.42,reach:13,regions:["deserto","salinas","badlands","chapadas ocres","savana","cânion calcário"]},
+    lab:{chance:.44,reach:24},
+    grove:{chance:.50,reach:30,regions:["floresta","floresta de sequoias","selva tropical","bosque de cerejeiras","bosque lilás","taiga","planície florida","manguezal","delta salobro"]}
   };
-  const spacing=144,slots=[[35,35],[108,35],[35,108],[108,108]],kinds=Object.keys(table);
+  const spacing=300,slots=[[68,68],[224,68],[68,224],[224,224]],kinds=Object.keys(table);
   const denGuards={
     ice_dragon:["sapphire_sentinel","silver_sentinel","SAPPHIRE_ORE","SILVER_ORE"],
     fire_dragon:["ruby_sentinel","gold_sentinel","RUBY_ORE","GOLD"],
     nature_dragon:["emerald_sentinel","gold_sentinel","EMERALD_ORE","GOLD"],
     time_dragon:["opal_sentinel","gold_sentinel","OPAL_ORE","GOLD"],
-    earth_dragon:["amethyst_sentinel","silver_sentinel","AMETHYST","SILVER_ORE"]
+    earth_dragon:["amethyst_sentinel","silver_sentinel","AMETHYST","SILVER_ORE"],
+    time_lost_protodrake:["opal_sentinel","gold_sentinel","OPAL_ORE","GOLD"],
+    elemental_lizard_fire:["ruby_sentinel","gold_sentinel","RUBY_ORE","GOLD"],
+    elemental_lizard_ice:["sapphire_sentinel","silver_sentinel","SAPPHIRE_ORE","SILVER_ORE"],
+    elemental_lizard_earth:["amethyst_sentinel","gold_sentinel","AMETHYST","GOLD"],
+    elemental_lizard_storm:["sapphire_sentinel","silver_sentinel","OPAL_ORE","SILVER_ORE"],
+    emerald_drake:["emerald_sentinel","gold_sentinel","EMERALD_ORE","GOLD"],
+    ruby_drake:["ruby_sentinel","gold_sentinel","RUBY_ORE","GOLD"],
+    azure_drake:["sapphire_sentinel","silver_sentinel","SAPPHIRE_ORE","SILVER_ORE"],
+    obsidian_drake:["ruby_sentinel","silver_sentinel","OBSIDIAN","SILVER_ORE"],
+    bronze_drake:["opal_sentinel","gold_sentinel","OPAL_ORE","GOLD"],
+    aspect_time:["opal_sentinel","gold_sentinel","OPAL_ORE","GOLD"],
+    aspect_dream:["emerald_sentinel","silver_sentinel","EMERALD_ORE","SILVER_ORE"],
+    aspect_life:["ruby_sentinel","gold_sentinel","RUBY_ORE","GOLD"],
+    aspect_magic:["sapphire_sentinel","silver_sentinel","SAPPHIRE_ORE","SILVER_ORE"],
+    aspect_cataclysm:["amethyst_sentinel","gold_sentinel","RUBY_ORE","GOLD"]
   };
   const loot={
     den:[["raw_beef",3,6],["hide",2,5],["gold_nugget",4,8],["crystal_shard",2,5],["bronze_ingot",2,4]],
@@ -84,13 +99,20 @@ globalThis.QuimiCraftExpeditions=(()=>{
       }
       const y=site.y;
       if(site.kind==="den"){
+        const denPalette={
+          ice:[B.SLATE,B.FROSTED_SOIL,B.ICE,B.GLACIAL_MORAINE],
+          fire:[B.BASALT,B.OBSIDIAN,B.GLOWSTONE,B.SCORIA],
+          nature:[B.FIELDSTONE,B.MOSS,B.REDWOOD_LEAF,B.FOREST_LOAM],
+          time:[B.OCHRE_STONE,B.LIMESTONE,B.BRONZE_BLOCK,B.SILICA_SAND],
+          earth:[B.DEEPSTONE,B.BASALT,B.AMETHYST,B.GNEISS]
+        };
         const variant={
-          ice_dragon:[B.SLATE,B.FROSTED_SOIL,B.ICE,B.GLACIAL_MORAINE],
-          fire_dragon:[B.BASALT,B.OBSIDIAN,B.GLOWSTONE,B.SCORIA],
-          nature_dragon:[B.FIELDSTONE,B.MOSS,B.REDWOOD_LEAF,B.FOREST_LOAM],
-          time_dragon:[B.OCHRE_STONE,B.LIMESTONE,B.BRONZE_BLOCK,B.SILICA_SAND],
-          earth_dragon:[B.DEEPSTONE,B.BASALT,B.AMETHYST,B.GNEISS]
-        }[site.dragon];
+          ice_dragon:denPalette.ice,elemental_lizard_ice:denPalette.ice,azure_drake:denPalette.ice,aspect_magic:denPalette.ice,elemental_lizard_storm:denPalette.ice,
+          fire_dragon:denPalette.fire,elemental_lizard_fire:denPalette.fire,ruby_drake:denPalette.fire,obsidian_drake:denPalette.fire,aspect_life:denPalette.fire,aspect_cataclysm:denPalette.fire,
+          nature_dragon:denPalette.nature,emerald_drake:denPalette.nature,aspect_dream:denPalette.nature,
+          time_dragon:denPalette.time,time_lost_protodrake:denPalette.time,bronze_drake:denPalette.time,aspect_time:denPalette.time,
+          earth_dragon:denPalette.earth,elemental_lizard_earth:denPalette.earth
+        }[site.dragon]??denPalette.fire;
         const [rock,floor,decor,trim]=variant;
         for(let u=-12;u<=12;u++)for(let v=-10;v<=11;v++){
           const d=(u/12.7)**2+((v-1)/11.2)**2;
@@ -110,7 +132,7 @@ globalThis.QuimiCraftExpeditions=(()=>{
           put(side*6,y+1,-3,B.SPECTRAL);
         }
         chest(-4,y+1,4,0);chest(4,y+1,4,1);
-        const [gemGuard,metalGuard,gemOre,metalOre]=denGuards[site.dragon];
+        const [gemGuard,metalGuard,gemOre,metalOre]=denGuards[site.dragon]??denGuards.fire_dragon;
         put(-6,y+3,3,B[gemOre]);put(6,y+3,3,B[metalOre]);
         actor(0,y+1,1,site.dragon);
         actor(-5,y+1,-2,gemGuard);actor(5,y+1,1,metalGuard);
@@ -157,37 +179,21 @@ globalThis.QuimiCraftExpeditions=(()=>{
         chest(-3,y+2,6,0);chest(3,y+2,6,1);
         actor(-3,y+1,-1,"lab_sentinel");actor(3,y+1,4,"lab_sentinel");
       }else{
-        for(let u=-17;u<=17;u++)for(let v=-17;v<=17;v++){
-          if(Math.hypot(u,v)>17.7)continue;
+        const grove=QuimiCraftGrove;
+        grove.build(B,site,coordinates,(u,v,level,material)=>{
           const [x,z]=coordinates(site,u,v),base=terrain(x,z);
-          for(let a=Math.min(y-2,base);a<=Math.max(y+5,base+4);a++)put(u,a,v,a===y?(
-            Math.abs(u)<2||Math.abs(v)<2||Math.abs(Math.hypot(u,v)-8)<1.1?B.COBBLE_PATH:B.MOSS
-          ):a<y?B.DIRT:B.AIR);
-        }
-        for(const [u,v] of [[-10,-9],[10,8],[-10,9],[10,-8]]){
-          box(u-3,y+1,v-3,u+3,y+2,v+3,B.REDWOOD_LOG);
-          box(u-2,y+3,v-2,u+2,y+5,v+2,B.WOOD);
-          box(u-1,y+3,v-1,u+1,y+5,v+1,B.AIR);
-          box(u-1,y+3,v-3,u+1,y+5,v-2,B.AIR);
-          for(let a=0;a<4;a++)box(u-4+a,y+6+a,v-4+a,u+4-a,y+6+a,v+4-a,a%2?B.BIRCH_LEAF:B.REDWOOD_LEAF);
-          box(u-1,y+1,v-5,u+1,y+1,v-4,B.PLANK);box(u-1,y+2,v-4,u+1,y+2,v-3,B.PLANK);
-          put(u-2,y+3,v-2,B.SPECTRAL);
-        }
-        box(-1,y+1,-1,1,y+11,1,B.REDWOOD_LOG);
-        for(let a=8;a<=14;a++){
-          const r=a<12?5:15-a;
-          for(let u=-r;u<=r;u++)for(let v=-r;v<=r;v++)if(u*u+v*v<(r+.5)**2&&Math.abs(u)+Math.abs(v)>1)put(u,y+a,v,a%2?B.BIRCH_LEAF:B.REDWOOD_LEAF);
-        }
-        for(const [u,v] of [[-3,0],[3,0],[0,-3],[0,3]]){
-          put(u,y+1,v,B.FIELDSTONE);put(u,y+2,v,B.SPECTRAL);
-        }
-        chest(-3,y+1,-3,0);
-        actor(-6,y+1,-3,"living_tree");actor(5,y+1,1,"living_tree_warden");actor(3,y+1,-7,"living_tree_elder");
+          for(let a=Math.min(level-2,base);a<=Math.max(level+5,base+4);a++)put(u,a,v,a===level?material:a<level?B.DIRT:B.AIR);
+        },(u1,a1,v1,u2,a2,v2,id)=>box(u1,y+a1,v1,u2,y+a2,v2,id));
+        for(const [i,[u,v]] of grove.loot.entries())chest(u,y+1,v,i);
+        actor(-6,y+1,4,"living_tree");actor(7,y+1,1,"living_tree_warden");actor(0,y+1,-16,"living_tree_elder");
         const home=biome(site.x,site.z),trees=["living_tree_pine","living_tree_cherry","living_tree_willow","living_tree_mangrove"];
         const preferred={taiga:0,"floresta de sequoias":0,"bosque de cerejeiras":1,"bosque lilás":1,"selva tropical":2,manguezal:3,"delta salobro":3};
         const choice=preferred[home]??Math.floor(rand(site.x,site.z,141)*trees.length);
-        actor(-7,y+1,1,trees[choice]);
-        actor(0,y+1,7,trees[(choice+1+Math.floor(rand(site.x,site.z,142)*3))%trees.length]);
+        actor(-16,y+1,2,trees[choice]);
+        actor(6,y+1,15,trees[(choice+1+Math.floor(rand(site.x,site.z,142)*3))%trees.length]);
+        for(const [type,u,v] of grove.actors.slice(1).filter(([type])=>
+          ["living_tree_sapling","living_tree_bloom","living_tree_fig","living_tree_amber"].includes(type)))actor(u,y+1,v,type);
+        actor(-4,y+1,25,"living_tree_warden");actor(17,y+1,18,"living_tree_mangrove");
       }
       if(site.kind==="den"||site.kind==="temple"){
         for(const [k,column] of columns){
@@ -209,7 +215,7 @@ globalThis.QuimiCraftExpeditions=(()=>{
         const x=gx*spacing+ox+Math.floor(rand(gx,gz,50+i*11+attempt*131)*19)-9;
         const z=gz*spacing+oz+Math.floor(rand(gx,gz,51+i*11+attempt*131)*19)-9;
         const biomeName=biome(x,z),h=terrain(x,z);
-        if(h<water+3||h+16>=maxY||regions&&!regions.includes(biomeName))continue;
+        if(h<water+3||h+(kind==="grove"?24:16)>=maxY||regions&&!regions.includes(biomeName))continue;
         if([[0,0],[-reach,0],[reach,0],[0,-reach],[0,reach],[-reach,-reach],[reach,reach],[-reach,reach],[reach,-reach]]
           .some(([u,v])=>blocked(x+u,z+v)||kind!=="lab"&&Math.abs(terrain(x+u,z+v)-h)>(kind==="den"?8:kind==="grove"?7:5)))continue;
         const y=kind==="temple"||kind==="grove"?h+1:h;
@@ -275,15 +281,46 @@ globalThis.QuimiCraftExpeditions=(()=>{
       }
       return sites;
     }
+    function destination(x,z,kind,indices){
+      const index=kinds.indexOf(kind);
+      if(index<0)return null;
+      const ix=Math.floor(x/spacing),iz=Math.floor(z/spacing);
+      let winner=null,distance=Infinity;
+      const cells=indices?[indices]:Array.from({length:81},(_,i)=>[ix+i%9-4,iz+Math.floor(i/9)-4]);
+      for(const [gx,gz] of cells){
+        const mix=Math.floor(rand(gx,gz,8)*kinds.length);
+        const site=candidate(gx,gz,kind,index,slots[(index+mix)%kinds.length]);
+        if(!site)continue;
+        const gap=Math.hypot(x-site.x,z-site.z);
+        if(gap<distance){winner=site;distance=gap}
+      }
+      if(!winner)return null;
+      const v={den:-14,temple:-13,lab:-winner.tunnel,grove:27}[kind];
+      const [px,pz]=coordinates(winner,0,v);
+      const y=kind==="lab"?winner.mouthY:kind==="grove"?winner.y:terrain(px,pz);
+      return {...winner,entry:{x:px+.5,y:y+1,z:pz+.5}};
+    }
     function treasureAt(x,y,z){
       const k=x+"|"+y+"|"+z;
-      for(const site of nearby(x,z,table.lab.reach+2)){
+      for(const site of nearby(x,z,table.grove.reach+7)){
         const treasure=site.treasures.get(k);
         if(treasure)return treasure;
       }
       return null;
     }
-    return {column,nearby,treasureAt};
+    function intersects({left,right,front,rear}){
+      const reach=Math.max(...kinds.map(kind=>table[kind].reach));
+      for(let gx=Math.floor((left-reach)/spacing);gx<=Math.floor((right+reach)/spacing);gx++){
+        for(let gz=Math.floor((front-reach)/spacing);gz<=Math.floor((rear+reach)/spacing);gz++){
+          if(region(gx,gz).some(({x,z,kind})=>{
+            const r=table[kind].reach;
+            return x+r>=left&&x-r<=right&&z+r>=front&&z-r<=rear;
+          }))return true;
+        }
+      }
+      return false;
+    }
+    return {column,nearby,destination,treasureAt,intersects};
   }
   return {register,create,names};
 })();

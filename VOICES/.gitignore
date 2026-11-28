@@ -1,5 +1,7 @@
-.qa/
-node_modules/
-dist/
-npm-debug.log*
+.DS_Store
+Thumbs.db
 __pycache__/
+.qa/
+dist/
+node_modules/
+npm-debug.log*

@@ -1,87 +1,577 @@
 /* Registered module: onboarding */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("onboarding", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function onboarding(){
-'use strict';const V=window.V,O=V.GuideOverlay,T=V.Tutorials,W=V.World,N=V.ObjectiveGuide,H=V.Homestead,esc=V.escape,data=V.OnboardingData,HOME='interior-player-cottage',copy=x=>JSON.parse(JSON.stringify(x));
-const G=V.Onboarding={active:false,suspended:false,bound:null,tick:0,preparing:false,
- record(){if(!V.state)return null;let r=V.state.onboarding;if(!r||r.version!==1)r=V.state.onboarding={version:1,status:'pending',step:0,ack:false,practice:{},skippedSteps:[],origin:null};if(!r.practice)r.practice={};r.step=Math.max(0,Math.min(data.steps.length-1,Number(r.step)||0));r.skippedSteps||=[];return r;},
- step(){return data.steps[this.record()?.step||0];},
- grantHome(){const h=H.ensure();if(!h||h.starterHomeGranted)return false;if(!h.owned.includes(HOME))h.owned.push(HOME);if(!h.active)h.active=HOME;h.placed[HOME]||=[];h.furniture.plant=(h.furniture.plant||0)+1;h.starterHomeGranted=true;h.starterHome=HOME;return true;},
- start(replay=false){if(V.ProfessorStudio?.active)return false;if(!V.state||V.Game.screen!=='game'||V.Game.mode!=='explore'){V.UI.toast('Abra a introdução quando estiver explorando a cidade.');return false;}
- if(T.active){V.UI.toast('Guarde o treino atual antes de abrir a introdução.');return false;}const r=this.record();if(this.active&&!replay)return true;
- if(replay){r.step=0;r.ack=false;r.practice={};r.skippedSteps=[];r.origin=null;}if(r.status==='complete'&&!replay)return this.help();
- if(!r.origin)r.origin={map:W.current.id,x:V.Player.data.x,y:V.Player.data.y,dir:V.Player.data.dir};r.status='running';this.active=true;this.suspended=false;this.bound=V.state;W.transition=0;this.prepare(true);this.render();V.Save.save();return true;},
- recover(){this.prepare(true);this.render();},
- prepare(force=false){const r=this.record(),s=this.step();if(!r||this.preparing)return;this.preparing=true;try{
- if(!force&&r.ack)return;V.Input.clear();
- switch(s.prepare){
- case'close':if(V.modal)V.UI.close();break;
- case'quest':this.quest();break;
- case'word':this.conversation(false);if(V.Dialogue.index!==0){V.Dialogue.index=0;V.Dialogue.show();}V.Dialogue.typing=V.Dialogue.currentText.length;V.Dialogue.rendered=V.Dialogue.currentText.length;V.Dialogue.addWords();V.Dialogue.wordsAdded=true;V.$$('#dialogue-en .word').filter(b=>b.textContent.toLowerCase()==='record').forEach(b=>b.dataset.guideWord='record');break;
- case'conversation':if(!V.Dialogue.active)this.conversation(false);break;
- case'homes':V.CityMenus.homeSearch='';V.CityMenus.homes('owned');break;
- case'arrange':H.organize(HOME);break;
- case'purchase':this.purchase();break;
- case'pause':V.Game.pause();break;
- }
- if(s.id==='move')this.moveStart={map:W.current.id,x:V.Player.data.x,y:V.Player.data.y,moved:V.Player.moved||0};
- if(s.id==='translation'&&!V.Dialogue.active)this.conversation(false);
- if(force&&s.id==='place-furniture'){H.organize(HOME);const select=V.$('#home-place-item');if(select&&r.practice.furnitureItem){select.value=r.practice.furnitureItem;select.dispatchEvent(new Event('change',{bubbles:true}));}}
- if(['track','route','interact'].includes(s.id))this.note();
- if(s.id==='interact'){r.practice.tracked=true;V.Progress.ensure().routeEnabled=true;if(V.modal)V.UI.close();N.invalidate();}
- if(s.id==='sleep'&&W.current.id!==HOME){if(V.modal)V.UI.close();V.FastTravel.travel(HOME);}
- }finally{this.preparing=false;}},
- ack(name,detail){if(!this.active||this.suspended||T.active||this.bound!==V.state)return false;const r=this.record(),s=this.step();if(s.event!==name||r.ack)return false;if(name==='word'&&String(detail).toLowerCase()!=='record')return false;r.ack=true;V.Input.clear();V.Save.save();this.render();return true;},
- next(skipped=false){const r=this.record(),s=this.step();if(!r||!this.active||s.event&&!r.ack&&!skipped)return false;if(skipped&&!r.skippedSteps.includes(s.id))r.skippedSteps.push(s.id);if(s.finish||r.step>=data.steps.length-1)return this.finish(false);r.step++;r.ack=false;this.prepare();V.Save.save();this.render();return true;},
- finish(skipped=false){const r=this.record();if(!r)return;this.active=false;this.suspended=false;O.hide('main');r.status=skipped?'skipped':'complete';r.completedAt=new Date().toISOString();this.removeNotes();
- if(T.active===r.waitingLesson){T.pause();}r.waitingLesson=null;
- if(V.Dialogue.active&&V.Dialogue.onboarding){V.Dialogue.active=false;V.Dialogue.done=null;V.Dialogue.onboarding=false;V.$('#dialogue-root').innerHTML='';}
- if(H.ensure()?.sleep)H.wake();if(V.modal)V.UI.close();const origin=r.origin;if(r.practice.homeVisited&&origin&&W.maps[origin.map])W.load(origin.map,{x:origin.x,y:origin.y,dir:origin.dir});r.practice.tracked=false;N.invalidate();V.Game.updateHUD();V.Save.save();V.UI.toast(skipped?'Introdução guardada. Use ? para continuar ou rever uma orientação.':'Introdução concluída. Sua casa já está disponível. Confira seu próximo objetivo.');V.$('#world-canvas')?.focus();},
- render(){if(!this.active||this.suspended||T.active||V.ProfessorStudio?.active||V.Game.screen!=='game'||this.bound!==V.state){O.hide('main');return;}const r=this.record(),s=this.step();
- if(this.syncAction())return;const reading=s.id==='interact'&&V.$('#guide-note-close'),waking=s.id==='sleep'&&V.$('#home-wake');O.show('main',{...s,key:'main:'+r.step,counter:s.group+' · '+(r.step+1)+'/'+data.steps.length,index:r.step,total:data.steps.length,ack:r.ack,target:reading?'#guide-note-close':waking?'#home-wake':s.id==='place-furniture'&&V.$('#home-arrange-confirm')&&!V.$('#home-arrange-confirm').disabled?'#home-arrange-confirm':s.target,instruction:reading?'Leia o bilhete de Mara e clique em Terminei de ler.':waking?'Você está descansando. Clique em Acordar de manhã para concluir esta experiência.':s.instruction,point:s.point&&!reading&&!waking?()=>this.point(s.point):null,action:s.action?()=>this.action(s.action):null,next:()=>this.next(),skip:()=>this.finish(true),skipStep:s.event?()=>this.next(true):null,recover:()=>this.recover()});},
- syncAction(){const r=this.record(),s=this.step();if(r.ack)return false;const h=H.ensure(),placed=(h?.placed[HOME]||[]).find(p=>p.item===(r.practice.furnitureItem||'plant'));if(s.id==='furniture'&&H.organizeId===HOME&&V.$('#home-floorplan'))return this.ack('arrange');if(s.id==='select-furniture'&&placed&&!(h.furniture[r.practice.furnitureItem||'plant']>0)){r.practice.furnitureItem=placed.item;return this.ack('select-furniture');}if(s.id==='place-furniture'&&placed)return this.ack('place-furniture');return false;},
- point(kind){const o=kind==='bed'?W.current.objects.find(H.isBed):this.noteObject();if(!o)return null;const c=V.$('#world-canvas'),q=c?.getBoundingClientRect();if(!q?.width)return null;const sx=q.width/c.width,sy=q.height/c.height,r={x:q.left+(o.x-W.camera.x-25)*sx,y:q.top+(o.y-W.camera.y-(kind==='bed'?100:55))*sy,w:(kind==='bed'?115:50)*sx,h:(kind==='bed'?110:68)*sy};const top=Math.max(q.top,0),bottom=Math.min(q.bottom,window.innerHeight),left=Math.max(q.left,0),right=Math.min(q.right,window.innerWidth);if(r.x+r.w>left&&r.x<right&&r.y+r.h>top&&r.y<bottom){const x=Math.max(left,r.x),y=Math.max(top,r.y);return{x,y,w:Math.min(right,r.x+r.w)-x,h:Math.min(bottom,r.y+r.h)-y,clip:{left,top,right,bottom}};}const tx=q.left+(o.x-W.camera.x)*sx,ty=q.top+(o.y-W.camera.y)*sy,cx=(left+right)/2,cy=(top+bottom)/2,a=Math.atan2(ty-cy,tx-cx),label=(Math.abs(Math.sin(a))>Math.abs(Math.cos(a))?(Math.sin(a)<0?'↑':'↓'):(Math.cos(a)<0?'←':'→'))+(kind==='bed'?' Cama':' Bilhete');return{x:V.clamp(tx,left+24,right-70),y:V.clamp(ty,top+24,bottom-70),w:46,h:40,label,clip:{left,top,right,bottom}};},
- noteObject(){return W.current?.objects.find(o=>o.type==='onboarding-note');},
- note(){let o=this.noteObject();if(o)return o;const p=V.Player.data,m=W.current,r=this.record();if(!p||!m)return null;let at=r.practice.note?.map===m.id?r.practice.note:null;
- if(!at||V.Living.blocked(m,at.x,at.y,12)){at=null;for(const d of [100,144,192])for(const[dx,dy]of [[1,0],[-1,0],[0,-1],[0,1]]){const n={x:p.x+dx*d,y:p.y+dy*d};if(!at&&!V.Living.blocked(m,n.x,n.y,16)&&!m.objects.some(o=>V.dist(o,n)<60)&&N.calculate(m,p,{...n,interactionRange:82},false).length)at=n;}at||=V.Rooms.safe(m,{x:p.x+120,y:p.y},12);}
- if(!at)return null;r.practice.note={map:m.id,x:at.x,y:at.y};o={id:'onboarding-note',type:'onboarding-note',x:at.x,y:at.y,label:'Ler bilhete de acolhida · treino',interactionRange:82};m.objects.push(o);N.invalidate();return o;},
- removeNotes(){for(const m of Object.values(W.maps))m.objects=m.objects.filter(o=>o.type!=='onboarding-note');},
- quest(){const p=this.record().practice;V.UI.modal('Acolhida no museu','ENSAIO DE UMA MISSÃO',`<span class="guided-demo-label">TREINO · NÃO ALTERA A CAMPANHA</span><h3>Um bilhete para quem chegou</h3><p>Mara deixou um bilhete de acolhida. Leia a mensagem e converse com PIX antes de confirmar a entrega.</p><ol class="guided-demo-steps"><li>${p.read?'✓':'○'} Ler o bilhete marcado no museu.</li><li>${p.conversed?'✓':'○'} Ouvir a conversa completa de PIX.</li></ol><p class="guided-quest-progress">${p.delivered?'✓ Acolhida concluída':p.accepted?'Pedido aceito · '+(Number(!!p.read)+Number(!!p.conversed))+'/2 ações':'Pedido ainda não aceito'}</p>`,`${!p.accepted?'<button id="guide-demo-accept" class="primary">Aceitar pedido de treino</button>':'<button id="guide-demo-track" class="secondary">Rastrear bilhete</button>'}<button id="guide-demo-deliver" class="primary" ${p.read&&p.conversed&&!p.delivered?'':'disabled'}>Concluir acolhida</button>`);
- V.$('#guide-demo-accept')?.addEventListener('click',()=>{p.accepted=true;this.quest();this.ack('accept');});V.$('#guide-demo-track')?.addEventListener('click',()=>{p.tracked=true;this.note();V.Progress.ensure().routeEnabled=true;V.UI.close();N.invalidate();N.update(.01);this.ack('track');});V.$('#guide-demo-deliver')?.addEventListener('click',()=>{if(!p.read||!p.conversed||p.delivered)return;p.delivered=true;p.tracked=false;this.quest();N.invalidate();this.ack('deliver');});},
- inspect(){const p=this.record().practice;p.read=true;V.UI.modal('Bilhete de Mara','ACOLHIDA · DOCUMENTO FICCIONAL DE TREINO',`<span class="guided-demo-label">LEITURA DE TREINO</span><h3>Uma cidade se conhece ouvindo suas pessoas.</h3><p>Bem-vindo ao Museu das Vozes. Nossa equipe está conferindo os nomes que desapareceram das fichas. PIX vai explicar como consultar palavras enquanto você lê.</p><p>Antes de começar a investigação, escute a orientação dele. Sua Casa das Sementes fica no Residencial Boa Vizinhança.</p><p><strong>Mara · equipe do museu.</strong></p>`,'<button id="guide-note-close" class="primary">Terminei de ler</button>');V.$('#guide-note-close').onclick=()=>{V.UI.close();this.ack('inspect');};V.Save.save();},
- conversation(ack=true){if(!V.Dialogue.active||!V.Dialogue.onboarding){V.Dialogue.start([{speaker:'pix',en:'Hello! Please read the record.',pt:'Olá! Por favor, leia o registro.'},{speaker:'pix',en:'Your house is in the residential district. Listen to the people before you decide.',pt:'Sua casa fica no bairro residencial. Escute as pessoas antes de decidir.'}],()=>{V.Dialogue.onboarding=false;this.record().practice.conversed=true;this.ack('conversation-finished');});V.Dialogue.onboarding=true;}if(ack)this.ack('talk');},
- purchase(){const r=this.record().practice,offer=H.data.offers.find(o=>o.id==='interior-player-loft'),budget=offer.price;r.purchase||={balance:budget,bought:false};const p=r.purchase;V.UI.modal('Comprar uma casa · ensaio','CONHECER → CONFERIR SALDO → COMPRAR',`<span class="guided-demo-label">SIMULAÇÃO · CARTEIRA REAL PRESERVADA</span><div class="guided-purchase"><article><h3>${esc(offer.name)}</h3><p>${esc(offer.description)}</p><p>Preço: <strong>${offer.price} moedas</strong></p></article><article><h3>Carteira de treino</h3><p><strong>${p.balance} moedas</strong></p><p>${p.bought?'✓ Escritura de treino registrada. O valor saiu da carteira simulada.':'Confira o preço antes de confirmar. A sua carteira da aventura não será usada aqui.'}</p></article></div>`,`<button id="guide-demo-buy" class="primary" ${p.bought?'disabled':''}>${p.bought?'✓ Compra de treino concluída':'Comprar no treino · '+offer.price}</button>`);V.$('#guide-demo-buy').onclick=()=>{if(p.bought||p.balance<offer.price)return;p.balance-=offer.price;p.bought=true;this.purchase();this.ack('purchase-practice');};},
- action(id){if(id==='talk')return this.conversation();if(id==='arrange'){if(V.modal)V.UI.close();H.organize(HOME);return;}if(id==='challenge'){const r=this.record();r.waitingLesson='culture:loom';this.suspended=true;O.hide('main');T.open('culture:loom',!!T.record('culture:loom')?.completed);V.Save.save();}},
- update(dt){if(this.bound!==V.state){this.active=false;O.hide('main');return;}if(!this.active||this.suspended||T.active)return;const r=this.record(),s=this.step();if(s.id==='move'&&!r.ack&&this.moveStart&&W.current.id===this.moveStart.map&&((V.Player.moved||0)-this.moveStart.moved>=60||V.dist(V.Player.data,this.moveStart)>=65))this.ack('move');this.tick+=dt;if(this.tick>.25){this.tick=0;this.render();}},
- paused(){const s=this.step();return this.active&&!this.suspended&&!T.active&&!V.ProfessorStudio?.active&&(!s.world||this.record().ack)&&!V.Dialogue.active;},
- help(query=''){if(!V.state)return;this.suspended=this.active;O.hide();const current=N.objective();V.UI.modal('Como jogar VOICES','PIX · GUIA DA AVENTURA',`<section class="guided-help-summary"><small>SEU PRÓXIMO PASSO</small><h3>${esc(current?.label||'Explore e converse com a equipe do museu.')}</h3><p>${esc(current?.map&&W.maps[current.map]?W.maps[current.map].name:'New Harmony')}</p><div class="row"><button id="guide-help-track" class="primary">Mostrar caminho</button><button id="guide-help-missions" class="secondary">Abrir missões</button><button id="guide-help-resume" class="secondary">${this.record().status==='running'||this.record().status==='skipped'?'Continuar introdução':'Rever introdução guiada'}</button></div></section><label class="field guided-help-filters">Encontrar orientação<input id="guide-help-search" type="search" placeholder="Missão, tradução, casa, corrida…" value="${esc(query)}"></label><h3>Aprender a explorar</h3><div id="guide-help-topics" class="guided-help-grid"></div><h3>Treinos dos desafios</h3><p>Escolha um treino para experimentar os controles. Sua partida fica guardada separadamente.</p><div id="guide-help-lessons" class="guided-help-grid"></div>`,'<button id="guide-help-close" class="primary">Voltar ao jogo</button>',true);
- const filter=()=>{const q=V.Interface.normalize(V.$('#guide-help-search').value);V.$('#guide-help-topics').innerHTML=data.topics.filter(t=>V.Interface.normalize(t.title+' '+t.text).includes(q)).map(t=>`<article><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p></article>`).join('')||'<p>Nenhuma orientação com esse termo.</p>';V.$('#guide-help-lessons').innerHTML=V.PlaygroundData.games.filter(g=>V.Interface.normalize(g.title+' '+g.goal).includes(q)).map(g=>['playground:'+g.id,{steps:V.PlaygroundData.guides[g.id]}]).map(([key,d])=>`<article><small>${T.record(key)?.completed?'✓ TREINO CONCLUÍDO':T.record(key)?.running?'◉ TREINO GUARDADO':'TREINO DISPONÍVEL'}</small><h3>${esc(V.Playground.game(key.split(':')[1])?.title||this.lessonName(key))}</h3><p>${d.steps.length} pequenas etapas · sem recompensas de treino</p><button data-guide-lesson="${esc(key)}" class="secondary">${T.record(key)?.running?'Continuar treino':'Praticar controles'}</button></article>`).join('')||'<p>Nenhum treino com esse termo.</p>';V.$$('[data-guide-lesson]').forEach(b=>b.onclick=()=>{this.suspended=this.active;this.helpLessonKey=b.dataset.guideLesson;if(this.active)this.record().waitingLesson=b.dataset.guideLesson;V.Playground.train(b.dataset.guideLesson.split(':')[1],{returnHelp:true,restart:true});});};filter();V.$('#guide-help-search').oninput=filter;
- V.$('#guide-help-close').onclick=()=>{V.UI.close();this.suspended=false;if(this.active)this.recover();};V.$('#guide-help-track').onclick=()=>{V.Progress.ensure().routeEnabled=true;N.invalidate();V.UI.close();this.suspended=false;this.render();};V.$('#guide-help-missions').onclick=()=>{this.suspended=false;V.CityMenus.board();};V.$('#guide-help-resume').onclick=()=>{V.UI.close();this.suspended=false;this.active=false;this.start(this.record().status==='complete');};V.UI.onClose=()=>{this.suspended=false;this.render();};},
- lessonName(key){const[family,id]=key.split(':');if(family==='culture')return V.CultureChallenges.game(id)?.title||id;if(family==='arcade')return V.LearningArcade.games.find(g=>g.id===id)?.title||id;if(family==='roots')return V.AncestralActivities.game(id)?.title||id;const names={historio:'Historiógrafo Ancestral','classic:timeline':'Cronologia dos registros','classic:evidence':'Investigação de autoria','classic:bias':'Manchetes e contexto','classic:city':'Planejamento comunitário','classic:runner':'Palavras em inglês','classic:beat':'Ritmo e sinais','classic:wires':'Mesa de som','workbench:labels':'Etiquetas da feira','workbench:sequence':'Sequência de investigação','workbench:headlines':'Redação de notícias','workbench:access':'Planejamento de acesso','workbench:experiment':'Registro do experimento','workbench:catalog':'Catalogação de registros','quiz:language':'Questões de inglês','quiz:history':'Questões de história','fishing:shore':'Pesca'};return names[key]||T.definitions[key]?.steps[0]?.title||id||key;},
- toolbar(){const nav=V.$('.game-toolbar .tools');if(!nav)return;let b=V.$('#help-button');if(!b){b=document.createElement('button');b.id='help-button';b.className='icon-menu-button';b.innerHTML='<span aria-hidden="true">?</span>';nav.appendChild(b);}b.title='Como jogar · F1';b.setAttribute('aria-label','Como jogar: tutorial e ajuda');b.onclick=()=>this.help();}
-};
-// These hooks observe successful production actions rather than completing them.
-function observe(obj,key,event,test){const original=obj[key].bind(obj);obj[key]=function(...args){const result=original(...args);if(!test||test(result,args))G.ack(event,args[0]);return result;};}
-observe(V.CityMenus,'board','missions');observe(V.CityMenus,'challenges','challenges');observe(V.CityMenus,'homes','homes');observe(V.Game,'glossary','pix');observe(V.Living,'journal','notebook');observe(V.WorldAtlas,'open','atlas');observe(V.Quests,'inventory','backpack');observe(V.Dialogue,'toggle','translation');observe(V.PixVocabulary,'collect','word');observe(H,'wake','wake',result=>!!result);
-V.Events.on('home-editor-opened',e=>{if(e.home===HOME)G.ack('arrange');});V.Events.on('home-furniture-committed',e=>{if(e.home===HOME&&e.placed)G.ack('place-furniture');});
-const objective=N.objective.bind(N);N.objective=function(){const r=G.active&&G.record(),o=r?.practice?.tracked&&!r.practice.delivered&&G.noteObject();if(G.active&&!G.suspended){if(G.step().id==='sleep'){const bed=W.current.objects.find(H.isBed);return bed?{map:W.current.id,object:bed,key:'onboarding-bed',label:'Aproxime-se da cama · dormir e acordar'}:null;}return o&&['track','route','interact'].includes(G.step().id)?{map:W.current.id,object:o,key:'onboarding-note',label:'Ler o bilhete de acolhida · treino'}:null;}return objective();};
-V.Hooks.around(V.Game, 'interact', 'onboarding:interact:1', nextHook => function(o){if(o?.type==='onboarding-note'&&G.active&&!V.modal&&!V.Dialogue.active)return G.inspect();return nextHook(o);});
-const nearest=V.Player.nearest.bind(V.Player);V.Player.nearest=function(...args){if(G.active&&!G.suspended&&!V.modal&&['interact','sleep'].includes(G.step().id)){const o=G.step().id==='sleep'?W.current.objects.find(H.isBed):G.noteObject();return o&&V.dist(this.data,o)<(o.interactionRange||82)&&N.interactionClear(W.current,this.data,o)?o:null;}return nearest(...args);};
-const draw=V.Cozy.drawObject.bind(V.Cozy);V.Cozy.drawObject=function(ctx,o,cam,t){if(o.type!=='onboarding-note')return draw(ctx,o,cam,t);V.Assets.prop(ctx,9,o.x-cam.x-22,o.y-cam.y-38,44);V.Living.marker(ctx,o.x-cam.x,o.y-cam.y-58,'E','#f5ce7e');};
-const load=W.load.bind(W);W.load=function(...args){const result=load(...args);if(G.active){W.transition=0;if(['route','interact'].includes(G.step().id))G.note();if(W.current.id===HOME){G.record().practice.homeVisited=true;G.ack('visit-home');}}return result;};
-const create=V.Game.newState.bind(V.Game);V.Game.newState=function(...args){G.active=false;G.suspended=false;O.hide();const result=create(...args);G.record();G.grantHome();return result;};
-const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){G.active=false;G.suspended=false;O.hide();G.bound=V.state;G.grantHome();const result=start(...args);H.applyFurniture(HOME);const r=G.record(),state=V.state;setTimeout(()=>{if(V.state!==state||V.Game.screen!=='game'||V.Game.mode!=='explore'||H.ensure()?.sleep||V.modal)return;if(r.waitingLesson&&T.record(r.waitingLesson)?.running){G.active=true;G.suspended=true;T.open(r.waitingLesson);return;}if(['pending','running'].includes(r.status))G.start();},100);G.toolbar();return result;};
-V.Game.intro=()=>['pending','running'].includes(G.record()?.status)?G.start():false;
-V.Hooks.around(V.Game, 'update', 'onboarding:update:1', nextHook => function(dt){if(!G.paused())nextHook(dt);else if(V.Dialogue.active)V.Dialogue.update(dt);G.update(dt);});
-const key=V.Game.onKey.bind(V.Game);V.Game.onKey=function(k,e={}){if(k==='f1'&&this.screen==='game'){e.preventDefault?.();G.help();return;}if(G.active&&!G.suspended&&!T.active&&V.Dialogue.onboarding&&['enter','e',' '].includes(k)&&['word','translation'].includes(G.step().id)&&!G.record().ack){V.Input.pressed.delete(k);e.preventDefault?.();return;}return key(k,e);};
-const dialogueNext=V.Dialogue.next.bind(V.Dialogue);V.Dialogue.next=function(...args){if(G.active&&!G.suspended&&this.onboarding&&['word','translation'].includes(G.step().id)&&!G.record().ack)return;return dialogueNext(...args);};
-const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){G.active=false;G.suspended=false;O.hide();return title(...args);};
-const pause=V.Game.pause.bind(V.Game);V.Game.pause=function(...args){const result=pause(...args),host=V.$('.modal-body');if(host&&!V.$('#pause-guide')){const b=document.createElement('button');b.id='pause-guide';b.className='secondary';b.textContent='Como jogar · tutorial e ajuda';b.onclick=()=>G.help();host.appendChild(b);}return result;};
-const init=V.Game.init.bind(V.Game);V.Game.init=async function(...args){const result=await init(...args);G.toolbar();return result;};
-document.addEventListener('change',e=>{if(e.target?.id==='home-place-item'&&e.target.value){if(G.active)G.record().practice.furnitureItem=e.target.value;G.ack('select-furniture');}});
-})();
-
+})(function() {
+  (function onboarding() {
+    "use strict";
+    const V = window.V, O = V.GuideOverlay, T = V.Tutorials, W = V.World, N = V.ObjectiveGuide, H = V.Homestead, esc = V.escape, data = V.OnboardingData, HOME = "interior-player-cottage", copy = (x) => JSON.parse(JSON.stringify(x));
+    const G = V.Onboarding = {
+      active: false,
+      suspended: false,
+      bound: null,
+      tick: 0,
+      preparing: false,
+      record() {
+        if (!V.state) return null;
+        let r = V.state.onboarding;
+        if (!r || r.version !== 1) r = V.state.onboarding = { version: 1, status: "pending", step: 0, ack: false, practice: {}, skippedSteps: [], origin: null };
+        if (!r.practice) r.practice = {};
+        r.step = Math.max(0, Math.min(data.steps.length - 1, Number(r.step) || 0));
+        r.skippedSteps ||= [];
+        return r;
+      },
+      step() {
+        return data.steps[this.record()?.step || 0];
+      },
+      grantHome() {
+        const h = H.ensure();
+        if (!h || h.starterHomeGranted) return false;
+        if (!h.owned.includes(HOME)) h.owned.push(HOME);
+        if (!h.active) h.active = HOME;
+        h.placed[HOME] ||= [];
+        h.furniture.plant = (h.furniture.plant || 0) + 1;
+        h.starterHomeGranted = true;
+        h.starterHome = HOME;
+        return true;
+      },
+      start(replay = false) {
+        if (V.ProfessorStudio?.active) return false;
+        if (!V.state || V.Game.screen !== "game" || V.Game.mode !== "explore") {
+          V.UI.toast("Abra a introdu\xE7\xE3o quando estiver explorando a cidade.");
+          return false;
+        }
+        if (T.active) {
+          V.UI.toast("Guarde o treino atual antes de abrir a introdu\xE7\xE3o.");
+          return false;
+        }
+        const r = this.record();
+        if (this.active && !replay) return true;
+        if (replay) {
+          r.step = 0;
+          r.ack = false;
+          r.practice = {};
+          r.skippedSteps = [];
+          r.origin = null;
+        }
+        if (r.status === "complete" && !replay) return this.help();
+        if (!r.origin) r.origin = { map: W.current.id, x: V.Player.data.x, y: V.Player.data.y, dir: V.Player.data.dir };
+        r.status = "running";
+        this.active = true;
+        this.suspended = false;
+        this.bound = V.state;
+        W.transition = 0;
+        this.prepare(true);
+        this.render();
+        V.Save.save();
+        return true;
+      },
+      recover() {
+        this.prepare(true);
+        this.render();
+      },
+      prepare(force = false) {
+        const r = this.record(), s = this.step();
+        if (!r || this.preparing) return;
+        this.preparing = true;
+        try {
+          if (!force && r.ack) return;
+          V.Input.clear();
+          switch (s.prepare) {
+            case "close":
+              if (V.modal) V.UI.close();
+              break;
+            case "quest":
+              this.quest();
+              break;
+            case "word":
+              this.conversation(false);
+              if (V.Dialogue.index !== 0) {
+                V.Dialogue.index = 0;
+                V.Dialogue.show();
+              }
+              V.Dialogue.typing = V.Dialogue.currentText.length;
+              V.Dialogue.rendered = V.Dialogue.currentText.length;
+              V.Dialogue.addWords();
+              V.Dialogue.wordsAdded = true;
+              V.$$("#dialogue-en .word").filter((b) => b.textContent.toLowerCase() === "record").forEach((b) => b.dataset.guideWord = "record");
+              break;
+            case "conversation":
+              if (!V.Dialogue.active) this.conversation(false);
+              break;
+            case "homes":
+              V.CityMenus.homeSearch = "";
+              V.CityMenus.homes("owned");
+              break;
+            case "arrange":
+              H.organize(HOME);
+              break;
+            case "purchase":
+              this.purchase();
+              break;
+            case "pause":
+              V.Game.pause();
+              break;
+          }
+          if (s.id === "move") this.moveStart = { map: W.current.id, x: V.Player.data.x, y: V.Player.data.y, moved: V.Player.moved || 0 };
+          if (s.id === "translation" && !V.Dialogue.active) this.conversation(false);
+          if (force && s.id === "place-furniture") {
+            H.organize(HOME);
+            const select = V.$("#home-place-item");
+            if (select && r.practice.furnitureItem) {
+              select.value = r.practice.furnitureItem;
+              select.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+          }
+          if (["track", "route", "interact"].includes(s.id)) this.note();
+          if (s.id === "interact") {
+            r.practice.tracked = true;
+            V.Progress.ensure().routeEnabled = true;
+            if (V.modal) V.UI.close();
+            N.invalidate();
+          }
+          if (s.id === "sleep" && W.current.id !== HOME) {
+            if (V.modal) V.UI.close();
+            V.FastTravel.travel(HOME);
+          }
+        } finally {
+          this.preparing = false;
+        }
+      },
+      ack(name, detail) {
+        if (!this.active || this.suspended || T.active || this.bound !== V.state) return false;
+        const r = this.record(), s = this.step();
+        if (s.event !== name || r.ack) return false;
+        if (name === "word" && String(detail).toLowerCase() !== "record") return false;
+        r.ack = true;
+        V.Input.clear();
+        V.Save.save();
+        this.render();
+        return true;
+      },
+      next(skipped = false) {
+        const r = this.record(), s = this.step();
+        if (!r || !this.active || s.event && !r.ack && !skipped) return false;
+        if (skipped && !r.skippedSteps.includes(s.id)) r.skippedSteps.push(s.id);
+        if (s.finish || r.step >= data.steps.length - 1) return this.finish(false);
+        r.step++;
+        r.ack = false;
+        this.prepare();
+        V.Save.save();
+        this.render();
+        return true;
+      },
+      finish(skipped = false) {
+        const r = this.record();
+        if (!r) return;
+        this.active = false;
+        this.suspended = false;
+        O.hide("main");
+        r.status = skipped ? "skipped" : "complete";
+        r.completedAt = (new Date()).toISOString();
+        this.removeNotes();
+        if (T.active === r.waitingLesson) {
+          T.pause();
+        }
+        r.waitingLesson = null;
+        if (V.Dialogue.active && V.Dialogue.onboarding) {
+          V.Dialogue.active = false;
+          V.Dialogue.done = null;
+          V.Dialogue.onboarding = false;
+          V.$("#dialogue-root").innerHTML = "";
+        }
+        if (H.ensure()?.sleep) H.wake();
+        if (V.modal) V.UI.close();
+        const origin = r.origin;
+        if (r.practice.homeVisited && origin && W.maps[origin.map]) W.load(origin.map, { x: origin.x, y: origin.y, dir: origin.dir });
+        r.practice.tracked = false;
+        N.invalidate();
+        V.Game.updateHUD();
+        V.Save.save();
+        V.UI.toast(skipped ? "Introdu\xE7\xE3o guardada. Use ? para continuar ou rever uma orienta\xE7\xE3o." : "Introdu\xE7\xE3o conclu\xEDda. Sua casa j\xE1 est\xE1 dispon\xEDvel. Confira seu pr\xF3ximo objetivo.");
+        V.$("#world-canvas")?.focus();
+      },
+      render() {
+        if (!this.active || this.suspended || T.active || V.ProfessorStudio?.active || V.Game.screen !== "game" || this.bound !== V.state) {
+          O.hide("main");
+          return;
+        }
+        const r = this.record(), s = this.step();
+        if (this.syncAction()) return;
+        const reading = s.id === "interact" && V.$("#guide-note-close"), waking = s.id === "sleep" && V.$("#home-wake");
+        O.show("main", { ...s, key: "main:" + r.step, counter: s.group + " \xB7 " + (r.step + 1) + "/" + data.steps.length, index: r.step, total: data.steps.length, ack: r.ack, target: reading ? "#guide-note-close" : waking ? "#home-wake" : s.id === "place-furniture" && V.$("#home-arrange-confirm") && !V.$("#home-arrange-confirm").disabled ? "#home-arrange-confirm" : s.target, instruction: reading ? "Leia o bilhete de Mara e clique em Terminei de ler." : waking ? "Voc\xEA est\xE1 descansando. Clique em Acordar de manh\xE3 para concluir esta experi\xEAncia." : s.instruction, point: s.point && !reading && !waking ? () => this.point(s.point) : null, action: s.action ? () => this.action(s.action) : null, next: () => this.next(), skip: () => this.finish(true), skipStep: s.event ? () => this.next(true) : null, recover: () => this.recover() });
+      },
+      syncAction() {
+        const r = this.record(), s = this.step();
+        if (r.ack) return false;
+        const h = H.ensure(), placed = (h?.placed[HOME] || []).find((p) => p.item === (r.practice.furnitureItem || "plant"));
+        if (s.id === "furniture" && H.organizeId === HOME && V.$("#home-floorplan")) return this.ack("arrange");
+        if (s.id === "select-furniture" && placed && !(h.furniture[r.practice.furnitureItem || "plant"] > 0)) {
+          r.practice.furnitureItem = placed.item;
+          return this.ack("select-furniture");
+        }
+        if (s.id === "place-furniture" && placed) return this.ack("place-furniture");
+        return false;
+      },
+      point(kind) {
+        const o = kind === "bed" ? W.current.objects.find(H.isBed) : this.noteObject();
+        if (!o) return null;
+        const c = V.$("#world-canvas"), q = c?.getBoundingClientRect();
+        if (!q?.width) return null;
+        const sx = q.width / c.width, sy = q.height / c.height, r = { x: q.left + (o.x - W.camera.x - 25) * sx, y: q.top + (o.y - W.camera.y - (kind === "bed" ? 100 : 55)) * sy, w: (kind === "bed" ? 115 : 50) * sx, h: (kind === "bed" ? 110 : 68) * sy };
+        const top = Math.max(q.top, 0), bottom = Math.min(q.bottom, window.innerHeight), left = Math.max(q.left, 0), right = Math.min(q.right, window.innerWidth);
+        if (r.x + r.w > left && r.x < right && r.y + r.h > top && r.y < bottom) {
+          const x = Math.max(left, r.x), y = Math.max(top, r.y);
+          return { x, y, w: Math.min(right, r.x + r.w) - x, h: Math.min(bottom, r.y + r.h) - y, clip: { left, top, right, bottom } };
+        }
+        const tx = q.left + (o.x - W.camera.x) * sx, ty = q.top + (o.y - W.camera.y) * sy, cx = (left + right) / 2, cy = (top + bottom) / 2, a = Math.atan2(ty - cy, tx - cx), label = (Math.abs(Math.sin(a)) > Math.abs(Math.cos(a)) ? Math.sin(a) < 0 ? "\u2191" : "\u2193" : Math.cos(a) < 0 ? "\u2190" : "\u2192") + (kind === "bed" ? " Cama" : " Bilhete");
+        return { x: V.clamp(tx, left + 24, right - 70), y: V.clamp(ty, top + 24, bottom - 70), w: 46, h: 40, label, clip: { left, top, right, bottom } };
+      },
+      noteObject() {
+        return W.current?.objects.find((o) => o.type === "onboarding-note");
+      },
+      note() {
+        let o = this.noteObject();
+        if (o) return o;
+        const p = V.Player.data, m = W.current, r = this.record();
+        if (!p || !m) return null;
+        let at = r.practice.note?.map === m.id ? r.practice.note : null;
+        if (!at || V.Living.blocked(m, at.x, at.y, 12)) {
+          at = null;
+          for (const d of [100, 144, 192]) for (const [dx, dy] of [[1, 0], [-1, 0], [0, -1], [0, 1]]) {
+            const n = { x: p.x + dx * d, y: p.y + dy * d };
+            if (!at && !V.Living.blocked(m, n.x, n.y, 16) && !m.objects.some((o2) => V.dist(o2, n) < 60) && N.calculate(m, p, { ...n, interactionRange: 82 }, false).length) at = n;
+          }
+          at ||= V.Rooms.safe(m, { x: p.x + 120, y: p.y }, 12);
+        }
+        if (!at) return null;
+        r.practice.note = { map: m.id, x: at.x, y: at.y };
+        o = { id: "onboarding-note", type: "onboarding-note", x: at.x, y: at.y, label: "Ler bilhete de acolhida \xB7 treino", interactionRange: 82 };
+        m.objects.push(o);
+        N.invalidate();
+        return o;
+      },
+      removeNotes() {
+        for (const m of Object.values(W.maps)) m.objects = m.objects.filter((o) => o.type !== "onboarding-note");
+      },
+      quest() {
+        const p = this.record().practice;
+        V.UI.modal("Acolhida no museu", "ENSAIO DE UMA MISS\xC3O", `<span class="guided-demo-label">TREINO \xB7 N\xC3O ALTERA A CAMPANHA</span><h3>Um bilhete para quem chegou</h3><p>Mara deixou um bilhete de acolhida. Leia a mensagem e converse com PIX antes de confirmar a entrega.</p><ol class="guided-demo-steps"><li>${p.read ? "\u2713" : "\u25CB"} Ler o bilhete marcado no museu.</li><li>${p.conversed ? "\u2713" : "\u25CB"} Ouvir a conversa completa de PIX.</li></ol><p class="guided-quest-progress">${p.delivered ? "\u2713 Acolhida conclu\xEDda" : p.accepted ? "Pedido aceito \xB7 " + (Number(!!p.read) + Number(!!p.conversed)) + "/2 a\xE7\xF5es" : "Pedido ainda n\xE3o aceito"}</p>`, `${!p.accepted ? '<button id="guide-demo-accept" class="primary">Aceitar pedido de treino</button>' : '<button id="guide-demo-track" class="secondary">Rastrear bilhete</button>'}<button id="guide-demo-deliver" class="primary" ${p.read && p.conversed && !p.delivered ? "" : "disabled"}>Concluir acolhida</button>`);
+        V.$("#guide-demo-accept")?.addEventListener("click", () => {
+          p.accepted = true;
+          this.quest();
+          this.ack("accept");
+        });
+        V.$("#guide-demo-track")?.addEventListener("click", () => {
+          p.tracked = true;
+          this.note();
+          V.Progress.ensure().routeEnabled = true;
+          V.UI.close();
+          N.invalidate();
+          N.update(0.01);
+          this.ack("track");
+        });
+        V.$("#guide-demo-deliver")?.addEventListener("click", () => {
+          if (!p.read || !p.conversed || p.delivered) return;
+          p.delivered = true;
+          p.tracked = false;
+          this.quest();
+          N.invalidate();
+          this.ack("deliver");
+        });
+      },
+      inspect() {
+        const p = this.record().practice;
+        p.read = true;
+        V.UI.modal("Bilhete de Mara", "ACOLHIDA \xB7 DOCUMENTO FICCIONAL DE TREINO", `<span class="guided-demo-label">LEITURA DE TREINO</span><h3>Uma cidade se conhece ouvindo suas pessoas.</h3><p>Bem-vindo ao Museu das Vozes. Nossa equipe est\xE1 conferindo os nomes que desapareceram das fichas. PIX vai explicar como consultar palavras enquanto voc\xEA l\xEA.</p><p>Antes de come\xE7ar a investiga\xE7\xE3o, escute a orienta\xE7\xE3o dele. Sua Casa das Sementes fica no Residencial Boa Vizinhan\xE7a.</p><p><strong>Mara \xB7 equipe do museu.</strong></p>`, '<button id="guide-note-close" class="primary">Terminei de ler</button>');
+        V.$("#guide-note-close").onclick = () => {
+          V.UI.close();
+          this.ack("inspect");
+        };
+        V.Save.save();
+      },
+      conversation(ack = true) {
+        if (!V.Dialogue.active || !V.Dialogue.onboarding) {
+          V.Dialogue.start([{ speaker: "pix", en: "Hello! Please read the record.", pt: "Ol\xE1! Por favor, leia o registro." }, { speaker: "pix", en: "Your house is in the residential district. Listen to the people before you decide.", pt: "Sua casa fica no bairro residencial. Escute as pessoas antes de decidir." }], () => {
+            V.Dialogue.onboarding = false;
+            this.record().practice.conversed = true;
+            this.ack("conversation-finished");
+          });
+          V.Dialogue.onboarding = true;
+        }
+        if (ack) this.ack("talk");
+      },
+      purchase() {
+        const r = this.record().practice, offer = H.data.offers.find((o) => o.id === "interior-player-loft"), budget = offer.price;
+        r.purchase ||= { balance: budget, bought: false };
+        const p = r.purchase;
+        V.UI.modal("Comprar uma casa \xB7 ensaio", "CONHECER \u2192 CONFERIR SALDO \u2192 COMPRAR", `<span class="guided-demo-label">SIMULA\xC7\xC3O \xB7 CARTEIRA REAL PRESERVADA</span><div class="guided-purchase"><article><h3>${esc(offer.name)}</h3><p>${esc(offer.description)}</p><p>Pre\xE7o: <strong>${offer.price} moedas</strong></p></article><article><h3>Carteira de treino</h3><p><strong>${p.balance} moedas</strong></p><p>${p.bought ? "\u2713 Escritura de treino registrada. O valor saiu da carteira simulada." : "Confira o pre\xE7o antes de confirmar. A sua carteira da aventura n\xE3o ser\xE1 usada aqui."}</p></article></div>`, `<button id="guide-demo-buy" class="primary" ${p.bought ? "disabled" : ""}>${p.bought ? "\u2713 Compra de treino conclu\xEDda" : "Comprar no treino \xB7 " + offer.price}</button>`);
+        V.$("#guide-demo-buy").onclick = () => {
+          if (p.bought || p.balance < offer.price) return;
+          p.balance -= offer.price;
+          p.bought = true;
+          this.purchase();
+          this.ack("purchase-practice");
+        };
+      },
+      action(id) {
+        if (id === "talk") return this.conversation();
+        if (id === "arrange") {
+          if (V.modal) V.UI.close();
+          H.organize(HOME);
+          return;
+        }
+        if (id === "challenge") {
+          const r = this.record();
+          r.waitingLesson = "culture:loom";
+          this.suspended = true;
+          O.hide("main");
+          T.open("culture:loom", !!T.record("culture:loom")?.completed);
+          V.Save.save();
+        }
+      },
+      update(dt) {
+        if (this.bound !== V.state) {
+          this.active = false;
+          O.hide("main");
+          return;
+        }
+        if (!this.active || this.suspended || T.active) return;
+        const r = this.record(), s = this.step();
+        if (s.id === "move" && !r.ack && this.moveStart && W.current.id === this.moveStart.map && ((V.Player.moved || 0) - this.moveStart.moved >= 60 || V.dist(V.Player.data, this.moveStart) >= 65)) this.ack("move");
+        this.tick += dt;
+        if (this.tick > 0.25) {
+          this.tick = 0;
+          this.render();
+        }
+      },
+      paused() {
+        const s = this.step();
+        return this.active && !this.suspended && !T.active && !V.ProfessorStudio?.active && (!s.world || this.record().ack) && !V.Dialogue.active;
+      },
+      help(query = "") {
+        if (!V.state) return;
+        this.suspended = this.active;
+        O.hide();
+        const current = N.objective();
+        V.UI.modal("Como jogar VOICES", "PIX \xB7 GUIA DA AVENTURA", `<section class="guided-help-summary"><small>SEU PR\xD3XIMO PASSO</small><h3>${esc(current?.label || "Explore e converse com a equipe do museu.")}</h3><p>${esc(current?.map && W.maps[current.map] ? W.maps[current.map].name : "New Harmony")}</p><div class="row"><button id="guide-help-track" class="primary">Mostrar caminho</button><button id="guide-help-missions" class="secondary">Abrir miss\xF5es</button><button id="guide-help-resume" class="secondary">${this.record().status === "running" || this.record().status === "skipped" ? "Continuar introdu\xE7\xE3o" : "Rever introdu\xE7\xE3o guiada"}</button></div></section><label class="field guided-help-filters">Encontrar orienta\xE7\xE3o<input id="guide-help-search" type="search" placeholder="Miss\xE3o, tradu\xE7\xE3o, casa, corrida\u2026" value="${esc(query)}"></label><h3>Aprender a explorar</h3><div id="guide-help-topics" class="guided-help-grid"></div><h3>Treinos dos desafios</h3><p>Escolha um treino para experimentar os controles. Sua partida fica guardada separadamente.</p><div id="guide-help-lessons" class="guided-help-grid"></div>`, '<button id="guide-help-close" class="primary">Voltar ao jogo</button>', true);
+        const filter = () => {
+          const q = V.Interface.normalize(V.$("#guide-help-search").value);
+          V.$("#guide-help-topics").innerHTML = data.topics.filter((t) => V.Interface.normalize(t.title + " " + t.text).includes(q)).map((t) => `<article><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p></article>`).join("") || "<p>Nenhuma orienta\xE7\xE3o com esse termo.</p>";
+          V.$("#guide-help-lessons").innerHTML = V.PlaygroundData.games.filter((g) => V.Interface.normalize(g.title + " " + g.goal).includes(q)).map((g) => ["playground:" + g.id, { steps: V.PlaygroundData.guides[g.id] }]).map(([key2, d]) => `<article><small>${T.record(key2)?.completed ? "\u2713 TREINO CONCLU\xCDDO" : T.record(key2)?.running ? "\u25C9 TREINO GUARDADO" : "TREINO DISPON\xCDVEL"}</small><h3>${esc(V.Playground.game(key2.split(":")[1])?.title || this.lessonName(key2))}</h3><p>${d.steps.length} pequenas etapas \xB7 sem recompensas de treino</p><button data-guide-lesson="${esc(key2)}" class="secondary">${T.record(key2)?.running ? "Continuar treino" : "Praticar controles"}</button></article>`).join("") || "<p>Nenhum treino com esse termo.</p>";
+          V.$$("[data-guide-lesson]").forEach((b) => b.onclick = () => {
+            this.suspended = this.active;
+            this.helpLessonKey = b.dataset.guideLesson;
+            if (this.active) this.record().waitingLesson = b.dataset.guideLesson;
+            V.Playground.train(b.dataset.guideLesson.split(":")[1], { returnHelp: true, restart: true });
+          });
+        };
+        filter();
+        V.$("#guide-help-search").oninput = filter;
+        V.$("#guide-help-close").onclick = () => {
+          V.UI.close();
+          this.suspended = false;
+          if (this.active) this.recover();
+        };
+        V.$("#guide-help-track").onclick = () => {
+          V.Progress.ensure().routeEnabled = true;
+          N.invalidate();
+          V.UI.close();
+          this.suspended = false;
+          this.render();
+        };
+        V.$("#guide-help-missions").onclick = () => {
+          this.suspended = false;
+          V.CityMenus.board();
+        };
+        V.$("#guide-help-resume").onclick = () => {
+          V.UI.close();
+          this.suspended = false;
+          this.active = false;
+          this.start(this.record().status === "complete");
+        };
+        V.UI.onClose = () => {
+          this.suspended = false;
+          this.render();
+        };
+      },
+      lessonName(key2) {
+        const [family, id] = key2.split(":");
+        if (family === "culture") return V.CultureChallenges.game(id)?.title || id;
+        if (family === "arcade") return V.LearningArcade.games.find((g) => g.id === id)?.title || id;
+        if (family === "roots") return V.AncestralActivities.game(id)?.title || id;
+        const names = { historio: "Histori\xF3grafo Ancestral", "classic:timeline": "Cronologia dos registros", "classic:evidence": "Investiga\xE7\xE3o de autoria", "classic:bias": "Manchetes e contexto", "classic:city": "Planejamento comunit\xE1rio", "classic:runner": "Palavras em ingl\xEAs", "classic:beat": "Ritmo e sinais", "classic:wires": "Mesa de som", "workbench:labels": "Etiquetas da feira", "workbench:sequence": "Sequ\xEAncia de investiga\xE7\xE3o", "workbench:headlines": "Reda\xE7\xE3o de not\xEDcias", "workbench:access": "Planejamento de acesso", "workbench:experiment": "Registro do experimento", "workbench:catalog": "Cataloga\xE7\xE3o de registros", "quiz:language": "Quest\xF5es de ingl\xEAs", "quiz:history": "Quest\xF5es de hist\xF3ria", "fishing:shore": "Pesca" };
+        return names[key2] || T.definitions[key2]?.steps[0]?.title || id || key2;
+      },
+      toolbar() {
+        const nav = V.$(".game-toolbar .tools");
+        if (!nav) return;
+        let b = V.$("#help-button");
+        if (!b) {
+          b = document.createElement("button");
+          b.id = "help-button";
+          b.className = "icon-menu-button";
+          b.innerHTML = '<span aria-hidden="true">?</span>';
+          nav.appendChild(b);
+        }
+        b.title = "Como jogar \xB7 F1";
+        b.setAttribute("aria-label", "Como jogar: tutorial e ajuda");
+        b.onclick = () => this.help();
+      }
+    };
+    // These hooks observe successful production actions rather than completing them.
+    function observe(obj, key2, event, test) {
+      const original = obj[key2].bind(obj);
+      obj[key2] = function(...args) {
+        const result = original(...args);
+        if (!test || test(result, args)) G.ack(event, args[0]);
+        return result;
+      };
+    }
+    observe(V.CityMenus, "board", "missions");
+    observe(V.CityMenus, "challenges", "challenges");
+    observe(V.CityMenus, "homes", "homes");
+    observe(V.Game, "glossary", "pix");
+    observe(V.Living, "journal", "notebook");
+    observe(V.WorldAtlas, "open", "atlas");
+    observe(V.Quests, "inventory", "backpack");
+    observe(V.Dialogue, "toggle", "translation");
+    observe(V.PixVocabulary, "collect", "word");
+    observe(H, "wake", "wake", (result) => !!result);
+    V.Events.on("home-editor-opened", (e) => {
+      if (e.home === HOME) G.ack("arrange");
+    });
+    V.Events.on("home-furniture-committed", (e) => {
+      if (e.home === HOME && e.placed) G.ack("place-furniture");
+    });
+    const objective = N.objective.bind(N);
+    N.objective = function() {
+      const r = G.active && G.record(), o = r?.practice?.tracked && !r.practice.delivered && G.noteObject();
+      if (G.active && !G.suspended) {
+        if (G.step().id === "sleep") {
+          const bed = W.current.objects.find(H.isBed);
+          return bed ? { map: W.current.id, object: bed, key: "onboarding-bed", label: "Aproxime-se da cama \xB7 dormir e acordar" } : null;
+        }
+        return o && ["track", "route", "interact"].includes(G.step().id) ? { map: W.current.id, object: o, key: "onboarding-note", label: "Ler o bilhete de acolhida \xB7 treino" } : null;
+      }
+      return objective();
+    };
+    V.Hooks.around(V.Game, "interact", "onboarding:interact:1", (nextHook) => function(o) {
+      if (o?.type === "onboarding-note" && G.active && !V.modal && !V.Dialogue.active) return G.inspect();
+      return nextHook(o);
+    });
+    const nearest = V.Player.nearest.bind(V.Player);
+    V.Player.nearest = function(...args) {
+      if (G.active && !G.suspended && !V.modal && ["interact", "sleep"].includes(G.step().id)) {
+        const o = G.step().id === "sleep" ? W.current.objects.find(H.isBed) : G.noteObject();
+        return o && V.dist(this.data, o) < (o.interactionRange || 82) && N.interactionClear(W.current, this.data, o) ? o : null;
+      }
+      return nearest(...args);
+    };
+    V.Hooks.around(V.Cozy, "drawObject", "onboarding:drawObject:1", (draw) => function(ctx, o, cam, t) {
+      if (o.type !== "onboarding-note") return draw(ctx, o, cam, t);
+      V.Assets.prop(ctx, 9, o.x - cam.x - 22, o.y - cam.y - 38, 44);
+      V.Living.marker(ctx, o.x - cam.x, o.y - cam.y - 58, "E", "#f5ce7e");
+    });
+    const load = W.load.bind(W);
+    W.load = function(...args) {
+      const result = load(...args);
+      if (G.active) {
+        W.transition = 0;
+        if (["route", "interact"].includes(G.step().id)) G.note();
+        if (W.current.id === HOME) {
+          G.record().practice.homeVisited = true;
+          G.ack("visit-home");
+        }
+      }
+      return result;
+    };
+    const create = V.Game.newState.bind(V.Game);
+    V.Game.newState = function(...args) {
+      G.active = false;
+      G.suspended = false;
+      O.hide();
+      const result = create(...args);
+      G.record();
+      G.grantHome();
+      return result;
+    };
+    V.Hooks.around(V.Game, "startGame", "onboarding:startGame:1", (start) => function(...args) {
+      G.active = false;
+      G.suspended = false;
+      O.hide();
+      G.bound = V.state;
+      G.grantHome();
+      const result = start(...args);
+      H.applyFurniture(HOME);
+      const r = G.record(), state = V.state;
+      setTimeout(() => {
+        if (V.state !== state || V.Game.screen !== "game" || V.Game.mode !== "explore" || H.ensure()?.sleep || V.modal) return;
+        if (r.waitingLesson && T.record(r.waitingLesson)?.running) {
+          G.active = true;
+          G.suspended = true;
+          T.open(r.waitingLesson);
+          return;
+        }
+        if (["pending", "running"].includes(r.status)) G.start();
+      }, 100);
+      G.toolbar();
+      return result;
+    });
+    V.Game.intro = () => ["pending", "running"].includes(G.record()?.status) ? G.start() : false;
+    V.Hooks.around(V.Game, "update", "onboarding:update:1", (nextHook) => function(dt) {
+      if (!G.paused()) nextHook(dt);
+      else if (V.Dialogue.active) V.Dialogue.update(dt);
+      G.update(dt);
+    });
+    const key = V.Game.onKey.bind(V.Game);
+    V.Hooks.around(V.Game, "onKey", "onboarding:onKey:1", () => function(k, e = {}) {
+      if (k === "f1" && this.screen === "game") {
+        e.preventDefault?.();
+        G.help();
+        return;
+      }
+      if (G.active && !G.suspended && !T.active && V.Dialogue.onboarding && ["enter", "e", " "].includes(k) && ["word", "translation"].includes(G.step().id) && !G.record().ack) {
+        V.Input.pressed.delete(k);
+        e.preventDefault?.();
+        return;
+      }
+      return key(k, e);
+    });
+    const dialogueNext = V.Dialogue.next.bind(V.Dialogue);
+    V.Dialogue.next = function(...args) {
+      if (G.active && !G.suspended && this.onboarding && ["word", "translation"].includes(G.step().id) && !G.record().ack) return;
+      return dialogueNext(...args);
+    };
+    V.Hooks.around(V.Game, "toTitle", "onboarding:toTitle:1", (title) => function(...args) {
+      G.active = false;
+      G.suspended = false;
+      O.hide();
+      return title(...args);
+    });
+    V.Hooks.around(V.Game, "pause", "onboarding:pause:1", (pause) => function(...args) {
+      const result = pause(...args), host = V.$(".modal-body");
+      if (host && !V.$("#pause-guide")) {
+        const b = document.createElement("button");
+        b.id = "pause-guide";
+        b.className = "secondary";
+        b.textContent = "Como jogar \xB7 tutorial e ajuda";
+        b.onclick = () => G.help();
+        host.appendChild(b);
+      }
+      return result;
+    });
+    V.Hooks.around(V.Game, "init", "onboarding:init:1", (init) => async function(...args) {
+      const result = await init(...args);
+      G.toolbar();
+      return result;
+    });
+    document.addEventListener("change", (e) => {
+      if (e.target?.id === "home-place-item" && e.target.value) {
+        if (G.active) G.record().practice.furnitureItem = e.target.value;
+        G.ack("select-furniture");
+      }
+    });
+  })();
 });

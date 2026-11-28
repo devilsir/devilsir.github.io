@@ -214,11 +214,16 @@ globalThis.QuimiCraftExplorationMap=(()=>{
         context.fillStyle="#0d2028";context.fillRect(px-5,py-5,10,10);
         context.strokeStyle="#eac781";context.strokeRect(px-4.5,py-4.5,9,9);
         if(zoom>=5){
-          const right=playerX>=px&&Math.abs(playerY-py)<19&&playerX-px<context.measureText(spot.name).width+16;
-          const tx=px+(right?-9:9);
-          context.textAlign=right?"right":"left";
-          context.lineWidth=3;context.strokeStyle="#172b30";context.strokeText(spot.name,tx,py);
-          context.fillStyle="#fff4db";context.fillText(spot.name,tx,py);
+          const labelWidth=Math.min(context.measureText(spot.name).width,width-12);
+          const playerOnRight=playerX>=px&&Math.abs(playerY-py)<19&&playerX-px<labelWidth+16;
+          let tx=playerOnRight?px-9-labelWidth:px+9,ty=py;
+          if(tx<6||tx+labelWidth>width-6){
+            tx=clamp(px-labelWidth/2,6,width-6-labelWidth);
+            ty=py<height-25?py+17:py-17;
+          }
+          context.textAlign="left";
+          context.lineWidth=3;context.strokeStyle="#172b30";context.strokeText(spot.name,tx,ty,width-12);
+          context.fillStyle="#fff4db";context.fillText(spot.name,tx,ty,width-12);
         }
       }
       context.textAlign="left";

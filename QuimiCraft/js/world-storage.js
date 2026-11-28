@@ -2,7 +2,7 @@
 
 globalThis.QuimiCraftWorldStorage = (() => {
   const dataKeys = Object.freeze([
-    "qc_inventory", "qc_equipment_v70", "qc_equipment_v62", "qc_science_v70", "qc_chem", "qc_camp_v5",
+    "qc_inventory", "qc_backpack_v1", "qc_equipment_v70", "qc_equipment_v62", "qc_science_v70", "qc_chem", "qc_camp_v5",
     "qc_lab_v46", "qc_lab_v47", "qc_lab_v48", "qc_lab_v49", "qc_lab_v50", "qc_lab_v51", "qc_lab_validation_v60",
     "qc_world_state_v70", "qc_world_state_v60", "qc_village_state_v60", "qc_element_missions_v60",
     "qc_message_history_v60", "qc_carbon_intro_gift_v60", "qc_periodic_mission_v46", "qc_periodic_mission_v47",

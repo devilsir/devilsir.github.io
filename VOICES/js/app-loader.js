@@ -116,5 +116,5 @@
   }, true);
   const continueButton = document.getElementById('continue-game');
   if (continueButton) { continueButton.hidden = false; continueButton.firstChild.textContent = 'Meus perfis '; }
-  if (new URLSearchParams(location.search).has('voices-duo')) window.VoicesApp.ready().catch(() => {});
+  if (new URLSearchParams(location.search).has('voices-duo')) window.VoicesApp.ready().then(() => loadFeature('duo-mode').catch(() => {})).catch(() => {});
 })();

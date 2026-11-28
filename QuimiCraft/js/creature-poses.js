@@ -21,26 +21,38 @@ globalThis.QuimiCraftCreaturePoses=(()=>{
     rig.wingPhase=(rig.wingPhase??phase)+dt*flap*(4.6+step*2.25+Math.max(0,climb)*1.6+landing*1.8);
     const beat=Math.sin(rig.wingPhase),stroke=mix(beat,.08,glide),sweep=Math.cos(rig.wingPhase);
     const flick=Math.sin(rig.wingPhase-.75),weight=1-Math.exp(-dt*14),brace=lean*.09+strike*.10+inhale*.052;
-    rotation(rig.flightBody,air*(climb*.27+landing*.16+stroke*.042)-strike*.092+inhale*.104,
+    const bipedal=!!rig.bipedal;
+    const baseBodyPitch=bipedal?mix(-.24,0,air):0;
+    rotation(rig.flightBody,baseBodyPitch+air*(climb*.27+landing*.16+stroke*.042)-strike*.092+inhale*.104,
       0,air*bank*.36*motion,1-Math.exp(-dt*7));
     for(const wing of rig.wings){
       const side=wing.userData.side;
-      wing.position.y=mix(wing.position.y,mix(side<0?1.409:1.49,1.101,air),weight);
-      wing.position.x=mix(wing.position.x,wing.userData.rootX*mix(.65,1,air),weight);
-      wing.scale.set(mix(wing.scale.x,mix(.69,1,air),weight),
-        mix(wing.scale.y,mix(.095,1,air),weight),mix(wing.scale.z,mix(.31,1,air),weight));
-      wing.userData.socket.scale.y=mix(.42,1.07,1-air)/wing.scale.y;
-      const z=side*mix(-.005,.16+stroke*(.49+step*.15)*motion+landing*.26+side*bank*.13+inhale*.19,air);
-      rotation(wing,mix(0,.08+sweep*.13*(1-glide)+landing*.29,air),
-        side*mix(-1.58,.09+stroke*.15+landing*.23,air),z,weight);
-      rotation(wing.userData.tip,mix(0,flick*.23*(1-glide)+landing*.14,air),
-        side*mix(-.42,.075+stroke*.22+landing*.18,air),
-        side*mix(.01,flick*.32*(1-glide)-glide*.14,air),weight);
+      const rootY=wing.userData.rootY??1.101;
+      wing.position.y=mix(wing.position.y,mix(rootY+(bipedal?.05:.02),rootY,air),weight);
+      wing.position.x=mix(wing.position.x,wing.userData.rootX*mix(.96,1,air),weight);
+      wing.scale.set(mix(wing.scale.x,mix(bipedal?.88:.84,1,air),weight),
+        mix(wing.scale.y,mix(bipedal?.90:.88,1,air),weight),mix(wing.scale.z,mix(bipedal?.86:.84,1,air),weight));
+      if(wing.userData.socket)wing.userData.socket.scale.y=1;
+      const groundPitch=bipedal?.24:.22;
+      const groundSweep=bipedal?-.42:-.56;
+      const groundRoll=bipedal?.40:.30;
+      const z=side*mix(groundRoll+breath*.028*motion+lean*.12,.16+stroke*(.49+step*.15)*motion+landing*.26+side*bank*.13+inhale*.19,air);
+      rotation(wing,mix(groundPitch+breath*.022*motion+lean*.09,.08+sweep*.13*(1-glide)+landing*.29,air),
+        side*mix(groundSweep+lean*.16,.09+stroke*.15+landing*.23,air),z,weight);
+      rotation(wing.userData.tip,mix(.16,flick*.23*(1-glide)+landing*.14,air),
+        side*mix(-.20,.075+stroke*.22+landing*.18,air),
+        side*mix(bipedal?-.60:-.68,flick*.32*(1-glide)-glide*.14,air),weight);
       wing.userData.flex();
     }
+    for(const [i,arm] of (rig.forelimbs||[]).entries()){
+      const side=arm.userData.side??(i?1:-1);
+      rotation(arm,.32+Math.sin(t*2.6+phase+i)*.06*motion+lean*.28-strike*.35+air*.24,
+        side*(.12+lean*.12),side*(.18+breath*.03*motion),weight);
+      if(arm.userData.lower)rotation(arm.userData.lower,.72+lean*.22+air*.18,0,0,weight);
+    }
     for(const [i,leg] of rig.legs.entries()){
-      const diagonal=leg.userData.phase??((i===0||i===3)?Math.PI:0),cycle=gait+diagonal,wave=Math.sin(cycle);
-      const front=leg.userData.front??i%2===0;
+      const diagonal=leg.userData.phase??(bipedal?i*Math.PI:(i===0||i===3)?Math.PI:0),cycle=gait+diagonal,wave=Math.sin(cycle);
+      const front=bipedal?false:(leg.userData.front??i%2===0);
       const {lower,foot,bones:[upperLength,lowerLength]}=leg.userData;
       const swing=Math.max(0,Math.cos(cycle))*step*motion;
       const y=leg.position.y-.080-swing*.154-brace*(front?1:.44);
@@ -50,7 +62,7 @@ globalThis.QuimiCraftCreaturePoses=(()=>{
       const flightHip=front?-.91+flick*.13*motion:mix(-.73,-.94,glide)+flick*.052*(1-glide)*motion;
       const flightKnee=front?1.24:mix(.047,.019,glide);
       const airHip=mix(flightHip,front?-.22:.18,landing);
-      rotation(leg,mix(reach,airHip,air),0,air*Math.sign(leg.position.x)*mix(front?-.15:-.072,.19,landing),weight);
+      rotation(leg,mix(reach+(bipedal?.16:0),airHip,air),0,air*Math.sign(leg.position.x)*mix(front?-.15:-.072,.19,landing),weight);
       rotation(lower,mix(bend,mix(flightKnee,.30,landing),air),0,0,weight);
       const footPitch=mix(-swing*.38,front?-.55:flightHip+flightKnee+.09,air*(1-landing));
       rotation(foot,footPitch-leg.rotation.x-lower.rotation.x,0,0,weight);
@@ -70,7 +82,8 @@ globalThis.QuimiCraftCreaturePoses=(()=>{
       aimYaw*.26+bank*.11,0,weight);
     rotation(rig.head,(.16*lean-.18*strike+mix(breath*.043,stroke*.055,air))*motion+aimPitch*.62+inhale*.24-focus*.33+roar*.20,
       Math.sin(t*1.55+phase)*(.074-.044*lean)*motion+aimYaw*.72,-bank*.12,weight);
-    rotation(rig.jaw,Math.min(-.83*channel,-.033-.55*lean-.52*strike-inhale*.38-focus*.16-roar*.43)+breath*(.016+channel*.018),0,0,1-Math.exp(-dt*24));
+    const jawRest=rig.mouthGlow?-.24:-.033;
+    rotation(rig.jaw,Math.min(-.83*channel,jawRest-.55*lean-.52*strike-inhale*.38-focus*.16-roar*.43)+breath*(.016+channel*.018),0,0,1-Math.exp(-dt*24));
     rotation(rig.tongue,Math.min(.22,-rig.jaw.rotation.x*.19)+breath*.018,0,0,weight);
     for(const cheek of rig.mouthCorners??[])cheek.rotation.x=-rig.jaw.rotation.x*.62;
     if(rig.body){
@@ -108,6 +121,25 @@ globalThis.QuimiCraftCreaturePoses=(()=>{
       rig.halo.rotation.y=.17+beat*.10;
       rig.halo.scale.setScalar(.37+lean*.04);
     }
+    if(rig.lifeOrb){
+      const p=1+Math.sin(t*3.6+phase)*.09*motion;
+      rig.lifeOrb.scale.setScalar(p);
+      rig.lifeOrb.rotation.y=t*.9;
+    }
+    for(const [i,rock] of (rig.floatRocks||[]).entries()){
+      rock.position.y=(rock.userData.baseY??rock.position.y)+Math.sin(t*3.1+phase+i*1.3)*.032*motion;
+      rock.rotation.z=(rock.userData.baseRZ??0)+Math.sin(t*2.4+i)*.09*motion;
+    }
+    for(const [i,arc] of (rig.arcs||[]).entries()){
+      const s=.82+.28*Math.abs(Math.sin(t*9.5+i*2.17));
+      arc.scale.y=s;
+      arc.visible=motion<.6||Math.sin(t*14+i*3.7)>-.55;
+    }
+    for(const [i,flame] of (rig.flames||[]).entries()){
+      flame.userData.baseFlame??=flame.scale.y;
+      flame.scale.y=flame.userData.baseFlame*(1+Math.sin(t*12+phase+i*1.76)*.22*motion);
+      flame.rotation.z=(flame.userData.baseRZ??0)+Math.sin(t*8+i*2)*.18*motion;
+    }
     for(const fin of rig.frills||[]){
       const side=fin.userData.side;
       rotation(fin,0,side*(.08+lean*.27+strike*.11+inhale*.39),side*(breath*.10*motion+inhale*.15),weight);
@@ -140,9 +172,10 @@ globalThis.QuimiCraftCreaturePoses=(()=>{
     }
   }
   function tree(rig,frame){
-    const {now,phase=0,dt=1/30,gait=0,stride=0,climbing=false,charge=0,release=0,motion=1}=frame;
+    const {now,phase=0,dt=1/30,gait=0,stride=0,climbing=false,charge=0,release=0,motion=1,activity}=frame;
     const t=now*.001,sway=Math.sin(t*1.46+phase),step=clamp(stride);
-    const grab=clamp(charge),hit=clamp(release), weight=1-Math.exp(-dt*12);
+    const grab=clamp(charge),hit=clamp(release),weight=1-Math.exp(-dt*12);
+    const working=activity==="workshop",resting=activity==="quarters";
     for(const [i,leg] of rig.legs.entries()){
       const phase=i%2*Math.PI,walk=Math.sin(gait+phase),up=Math.sin(t*5.65+phase);
       rotation(leg,(climbing?-.27+up*.47:walk*step*.42-grab*.13+hit*.18)*motion,0,0,weight);
@@ -150,11 +183,13 @@ globalThis.QuimiCraftCreaturePoses=(()=>{
     }
     for(const [i,arm] of rig.arms.entries()){
       const side=arm.userData.side??(i===0?-1:1),walk=Math.sin(gait+i*Math.PI),reach=Math.sin(t*5.65+i*Math.PI);
-      rotation(arm,climbing?1.29+reach*.41*motion:(-walk*step*.38+sway*.058+grab*1.95+hit*.65)*motion,
+      rotation(arm,working?.70+Math.sin(t*4.3+i*.72)*.24*motion:resting?.18:
+        climbing?1.29+reach*.41*motion:(-walk*step*.38+sway*.058+grab*1.95+hit*.65)*motion,
         side*(climbing?.17:.085-grab*.18),side*(climbing?.14:.13-grab*.18+hit*.14),weight);
-      rotation(arm.userData.lower,climbing?.56+reach*.19*motion:.14+step*.10+grab*.45+hit*.20,0,0,weight);
+      rotation(arm.userData.lower,working?.42:climbing?.56+reach*.19*motion:.14+step*.10+grab*.45+hit*.20,0,0,weight);
     }
-    rotation(rig.head,(climbing?-.27+Math.sin(t*5.65)*.026:-grab*.20+hit*.20+sway*.04)*motion,
+    rotation(rig.head,(resting?-.34+Math.sin(t*1.7)*.028:working?-.21:
+      climbing?-.27+Math.sin(t*5.65)*.026:-grab*.20+hit*.20+sway*.04)*motion,
       climbing?0:sway*.105*(1-grab)*motion,sway*.024*motion,weight);
     rotation(rig.crown,(climbing?.06+Math.sin(t*5.65)*.036:sway*.039+grab*.11-hit*.17)*motion,
       .039*Math.sin(t+phase)*motion,(climbing?.063*Math.cos(t*5.65):sway*(.041+step*.046))*motion,weight*.82);

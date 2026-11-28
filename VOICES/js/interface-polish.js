@@ -7,8 +7,8 @@
     return interactables(...args).filter(o=>o.type!=='ambient'&&o.type!=='community-conversation'&&o.scene?.kind!=='conversation');
   };
 
-  const render=V.Game.render.bind(V.Game);
-  V.Game.render=function(c){const result=render(c);activities.paint();return result;};
+  
+  V.Hooks.around(V.Game, "render", "interface-polish:render:1", render => function(c){const result=render(c);activities.paint();return result;});
 
   const character=V.Progress.character.bind(V.Progress);
   V.Progress.character=function(...args){

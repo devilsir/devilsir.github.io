@@ -10,6 +10,8 @@ globalThis.QuimiCraftBlockModels=(()=>{
   const palette=new Map(swatches);
   const [stone,brick,iron,brass,wood,flame,coal,ceramic,copper,glaze,light,end,foliage,spectral,snow]=swatches.map(([tile])=>tile);
   const glowTiles=[flame,light,spectral,206];
+  const ornamentTiles={stone:3,metal:iron,gold:brass,wood,night:coal,glass:glaze,paper:ceramic,
+    sun:brass,light:glaze,leaf:foliage,green:foliage,rust:copper,bone:snow,ice:glaze,blue:glaze,water:214,violet:54};
   function paint(tile,x,y,random){
     const base=palette.get(tile);
     if(!base)return null;
@@ -458,6 +460,13 @@ globalThis.QuimiCraftBlockModels=(()=>{
       for(const x of [.12,.785])box(brass,x,.632,.128,x+.087,.684,.852);
     }
   }
+  function woodenSign({box}){
+    // Minecraft-style standing wooden sign post + bevelled horizontal wooden board
+    box(wood,.44,0,.44,.56,.54,.56,[.86,.74,.62]);
+    box(wood,.06,.48,.43,.94,.96,.57,[1.04,.92,.78]);
+    box(wood,.09,.51,.41,.91,.93,.59,[.94,.82,.68]);
+    box(brass,.46,.46,.42,.54,.52,.58);
+  }
   function fieldEquipment({box,shell,rod},{unit,x,z}){
     const tone=unit.color.slice(1).match(/../g).map(channel=>parseInt(channel,16)/142);
     box(iron,.055,0,.07,.945,.12,.93,dark);
@@ -505,13 +514,408 @@ globalThis.QuimiCraftBlockModels=(()=>{
       box(spectral,.23,1.10,.1,.74,1.126,.12);
     }
   }
+  const bannerProfiles={
+    light:{hem:[.42,.34,.16,.34,.42],metal:brass},
+    scourge:{hem:[.36,.17,.56,.55,.17,.36],metal:snow,symbol:spectral},
+    fel:{hem:[.57,.42,.22,.17,.37,.49],metal:iron,symbol:foliage}
+  };
+  function factionStandard({add,box,shell,rod},{group,tile,base}){
+    const {hem,metal,symbol}=bannerProfiles[group],top=1.56;
+    box(base,.26,0,.30,.74,.12,.74);
+    box(metal,.34,.11,.38,.66,.19,.66);
+    rod([.5,.17,.61],[.5,1.73,.61],.034,metal);
+    rod([.13,1.62,.54],[.87,1.62,.54],.032,metal);
+    for(const x of [.17,.83]){
+      shell([[x,1.585,.54,.044,.044],[x,1.655,.54,.044,.044]],metal);
+    }
+    if(group==="fel"){
+      for(const sign of [-1,1]){
+        shell([[.50,1.66,.61,.049,.044],[.5+sign*.09,1.75,.61,.035,.03],
+          [.5+sign*.14,1.88,.60,.008,.008]],metal,metal,6);
+      }
+    }else if(group==="scourge"){
+      shell([[.5,1.67,.61,.05,.05],[.5,1.84,.61,.05,.05],[.5,1.91,.61,.009,.009]],symbol,metal,4);
+    }else{
+      shell([[.5,1.66,.61,.058,.058],[.5,1.74,.61,.09,.09],[.5,1.84,.61,.05,.05]],metal,metal,8);
+    }
+    const bottom=hem.map((y,i)=>[.20+i*.60/(hem.length-1),y,.51+Math.sin(i*1.3)*.026]);
+    for(let i=1;i<bottom.length;i++){
+      const a=bottom[i-1],b=bottom[i],ta=[a[0],top,a[2]],tb=[b[0],top,b[2]];
+      const front=[a,ta,tb,b],back=front.map(([x,y,z])=>[x,y,z+.035]);
+      add(front,tile);add(back.slice().reverse(),tile);
+      add([a,b,back[3],back[0]],base);
+      rod([a[0],a[1]+.013,a[2]-.006],[b[0],b[1]+.013,b[2]-.006],.012,metal);
+    }
+    for(const [x,y,z] of [bottom[0],bottom.at(-1)]){
+      rod([x,y,z],[x,top,z],.014,metal);
+      box(metal,x-.022,top,z-.012,x+.022,1.62,z+.061);
+    }
+    for(const z of [.465,.582]){
+      const stitch=(x,y,q,r)=>rod([x,y,z],[q,r,z],.013,group==="fel"?symbol:metal);
+      if(group==="light"){
+        shell([[.5,.49,1.15,.092,.092],[.5,.525,1.15,.092,.092]],metal,metal,12,0,
+          ([x,depth,y])=>[x,y,z-depth+.507]);
+        for(let i=0;i<8;i++){
+          const a=i*Math.PI/4,c=Math.cos(a),s=Math.sin(a);
+          stitch(.5+c*.11,1.15+s*.11,.5+c*.18,1.15+s*.18);
+        }
+      }else if(group==="scourge"){
+        for(const a of [0,Math.PI/3,Math.PI*2/3]){
+          const x=Math.cos(a)*.17,y=Math.sin(a)*.17;
+          rod([.5-x,1.15-y,z],[.5+x,1.15+y,z],.014,symbol);
+        }
+      }else{
+        for(const sign of [-1,1]){
+          stitch(.5+sign*.17,1.33,.5+sign*.11,1.05);
+          stitch(.5+sign*.11,1.05,.5+sign*.04,1.25);
+        }
+        stitch(.36,1.15,.64,1.15);
+      }
+    }
+  }
+
+  function factionDecoration({box,shell,rod},{model,tile,base,trim}){
+    const foot=(width=.36,height=.13)=>box(base,.5-width,0,.5-width,.5+width,height,.5+width);
+    const jewel=(x,y,z,r)=>shell([
+      [x,y-r,z,.012,.012],[x,y,z,r,r],[x,y+r,z,.012,.012]
+    ],tile,tile,8,Math.PI/8);
+    const medallion=(y,r,thickness,material=tile,sides=8)=>shell([
+      [.5,.485-thickness,y,r,r],[.5,.485+thickness,y,r,r]
+    ],material,material,sides,Math.PI/sides,([x,depth,z])=>[x,z,1-depth]);
+
+    switch(model){
+      case "frostBrazier":
+        box(base,.10,0,.19,.90,.15,.81);
+        box(stone,.13,.15,.22,.87,.30,.78,blue);
+        box(coal,.20,.30,.27,.80,.345,.73);
+        for(const x of [.14,.79]){
+          box(trim,x,.28,.19,x+.075,.40,.81);
+          for(const z of [.26,.66])box(iron,x,.23,z,x+.075,.58,z+.07);
+        }
+        for(const [x,h] of [[.26,.55],[.39,.73],[.54,.85],[.66,.58],[.76,.64]]){
+          shell([[x,.32,.50,.10,.125],[x,.46,.51,.082,.085],[x+.042,h,.47,.011,.015]],tile,tile,4,Math.PI/4);
+        }
+        break;
+      case "felTripod":
+        for(let i=0;i<3;i++){
+          const a=i*Math.PI*2/3+.25, dx=Math.cos(a),dz=Math.sin(a);
+          const x=.5+dx*.39,z=.5+dz*.39;
+          box(iron,x-.046,0,z-.046,x+.046,.09,z+.046);
+          rod([x,.07,z],[.5+dx*.16,.57,.5+dz*.16],.055,iron,iron,6);
+          rod([.5+dx*.16,.54,.5+dz*.16],[.5+dx*.30,.70,.5+dz*.30],.04,base);
+        }
+        shell([[.5,.53,.5,.15,.15],[.5,.56,.5,.29,.29],[.5,.68,.5,.34,.34],[.5,.655,.5,.23,.23]],
+          iron,trim,6,Math.PI/6);
+        shell([[.50,.61,.50,.148,.141],[.51,.79,.50,.126,.111],[.59,.97,.43,.012,.013]],tile,tile,6,.2);
+        shell([[.37,.63,.51,.083,.073],[.35,.74,.53,.063,.061],[.29,.86,.54,.01,.01]],tile,tile,4);
+        break;
+      case "dawnLantern":
+        shell([[.5,0,.5,.23,.23],[.5,.10,.5,.27,.27],[.5,.20,.5,.19,.19]],brass,base,12);
+        shell([[.5,.19,.5,.14,.14],[.5,.32,.5,.25,.25],[.5,.54,.5,.26,.26],
+          [.5,.65,.5,.16,.16]],tile,tile,12,Math.PI/12);
+        for(let i=0;i<6;i++){
+          const a=i*Math.PI/3,dx=Math.cos(a),dz=Math.sin(a);
+          rod([.5+dx*.17,.18,.5+dz*.17],[.5+dx*.28,.42,.5+dz*.28],.022,brass);
+          rod([.5+dx*.28,.42,.5+dz*.28],[.5+dx*.16,.66,.5+dz*.16],.022,brass);
+        }
+        shell([[.5,.63,.5,.19,.19],[.5,.72,.5,.16,.16],[.5,.79,.5,.066,.066]],brass,base,10);
+        for(let i=0;i<8;i++){
+          const a=i*Math.PI/4,b=a+Math.PI/4;
+          rod([.5+.08*Math.cos(a),.86+.08*Math.sin(a),.5],
+            [.5+.08*Math.cos(b),.86+.08*Math.sin(b),.5],.017,brass);
+        }
+        break;
+      case "spiritPod":
+        foot(.36,.08);
+        for(const sign of [-1,1]){
+          const outer=.5+sign*.33,upper=.5+sign*.19;
+          rod([outer,.07,.50],[outer,.58,.54],.039,wood);
+          rod([outer,.58,.54],[upper,.77,.54],.036,wood);
+          rod([upper,.77,.54],[.50,.91,.52],.032,wood);
+        }
+        rod([.50,.89,.52],[.50,.65,.52],.019,wood);
+        shell([[.5,.27,.5,.045,.047],[.5,.42,.5,.151,.136],[.5,.56,.5,.171,.143],
+          [.5,.68,.5,.066,.058]],tile,foliage,8,Math.PI/8);
+        for(let i=0;i<5;i++){
+          const a=i*Math.PI*.4,x=.5+Math.cos(a)*.20,z=.5+Math.sin(a)*.18;
+          shell([[.5,.27,.5,.021,.023],[x,.44,z,.067,.058],[.5+(x-.5)*.70,.65,.5+(z-.5)*.70,.012,.014]],
+            foliage,wood,6,0,undefined,[.86,1.15,.81]);
+        }
+        break;
+      case "catalystLamp":
+        box(iron,.19,0,.24,.81,.11,.76);
+        shell([[.5,.10,.5,.21,.21],[.5,.18,.5,.19,.19]],copper,brass,10);
+        shell([[.5,.18,.5,.124,.124],[.5,.74,.5,.124,.124]],tile,tile,12,Math.PI/12);
+        shell([[.5,.70,.5,.17,.17],[.5,.77,.5,.18,.18],[.5,.83,.5,.084,.084]],copper,brass,10);
+        for(const x of [.25,.75]){
+          rod([x,.11,.50],[x,.64,.50],.033,copper);
+          rod([x,.64,.50],[.50,.80,.50],.033,brass);
+        }
+        for(const y of [.28,.47,.62]){
+          shell([[.5,y,.5,.145,.145],[.5,y+.018,.5,.145,.145]],glaze,glaze,12);
+        }
+        break;
+      case "leagueLantern":
+        box(iron,.24,0,.24,.76,.10,.76);
+        box(copper,.29,.10,.29,.71,.17,.71);
+        box(tile,.31,.17,.31,.69,.61,.69);
+        for(const x of [.28,.66])for(const z of [.28,.66])box(iron,x,.15,z,x+.06,.65,z+.06);
+        box(iron,.27,.39,.285,.73,.427,.715);
+        shell([[.5,.63,.5,.39,.39],[.5,.76,.5,.23,.23],[.5,.82,.5,.14,.14]],wood,iron,4,Math.PI/4);
+        rod([.50,.77,.50],[.50,.92,.50],.041,iron);
+        rod([.48,.91,.50],[.65,.91,.50],.026,iron);
+        break;
+      case "reliquary":
+        foot(.34,.10);
+        box(base,.19,.10,.25,.81,.38,.75);
+        box(brass,.17,.37,.23,.83,.43,.77);
+        for(const x of [.22,.72]){
+          box(brass,x,.10,.23,x+.06,.43,.76);
+          box(tile,x-.02,.225,.22,x+.08,.27,.24);
+        }
+        medallion(.62,.22,.061,brass,12);
+        medallion(.62,.154,.078,tile,12);
+        for(let i=0;i<8;i++){
+          const a=i*Math.PI/4,x=Math.cos(a),y=Math.sin(a);
+          rod([.5+x*.19,.62+y*.19,.418],[.5+x*.30,.62+y*.30,.411],.019,brass);
+        }
+        break;
+      case "orb":
+        foot(.34);
+        shell([[.5,.13,.5,.275,.275],[.5,.24,.5,.22,.22]],trim);
+        for(let i=0;i<8;i++){
+          const angle=i*Math.PI/4, x=.5+Math.cos(angle)*.30,z=.5+Math.sin(angle)*.30;
+          jewel(x,.28,z,.050);
+        }
+        shell([[.5,.40,.5,.035,.035],[.5,.435,.5,.113,.113],[.5,.51,.5,.181,.181],
+          [.5,.61,.5,.205,.205],[.5,.71,.5,.181,.181],[.5,.785,.5,.113,.113],[.5,.82,.5,.035,.035]],
+          tile,tile,12,Math.PI/12);
+        break;
+      case "spires":
+        foot(.37,.085);
+        for(const [x,z,h,dx,dz,r] of [[.5,.53,.91,.025,.02,.16],[.33,.43,.55,-.12,-.09,.10],
+          [.65,.42,.64,.12,-.07,.095],[.48,.69,.46,-.065,.07,.084]]){
+          shell([[x,.06,z,r,r],[x+dx*.72,h*.76,z+dz*.72,r*.72,r*.72],[x+dx,h,z+dz,.012,.012]],
+            tile,trim,6,Math.PI/6);
+        }
+        break;
+      case "urn":
+        foot(.25,.09);
+        shell([[.5,.08,.5,.22,.22],[.5,.19,.5,.30,.30],[.5,.37,.5,.33,.33],
+          [.5,.56,.5,.27,.27],[.5,.68,.5,.17,.17]],tile,base,12,Math.PI/12);
+        for(const [y,r] of [[.19,.31],[.52,.293],[.68,.205]]){
+          shell([[.5,y,.5,r,r],[.5,y+.044,.5,r,r]],trim);
+        }
+        jewel(.5,.765,.5,.055);
+        break;
+      case "sealedUrn":
+        foot(.30,.10);
+        shell([[.5,.10,.5,.29,.29],[.5,.15,.5,.27,.27],[.5,.64,.5,.215,.215],
+          [.5,.72,.5,.265,.265],[.5,.81,.5,.17,.17]],base,coal,8,Math.PI/8);
+        for(const x of [.32,.68]){
+          for(const z of [.32,.68])rod([x,.20,z],[x,.74,z],.045,trim,coal,6);
+        }
+        shell([[.5,.79,.5,.12,.12],[.5,.83,.5,.126,.126],[.5,.872,.5,.09,.09]],tile,tile,6);
+        break;
+      case "abyssThorns":
+        shell([[.5,0,.5,.34,.31],[.5,.16,.5,.43,.39],[.5,.27,.5,.31,.31]],coal,base,8);
+        for(let i=0;i<5;i++){
+          const a=i*Math.PI*.4,x=Math.cos(a),z=Math.sin(a),h=i%2?.83:.65;
+          shell([[.5+x*.27,.18,.5+z*.27,.103,.098],[.5+x*.35,h*.68,.5+z*.35,.074,.065],
+            [.5+x*.18,h,.5+z*.18,.013,.012]],base,tile,6,Math.PI/6);
+        }
+        jewel(.5,.43,.50,.12);
+        break;
+      case "prismGarden":
+        shell([[.5,0,.5,.37,.37],[.5,.10,.5,.44,.44],[.5,.17,.5,.37,.37]],trim,base,10);
+        for(let i=0;i<6;i++){
+          const a=i*Math.PI/3,x=.5+Math.cos(a)*.25,z=.5+Math.sin(a)*.25;
+          const prism=[tile,glaze,brass][i%3];
+          shell([[x,.15,z,.078,.071],[x,.38+(i%2)*.08,z,.084,.077],
+            [x,.49+(i%2)*.08,z,.01,.01]],prism,prism,6);
+        }
+        jewel(.5,.56,.50,.17);
+        break;
+      case "nexusCrown":
+        foot(.24,.13);
+        shell([[.5,.13,.5,.22,.22],[.5,.34,.5,.25,.25],[.5,.49,.5,.39,.39],[.5,.56,.5,.39,.39],
+          [.5,.57,.5,.32,.32],[.5,.49,.5,.29,.29]],tile,base,16,Math.PI/16);
+        for(let i=0;i<8;i++){
+          const a=i*Math.PI/4,dx=Math.cos(a),dz=Math.sin(a);
+          shell([[.5+dx*.31,.48,.5+dz*.31,.066,.066],
+            [.5+dx*.42,i%2?.71:.90,.5+dz*.42,.013,.013]],tile,brass,6);
+        }
+        jewel(.5,.64,.50,.13);
+        break;
+      case "brazier":
+        foot(.40,.12);
+        box(coal,.17,.12,.17,.83,.34,.83);
+        box(tile,.27,.32,.27,.73,.365,.73);
+        for(const x of [.16,.70]){
+          for(const z of [.16,.70])box(base,x,.10,z,x+.14,.54,z+.14);
+          box(iron,x,.34,.25,x+.14,.43,.75);
+          box(iron,.25,.34,x,.75,.43,x+.14);
+        }
+        for(const [x,z,h] of [[.49,.51,.79],[.33,.55,.51],[.66,.46,.61]]){
+          shell([[x,.32,z,.122,.12],[x,.47,z,.094,.091],[x+.03,h,z,.013,.014]],tile,tile,4,Math.PI/4);
+        }
+        break;
+      case "wings":
+      case "horns":
+        foot(.29);
+        shell([[.5,.13,.5,.16,.16],[.5,.36,.5,.13,.13],[.5,.49,.5,.18,.18]],base,trim);
+        jewel(.5,.60,.49,.135);
+        for(const sign of [-1,1]){
+          if(model==="wings"){
+            for(let i=0;i<5;i++){
+              const x=.5+sign*(.35+i*.02),y=.75-i*.073;
+              rod([.5+sign*.085,.48+i*.028,.50],[x,y,.51+i*.012],.029,trim,trim,6);
+              rod([x,y,.51+i*.012],[x+sign*.028,y+.07,.52+i*.012],.012,tile);
+            }
+          }else{
+            shell([[.5+sign*.13,.39,.5,.14,.13],[.5+sign*.30,.57,.5,.087,.08],
+              [.5+sign*.37,.74,.49,.050,.04],[.5+sign*.29,.91,.455,.01,.01]],base,trim,8,Math.PI/8);
+          }
+        }
+        break;
+      case "owl":
+        foot(.29,.105);
+        shell([[.5,.105,.5,.16,.16],[.5,.35,.5,.24,.20],[.5,.47,.5,.25,.22],[.5,.77,.5,.24,.19]],base);
+        for(const x of [.35,.65]){
+          jewel(x,.80,.48,.091);
+          box(trim,x-.094,.27,.43,x+.094,.50,.57);
+          jewel(x,.64,.32,.086);
+          box(base,x-.035,.606,.227,x+.035,.67,.247);
+        }
+        jewel(.5,.56,.30,.062);
+        break;
+      case "planter":
+        box(base,.12,0,.12,.88,.19,.88);
+        box(trim,.085,.19,.085,.915,.265,.915);
+        box(coal,.14,.265,.14,.86,.28,.86);
+        for(const [x,z,h] of [[.32,.34,.72],[.66,.56,.57],[.42,.70,.59]]){
+          const tip=[x,h,z];
+          rod([x,.26,z],tip,.022,foliage);
+          for(const sign of [-1,1])shell([[x,h-.19,z,.026,.026],[x+sign*.082,h-.12,z,.065,.031],
+            [x+sign*.145,h-.059,z,.012,.01]],tile);
+          jewel(...tip,.062);
+        }
+        break;
+      case "chimes":
+        foot(.36,.08);
+        for(const x of [.18,.82])box(base,x-.033,.08,.52,x+.033,.88,.63);
+        box(trim,.12,.84,.49,.88,.91,.67);
+        for(let i=0;i<4;i++){
+          const x=.30+i*.132,y=.28+i*.066;
+          rod([x,.84,.55],[x,.70,.55],.009,base);
+          shell([[x,y,.55,.043,.043],[x,y+.06,.55,.029,.029],[x,.71,.55,.029,.029]],tile,trim,8);
+        }
+        break;
+      case "bells":
+        foot(.39,.10);
+        for(const x of [.13,.81])box(wood,x,.10,.58,x+.06,.68,.68);
+        box(wood,.09,.67,.30,.91,.73,.72);
+        box(base,.12,.73,.36,.88,.795,.69);
+        box(trim,.17,.795,.40,.83,.85,.64);
+        for(const [x,y,r] of [[.28,.31,.091],[.51,.21,.123],[.74,.35,.08]]){
+          rod([x,.69,.48],[x,y+.19,.48],.019,iron);
+          shell([[x,y,.48,r,r],[x,y+.033,.48,r,r],[x,y+.08,.48,r*.71,r*.71],
+            [x,y+.16,.48,r*.48,r*.48]],tile,brass,10);
+          rod([x,y+.03,.48],[x,y-.04,.48],.019,iron);
+        }
+        break;
+      case "vials":
+        foot(.414,.10);
+        box(base,.11,.10,.62,.89,.49,.725);
+        for(const [x,h,r,glass] of [[.23,.58,.09,glaze],[.50,.72,.10,spectral],[.76,.53,.082,brass]]){
+          shell([[x,.10,.43,r*.68,r*.68],[x,.20,.43,r,r],[x,h-.15,.43,r,r],
+            [x,h-.09,.43,r*.48,r*.48],[x,h,.43,r*.48,r*.48]],glass,tile,8,Math.PI/8);
+          box(trim,x-.055,h,.37,x+.055,h+.048,.49);
+        }
+        break;
+      case "retort":
+        foot(.37,.085);
+        shell([[.32,.085,.51,.16,.16],[.32,.29,.51,.21,.20],[.32,.48,.51,.16,.155],
+          [.32,.56,.51,.079,.077]],tile,trim,10,Math.PI/10);
+        rod([.32,.54,.51],[.50,.67,.51],.063,tile);
+        rod([.50,.67,.51],[.643,.59,.51],.056,tile);
+        rod([.643,.59,.51],[.72,.44,.51],.047,trim);
+        shell([[.72,.085,.51,.095,.095],[.72,.29,.51,.10,.10],[.72,.38,.51,.064,.064]],glaze,trim);
+        break;
+      case "eye":
+      case "emblem":
+        foot(.28,.09);
+        rod([.50,.09,.54],[.50,.58,.54],.062,base);
+        medallion(.60,.31,.067,trim,model==="eye"?8:6);
+        medallion(.60,.252,.084,tile,model==="eye"?8:6);
+        if(model==="eye")box(base,.469,.425,.405,.531,.775,.435);
+        else medallion(.60,.115,.10,base,6);
+        break;
+      case "crate":
+        box(tile,.11,.018,.15,.89,.60,.85);
+        for(const x of [.087,.84])for(const z of [.128,.798])box(base,x,0,z,x+.074,.637,z+.074);
+        for(const y of [.085,.37,.55]){
+          box(trim,.087,y,.123,.914,y+.043,.152);
+          box(trim,.087,y,.848,.914,y+.043,.877);
+        }
+        rod([.135,.07,.115],[.87,.55,.115],.035,base);
+        rod([.135,.55,.112],[.87,.07,.112],.035,base);
+        break;
+      case "sign":
+        for(const x of [.15,.79]){
+          rod([x,.012,.71],[x,.75,.53],.036,base);
+          rod([x,.012,.39],[x,.75,.53],.036,base);
+        }
+        box(tile,.095,.30,.455,.905,.755,.565);
+        box(trim,.088,.30,.433,.912,.337,.574);
+        box(trim,.088,.72,.433,.912,.767,.574);
+        for(const x of [.29,.50,.71]){
+          rod([x,.412,.426],[x,.621,.426],.015,brass);
+          jewel(x,.571,.427,.041);
+        }
+        break;
+    }
+  }
+
   function create(block,faces,definitions={}){
+    function sculkVein(p){
+      const {box,rod}=p;
+      // Low creeping Sculk-like membrane + glowing tendril veins hugging the ground
+      box(250,.05,0,.05,.95,.055,.95,[.72,.88,1.02]);
+      rod([.14,.04,.16],[.84,.08,.82],.038,251,251,6,[1.08,.95,1.2]);
+      rod([.84,.04,.18],[.18,.08,.84],.036,251,251,6,[.78,1.18,1.22]);
+      rod([.50,.04,.10],[.50,.07,.90],.032,252,252,6,[.90,1.22,1.26]);
+    }
+    function sculkSensor(p){
+      const {box,shell,rod}=p;
+      // Minecraft Sculk Sensor meets Old God eye-tendrils: fleshy dark base + 4 glowing waving eye-stalks!
+      box(250,.10,0,.10,.90,.28,.90,[.78,.86,1.02]);
+      box(251,.16,.27,.16,.84,.34,.84,[1.08,.88,1.24]);
+      const stalks=[[.24,.24,.18,.20],[.76,.24,.82,.20],[.24,.76,.18,.80],[.76,.76,.82,.80]];
+      for(const [sx,sz,tx,tz] of stalks){
+        rod([sx,.28,sz],[tx,.72,tz],.045,252,252,6,[.86,1.20,1.28]);
+        shell([[tx,.72,tz,.095,.095],[tx,.82,tz,.065,.065]],251,252,6,0,q=>q,[1.15,.85,1.28]);
+      }
+      shell([[.50,.30,.50,.16,.16],[.50,.46,.50,.12,.12]],252,252,8,0,q=>q,[.92,1.25,1.26]);
+    }
+    function sculkCatalyst(p){
+      const {box,shell,rod}=p;
+      // Bone-rimmed dark Sculk Catalyst crowned with ivory teeth around a glowing abyssal eye-maw!
+      box(250,0,0,0,1,.88,1,[.86,.88,1.0]);
+      box(253,.06,.88,.06,.94,.96,.94,[1.08,1.04,.96]);
+      shell([[.50,.89,.50,.34,.34],[.50,.99,.50,.22,.22]],252,252,8,0,q=>q,[1.12,.85,1.28]);
+      for(let i=0;i<8;i++){
+        const a=i*Math.PI/4,bx=.5+Math.cos(a)*.36,bz=.5+Math.sin(a)*.36,tx=.5+Math.cos(a)*.25,tz=.5+Math.sin(a)*.25;
+        rod([bx,.88,bz],[tx,1.06,tz],.038,199,199,5,[1.12,1.08,.96]);
+      }
+    }
     const styles={
       FURNACE:furnace,FIRE:campfire,KITCHEN_STOVE:stove,GLASS_KILN:kiln,METAL_FORGE:forge,
       VILLAGE_LANTERN:lantern,MYCELIUM_LAMP:myceliumLamp,ALCHEMY_BENCH:potionBench,ALCHEMY_STILL:still,ALCHEMY_BALANCE:balance,TORCH:torch,SPECTRAL:spiritLight,PALM_LEAVES:palm,
-      EXPEDITION_CHEST:expeditionChest,EXPEDITION_CHEST_OPEN:data=>expeditionChest(data,true),...QuimiCraftPlantModels.styles
+      SCULK_VEIN:sculkVein,SCULK_SENSOR:sculkSensor,SCULK_CATALYST:sculkCatalyst,
+      EXPEDITION_CHEST:expeditionChest,EXPEDITION_CHEST_OPEN:data=>expeditionChest(data,true),CHEST:expeditionChest,SIGN:woodenSign,...QuimiCraftPlantModels.styles
     };
-    const models=new Map();
+    const models=new Map(),compactBanners=new Map();
     for(const [key,build] of Object.entries(styles)){
       if(block[key]===undefined)continue;
       const data=draw(faces);
@@ -533,10 +937,39 @@ globalThis.QuimiCraftBlockModels=(()=>{
     const plantIds=new Set(Object.keys(QuimiCraftPlantModels.styles).map(key=>block[key]).filter(Number.isInteger));
     for(const [value,def] of Object.entries(definitions)){
       const id=Number(value);
+      if(def.giantPart)continue;
+      if(def.factionDecor){
+        const data=draw(faces);
+        if(def.factionDecor.model==="standard"){
+          factionStandard(data,def.factionDecor);
+          compactBanners.set(id,data.result.map(face=>({...face,
+            vertices:face.vertices.map(([x,y,z])=>[x,y*.51,z]),
+            normal:unit([face.normal[0],face.normal[1]/.51,face.normal[2]])
+          })));
+        }else if(def.factionDecor.model==="grove"){
+          QuimiCraftGrove.decorate(data,def.factionDecor);
+        }else if(def.factionDecor.sculpt){
+          QuimiCraftFactionOrnaments.build(data,def.factionDecor,ornamentTiles);
+        }else factionDecoration(data,def.factionDecor);
+        models.set(id,data.result);
+        continue;
+      }
       if(!def.plant||models.has(id))continue;
       const plant=draw(faces);
       QuimiCraftPlantModels.grass(plant);
       models.set(id,plant.result);plantIds.add(id);
+    }
+    for(const unit of QuimiCraftGrove.giants.values()){
+      if(!unit.bed&&!unit.shape)continue;
+      let full=models.get(unit.base);
+      if(unit.bed){
+        const data=draw(faces),textiles={wood:480,linen:227,blanket:478,root:482,leaf:483};
+        for(const head of [false,true])for(const [x,y,z,w,h,d,finish] of QuimiCraftSurvival.bedBoxes({head,heading:1,canopy:true}))
+          data.box(textiles[finish],x,y,z+(head?1:0),x+w,y+h,z+d+(head?1:0));
+        full=data.result;
+      }
+      if(!full)throw Error("Modelo gigante ausente: "+unit.key);
+      for(const heading of Object.keys(unit.variants).map(Number))for(const [id,model] of QuimiCraftGrove.splitFaces(full,unit,heading,definitions))models.set(id,model);
     }
     const produce=new Map(Object.entries(QuimiCraftPlantModels.produce).map(([id,build])=>{
       const data=draw(faces);build(data);return [id,data.result];
@@ -546,12 +979,15 @@ globalThis.QuimiCraftBlockModels=(()=>{
       doorLeaf(model,half);
       return model.result;
     });
+    const extraIconColors=new Map([[3,[105,111,111]],[54,[153,110,196]],[250,[16,38,54]],
+      [251,[168,82,238]],[252,[86,238,224]],[253,[212,196,166]]]);
     function icon(id,ctx){
       const model=models.get(id)||produce.get(id);
       if(!model)return false;
       const view=unit([.88,.76,-1]),right=unit([1,0,.88]),upper=unit(cross(right,view));
       const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
-      const toScreen=point=>[32+dot(delta(point,[.5,.49,.5]),right)*39,31-dot(delta(point,[.5,.49,.5]),upper)*39];
+      const tall=compactBanners.has(id),center=[.5,tall ? .92 : .49,.5],zoom=tall?30:39;
+      const toScreen=point=>[32+dot(delta(point,center),right)*zoom,31-dot(delta(point,center),upper)*zoom];
       const faces=model
         .filter(f=>dot(f.normal,view)>.01)
         .map(f=>({f,depth:f.vertices.reduce((a,p)=>a+dot(p,view),0)}))
@@ -561,13 +997,14 @@ globalThis.QuimiCraftBlockModels=(()=>{
         const [first,...other]=f.vertices.map(toScreen);
         ctx.moveTo(...first);for(const p of other)ctx.lineTo(...p);
         ctx.closePath();
-        const rgb=(palette.get(f.tile)||QuimiCraftSurfaceArt.color(f.tile)||[226,233,235]).map((c,i)=>Math.min(255,Math.round(c*f.color[i]*1.06)));
+        const rgb=(palette.get(f.tile)||extraIconColors.get(f.tile)||QuimiCraftFactionBuilding.color(f.tile)||QuimiCraftFactions.tileColor(f.tile)||
+          QuimiCraftGrove.color(f.tile)||QuimiCraftSurfaceArt.color(f.tile)||[226,233,235]).map((c,i)=>Math.min(255,Math.round(c*f.color[i]*1.06)));
         ctx.fillStyle=QuimiCraftSurfaceArt.transparentTiles.has(f.tile)?"rgba("+rgb.join(",")+",.63)":"rgb("+rgb.join(",")+")";
         ctx.strokeStyle=ctx.fillStyle;ctx.lineWidth=.45;ctx.stroke();ctx.fill();
       }
       return true;
     }
-    return {models,plantIds,produce,icon,doors};
+    return {models,compactBanners,plantIds,produce,icon,doors};
   }
 
   return {create,paint,glowTiles};

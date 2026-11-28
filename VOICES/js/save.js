@@ -1,22 +1,95 @@
 /* Registered module: save */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("save", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function(){'use strict';const V=window.V;const PREFIX='voices.v1.';
-V.defaultSettings={translation:true,phraseTranslation:true,subtitles:true,muted:true,music:.35,effects:.65,ambience:.55,npcChats:true,npcMovement:true,fontSize:17,highContrast:false,reducedMotion:false,speed:1,assist:false,timeLimits:true,difficulty:1,presentation:false,showPix:false,mode:'solo',teamNames:['Equipe Aurora','Equipe Horizonte'],unlockAll:false};
-V.Save={available:true,memory:{},
- read(key,fallback){try{const raw=localStorage.getItem(PREFIX+key);return raw?JSON.parse(raw):fallback;}catch(e){this.available=false;return this.memory[key]??fallback;}},
- write(key,value){this.memory[key]=value;try{localStorage.setItem(PREFIX+key,JSON.stringify(value));return true;}catch(e){this.available=false;return false;}},
- remove(key){delete this.memory[key];try{localStorage.removeItem(PREFIX+key);}catch(e){this.available=false;}},
- stateValid(s){return s&&s.version===1&&[6,7,8].includes(s.grade)&&Number.isInteger(s.unlocked)&&s.unlocked>=1&&s.unlocked<=6&&typeof s.name==='string'&&s.name.length<=30&&Array.isArray(s.evidence)&&s.evidence.length<=100&&s.evidence.every(x=>typeof x==='string')&&V.PlayableCharacters.includes(s.character)&&Array.isArray(s.completed)&&s.completed.every(x=>Number.isInteger(x)&&x>=1&&x<=6)&&(!s.position||Number.isFinite(s.position.x)&&Number.isFinite(s.position.y))&&['talked','minis','bonus','words','tools','achievements','projects','seenChapters','dialogueHistory','readings','knowledge','residentTalks','observations','fieldGuideSeen','watered','tokens','deliveries'].every(k=>s[k]===undefined||Array.isArray(s[k]))&&(!s.flags||typeof s.flags==='object'&&!Array.isArray(s.flags));},
- load(){const s=this.read('save',null);return this.stateValid(s)?s:null;},
- save(){if(!V.state)return false;V.state.map=V.World?.current?.id||'hub';if(V.Player?.data)V.state.position={x:V.Player.data.x,y:V.Player.data.y};V.state.playSeconds=Math.round(V.Game.playSeconds);V.state.savedAt=new Date().toISOString();const ok=this.write('save',V.state);V.$('#save-status').textContent=ok?'Progresso salvo ✓':'Salve um backup JSON';if(!ok&&!this.warned){this.warned=true;V.UI.toast('Este navegador bloqueou o armazenamento. Exporte um backup no menu de pausa.');}return ok;},
- settings(){const s=Object.assign({},V.defaultSettings,this.read('settings',{}));delete s.teacherPin;return s;},
- applySettings(){const s=V.settings;document.documentElement.style.setProperty('--font',s.fontSize+'px');document.body.classList.toggle('high-contrast',s.highContrast);document.body.classList.toggle('reduced-motion',s.reducedMotion);document.body.classList.toggle('presentation',s.presentation);V.Audio.apply();this.write('settings',s);},
- log(type,detail){const logs=this.read('log',[]);logs.push({at:new Date().toISOString(),type,detail,grade:V.state?.grade||6,team:V.state?.teamIndex||0});this.write('log',logs.slice(-400));},
- download(name,obj){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-};})();
-
+})(function() {
+  (function() {
+    "use strict";
+    const V = window.V;
+    const PREFIX = "voices.v1.";
+    V.defaultSettings = { translation: true, phraseTranslation: true, subtitles: true, muted: true, music: 0.35, effects: 0.65, ambience: 0.55, npcChats: true, npcMovement: true, fontSize: 17, highContrast: false, reducedMotion: false, speed: 1, assist: false, timeLimits: true, difficulty: 1, presentation: false, showPix: false, mode: "solo", teamNames: ["Equipe Aurora", "Equipe Horizonte"], unlockAll: false };
+    V.Save = {
+      available: true,
+      memory: {},
+      read(key, fallback) {
+        try {
+          const raw = localStorage.getItem(PREFIX + key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (e) {
+          this.available = false;
+          return this.memory[key] ?? fallback;
+        }
+      },
+      write(key, value) {
+        this.memory[key] = value;
+        try {
+          localStorage.setItem(PREFIX + key, JSON.stringify(value));
+          return true;
+        } catch (e) {
+          this.available = false;
+          return false;
+        }
+      },
+      remove(key) {
+        delete this.memory[key];
+        try {
+          localStorage.removeItem(PREFIX + key);
+        } catch (e) {
+          this.available = false;
+        }
+      },
+      stateValid(s) {
+        return s && s.version === 1 && [6, 7, 8].includes(s.grade) && Number.isInteger(s.unlocked) && s.unlocked >= 1 && s.unlocked <= 6 && typeof s.name === "string" && s.name.length <= 30 && Array.isArray(s.evidence) && s.evidence.length <= 100 && s.evidence.every((x) => typeof x === "string") && V.PlayableCharacters.includes(s.character) && Array.isArray(s.completed) && s.completed.every((x) => Number.isInteger(x) && x >= 1 && x <= 6) && (!s.position || Number.isFinite(s.position.x) && Number.isFinite(s.position.y)) && ["talked", "minis", "bonus", "words", "tools", "achievements", "projects", "seenChapters", "dialogueHistory", "readings", "knowledge", "residentTalks", "observations", "fieldGuideSeen", "watered", "tokens", "deliveries"].every((k) => s[k] === void 0 || Array.isArray(s[k])) && (!s.flags || typeof s.flags === "object" && !Array.isArray(s.flags));
+      },
+      load() {
+        const s = this.read("save", null);
+        return this.stateValid(s) ? s : null;
+      },
+      save() {
+        if (!V.state) return false;
+        V.state.map = V.World?.current?.id || "hub";
+        if (V.Player?.data) V.state.position = { x: V.Player.data.x, y: V.Player.data.y };
+        V.state.playSeconds = Math.round(V.Game.playSeconds);
+        V.state.savedAt = (new Date()).toISOString();
+        const ok = this.write("save", V.state);
+        V.$("#save-status").textContent = ok ? "Progresso salvo \u2713" : "Salve um backup JSON";
+        if (!ok && !this.warned) {
+          this.warned = true;
+          V.UI.toast("Este navegador bloqueou o armazenamento. Exporte um backup no menu de pausa.");
+        }
+        return ok;
+      },
+      settings() {
+        const s = Object.assign({}, V.defaultSettings, this.read("settings", {}));
+        delete s.teacherPin;
+        return s;
+      },
+      applySettings() {
+        const s = V.settings;
+        document.documentElement.style.setProperty("--font", s.fontSize + "px");
+        document.body.classList.toggle("high-contrast", s.highContrast);
+        document.body.classList.toggle("reduced-motion", s.reducedMotion);
+        document.body.classList.toggle("presentation", s.presentation);
+        V.Audio.apply();
+        this.write("settings", s);
+      },
+      log(type, detail) {
+        const logs = this.read("log", []);
+        logs.push({ at: (new Date()).toISOString(), type, detail, grade: V.state?.grade || 6, team: V.state?.teamIndex || 0 });
+        this.write("log", logs.slice(-400));
+      },
+      download(name, obj) {
+        const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1e3);
+      }
+    };
+  })();
 });

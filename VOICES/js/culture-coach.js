@@ -1,16 +1,34 @@
 /* Registered module: culture-coach */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("culture-coach", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function cultureCoach(){
-'use strict';const V=window.V,K=V.CultureChallenges;
-const original=K.frame.bind(K);
-const hints={loom:['Escolha o motivo e observe a prévia.','Passe a lançadeira para construir a primeira linha.'],press:['Abra a ficha de um bloco tipográfico.','Agora coloque o bloco numa célula livre da folha.'],stage:['Programe um movimento para a primeira personagem.','Use Ensaiar para assistir às ações simultâneas.'],oware:['Selecione uma casa com sementes.','Confira a previsão e use Semear.']};
-K.frame=function(body,footer){original(body,footer);const r=this.run(),s=this.ensure();s.coached||={};if(!r||r.stage>0||s.coached[r.game]||r.moves>0){if(r&&r.moves>0&&!s.coached[r.game]){s.coached[r.game]=true;V.Save.save();}return;}
- const second=r.game==='press'&&r.data.inspected?.length||r.game==='stage'&&r.data.programs?.some(p=>p.length)||r.game==='oware'&&r.data.selected!==null;const selector={loom:second?'#loom-weave':'#loom-pattern',press:second?'[data-press-cell]':'[data-press-piece]',stage:second?'#stage-play':'[data-stage-add]',oware:second?'#oware-sow':'[data-oware-pit]:not([disabled])'}[r.game];const target=V.$(selector);if(!target)return;
- target.classList.add('culture-rgb-focus');const message=document.createElement('p');message.className='culture-coach-line';message.textContent='PIX · '+hints[r.game][second?1:0];V.$('.culture-progress')?.after(message);};
-})();
-
+})(function() {
+  (function cultureCoach() {
+    "use strict";
+    const V = window.V, K = V.CultureChallenges;
+    const original = K.frame.bind(K);
+    const hints = { loom: ["Escolha o motivo e observe a pr\xE9via.", "Passe a lan\xE7adeira para construir a primeira linha."], press: ["Abra a ficha de um bloco tipogr\xE1fico.", "Agora coloque o bloco numa c\xE9lula livre da folha."], stage: ["Programe um movimento para a primeira personagem.", "Use Ensaiar para assistir \xE0s a\xE7\xF5es simult\xE2neas."], oware: ["Selecione uma casa com sementes.", "Confira a previs\xE3o e use Semear."] };
+    K.frame = function(body, footer) {
+      original(body, footer);
+      const r = this.run(), s = this.ensure();
+      s.coached ||= {};
+      if (!r || r.stage > 0 || s.coached[r.game] || r.moves > 0) {
+        if (r && r.moves > 0 && !s.coached[r.game]) {
+          s.coached[r.game] = true;
+          V.Save.save();
+        }
+        return;
+      }
+      const second = r.game === "press" && r.data.inspected?.length || r.game === "stage" && r.data.programs?.some((p) => p.length) || r.game === "oware" && r.data.selected !== null;
+      const selector = { loom: second ? "#loom-weave" : "#loom-pattern", press: second ? "[data-press-cell]" : "[data-press-piece]", stage: second ? "#stage-play" : "[data-stage-add]", oware: second ? "#oware-sow" : "[data-oware-pit]:not([disabled])" }[r.game];
+      const target = V.$(selector);
+      if (!target) return;
+      target.classList.add("culture-rgb-focus");
+      const message = document.createElement("p");
+      message.className = "culture-coach-line";
+      message.textContent = "PIX \xB7 " + hints[r.game][second ? 1 : 0];
+      V.$(".culture-progress")?.after(message);
+    };
+  })();
 });

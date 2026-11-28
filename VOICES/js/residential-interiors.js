@@ -221,8 +221,8 @@
 
   const sync=R.sync.bind(R);
   R.sync=function(maps){const out=sync(maps);for(const id of Object.keys(maps))if(authored[id])D.defaults[id]=copy(authored[id]);return out;};
-  const init=W.init.bind(W);
-  W.init=function(...args){const out=init(...args);Object.keys(authored).forEach(syncEntrance);return out;};
+  
+  V.Hooks.around(V.World, "init", "residential-interiors:init:1", init => function(...args){const out=init(...args);Object.keys(authored).forEach(syncEntrance);return out;});
 
   const dynamic=R.composeDynamic.bind(R);
   R.composeDynamic=function(m,d){const out=dynamic(m,d);addWindows(m);return out;};
@@ -258,9 +258,9 @@
     rug(c,design.rug,palette.rug);rug(c,{...design.mat,w:92,h:32},palette.rug);c.restore();return result;
   };
 
-  const start=V.Game.startGame.bind(V.Game);
+  
   let previousHousing;
-  V.Game.startGame=function(...args){
+  V.Hooks.around(V.Game, "startGame", "residential-interiors:startGame:1", start => function(...args){
     const housing=H.ensure();
     if(!housing.residentialPlans||typeof housing.residentialPlans!=='object'||Array.isArray(housing.residentialPlans))housing.residentialPlans={};
     for(const home of H.data.offers){
@@ -278,7 +278,7 @@
     }
     previousHousing=housing;
     return start(...args);
-  };
+  });
 
   V.ResidentialInteriors={authored,legacy};
 });

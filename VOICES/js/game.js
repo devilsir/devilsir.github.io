@@ -1,42 +1,599 @@
 /* Registered module: game */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("game", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function(){'use strict';const V=window.V;const esc=V.escape;
-V.Game={screen:'title',mode:'explore',playSeconds:0,autosave:0,tutorialTime:0,lastHUD:0,
- async init(){V.settings=V.Save.settings();V.Save.applySettings();V.Living.initContent();V.Teacher.init();V.Input.init();this.bind();V.$('#notebook-button').onclick=()=>V.Living.journal('missions');await V.ProfessorStudio?.startPromise;V.Performance?.configure();await V.Assets.load();await V.AssetLoader.ready();await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));V.ObjectEditing.wrapDraw(V.Cozy);V.World.init();V.SceneDesign.load();if(Object.keys(V.SceneDesign.saved).length)V.World.init();V.Engine.init();V.$('#loading').hidden=true;this.toTitle();this.iconPositions();window.addEventListener('beforeunload',()=>{if(V.state&&this.screen==='game')V.Save.save();});document.addEventListener('visibilitychange',()=>{if(document.hidden&&V.state){V.Save.save();if(this.screen==='game'&&!V.modal)this.pause('A aventura foi pausada enquanto a aba estava em segundo plano.');}});},
- iconPositions(){const map={inventory:0,journal:1,map:2,translate:3,scan:4,source:5};V.$$('[data-icon]').forEach(el=>el.style.backgroundPosition=`-${map[el.dataset.icon]*24}px 0`);},
- bind(){const click=(id,fn)=>{V.$(id).onclick=()=>{V.Audio.unlock();V.Audio.sfx('menu');fn();};};click('#new-game',()=>{if(V.Save.load())V.UI.confirm('Começar outra aventura?','O novo jogo substituirá o progresso salvo. Você pode exportar um backup pelo menu de pausa antes de continuar.',()=>this.creation());else this.creation();});click('#continue-game',()=>{const s=V.Save.load()||V.state;if(s)this.loadState(s);});click('#teacher-button',()=>V.Teacher.open());click('#settings-button',()=>this.settings());click('#credits-button',()=>this.credits());click('#title-sound',()=>{V.settings.muted=!V.settings.muted;V.Save.applySettings();this.soundLabel();});click('#inventory-button',()=>V.Quests.inventory());click('#journal-button',()=>V.Quests.journal());click('#map-button',()=>this.map());click('#glossary-button',()=>this.glossary());click('#gallery-button',()=>this.gallery());click('#mission-tracker',()=>V.Quests.journal());const c=V.$('#world-canvas');c.onpointerdown=e=>{const r=c.getBoundingClientRect();const scale=Math.min(r.width/960,r.height/540);const x=(e.clientX-r.left-(r.width-960*scale)/2)/scale,y=(e.clientY-r.top-(r.height-540*scale)/2)/scale;if(V.modal||V.Dialogue.active)return;if(this.mode==='minigame')V.Minigames.pointer(x,y);else if(this.mode==='combat')V.Combat.pointer(x,y);else{const cam=V.World.camera;const targets=V.World.interactables().filter(o=>V.dist(o,V.Player.data)<(o.interactionRange||82)).map(o=>({o,d:Math.hypot(x-(o.x-cam.x),y-(o.y-cam.y-24))})).sort((a,b)=>a.d-b.d);if(targets[0]?.d<64)this.interact(targets[0].o);}};},
- soundLabel(){V.$('#title-sound').textContent='Áudio: '+(V.settings.muted?'desligado':'ligado');},
- toTitle(){V.UI.close();if(V.Dialogue.active){V.Dialogue.active=false;V.$('#dialogue-root').innerHTML='';}V.Minigames.cancel();V.Combat.active=null;this.screen='title';this.mode='explore';V.$('#game-screen').hidden=true;V.$('#title-screen').hidden=false;V.$('#continue-game').hidden=!V.Save.load();V.Audio.setTheme('menu');this.soundLabel();V.Input.clear();},
- creation(){let character='nia',cosmetic='#27c8d8';V.UI.modal('Quem vai conduzir a investigação?','Todos os personagens fazem parte da equipe THE VOICES.',`<div class="character-grid">${V.PlayableCharacters.map(id=>{const c=V.content.characters[id];return `<button class="character-card ${id===character?'selected':''}" data-character="${id}">${V.UI.fullBody(id)}<b>${esc(c.name)}</b><small>${esc(c.role)}</small></button>`;}).join('')}</div><div id="character-quote" class="note" style="margin-top:18px">${esc(V.content.characters[character].quote)}</div><div class="two-cols" style="margin-top:18px"><label class="field">Nome da aventura<input id="creation-name" value="${esc(V.content.characters[character].name)}" maxlength="30" autocomplete="off"></label><div class="field"><span>Cor do emblema</span><div class="swatches">${['#27c8d8','#f4b85a','#e96687','#b18aff'].map(color=>`<button class="swatch ${color===cosmetic?'selected':''}" style="background:${color}" data-color="${color}" aria-label="Emblema ${color}"></button>`).join('')}</div></div></div><label class="field" style="margin-top:18px">Modo de jogo<select id="creation-mode"><option value="solo">Aventura individual</option><option value="projector">Equipes / projetor</option><option value="teams">Equipes com papéis rotativos</option></select></label>`,`<button id="creation-begin" class="primary">Entrar em New Harmony →</button>`);V.UI.paintCharacterPreviews();V.$('#creation-mode').value=V.settings.mode;V.$$('[data-character]').forEach(b=>b.onclick=()=>{character=b.dataset.character;V.$$('[data-character]').forEach(x=>x.classList.toggle('selected',x===b));const info=V.content.characters[character];V.$('#character-quote').textContent=info.quote;V.$('#creation-name').value=V.content.characters[character].name;});V.$$('[data-color]').forEach(b=>b.onclick=()=>{cosmetic=b.dataset.color;V.$$('[data-color]').forEach(x=>x.classList.toggle('selected',x===b));});V.$('#creation-begin').onclick=()=>{const name=V.$('#creation-name').value.trim()||V.content.characters[character].name;V.settings.mode=V.$('#creation-mode').value;V.settings.presentation=V.settings.mode==='projector';V.Save.applySettings();V.UI.close();this.newState({grade:7,character,name,cosmetic});this.startGame();this.intro();};},
- newState(opts){V.state={version:1,name:opts.name||'Nia',character:opts.character||'nia',cosmetic:opts.cosmetic||'#27c8d8',grade:7,map:'hub',position:null,unlocked:1,completed:[],evidence:[],talked:[],minis:[],bonus:[],words:[],tools:['PIX Tradutor'],achievements:[],flags:{},projects:[],dialogueHistory:[],seenChapters:[],teamIndex:0,roleIndex:0,playSeconds:0,savedAt:null};V.Living.ensure();this.playSeconds=0;this.tutorialTime=0;V.Save.remove('log');V.Save.log('início','Nova aventura em New Harmony');},
- loadState(state){if(!V.Save.stateValid(state)){V.UI.toast('O progresso salvo não é compatível.');return;}const defaults={bonus:[],words:[],tools:['PIX Tradutor'],achievements:[],flags:{},projects:[],dialogueHistory:[],seenChapters:[],talked:[],minis:[],teamIndex:0,roleIndex:0};V.state=Object.assign(defaults,state);this.playSeconds=Number(state.playSeconds)||0;this.startGame();if(!V.state.flags.prologueStarted&&!V.state.flags.prologueDone&&!V.Homestead?.ensure()?.sleep)this.intro();else if(V.state.finished)this.ending();},
- startGame(){V.Living.ensure();this.screen='game';this.mode='explore';V.$('#title-screen').hidden=true;V.$('#game-screen').hidden=false;V.World.load(V.state.map,V.state.position);this.updateHUD();V.$('#world-canvas').focus();V.Audio.unlock();},
- intro(){const frames=[['O ARQUIVO DA CIDADE','New Harmony guarda histórias, conhecimentos e criações. Hoje, alguns nomes começaram a desaparecer.'],['UMA FALHA NO SISTEMA','O festival perdeu créditos. O museu ficou cheio de lacunas. Quem está escolhendo o que merece ser lembrado?'],['THE VOICES','A equipe THE VOICES inicia a investigação. PIX encontrou o primeiro sinal na praça. Sua aventura começa agora.']];let index=0;const show=()=>{const f=frames[index];V.UI.modal(f[0],'NEW HARMONY / SINAL CORROMPIDO',`<div class="ending-art"></div><p>${f[1]}</p><div class="row"><span class="chip">${index+1} / 3</span></div>`,`<button id="intro-next" class="primary">${index===2?'Explorar a praça':'Continuar'} →</button>`);V.$('#intro-next').onclick=()=>{index++;if(index<frames.length)show();else{V.UI.close();this.tutorialTime=0;V.UI.toast('WASD ou setas para mover · E para conversar.');}};};show();},
- prologue(){if(V.state.flags.prologueDone){V.Dialogue.start([{speaker:'pix',en:{6:'Every story deserves to be heard.',7:'The records showed many voices. Let’s keep listening.',8:'The archive gets stronger when its sources are checked and more voices participate.'},pt:'Os portais levam às regiões. O diário registra as pistas que ainda precisamos buscar.'}]);return;}V.state.flags.prologueStarted=true;V.Dialogue.start([{speaker:'pix',en:{6:'Hello! I am PIX. We have a problem.',7:'Hi! I found a strange signal in the city archive.',8:'Hello! Some records are corrupted, and the missing names are not random.'},pt:'Oi! Sou PIX. Encontrei um sinal estranho: os registros da cidade estão perdendo nomes.'},{speaker:'pix',en:{6:'I can translate. A source is not a water fountain. Usually.',7:'I translate source as fonte. Please do not drink the evidence.',8:'Source means fonte. My last translation involved a fountain. I have updated that setting.'},pt:'Posso traduzir source como fonte. Fonte de informação, tá? A água da praça não serve como evidência.'},{speaker:'nia',en:{6:'Let’s recover the words and follow the signal.',7:'We should recover the words before we investigate the festival.',8:'Recovering the words is our first step. Then we can follow the evidence to the festival.'},pt:'Recupere algumas palavras com PIX. Depois vamos ao Distrito do Ritmo investigar o festival.'}],()=>V.Minigames.launch('runner',()=>{V.state.flags.prologueDone=true;V.state.bonus.push('intro-memory');V.Quests.word('memory');V.Game.updateHUD();V.Save.save();V.Dialogue.start([{speaker:'sol',en:{6:'The festival needs us. Let’s go!',7:'The festival lost its credits. Let’s take the first portal!',8:'The festival is our first investigation. We need the stories behind the music, as well as the sound.'},pt:'O festival precisa da equipe. Abra Regiões (M) ou encontre o portal 1. O Caderno (K) reúne missões da comunidade, livros e notas.'}]);},{short:true}));},
- enterChapter(id){if(!V.Quests.isUnlocked(id)){V.UI.toast('Conclua a região anterior para liberar este portal.');return;}if(!V.state.flags.prologueDone){V.UI.toast('Encontre PIX na praça e complete o primeiro desafio.');return;}V.UI.close();this.screen='game';V.$('#title-screen').hidden=true;V.$('#game-screen').hidden=false;this.mode='explore';V.World.load('chapter-'+id);if(!V.state.seenChapters.includes(id)){V.state.seenChapters.push(id);V.Dialogue.start(V.content.chapters[id-1].intro);}V.Save.save();},
- interact(o){if(!o||V.modal||V.Dialogue.active)return;if(V.Living.interact(o))return;V.Player.data.actionTime=.8;V.Audio.sfx('menu');switch(o.type){case'npc':if(o.hub){if(o.character==='pix'||!V.state.flags.prologueDone)this.prologue();else if(o.character==='nia')V.Dialogue.start([{speaker:'nia',en:{6:'Check the source. Ask a question.',7:'Who made this record? When was it written?',8:'We should ask who selected these records and which perspectives are missing.'},pt:'Antes de concluir, confira quem criou o registro, quando e com quais perspectivas.'}]);else V.Dialogue.start([{speaker:o.character,en:{6:'I can help at the festival!',7:'I helped at the library. There were more stories inside.',8:'I joined the archive group because there are still stories we have not documented.'},pt:'A biblioteca guarda uma palavra rara e outros desafios. Você pode entrar para explorar.'}]);}else if(o.library)V.Dialogue.start([{speaker:'librarian',en:{6:'Books keep stories. People keep them alive.',7:'We stored many records here. You can read the sources.',8:'The archive needs sources, but it also needs people who can question and maintain its records.'},pt:'Consulte as fontes no painel da sala. Uma coleção sempre precisa de contexto e pessoas que cuidem dela.'}]);else V.Quests.talk(o);break;case'clue':V.Quests.collect(o.clue);break;case'portal':this.enterChapter(o.chapter);break;case'station':V.Quests.challenge(o.chapter);break;case'boss':V.Combat.start(o.chapter);break;case'door':V.UI.close();V.World.load(o.to);break;case'exit':V.World.load(o.to||'hub');break;case'bonus':V.Quests.bonus(o);break;case'side':V.Minigames.launch('runner',()=>{V.Quests.word('knowledge');V.UI.toast('Palavras recuperadas. Explore mais registros!');V.Save.save();});break;case'terminal':this.practice(o.chapter||1);break;case'fountain':V.Dialogue.start([{speaker:'pix',en:{6:'This fountain has water. Our sources have information.',7:'This fountain was not a historical source. My translation is improving.',8:'Different words can share a translation. Context helps us choose the meaning.'},pt:'Fonte de água e fonte de informação: contexto faz diferença. Minha tradução tá ficando afiada.'}]);break;case'sign':if(o.sources)this.credits();else if(o.chapter)this.regionSign(o.chapter);else this.map();break;}},
- regionSign(id){if(id===4&&(V.state.flags.networkCare||V.state.flags.networkSources)){V.UI.modal('Canal de contexto e apoio','A sua decisão deixou um novo registro na rede.',`<div class="note">${V.state.flags.networkCare?'Acolhimento: registrar a situação, proteger a privacidade e buscar apoio na escola.':'Verificação: publicar fontes, explicar a correção e proteger a pessoa atingida.'}</div><p style="margin-top:15px">Os dois caminhos podem se complementar. O canal receberá novas correções.</p>`);return;}if(id===5&&V.state.projects.length){V.UI.modal('Plano comunitário','Projetos escolhidos pela equipe.',`<p>Projetos: ${V.state.projects.map(esc).join(', ')}</p><div class="note">Revisão: ${V.state.flags.cityFollowup==='monthly'?'em um mês':'ao longo de um trimestre'}. Moradores vão registrar barreiras que ainda precisam ser enfrentadas.</div>`);return;}V.UI.modal('Painel de investigação',V.content.chapters[id-1].name,`<p>${esc(V.content.chapters[id-1].objective)}</p><div class="note">${esc(V.content.chapters[id-1].takeaway)}</div>`,`<button id="panel-journal" class="primary">Ver objetivos</button>`);V.$('#panel-journal').onclick=()=>V.Quests.journal();},
- update(dt){if(this.screen!=='game'||!V.state)return;if(V.Dialogue.active)V.Dialogue.update(dt);if(V.modal||V.Dialogue.active)return;this.playSeconds+=dt;if(this.scanTimer>0){this.scanTimer-=dt;if(this.scanTimer<=0)this.scanTarget=null;}V.Engine.updateParticles(dt);if(this.mode==='explore'){V.Player.update(dt);V.World.update(dt);if(V.Input.tap('e')||V.Input.tap('enter'))this.interact(V.World.nearest);this.tutorialTime+=dt;if(!V.state.flags.prologueDone){V.$('#tutorial-hint').hidden=false;V.$('#tutorial-hint').innerHTML=V.Player.moved<80?'Mova-se com <kbd>W A S D</kbd> ou <kbd>↑ ← ↓ →</kbd>. No celular, use o joystick.':'✓ Movimento aprendido. Aproxime-se de <strong>PIX</strong> e pressione <kbd>E</kbd>. O robô está perto do centro da praça.';}else V.$('#tutorial-hint').hidden=true;}else if(this.mode==='minigame')V.Minigames.update(dt);else if(this.mode==='combat')V.Combat.update(dt);this.autosave+=dt;if(this.autosave>15){this.autosave=0;V.Save.save();}},
- render(ctx){if(this.screen!=='game'||!V.state)return;if(this.mode==='explore')V.World.render(ctx);else if(this.mode==='minigame')V.Minigames.render(ctx);else if(this.mode==='combat')V.Combat.render(ctx);},
- setWorldHUD(on){V.$('#community-hud').hidden=!on||!V.state?.flags.prologueDone;V.$('.mission-hud').hidden=!on;V.$('#minimap-box').hidden=!on;V.$('#tutorial-hint').hidden=!on||V.state?.flags.prologueDone;V.$('#interact-hint').hidden=!on;},
- updateHUD(){if(!V.state)return;V.$('#hud-portrait').src='assets/characters/'+V.state.character+'-portrait.png';V.$('#player-name').textContent=V.state.name;V.$('#player-grade').textContent='Forasteiro';V.$('#evidence-count').textContent=V.state.evidence.length+' registros';const c=V.Quests.current();if(!V.state.flags.prologueDone){V.$('#chapter-chip').textContent='PRÓLOGO / SINAL 01';V.$('#mission-name').textContent='Uma falha no arquivo';V.$('#mission-objective').textContent='Encontre PIX e recupere as primeiras palavras.';V.$('#mission-progress').innerHTML='';}else{const s=V.Quests.status(c.id);V.$('#chapter-chip').textContent=`CAPÍTULO ${c.id} / 06`;V.$('#mission-name').textContent=c.name;V.$('#mission-objective').textContent=s.done?'✓ Região restaurada. Explore o próximo portal.':s.clues<3?'Recupere as pistas marcadas com ? ('+s.clues+'/3).':s.talked<2?'Escute os dois moradores ('+s.talked+'/2).':!s.mini?'Restaure o sistema no terminal ◆.':'Confronte '+c.boss.name+' com seus registros.';V.$('#mission-progress').innerHTML=V.Quests.objectives(c.id).map(o=>`<i class="${o.done?'done':''}" title="${esc(o.label)}"></i>`).join('');}V.$('#team-role').textContent=V.settings.mode==='teams'?`${V.settings.teamNames[V.state.teamIndex%V.settings.teamNames.length]} · Papel: ${['Navegação','Investigação','Inglês','Registro'][V.state.roleIndex%4]}`:V.settings.mode==='projector'?'MODO PROJETOR':'';},
- onKey(k,e){if(this.screen!=='game'){if(k==='escape'&&V.modal)V.UI.close();return;}if(k==='escape'){e.preventDefault?.();if(V.modal)V.UI.close();else this.pause();return;}if(V.modal)return;if(V.Dialogue.active){if(['enter','e',' '].includes(k)){if(e.target?.tagName==='BUTTON'&&e.target.id!=='dialogue-next'&&k==='enter')V.Input.pressed.delete(k);else e.preventDefault?.();}if(k==='t'){V.Dialogue.toggle();e.preventDefault?.();}return;}if(this.mode==='explore'){const actions={i:()=>V.Quests.inventory(),j:()=>V.Quests.journal(),k:()=>V.Living.journal('missions'),m:()=>this.map(),g:()=>this.gallery(),t:()=>this.glossary(),p:()=>this.pause()};if(actions[k]){e.preventDefault?.();actions[k]();}}},
- pause(reason=''){if(!V.state)return;V.Save.save();V.UI.modal('Aventura pausada',reason||'O arquivo fica guardado. Retome quando estiver pronto.',`<div class="two-cols"><div class="card"><h3>${esc(V.state.name)}</h3><p>${V.state.completed.length}/6 capítulos · ${V.state.evidence.length} registros<br>${Math.round(this.playSeconds/60)} minutos de exploração</p></div><div class="stack"><button id="pause-resume" class="primary">Retomar aventura</button><button id="pause-settings" class="secondary">Configurações e acessibilidade</button><button id="pause-teacher" class="secondary">Sala do professor</button><button id="pause-discussion" class="secondary">Pausa para discussão</button></div></div><div class="separator"></div><div class="row"><button id="pause-export" class="quiet">Exportar progresso JSON</button><label class="quiet" style="cursor:pointer">Importar progresso<input id="pause-import" type="file" accept=".json" hidden></label><button id="pause-badges" class="quiet">Conquistas</button><button id="pause-title" class="quiet">Salvar e voltar ao início</button></div>${this.mode!=='explore'?'<div class="separator"></div><button id="pause-abort" class="quiet">Sair deste desafio e voltar à exploração</button>':''}`);V.$('#pause-resume').onclick=()=>V.UI.close();V.$('#pause-settings').onclick=()=>this.settings();V.$('#pause-teacher').onclick=()=>V.Teacher.open();V.$('#pause-discussion').onclick=()=>V.Teacher.discussion();V.$('#pause-export').onclick=()=>V.Save.exportSave();V.$('#pause-import').onchange=e=>{if(e.target.files[0])V.Save.importSave(e.target.files[0]);};V.$('#pause-badges').onclick=()=>V.Quests.badges();V.$('#pause-title').onclick=()=>{V.Save.save();this.toTitle();};if(V.$('#pause-abort'))V.$('#pause-abort').onclick=()=>{V.UI.close();V.Minigames.cancel();V.Combat.active=null;this.mode='explore';V.Audio.setTheme(V.World.current.theme);};},
- useTool(i){V.UI.close();if(i===0)this.glossary();else if(i===1)this.credits();else if(i===2)this.gallery();else if(i===3){const clues=V.World.current.objects.filter(o=>o.type==='clue'&&!V.state.evidence.includes(o.id));clues.sort((a,b)=>V.dist(a,V.Player.data)-V.dist(b,V.Player.data));if(clues.length){this.scanTarget=clues[0];this.scanTimer=12;V.Audio.sfx('shield');V.UI.toast('Scanner: siga o traço até '+clues[0].clue.title+'.');}else V.UI.toast('Nenhum registro incompleto nesta área.');}else if(i===4)this.regionSign(4);else if(i===5)this.regionSign(5);else this.gallery();},
- settings(){const s=V.settings;V.UI.modal('Configurações','Ajuste a aventura ao seu ritmo.',`<div class="two-cols"><div class="stack"><label class="field">Tamanho da fonte<select id="s-font"><option value="15">Compacta</option><option value="17">Padrão</option><option value="20">Grande</option><option value="23">Muito grande</option></select></label><label class="field">Velocidade do jogo<select id="s-speed"><option value="0.7">70% · mais calma</option><option value="1">100% · padrão</option><option value="1.2">120% · mais ágil</option></select></label><label class="toggle"><input id="s-contrast" type="checkbox" ${s.highContrast?'checked':''}> Alto contraste</label><label class="toggle"><input id="s-motion" type="checkbox" ${s.reducedMotion?'checked':''}> Reduzir animações e brilho</label><label class="toggle"><input id="s-translation" type="checkbox" ${s.translation?'checked':''}> Traduções automáticas</label><label class="toggle"><input id="s-subtitles" type="checkbox" ${s.subtitles?'checked':''}> Legendas em português</label><label class="toggle"><input id="s-assist" type="checkbox" ${s.assist?'checked':''}> Desafios de reflexo no modo tranquilo</label><label class="toggle"><input id="s-time" type="checkbox" ${s.timeLimits?'checked':''}> Tempo correndo nos desafios de ritmo</label></div><div class="stack"><label class="toggle"><input id="s-muted" type="checkbox" ${s.muted?'checked':''}> Silenciar áudio</label><label class="field">Volume da música<input id="s-music" type="range" class="slider" min="0" max="1" step=".05" value="${s.music}"></label><label class="field">Volume dos ambientes<input id="s-ambience" type="range" class="slider" min="0" max="1" step=".05" value="${s.ambience??.55}"></label><label class="toggle"><input id="s-npc-chats" type="checkbox" ${s.npcChats!==false?'checked':''}> Balões de conversa entre moradores</label><label class="toggle"><input id="s-npc-walk" type="checkbox" ${s.npcMovement!==false?'checked':''}> Moradores e animais em movimento</label><label class="field">Volume dos efeitos<input id="s-effects" type="range" class="slider" min="0" max="1" step=".05" value="${s.effects}"></label><label class="toggle"><input id="s-projector" type="checkbox" ${s.presentation?'checked':''}> Interface para projetor</label><button id="s-fullscreen" class="secondary">Tela cheia</button><div class="note">Controles: WASD ou setas; E interage; J diário; K caderno e missões; I mochila; M regiões; T PIX; G arquivo; Esc pausa. Gamepad: analógico move, A interage e B protege.</div></div></div>`,`<button id="settings-apply" class="primary">Aplicar e voltar</button>`);V.$('#s-font').value=s.fontSize;V.$('#s-speed').value=s.speed;V.$('#s-fullscreen').onclick=()=>{const promise=document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.();promise?.catch(()=>V.UI.toast('Use F11 ou o botão de tela cheia do navegador.'));};V.$('#settings-apply').onclick=()=>{s.fontSize=+V.$('#s-font').value;s.speed=+V.$('#s-speed').value;s.highContrast=V.$('#s-contrast').checked;s.reducedMotion=V.$('#s-motion').checked;s.translation=V.$('#s-translation').checked;s.subtitles=V.$('#s-subtitles').checked;s.assist=V.$('#s-assist').checked;s.timeLimits=V.$('#s-time').checked;s.muted=V.$('#s-muted').checked;s.music=+V.$('#s-music').value;s.effects=+V.$('#s-effects').value;s.ambience=+V.$('#s-ambience').value;s.npcChats=V.$('#s-npc-chats').checked;s.npcMovement=V.$('#s-npc-walk').checked;s.presentation=V.$('#s-projector').checked;V.Save.applySettings();this.soundLabel();V.UI.close();V.Dialogue.translate();V.UI.toast('Preferências aplicadas.');};},
- glossary(){const words=V.Teacher.glossary;V.UI.modal('PIX · Glossário ilustrado','Clique em uma palavra para adicioná-la à coleção.',`<div class="row between"><p style="font-size:.8rem;color:var(--muted)">Palavras colecionadas: ${V.state?.words.length||0}</p><button id="glossary-toggle" class="secondary">${V.settings.translation?'Ocultar':'Mostrar'} tradução automática</button></div><label class="field" style="margin-bottom:16px">Buscar palavra<input id="glossary-search" placeholder="memory, fonte, escutar…"></label><div id="glossary-results" class="three-cols"></div>`);const show=(q='')=>{V.$('#glossary-results').innerHTML=words.filter(w=>(w.en+' '+w.pt).toLowerCase().includes(q.toLowerCase())).map((w,i)=>`<article class="card glossary-card"><span class="icon" style="background-position:-${i%8*24}px 0"></span><button data-word="${esc(w.en)}">${esc(w.en)} <span>${V.state?.words.includes(w.en)?'✓':'+'}</span></button><p class="translation">${esc(w.pt)}</p><p>${esc(w.example)}<br><small>${esc(w.examplePt)}</small></p></article>`).join('');V.$$('[data-word]').forEach(b=>b.onclick=()=>{if(V.state){V.Quests.word(b.dataset.word);V.Save.save();b.querySelector('span').textContent='✓';}V.Audio.sfx('collect');V.UI.toast(b.dataset.word+' · '+words.find(w=>w.en===b.dataset.word).pt);});};show();V.$('#glossary-search').oninput=e=>show(e.target.value);V.$('#glossary-toggle').onclick=()=>{V.settings.translation=!V.settings.translation;V.Save.applySettings();V.$('#glossary-toggle').textContent=(V.settings.translation?'Ocultar':'Mostrar')+' tradução automática';};},
- gallery(id=null){const all=V.content.chapters.flatMap(c=>c.clues);const records=all.filter(c=>V.state.evidence.includes(c.id));V.UI.modal('Arquivo de descobertas','Registros históricos recuperados, com origem e contexto.',`<nav class="tabs"><button id="gallery-records" class="active">Registros (${records.length}/18)</button><button id="gallery-biographies">Biografias</button><button id="gallery-achievements">Conquistas</button><button id="gallery-sources">Fontes e créditos</button></nav><div class="stack">${records.map(c=>{const source=V.content.sources.find(s=>s.id===c.source),bio=V.MuseumBiographies.forClue(c.id);return `<article class="discovery" id="record-${esc(c.id)}"><h3>✓ ${esc(c.title)}</h3><p>${esc(V.Translation.text(c.en,c.pt,c.ptByGrade))}</p><p class="muted" lang="en">${esc(V.lang(c.en))}</p>${V.settings.translation?V.PixCollection.wordsHTML(c.en,'PIX · palavras do registro'):''}${V.MuseumStudies.section('archive',c.id)}${bio?`<p><button type="button" class="secondary" data-gallery-bio="${esc(bio)}" data-gallery-record="${esc(c.id)}">Ler biografia</button></p>`:''}<small>Fonte: ${esc(source?.name||'Referências')}</small>${source?`<br><a href="${esc(source.url)}" target="_blank" rel="noopener noreferrer">${esc(source.url)}</a>`:''}</article>`;}).join('')||'<div class="note">Investigue os objetos marcados com ? para recuperar registros. As fontes já podem ser consultadas nos créditos.</div>'}</div>`);V.$('#gallery-records').onclick=()=>this.gallery();V.$('#gallery-biographies').onclick=()=>V.MuseumBiographies.catalog(()=>this.gallery(id));V.$$('[data-gallery-bio]').forEach(button=>button.onclick=()=>V.MuseumBiographies.open(button.dataset.galleryBio,()=>this.gallery(button.dataset.galleryRecord)));V.$('#gallery-achievements').onclick=()=>V.Quests.badges();V.$('#gallery-sources').onclick=()=>this.credits();if(id)setTimeout(()=>V.$('#record-'+id)?.scrollIntoView({block:'center'}),100);},
- credits(){return V.Credits.open();},
- practice(chapter){const questions=V.Teacher.questions.filter(q=>q.grade===V.state.grade&&q.subject!=='history');const preferred=questions.filter(q=>q.chapter===chapter);const deck=(preferred.length?preferred:questions).slice(0,4);if(!deck.length){V.UI.toast('Ainda não há questões disponíveis. O professor pode adicioná-las.');return;}let i=0;const render=()=>{const q=deck[i];V.UI.modal('Terminal de inglês',`Atividade opcional ${i+1} / ${deck.length}`,`<p>${esc(q.prompt)}</p><div class="stack">${q.options.map((o,n)=>`<button class="choice-button practice-option" data-i="${n}">${String.fromCharCode(65+n)}. ${esc(o)}</button>`).join('')}</div><div id="practice-feedback" class="feedback" hidden></div>`);V.$$('.practice-option').forEach(b=>b.onclick=()=>{const right=+b.dataset.i===q.correct;const f=V.$('#practice-feedback');f.hidden=false;f.className='feedback'+(right?'':' error');f.textContent=(right?'✓ ':'Tente outra alternativa. ')+q.explanation;V.Save.log('inglês',q.id+' · '+(right?'concluída':'nova tentativa'));V.Audio.sfx(right?'correct':'wrong');if(right){V.$$('.practice-option').forEach(b=>b.disabled=true);const next=document.createElement('button');next.className='primary';next.style.marginTop='15px';next.textContent=i===deck.length-1?'Concluir treino':'Próxima questão';next.onclick=()=>{i++;if(i<deck.length)render();else{V.UI.close();V.UI.toast('Treino de inglês concluído.');V.Save.save();}};f.after(next);}});};render();},
- reward(id){V.Player.data.celebrateTime=1.5;const next=V.content.chapters[id];const tools=V.state.tools.at(-1);V.UI.modal('Uma nova voz no arquivo','CAPÍTULO CONCLUÍDO',`<div class="minigame-banner">${V.UI.portrait(V.state.character,1,96)}<div><h3>${esc(V.content.chapters[id-1].name)} restaurado.</h3><p>Ferramenta desbloqueada: <strong>${esc(tools)}</strong></p></div></div><div class="note">Próxima investigação: ${esc(next.name)}. ${esc(next.subtitle)}</div>${V.settings.mode==='teams'?`<div class="team-turn" style="margin-top:16px"><strong>Próxima equipe: ${esc(V.settings.teamNames[(V.state.teamIndex+1)%V.settings.teamNames.length])}</strong><p style="font-size:.82rem;margin-bottom:0">Os papéis giram: Navegação → Investigação → Inglês → Registro.</p></div>`:''}<div class="separator"></div><button id="reward-customize" class="quiet">Trocar cor do emblema</button>`,`<button id="reward-hub" class="secondary">Explorar a praça</button><button id="reward-next" class="primary">Próximo capítulo →</button>`);V.UI.paintPortraits();const rotate=()=>{if(V.settings.mode==='teams'){V.state.teamIndex=(V.state.teamIndex+1)%V.settings.teamNames.length;V.state.roleIndex++;V.Save.log('rodízio',V.settings.teamNames[V.state.teamIndex]);}this.updateHUD();};V.$('#reward-next').onclick=()=>{rotate();this.enterChapter(id+1);};V.$('#reward-hub').onclick=()=>{rotate();V.UI.close();V.World.load('hub');};V.$('#reward-customize').onclick=()=>this.customize(()=>this.reward(id));},
- customize(back=null){V.UI.modal('Emblema da equipe','Cores conquistadas na aventura.',`<div class="row">${['#27c8d8','#f4b85a','#e96687','#b18aff',...(V.state.completed.length>=3?['#74d59d','#f5f1e8']:[])].map(color=>`<button class="swatch" data-cosmetic="${color}" style="background:${color}" aria-label="Emblema ${color}"></button>`).join('')}</div>`);V.$$('[data-cosmetic]').forEach(b=>b.onclick=()=>{V.state.cosmetic=b.dataset.cosmetic;V.Save.save();V.UI.close();if(back)back();});},
- ending(){return V.Story.finale();}
-};
-document.addEventListener('DOMContentLoaded',()=>{if(window.VOICES_MANUAL_BOOT)return;V.Game.init().catch(e=>{V.$('#loading').hidden=true;console.error(e);V.UI.modal('Não foi possível iniciar','Confira se todos os arquivos do ZIP foram extraídos.',`<p>${V.escape(e.message)}</p>`);});});
-})();
-
+})(function() {
+  (function() {
+    "use strict";
+    const V = window.V;
+    const esc = V.escape;
+    V.Game = {
+      screen: "title",
+      mode: "explore",
+      playSeconds: 0,
+      autosave: 0,
+      tutorialTime: 0,
+      lastHUD: 0,
+      async init() {
+        V.settings = V.Save.settings();
+        V.Save.applySettings();
+        V.Living.initContent();
+        V.Teacher.init();
+        V.Input.init();
+        this.bind();
+        V.$("#notebook-button").onclick = () => V.Living.journal("missions");
+        await V.ProfessorStudio?.startPromise;
+        V.Performance?.configure();
+        await V.Assets.load();
+        await V.AssetLoader.ready();
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        V.ObjectEditing.wrapDraw(V.Cozy);
+        V.World.init();
+        V.SceneDesign.load();
+        if (Object.keys(V.SceneDesign.saved).length) V.World.init();
+        V.Engine.init();
+        V.$("#loading").hidden = true;
+        this.toTitle();
+        this.iconPositions();
+        window.addEventListener("beforeunload", () => {
+          if (V.state && this.screen === "game") V.Save.save();
+        });
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden && V.state) {
+            V.Save.save();
+            if (this.screen === "game" && !V.modal) this.pause("A aventura foi pausada enquanto a aba estava em segundo plano.");
+          }
+        });
+      },
+      iconPositions() {
+        const map = { inventory: 0, journal: 1, map: 2, translate: 3, scan: 4, source: 5 };
+        V.$$("[data-icon]").forEach((el) => el.style.backgroundPosition = `-${map[el.dataset.icon] * 24}px 0`);
+      },
+      bind() {
+        const click = (id, fn) => {
+          V.$(id).onclick = () => {
+            V.Audio.unlock();
+            V.Audio.sfx("menu");
+            fn();
+          };
+        };
+        click("#new-game", () => {
+          if (V.Save.load()) V.UI.confirm("Come\xE7ar outra aventura?", "O novo jogo substituir\xE1 o progresso salvo. Voc\xEA pode exportar um backup pelo menu de pausa antes de continuar.", () => this.creation());
+          else this.creation();
+        });
+        click("#continue-game", () => {
+          const s = V.Save.load() || V.state;
+          if (s) this.loadState(s);
+        });
+        click("#teacher-button", () => V.Teacher.open());
+        click("#settings-button", () => this.settings());
+        click("#credits-button", () => this.credits());
+        click("#title-sound", () => {
+          V.settings.muted = !V.settings.muted;
+          V.Save.applySettings();
+          this.soundLabel();
+        });
+        click("#inventory-button", () => V.Quests.inventory());
+        click("#journal-button", () => V.Quests.journal());
+        click("#map-button", () => this.map());
+        click("#glossary-button", () => this.glossary());
+        click("#gallery-button", () => this.gallery());
+        click("#mission-tracker", () => V.Quests.journal());
+        const c = V.$("#world-canvas");
+        c.onpointerdown = (e) => {
+          const r = c.getBoundingClientRect();
+          const scale = Math.min(r.width / 960, r.height / 540);
+          const x = (e.clientX - r.left - (r.width - 960 * scale) / 2) / scale, y = (e.clientY - r.top - (r.height - 540 * scale) / 2) / scale;
+          if (V.modal || V.Dialogue.active) return;
+          if (this.mode === "minigame") V.Minigames.pointer(x, y);
+          else if (this.mode === "combat") V.Combat.pointer(x, y);
+          else {
+            const cam = V.World.camera;
+            const targets = V.World.interactables().filter((o) => V.dist(o, V.Player.data) < (o.interactionRange || 82)).map((o) => ({ o, d: Math.hypot(x - (o.x - cam.x), y - (o.y - cam.y - 24)) })).sort((a, b) => a.d - b.d);
+            if (targets[0]?.d < 64) this.interact(targets[0].o);
+          }
+        };
+      },
+      soundLabel() {
+        V.$("#title-sound").textContent = "\xC1udio: " + (V.settings.muted ? "desligado" : "ligado");
+      },
+      toTitle() {
+        V.UI.close();
+        if (V.Dialogue.active) {
+          V.Dialogue.active = false;
+          V.$("#dialogue-root").innerHTML = "";
+        }
+        V.Minigames.cancel();
+        V.Combat.active = null;
+        this.screen = "title";
+        this.mode = "explore";
+        V.$("#game-screen").hidden = true;
+        V.$("#title-screen").hidden = false;
+        V.$("#continue-game").hidden = !V.Save.load();
+        V.Audio.setTheme("menu");
+        this.soundLabel();
+        V.Input.clear();
+      },
+      creation() {
+        let character = "nia", cosmetic = "#27c8d8";
+        V.UI.modal("Quem vai conduzir a investiga\xE7\xE3o?", "Todos os personagens fazem parte da equipe THE VOICES.", `<div class="character-grid">${V.PlayableCharacters.map((id) => {
+          const c = V.content.characters[id];
+          return `<button class="character-card ${id === character ? "selected" : ""}" data-character="${id}">${V.UI.fullBody(id)}<b>${esc(c.name)}</b><small>${esc(c.role)}</small></button>`;
+        }).join("")}</div><div id="character-quote" class="note" style="margin-top:18px">${esc(V.content.characters[character].quote)}</div><div class="two-cols" style="margin-top:18px"><label class="field">Nome da aventura<input id="creation-name" value="${esc(V.content.characters[character].name)}" maxlength="30" autocomplete="off"></label><div class="field"><span>Cor do emblema</span><div class="swatches">${["#27c8d8", "#f4b85a", "#e96687", "#b18aff"].map((color) => `<button class="swatch ${color === cosmetic ? "selected" : ""}" style="background:${color}" data-color="${color}" aria-label="Emblema ${color}"></button>`).join("")}</div></div></div><label class="field" style="margin-top:18px">Modo de jogo<select id="creation-mode"><option value="solo">Aventura individual</option><option value="projector">Equipes / projetor</option><option value="teams">Equipes com pap\xE9is rotativos</option></select></label>`, `<button id="creation-begin" class="primary">Entrar em New Harmony \u2192</button>`);
+        V.UI.paintCharacterPreviews();
+        V.$("#creation-mode").value = V.settings.mode;
+        V.$$("[data-character]").forEach((b) => b.onclick = () => {
+          character = b.dataset.character;
+          V.$$("[data-character]").forEach((x) => x.classList.toggle("selected", x === b));
+          const info = V.content.characters[character];
+          V.$("#character-quote").textContent = info.quote;
+          V.$("#creation-name").value = V.content.characters[character].name;
+        });
+        V.$$("[data-color]").forEach((b) => b.onclick = () => {
+          cosmetic = b.dataset.color;
+          V.$$("[data-color]").forEach((x) => x.classList.toggle("selected", x === b));
+        });
+        V.$("#creation-begin").onclick = () => {
+          const name = V.$("#creation-name").value.trim() || V.content.characters[character].name;
+          V.settings.mode = V.$("#creation-mode").value;
+          V.settings.presentation = V.settings.mode === "projector";
+          V.Save.applySettings();
+          V.UI.close();
+          this.newState({ grade: 7, character, name, cosmetic });
+          this.startGame();
+          this.intro();
+        };
+      },
+      newState(opts) {
+        V.state = { version: 1, name: opts.name || "Nia", character: opts.character || "nia", cosmetic: opts.cosmetic || "#27c8d8", grade: 7, map: "hub", position: null, unlocked: 1, completed: [], evidence: [], talked: [], minis: [], bonus: [], words: [], tools: ["PIX Tradutor"], achievements: [], flags: {}, projects: [], dialogueHistory: [], seenChapters: [], teamIndex: 0, roleIndex: 0, playSeconds: 0, savedAt: null };
+        V.Living.ensure();
+        this.playSeconds = 0;
+        this.tutorialTime = 0;
+        V.Save.remove("log");
+        V.Save.log("in\xEDcio", "Nova aventura em New Harmony");
+      },
+      loadState(state) {
+        if (!V.Save.stateValid(state)) {
+          V.UI.toast("O progresso salvo n\xE3o \xE9 compat\xEDvel.");
+          return;
+        }
+        const defaults = { bonus: [], words: [], tools: ["PIX Tradutor"], achievements: [], flags: {}, projects: [], dialogueHistory: [], seenChapters: [], talked: [], minis: [], teamIndex: 0, roleIndex: 0 };
+        V.state = Object.assign(defaults, state);
+        this.playSeconds = Number(state.playSeconds) || 0;
+        this.startGame();
+        if (!V.state.flags.prologueStarted && !V.state.flags.prologueDone && !V.Homestead?.ensure()?.sleep) this.intro();
+        else if (V.state.finished) this.ending();
+      },
+      startGame() {
+        V.Living.ensure();
+        this.screen = "game";
+        this.mode = "explore";
+        V.$("#title-screen").hidden = true;
+        V.$("#game-screen").hidden = false;
+        V.World.load(V.state.map, V.state.position);
+        this.updateHUD();
+        V.$("#world-canvas").focus();
+        V.Audio.unlock();
+      },
+      intro() {
+        const frames = [["O ARQUIVO DA CIDADE", "New Harmony guarda hist\xF3rias, conhecimentos e cria\xE7\xF5es. Hoje, alguns nomes come\xE7aram a desaparecer."], ["UMA FALHA NO SISTEMA", "O festival perdeu cr\xE9ditos. O museu ficou cheio de lacunas. Quem est\xE1 escolhendo o que merece ser lembrado?"], ["THE VOICES", "A equipe THE VOICES inicia a investiga\xE7\xE3o. PIX encontrou o primeiro sinal na pra\xE7a. Sua aventura come\xE7a agora."]];
+        let index = 0;
+        const show = () => {
+          const f = frames[index];
+          V.UI.modal(f[0], "NEW HARMONY / SINAL CORROMPIDO", `<div class="ending-art"></div><p>${f[1]}</p><div class="row"><span class="chip">${index + 1} / 3</span></div>`, `<button id="intro-next" class="primary">${index === 2 ? "Explorar a pra\xE7a" : "Continuar"} \u2192</button>`);
+          V.$("#intro-next").onclick = () => {
+            index++;
+            if (index < frames.length) show();
+            else {
+              V.UI.close();
+              this.tutorialTime = 0;
+              V.UI.toast("WASD ou setas para mover \xB7 E para conversar.");
+            }
+          };
+        };
+        show();
+      },
+      prologue() {
+        if (V.state.flags.prologueDone) {
+          V.Dialogue.start([{ speaker: "pix", en: { 6: "Every story deserves to be heard.", 7: "The records showed many voices. Let\u2019s keep listening.", 8: "The archive gets stronger when its sources are checked and more voices participate." }, pt: "Os portais levam \xE0s regi\xF5es. O di\xE1rio registra as pistas que ainda precisamos buscar." }]);
+          return;
+        }
+        V.state.flags.prologueStarted = true;
+        V.Dialogue.start([{ speaker: "pix", en: { 6: "Hello! I am PIX. We have a problem.", 7: "Hi! I found a strange signal in the city archive.", 8: "Hello! Some records are corrupted, and the missing names are not random." }, pt: "Oi! Sou PIX. Encontrei um sinal estranho: os registros da cidade est\xE3o perdendo nomes." }, { speaker: "pix", en: { 6: "I can translate. A source is not a water fountain. Usually.", 7: "I translate source as fonte. Please do not drink the evidence.", 8: "Source means fonte. My last translation involved a fountain. I have updated that setting." }, pt: "Posso traduzir source como fonte. Fonte de informa\xE7\xE3o, t\xE1? A \xE1gua da pra\xE7a n\xE3o serve como evid\xEAncia." }, { speaker: "nia", en: { 6: "Let\u2019s recover the words and follow the signal.", 7: "We should recover the words before we investigate the festival.", 8: "Recovering the words is our first step. Then we can follow the evidence to the festival." }, pt: "Recupere algumas palavras com PIX. Depois vamos ao Distrito do Ritmo investigar o festival." }], () => V.Minigames.launch("runner", () => {
+          V.state.flags.prologueDone = true;
+          V.state.bonus.push("intro-memory");
+          V.Quests.word("memory");
+          V.Game.updateHUD();
+          V.Save.save();
+          V.Dialogue.start([{ speaker: "sol", en: { 6: "The festival needs us. Let\u2019s go!", 7: "The festival lost its credits. Let\u2019s take the first portal!", 8: "The festival is our first investigation. We need the stories behind the music, as well as the sound." }, pt: "O festival precisa da equipe. Abra Regi\xF5es (M) ou encontre o portal 1. O Caderno (K) re\xFAne miss\xF5es da comunidade, livros e notas." }]);
+        }, { short: true }));
+      },
+      enterChapter(id) {
+        if (!V.Quests.isUnlocked(id)) {
+          V.UI.toast("Conclua a regi\xE3o anterior para liberar este portal.");
+          return;
+        }
+        if (!V.state.flags.prologueDone) {
+          V.UI.toast("Encontre PIX na pra\xE7a e complete o primeiro desafio.");
+          return;
+        }
+        V.UI.close();
+        this.screen = "game";
+        V.$("#title-screen").hidden = true;
+        V.$("#game-screen").hidden = false;
+        this.mode = "explore";
+        V.World.load("chapter-" + id);
+        if (!V.state.seenChapters.includes(id)) {
+          V.state.seenChapters.push(id);
+          V.Dialogue.start(V.content.chapters[id - 1].intro);
+        }
+        V.Save.save();
+      },
+      interact(o) {
+        if (!o || V.modal || V.Dialogue.active) return;
+        if (V.Living.interact(o)) return;
+        V.Player.data.actionTime = 0.8;
+        V.Audio.sfx("menu");
+        switch (o.type) {
+          case "npc":
+            if (o.hub) {
+              if (o.character === "pix" || !V.state.flags.prologueDone) this.prologue();
+              else if (o.character === "nia") V.Dialogue.start([{ speaker: "nia", en: { 6: "Check the source. Ask a question.", 7: "Who made this record? When was it written?", 8: "We should ask who selected these records and which perspectives are missing." }, pt: "Antes de concluir, confira quem criou o registro, quando e com quais perspectivas." }]);
+              else V.Dialogue.start([{ speaker: o.character, en: { 6: "I can help at the festival!", 7: "I helped at the library. There were more stories inside.", 8: "I joined the archive group because there are still stories we have not documented." }, pt: "A biblioteca guarda uma palavra rara e outros desafios. Voc\xEA pode entrar para explorar." }]);
+            } else if (o.library) V.Dialogue.start([{ speaker: "librarian", en: { 6: "Books keep stories. People keep them alive.", 7: "We stored many records here. You can read the sources.", 8: "The archive needs sources, but it also needs people who can question and maintain its records." }, pt: "Consulte as fontes no painel da sala. Uma cole\xE7\xE3o sempre precisa de contexto e pessoas que cuidem dela." }]);
+            else V.Quests.talk(o);
+            break;
+          case "clue":
+            V.Quests.collect(o.clue);
+            break;
+          case "portal":
+            this.enterChapter(o.chapter);
+            break;
+          case "station":
+            V.Quests.challenge(o.chapter);
+            break;
+          case "boss":
+            V.Combat.start(o.chapter);
+            break;
+          case "door":
+            V.UI.close();
+            V.World.load(o.to);
+            break;
+          case "exit":
+            V.World.load(o.to || "hub");
+            break;
+          case "bonus":
+            V.Quests.bonus(o);
+            break;
+          case "side":
+            V.Minigames.launch("runner", () => {
+              V.Quests.word("knowledge");
+              V.UI.toast("Palavras recuperadas. Explore mais registros!");
+              V.Save.save();
+            });
+            break;
+          case "terminal":
+            this.practice(o.chapter || 1);
+            break;
+          case "fountain":
+            V.Dialogue.start([{ speaker: "pix", en: { 6: "This fountain has water. Our sources have information.", 7: "This fountain was not a historical source. My translation is improving.", 8: "Different words can share a translation. Context helps us choose the meaning." }, pt: "Fonte de \xE1gua e fonte de informa\xE7\xE3o: contexto faz diferen\xE7a. Minha tradu\xE7\xE3o t\xE1 ficando afiada." }]);
+            break;
+          case "sign":
+            if (o.sources) this.credits();
+            else if (o.chapter) this.regionSign(o.chapter);
+            else this.map();
+            break;
+        }
+      },
+      regionSign(id) {
+        if (id === 4 && (V.state.flags.networkCare || V.state.flags.networkSources)) {
+          V.UI.modal("Canal de contexto e apoio", "A sua decis\xE3o deixou um novo registro na rede.", `<div class="note">${V.state.flags.networkCare ? "Acolhimento: registrar a situa\xE7\xE3o, proteger a privacidade e buscar apoio na escola." : "Verifica\xE7\xE3o: publicar fontes, explicar a corre\xE7\xE3o e proteger a pessoa atingida."}</div><p style="margin-top:15px">Os dois caminhos podem se complementar. O canal receber\xE1 novas corre\xE7\xF5es.</p>`);
+          return;
+        }
+        if (id === 5 && V.state.projects.length) {
+          V.UI.modal("Plano comunit\xE1rio", "Projetos escolhidos pela equipe.", `<p>Projetos: ${V.state.projects.map(esc).join(", ")}</p><div class="note">Revis\xE3o: ${V.state.flags.cityFollowup === "monthly" ? "em um m\xEAs" : "ao longo de um trimestre"}. Moradores v\xE3o registrar barreiras que ainda precisam ser enfrentadas.</div>`);
+          return;
+        }
+        V.UI.modal("Painel de investiga\xE7\xE3o", V.content.chapters[id - 1].name, `<p>${esc(V.content.chapters[id - 1].objective)}</p><div class="note">${esc(V.content.chapters[id - 1].takeaway)}</div>`, `<button id="panel-journal" class="primary">Ver objetivos</button>`);
+        V.$("#panel-journal").onclick = () => V.Quests.journal();
+      },
+      update(dt) {
+        if (this.screen !== "game" || !V.state) return;
+        if (V.Dialogue.active) V.Dialogue.update(dt);
+        if (V.modal || V.Dialogue.active) return;
+        this.playSeconds += dt;
+        if (this.scanTimer > 0) {
+          this.scanTimer -= dt;
+          if (this.scanTimer <= 0) this.scanTarget = null;
+        }
+        V.Engine.updateParticles(dt);
+        if (this.mode === "explore") {
+          V.Player.update(dt);
+          V.World.update(dt);
+          if (V.Input.tap("e") || V.Input.tap("enter")) this.interact(V.World.nearest);
+          this.tutorialTime += dt;
+          if (!V.state.flags.prologueDone) {
+            V.$("#tutorial-hint").hidden = false;
+            V.$("#tutorial-hint").innerHTML = V.Player.moved < 80 ? "Mova-se com <kbd>W A S D</kbd> ou <kbd>\u2191 \u2190 \u2193 \u2192</kbd>. No celular, use o joystick." : "\u2713 Movimento aprendido. Aproxime-se de <strong>PIX</strong> e pressione <kbd>E</kbd>. O rob\xF4 est\xE1 perto do centro da pra\xE7a.";
+          } else V.$("#tutorial-hint").hidden = true;
+        } else if (this.mode === "minigame") V.Minigames.update(dt);
+        else if (this.mode === "combat") V.Combat.update(dt);
+        this.autosave += dt;
+        if (this.autosave > 15) {
+          this.autosave = 0;
+          V.Save.save();
+        }
+      },
+      render(ctx) {
+        if (this.screen !== "game" || !V.state) return;
+        if (this.mode === "explore") V.World.render(ctx);
+        else if (this.mode === "minigame") V.Minigames.render(ctx);
+        else if (this.mode === "combat") V.Combat.render(ctx);
+      },
+      setWorldHUD(on) {
+        V.$("#community-hud").hidden = !on || !V.state?.flags.prologueDone;
+        V.$(".mission-hud").hidden = !on;
+        V.$("#minimap-box").hidden = !on;
+        V.$("#tutorial-hint").hidden = !on || V.state?.flags.prologueDone;
+        V.$("#interact-hint").hidden = !on;
+      },
+      updateHUD() {
+        if (!V.state) return;
+        V.$("#hud-portrait").src = "assets/characters/" + V.state.character + "-portrait.png";
+        V.$("#player-name").textContent = V.state.name;
+        V.$("#player-grade").textContent = "Forasteiro";
+        V.$("#evidence-count").textContent = V.state.evidence.length + " registros";
+        const c = V.Quests.current();
+        if (!V.state.flags.prologueDone) {
+          V.$("#chapter-chip").textContent = "PR\xD3LOGO / SINAL 01";
+          V.$("#mission-name").textContent = "Uma falha no arquivo";
+          V.$("#mission-objective").textContent = "Encontre PIX e recupere as primeiras palavras.";
+          V.$("#mission-progress").innerHTML = "";
+        } else {
+          const s = V.Quests.status(c.id);
+          V.$("#chapter-chip").textContent = `CAP\xCDTULO ${c.id} / 06`;
+          V.$("#mission-name").textContent = c.name;
+          V.$("#mission-objective").textContent = s.done ? "\u2713 Regi\xE3o restaurada. Explore o pr\xF3ximo portal." : s.clues < 3 ? "Recupere as pistas marcadas com ? (" + s.clues + "/3)." : s.talked < 2 ? "Escute os dois moradores (" + s.talked + "/2)." : !s.mini ? "Restaure o sistema no terminal \u25C6." : "Confronte " + c.boss.name + " com seus registros.";
+          V.$("#mission-progress").innerHTML = V.Quests.objectives(c.id).map((o) => `<i class="${o.done ? "done" : ""}" title="${esc(o.label)}"></i>`).join("");
+        }
+        V.$("#team-role").textContent = V.settings.mode === "teams" ? `${V.settings.teamNames[V.state.teamIndex % V.settings.teamNames.length]} \xB7 Papel: ${["Navega\xE7\xE3o", "Investiga\xE7\xE3o", "Ingl\xEAs", "Registro"][V.state.roleIndex % 4]}` : V.settings.mode === "projector" ? "MODO PROJETOR" : "";
+      },
+      onKey(k, e) {
+        if (this.screen !== "game") {
+          if (k === "escape" && V.modal) V.UI.close();
+          return;
+        }
+        if (k === "escape") {
+          e.preventDefault?.();
+          if (V.modal) V.UI.close();
+          else this.pause();
+          return;
+        }
+        if (V.modal) return;
+        if (V.Dialogue.active) {
+          if (["enter", "e", " "].includes(k)) {
+            if (e.target?.tagName === "BUTTON" && e.target.id !== "dialogue-next" && k === "enter") V.Input.pressed.delete(k);
+            else e.preventDefault?.();
+          }
+          if (k === "t") {
+            V.Dialogue.toggle();
+            e.preventDefault?.();
+          }
+          return;
+        }
+        if (this.mode === "explore") {
+          const actions = { i: () => V.Quests.inventory(), j: () => V.Quests.journal(), k: () => V.Living.journal("missions"), m: () => this.map(), g: () => this.gallery(), t: () => this.glossary(), p: () => this.pause() };
+          if (actions[k]) {
+            e.preventDefault?.();
+            actions[k]();
+          }
+        }
+      },
+      pause(reason = "") {
+        if (!V.state) return;
+        V.Save.save();
+        V.UI.modal("Aventura pausada", reason || "O arquivo fica guardado. Retome quando estiver pronto.", `<div class="two-cols"><div class="card"><h3>${esc(V.state.name)}</h3><p>${V.state.completed.length}/6 cap\xEDtulos \xB7 ${V.state.evidence.length} registros<br>${Math.round(this.playSeconds / 60)} minutos de explora\xE7\xE3o</p></div><div class="stack"><button id="pause-resume" class="primary">Retomar aventura</button><button id="pause-settings" class="secondary">Configura\xE7\xF5es e acessibilidade</button><button id="pause-teacher" class="secondary">Sala do professor</button><button id="pause-discussion" class="secondary">Pausa para discuss\xE3o</button></div></div><div class="separator"></div><div class="row"><button id="pause-export" class="quiet">Exportar progresso JSON</button><label class="quiet" style="cursor:pointer">Importar progresso<input id="pause-import" type="file" accept=".json" hidden></label><button id="pause-badges" class="quiet">Conquistas</button><button id="pause-title" class="quiet">Salvar e voltar ao in\xEDcio</button></div>${this.mode !== "explore" ? '<div class="separator"></div><button id="pause-abort" class="quiet">Sair deste desafio e voltar \xE0 explora\xE7\xE3o</button>' : ""}`);
+        V.$("#pause-resume").onclick = () => V.UI.close();
+        V.$("#pause-settings").onclick = () => this.settings();
+        V.$("#pause-teacher").onclick = () => V.Teacher.open();
+        V.$("#pause-discussion").onclick = () => V.Teacher.discussion();
+        V.$("#pause-export").onclick = () => V.Save.exportSave();
+        V.$("#pause-import").onchange = (e) => {
+          if (e.target.files[0]) V.Save.importSave(e.target.files[0]);
+        };
+        V.$("#pause-badges").onclick = () => V.Quests.badges();
+        V.$("#pause-title").onclick = () => {
+          V.Save.save();
+          this.toTitle();
+        };
+        if (V.$("#pause-abort")) V.$("#pause-abort").onclick = () => {
+          V.UI.close();
+          V.Minigames.cancel();
+          V.Combat.active = null;
+          this.mode = "explore";
+          V.Audio.setTheme(V.World.current.theme);
+        };
+      },
+      useTool(i) {
+        V.UI.close();
+        if (i === 0) this.glossary();
+        else if (i === 1) this.credits();
+        else if (i === 2) this.gallery();
+        else if (i === 3) {
+          const clues = V.World.current.objects.filter((o) => o.type === "clue" && !V.state.evidence.includes(o.id));
+          clues.sort((a, b) => V.dist(a, V.Player.data) - V.dist(b, V.Player.data));
+          if (clues.length) {
+            this.scanTarget = clues[0];
+            this.scanTimer = 12;
+            V.Audio.sfx("shield");
+            V.UI.toast("Scanner: siga o tra\xE7o at\xE9 " + clues[0].clue.title + ".");
+          } else V.UI.toast("Nenhum registro incompleto nesta \xE1rea.");
+        } else if (i === 4) this.regionSign(4);
+        else if (i === 5) this.regionSign(5);
+        else this.gallery();
+      },
+      settings() {
+        const s = V.settings;
+        V.UI.modal("Configura\xE7\xF5es", "Ajuste a aventura ao seu ritmo.", `<div class="two-cols"><div class="stack"><label class="field">Tamanho da fonte<select id="s-font"><option value="15">Compacta</option><option value="17">Padr\xE3o</option><option value="20">Grande</option><option value="23">Muito grande</option></select></label><label class="field">Velocidade do jogo<select id="s-speed"><option value="0.7">70% \xB7 mais calma</option><option value="1">100% \xB7 padr\xE3o</option><option value="1.2">120% \xB7 mais \xE1gil</option></select></label><label class="toggle"><input id="s-contrast" type="checkbox" ${s.highContrast ? "checked" : ""}> Alto contraste</label><label class="toggle"><input id="s-motion" type="checkbox" ${s.reducedMotion ? "checked" : ""}> Reduzir anima\xE7\xF5es e brilho</label><label class="toggle"><input id="s-translation" type="checkbox" ${s.translation ? "checked" : ""}> Tradu\xE7\xF5es autom\xE1ticas</label><label class="toggle"><input id="s-subtitles" type="checkbox" ${s.subtitles ? "checked" : ""}> Legendas em portugu\xEAs</label><label class="toggle"><input id="s-assist" type="checkbox" ${s.assist ? "checked" : ""}> Desafios de reflexo no modo tranquilo</label><label class="toggle"><input id="s-time" type="checkbox" ${s.timeLimits ? "checked" : ""}> Tempo correndo nos desafios de ritmo</label></div><div class="stack"><label class="toggle"><input id="s-muted" type="checkbox" ${s.muted ? "checked" : ""}> Silenciar \xE1udio</label><label class="field">Volume da m\xFAsica<input id="s-music" type="range" class="slider" min="0" max="1" step=".05" value="${s.music}"></label><label class="field">Volume dos ambientes<input id="s-ambience" type="range" class="slider" min="0" max="1" step=".05" value="${s.ambience ?? 0.55}"></label><label class="toggle"><input id="s-npc-chats" type="checkbox" ${s.npcChats !== false ? "checked" : ""}> Bal\xF5es de conversa entre moradores</label><label class="toggle"><input id="s-npc-walk" type="checkbox" ${s.npcMovement !== false ? "checked" : ""}> Moradores e animais em movimento</label><label class="field">Volume dos efeitos<input id="s-effects" type="range" class="slider" min="0" max="1" step=".05" value="${s.effects}"></label><label class="toggle"><input id="s-projector" type="checkbox" ${s.presentation ? "checked" : ""}> Interface para projetor</label><button id="s-fullscreen" class="secondary">Tela cheia</button><div class="note">Controles: WASD ou setas; E interage; J di\xE1rio; K caderno e miss\xF5es; I mochila; M regi\xF5es; T PIX; G arquivo; Esc pausa. Gamepad: anal\xF3gico move, A interage e B protege.</div></div></div>`, `<button id="settings-apply" class="primary">Aplicar e voltar</button>`);
+        V.$("#s-font").value = s.fontSize;
+        V.$("#s-speed").value = s.speed;
+        V.$("#s-fullscreen").onclick = () => {
+          const promise = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.();
+          promise?.catch(() => V.UI.toast("Use F11 ou o bot\xE3o de tela cheia do navegador."));
+        };
+        V.$("#settings-apply").onclick = () => {
+          s.fontSize = +V.$("#s-font").value;
+          s.speed = +V.$("#s-speed").value;
+          s.highContrast = V.$("#s-contrast").checked;
+          s.reducedMotion = V.$("#s-motion").checked;
+          s.translation = V.$("#s-translation").checked;
+          s.subtitles = V.$("#s-subtitles").checked;
+          s.assist = V.$("#s-assist").checked;
+          s.timeLimits = V.$("#s-time").checked;
+          s.muted = V.$("#s-muted").checked;
+          s.music = +V.$("#s-music").value;
+          s.effects = +V.$("#s-effects").value;
+          s.ambience = +V.$("#s-ambience").value;
+          s.npcChats = V.$("#s-npc-chats").checked;
+          s.npcMovement = V.$("#s-npc-walk").checked;
+          s.presentation = V.$("#s-projector").checked;
+          V.Save.applySettings();
+          this.soundLabel();
+          V.UI.close();
+          V.Dialogue.translate();
+          V.UI.toast("Prefer\xEAncias aplicadas.");
+        };
+      },
+      glossary() {
+        const words = V.Teacher.glossary;
+        V.UI.modal("PIX \xB7 Gloss\xE1rio ilustrado", "Clique em uma palavra para adicion\xE1-la \xE0 cole\xE7\xE3o.", `<div class="row between"><p style="font-size:.8rem;color:var(--muted)">Palavras colecionadas: ${V.state?.words.length || 0}</p><button id="glossary-toggle" class="secondary">${V.settings.translation ? "Ocultar" : "Mostrar"} tradu\xE7\xE3o autom\xE1tica</button></div><label class="field" style="margin-bottom:16px">Buscar palavra<input id="glossary-search" placeholder="memory, fonte, escutar\u2026"></label><div id="glossary-results" class="three-cols"></div>`);
+        const show = (q = "") => {
+          V.$("#glossary-results").innerHTML = words.filter((w) => (w.en + " " + w.pt).toLowerCase().includes(q.toLowerCase())).map((w, i) => `<article class="card glossary-card"><span class="icon" style="background-position:-${i % 8 * 24}px 0"></span><button data-word="${esc(w.en)}">${esc(w.en)} <span>${V.state?.words.includes(w.en) ? "\u2713" : "+"}</span></button><p class="translation">${esc(w.pt)}</p><p>${esc(w.example)}<br><small>${esc(w.examplePt)}</small></p></article>`).join("");
+          V.$$("[data-word]").forEach((b) => b.onclick = () => {
+            if (V.state) {
+              V.Quests.word(b.dataset.word);
+              V.Save.save();
+              b.querySelector("span").textContent = "\u2713";
+            }
+            V.Audio.sfx("collect");
+            V.UI.toast(b.dataset.word + " \xB7 " + words.find((w) => w.en === b.dataset.word).pt);
+          });
+        };
+        show();
+        V.$("#glossary-search").oninput = (e) => show(e.target.value);
+        V.$("#glossary-toggle").onclick = () => {
+          V.settings.translation = !V.settings.translation;
+          V.Save.applySettings();
+          V.$("#glossary-toggle").textContent = (V.settings.translation ? "Ocultar" : "Mostrar") + " tradu\xE7\xE3o autom\xE1tica";
+        };
+      },
+      gallery(id = null) {
+        window.VoicesApp?.loadFeature("museums").catch(() => {
+        });
+        const all = V.content.chapters.flatMap((c) => c.clues);
+        const records = all.filter((c) => V.state.evidence.includes(c.id));
+        V.UI.modal("Arquivo de descobertas", "Registros hist\xF3ricos recuperados, com origem e contexto.", `<nav class="tabs"><button id="gallery-records" class="active">Registros (${records.length}/18)</button><button id="gallery-biographies">Biografias</button><button id="gallery-achievements">Conquistas</button><button id="gallery-sources">Fontes e cr\xE9ditos</button></nav><div class="stack">${records.map((c) => {
+          const source = V.content.sources.find((s) => s.id === c.source), bio = V.MuseumBiographies.forClue(c.id);
+          return `<article class="discovery" id="record-${esc(c.id)}"><h3>\u2713 ${esc(c.title)}</h3><p>${esc(V.Translation.text(c.en, c.pt, c.ptByGrade))}</p><p class="muted" lang="en">${esc(V.lang(c.en))}</p>${V.settings.translation ? V.PixCollection.wordsHTML(c.en, "PIX \xB7 palavras do registro") : ""}${V.MuseumStudies.section("archive", c.id)}${bio ? `<p><button type="button" class="secondary" data-gallery-bio="${esc(bio)}" data-gallery-record="${esc(c.id)}">Ler biografia</button></p>` : ""}<small>Fonte: ${esc(source?.name || "Refer\xEAncias")}</small>${source ? `<br><a href="${esc(source.url)}" target="_blank" rel="noopener noreferrer">${esc(source.url)}</a>` : ""}</article>`;
+        }).join("") || '<div class="note">Investigue os objetos marcados com ? para recuperar registros. As fontes j\xE1 podem ser consultadas nos cr\xE9ditos.</div>'}</div>`);
+        V.$("#gallery-records").onclick = () => this.gallery();
+        V.$("#gallery-biographies").onclick = () => V.MuseumBiographies.catalog(() => this.gallery(id));
+        V.$$("[data-gallery-bio]").forEach((button) => button.onclick = () => V.MuseumBiographies.open(button.dataset.galleryBio, () => this.gallery(button.dataset.galleryRecord)));
+        V.$("#gallery-achievements").onclick = () => V.Quests.badges();
+        V.$("#gallery-sources").onclick = () => this.credits();
+        if (id) setTimeout(() => V.$("#record-" + id)?.scrollIntoView({ block: "center" }), 100);
+      },
+      credits() {
+        if (window.VoicesApp && !window.VoicesApp.featureReady("credits")) return window.VoicesApp.withFeature("credits", () => V.Credits.open());
+        return V.Credits.open();
+      },
+      practice(chapter) {
+        const questions = V.Teacher.questions.filter((q) => q.grade === V.state.grade && q.subject !== "history");
+        const preferred = questions.filter((q) => q.chapter === chapter);
+        const deck = (preferred.length ? preferred : questions).slice(0, 4);
+        if (!deck.length) {
+          V.UI.toast("Ainda n\xE3o h\xE1 quest\xF5es dispon\xEDveis. O professor pode adicion\xE1-las.");
+          return;
+        }
+        let i = 0;
+        const render = () => {
+          const q = deck[i];
+          V.UI.modal("Terminal de ingl\xEAs", `Atividade opcional ${i + 1} / ${deck.length}`, `<p>${esc(q.prompt)}</p><div class="stack">${q.options.map((o, n) => `<button class="choice-button practice-option" data-i="${n}">${String.fromCharCode(65 + n)}. ${esc(o)}</button>`).join("")}</div><div id="practice-feedback" class="feedback" hidden></div>`);
+          V.$$(".practice-option").forEach((b) => b.onclick = () => {
+            const right = +b.dataset.i === q.correct;
+            const f = V.$("#practice-feedback");
+            f.hidden = false;
+            f.className = "feedback" + (right ? "" : " error");
+            f.textContent = (right ? "\u2713 " : "Tente outra alternativa. ") + q.explanation;
+            V.Save.log("ingl\xEAs", q.id + " \xB7 " + (right ? "conclu\xEDda" : "nova tentativa"));
+            V.Audio.sfx(right ? "correct" : "wrong");
+            if (right) {
+              V.$$(".practice-option").forEach((b2) => b2.disabled = true);
+              const next = document.createElement("button");
+              next.className = "primary";
+              next.style.marginTop = "15px";
+              next.textContent = i === deck.length - 1 ? "Concluir treino" : "Pr\xF3xima quest\xE3o";
+              next.onclick = () => {
+                i++;
+                if (i < deck.length) render();
+                else {
+                  V.UI.close();
+                  V.UI.toast("Treino de ingl\xEAs conclu\xEDdo.");
+                  V.Save.save();
+                }
+              };
+              f.after(next);
+            }
+          });
+        };
+        render();
+      },
+      reward(id) {
+        V.Player.data.celebrateTime = 1.5;
+        const next = V.content.chapters[id];
+        const tools = V.state.tools.at(-1);
+        V.UI.modal("Uma nova voz no arquivo", "CAP\xCDTULO CONCLU\xCDDO", `<div class="minigame-banner">${V.UI.portrait(V.state.character, 1, 96)}<div><h3>${esc(V.content.chapters[id - 1].name)} restaurado.</h3><p>Ferramenta desbloqueada: <strong>${esc(tools)}</strong></p></div></div><div class="note">Pr\xF3xima investiga\xE7\xE3o: ${esc(next.name)}. ${esc(next.subtitle)}</div>${V.settings.mode === "teams" ? `<div class="team-turn" style="margin-top:16px"><strong>Pr\xF3xima equipe: ${esc(V.settings.teamNames[(V.state.teamIndex + 1) % V.settings.teamNames.length])}</strong><p style="font-size:.82rem;margin-bottom:0">Os pap\xE9is giram: Navega\xE7\xE3o \u2192 Investiga\xE7\xE3o \u2192 Ingl\xEAs \u2192 Registro.</p></div>` : ""}<div class="separator"></div><button id="reward-customize" class="quiet">Trocar cor do emblema</button>`, `<button id="reward-hub" class="secondary">Explorar a pra\xE7a</button><button id="reward-next" class="primary">Pr\xF3ximo cap\xEDtulo \u2192</button>`);
+        V.UI.paintPortraits();
+        const rotate = () => {
+          if (V.settings.mode === "teams") {
+            V.state.teamIndex = (V.state.teamIndex + 1) % V.settings.teamNames.length;
+            V.state.roleIndex++;
+            V.Save.log("rod\xEDzio", V.settings.teamNames[V.state.teamIndex]);
+          }
+          this.updateHUD();
+        };
+        V.$("#reward-next").onclick = () => {
+          rotate();
+          this.enterChapter(id + 1);
+        };
+        V.$("#reward-hub").onclick = () => {
+          rotate();
+          V.UI.close();
+          V.World.load("hub");
+        };
+        V.$("#reward-customize").onclick = () => this.customize(() => this.reward(id));
+      },
+      customize(back = null) {
+        V.UI.modal("Emblema da equipe", "Cores conquistadas na aventura.", `<div class="row">${["#27c8d8", "#f4b85a", "#e96687", "#b18aff", ...V.state.completed.length >= 3 ? ["#74d59d", "#f5f1e8"] : []].map((color) => `<button class="swatch" data-cosmetic="${color}" style="background:${color}" aria-label="Emblema ${color}"></button>`).join("")}</div>`);
+        V.$$("[data-cosmetic]").forEach((b) => b.onclick = () => {
+          V.state.cosmetic = b.dataset.cosmetic;
+          V.Save.save();
+          V.UI.close();
+          if (back) back();
+        });
+      },
+      ending() {
+        return V.Story.finale();
+      }
+    };
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.VOICES_MANUAL_BOOT) return;
+      V.Game.init().catch((e) => {
+        V.$("#loading").hidden = true;
+        console.error(e);
+        V.UI.modal("N\xE3o foi poss\xEDvel iniciar", "Confira se todos os arquivos do ZIP foram extra\xEDdos.", `<p>${V.escape(e.message)}</p>`);
+      });
+    });
+  })();
 });

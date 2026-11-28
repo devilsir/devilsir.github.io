@@ -187,31 +187,49 @@ globalThis.QuimiCraftDepths=(()=>{
       if(cache.has(key))return cache.get(key);
       const x=Math.floor((cx+.40+hash(cx,cz,salt)*.20)*cell);
       const z=Math.floor((cz+.40+hash(cx+27,cz-5,salt)*.20)*cell);
-      const r=102+hash(cx-97,cz+19,salt)*59;
+      const r=154+hash(cx-97,cz+19,salt)*73;
       const roll=hash(cx+4,cz+13,salt);
       const basin=Math.hypot(x,z)>280?{key,x,z,rx:r*(.93+hash(cx,cz,salt+13)*.16),rz:r*(.85+hash(cx,cz,salt+21)*.24),roll,
-        floor:level-11,ruin:Math.floor(hash(cx-9,cz+2,salt)*3),phase:hash(cx+1,cz-71,salt)*6.283}:null;
+        floor:Math.max(2,level-13),ruin:Math.floor(hash(cx-9,cz+2,salt)*3),phase:hash(cx+1,cz-71,salt)*6.283}:null;
       if(cache.size>384)cache.clear();
       cache.set(key,basin);
       return basin;
     }
     function lakeAt(x,z){
-      const basin=basinFor(Math.floor(x/cell),Math.floor(z/cell));
-      if(!basin)return null;
-      const dx=(x-basin.x)/basin.rx,dz=(z-basin.z)/basin.rz,d=Math.hypot(dx,dz);
-      if(d>1.065)return null;
-      const bend=.028*Math.sin(Math.atan2(dz,dx)*5+basin.phase)+.018*Math.sin(Math.atan2(dz,dx)*8-basin.phase);
-      const radius=d+bend;
-      return radius<1?{basin,radius}:null;
+      const cx=Math.floor(x/cell),cz=Math.floor(z/cell),lx=x-cx*cell,lz=z-cz*cell;
+      const xs=[cx],zs=[cz];
+      if(lx<95)xs.push(cx-1);if(lx>cell-95)xs.push(cx+1);
+      if(lz<95)zs.push(cz-1);if(lz>cell-95)zs.push(cz+1);
+      let best=null;
+      for(const ix of xs)for(const iz of zs){
+        const basin=basinFor(ix,iz);if(!basin)continue;
+        const dx=(x-basin.x)/basin.rx,dz=(z-basin.z)/basin.rz,d=Math.hypot(dx,dz);
+        if(d>1.065)continue;
+        const angle=Math.atan2(dz,dx),radius=d+.028*Math.sin(angle*5+basin.phase)+.018*Math.sin(angle*8-basin.phase);
+        if(radius<1&&(!best||radius<best.radius))best={basin,radius};
+      }
+      return best;
+    }
+    function ruinDestination(x,z,indices,available=()=>true){
+      const gx=Math.floor(x/cell),gz=Math.floor(z/cell);
+      const cells=indices?[indices]:Array.from({length:49},(_,i)=>[gx+i%7-3,gz+Math.floor(i/7)-3]);
+      let chosen=null,distance=Infinity;
+      for(const [ix,iz] of cells){
+        const basin=basinFor(ix,iz);
+        if(!basin||!available(basin.x,basin.z))continue;
+        const gap=Math.hypot(basin.x-x,basin.z-z);
+        if(gap<distance){chosen=basin;distance=gap}
+      }
+      return chosen;
     }
     function lakeHeight(height,lake,x,z,rough=0){
       if(!lake)return height;
       const {basin,radius}=lake;
-      const depth=smooth(clamp((.90-radius)/.73,0,1));
+      const depth=smooth(clamp((.94-radius)/.48,0,1));
       const floor=level-1-(level-1-basin.floor)*depth+rough*depth;
-      const weight=smooth(clamp((1-radius)/.23,0,1));
+      const weight=smooth(clamp((1-radius)/.15,0,1));
       const ruined=Math.max(Math.abs(x-basin.x),Math.abs(z-basin.z))<13;
-      return ruined?Math.min(height,basin.floor):Math.min(height,height+(floor-height)*weight);
+      return ruined?Math.min(height,basin.floor):Math.max(2,Math.min(height,height+(floor-height)*weight));
     }
     function waterKind(lake,biome){
       if(!lake)return null;
@@ -339,7 +357,7 @@ globalThis.QuimiCraftDepths=(()=>{
       if(water==="salt"||water==="cold")return [];
       return ["piranha"];
     }
-    return {lakeAt,lakeHeight,waterKind,polarZone,ruinAt,ruinBlock,surface,ore,rock,eligible};
+    return {lakeAt,lakeHeight,waterKind,polarZone,ruinAt,ruinBlock,ruinDestination,surface,ore,rock,eligible};
   }
   return {register,paint,create,fauna,marineProfiles,
     minerals:blocks.filter(row=>row[3]==="ore").map(row=>row[0]),

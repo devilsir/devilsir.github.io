@@ -140,7 +140,7 @@
 .avatar-3d-ready>.avatar-pixel{display:none}
 .avatar-preview.avatar-3d-ready{min-height:255px;background:radial-gradient(ellipse at 50% 46%,#29464e,#172729 74%)}
 .mc-character-stage.avatar-3d-ready{background:radial-gradient(ellipse at 50% 49%,#2b4146,#15191b 76%)}
-.fishing-status{position:fixed;z-index:9;bottom:148px;left:50%;transform:translateX(-50%);min-width:210px;padding:9px 12px;background:#101e27ed;color:#d9f8fb;border:1px solid #3e7784;border-radius:9px;text-align:center;font-size:.82rem;pointer-events:none}
+.fishing-status{position:relative;min-width:210px;max-width:min(320px,100%);padding:9px 12px;background:#101e27ed;color:#d9f8fb;border:1px solid #3e7784;border-radius:9px;text-align:center;font-size:.82rem;pointer-events:none}
 .fishing-status[hidden]{display:none}
 .fishing-status.bite{border-color:#92dbaa;color:#c4f4d5}
 .fishing-track{height:4px;margin-top:7px;background:#13414b;border-radius:3px;overflow:hidden}

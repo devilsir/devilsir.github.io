@@ -16,8 +16,8 @@
       return `<i class="turn-art-icon" style="--turn-x:${index%4*100/3}%;--turn-y:${Math.floor(index/4)*100/3}%" aria-hidden="true"></i>`;
     }
   };
-  const load=V.Assets.load.bind(V.Assets);
-  V.Assets.load=async function(...args){
+  
+  V.Hooks.around(V.Assets, "load", "turn-interface-art:load:1", load => async function(...args){
     const arena=new Promise(resolve=>{
       const image=V.Assets.image();
       T.arena=image;
@@ -27,5 +27,5 @@
     });
     const [result]=await Promise.all([load(...args),arena]);
     return result;
-  };
+  });
 });

@@ -1,40 +1,157 @@
 /* Registered module: neighbors-world */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("neighbors-world", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function(){'use strict';
-const V=window.V,C=V.Cozy,L=V.Living,W=V.World,D=V.SceneDesign,T=48,copy=x=>JSON.parse(JSON.stringify(x));
-const prev={districts:L.newDistricts.bind(L),residents:L.residents.bind(L),assets:V.Assets.load.bind(V.Assets),prop:C.prop.bind(C),animal:C.prepareAnimal.bind(C),draw:C.drawObject.bind(C),interact:C.interact.bind(C),ensure:C.ensure.bind(C),journal:C.journal.bind(C),normalise:D.normalise.bind(D),document:D.document.bind(D)};
-for(const key of ['residents','sources'])V.cozyContent[key].push(...V.neighborsContent[key]);
-Object.assign(V.content.characters,V.neighborsContent.characters);
-const placed=[],add=(map,index,x,y,size=1.15)=>{const row=['neighbors',index,x,y,size,V.neighborsAssets[index].solid,{id:'neighbors-'+map+'-'+index,layer:V.neighborsAssets[index].layer}];C.layouts[map].decor.push(row);placed.push({map,row});};
-add('library',4,3.4,6.5);add('library',1,6.3,10.5,1);add('library',5,20.9,14.4,.9);add('library',31,14,2.1,.9);
-add('market',9,26.1,10.1);add('market',10,25.4,9,1);add('market',8,24,10.1,1);
-add('park',29,3,12.1,1.4);add('park',24,5,13.6,.8);
-add('garden',15,4.7,9.1,1.2);add('garden',16,2,10.1,1.25);add('garden',27,8.3,4.1,.9);add('garden',28,20.4,10,1.2);
-add('beach',24,10,5.4,.8);
-const homes={'neighbors-abel':[5,7.5],'neighbors-yara':[25,10.5],'neighbors-nilo':[4,13.5],'neighbors-rute':[6,14.8]};
-for(const r of V.neighborsContent.residents){const d=C.layouts[r.map],id='resident-'+r.id,p=homes[r.id];d.positions[id]=p;
- d.anchors.push([r.id+'-work',...p,r.id==='neighbors-abel'?'reading':'working',28,3],[r.id+'-pause',p[0]+1,p[1]+1,'waiting',20,1]);d.routines[id]=[r.id+'-work',r.id+'-pause'];if(r.id==='neighbors-nilo')d.routines[id].push('park-picnic');if(r.id==='neighbors-abel')d.routines[id].push('reading-left');if(r.id==='neighbors-rute'){d.anchors.push([r.id+'-seedlings',3.5,11,'working',30,2],[r.id+'-labels',7,12,'observing',20,1]);d.routines[id]=[r.id+'-seedlings',r.id+'-labels',r.id+'-pause'];}}
-const pets=[['library',0,7,8,'neighbors-abel','Dengo'],['market',1,26,12.6,'neighbors-yara','Teca'],['park',2,5.7,13,'neighbors-nilo','Biscoito'],['beach',3,9.5,6.7,'beach-ivo','Lua'],['hub',4,24.5,16.2,'paulo','Zeca'],['garden',5,7.4,15.8,'neighbors-rute','Pingo']];
-D.defaults=copy(C.layouts);
-L.newDistricts=function(){prev.districts();for(const r of V.neighborsContent.residents){const p=homes[r.id];W.object(W.maps[r.map],'resident','resident-'+r.id,...p,'Conversar com '+r.name,{character:r.character,resident:r,homeMap:r.map});}
- for(const[map,row,x,y,owner,name]of pets)W.object(W.maps[map],'animal','neighbors-pet-'+row,x,y,'Observar '+name,{neighborAnimal:row,species:0,coastHome:[x,y],owner,petName:name});};
-L.residents=function(){const all=V.learning.residents;V.learning.residents=all.filter(r=>!V.neighborsContent.residents.some(n=>n.id===r.id));try{return prev.residents();}finally{V.learning.residents=all;}};
-C.prepareAnimal=function(m,o){if(o.neighborAnimal===undefined)return prev.animal(m,o);o.coastAnimal=0;try{prev.animal(m,o);}finally{delete o.coastAnimal;}o.animalFacing=1;o.taskTime=8+o.neighborAnimal*2;o.nextIcon=20+o.neighborAnimal*3;};
-C.prop=function(ctx,family,index,x,y,size=T,materials=null){if(family!=='neighbors')return prev.prop(ctx,family,index,x,y,size,materials);const colored=V.EditorMaterials.tinted(family,index,materials),img=V.Assets.images['neighbors-props'];if(colored)ctx.drawImage(colored,Math.round(x),Math.round(y),size,size);else if(img)ctx.drawImage(img,index%8*32,Math.floor(index/8)*32,32,32,Math.round(x),Math.round(y),size,size);};
-C.drawObject=function(ctx,o,cam,time){if(o.neighborAnimal===undefined)return prev.draw(ctx,o,cam,time);const x=o.x-cam.x,y=o.y-cam.y;L.drawTownAnimal(ctx,o,x,y);if(V.Player.data&&V.dist(o,V.Player.data)<80)L.marker(ctx,x,y,'E','#d1c9a0');};
-C.interact=function(o){if(o?.neighborAnimal===undefined)return prev.interact(o);const a=V.neighborsContent.animals[o.neighborAnimal],owner=V.learning.residents.find(r=>r.id===o.owner)?.name||V.content.characters[o.owner]?.name||'seu responsável';
- V.UI.modal(o.petName+' · '+a.name,'UM ANIMAL DO BAIRRO',`<div class="field-guide-heading"><canvas id="neighbor-animal-portrait" width="128" height="96" role="img" aria-label="${V.escape(o.petName)}"></canvas></div><p>${V.escape(o.petName)} é o cão de ${V.escape(owner)}. Observe a posição das orelhas, o contorno do corpo e o movimento das patas.</p><p>${V.escape(a.description)}</p><p>${V.escape(V.fieldGuideContent.entries[0].fact)}</p><aside class="reader-english"><strong>English · ${V.escape(a.name)}</strong><p lang="en">${V.escape(o.petName)} is ${o.walking?'walking':'resting'} near ${V.escape(owner)}.</p><small>${V.escape(o.petName)} está ${o.walking?'caminhando':'descansando'} perto de ${V.escape(owner)}.</small></aside>${C.sourceLinks(['neighbors_breed_'+a.id,'field-dog-smell'])}`,`<button id="animal-close" class="primary">Anotar a observação ✓</button><button id="neighbors-pet-close" class="secondary">Voltar</button>`);
- L.drawTownAnimal(V.$('#neighbor-animal-portrait').getContext('2d'),o,64,83,96);
- V.$('#animal-close').onclick=()=>{C.ensure();if(!V.state.cozy.petObservations.includes(a.id))V.state.cozy.petObservations.push(a.id);if(!V.state.observations.includes(o.species))V.state.observations.push(o.species);L.event('animal',o.species);if(V.state.observations.length>=4)V.Quests.achieve('naturalist');V.Save.save();V.UI.toast('Observação de '+o.petName+' guardada no caderno.');V.UI.close();};V.$('#neighbors-pet-close').onclick=()=>V.UI.close();return true;};
-C.ensure=function(){prev.ensure();if(V.state){const ids=V.neighborsContent.animals.map(a=>a.id);V.state.cozy.petObservations=[...new Set((Array.isArray(V.state.cozy.petObservations)?V.state.cozy.petObservations:[]).filter(id=>ids.includes(id)))];}};
-C.journal=function(){prev.journal();const section=document.createElement('section');section.className='notebook-pets';section.innerHTML='<h3>Animais que observei</h3><div class="two-cols">'+V.state.cozy.petObservations.map(id=>{const a=V.neighborsContent.animals.find(a=>a.id===id),p=pets.find(p=>p[1]===a.row);return `<article class="card"><strong>${V.escape(p[5])} · ${V.escape(a.name)}</strong><p>${V.escape(a.description)}</p><small>${V.escape(L.location(p[0]))} · ${V.escape(a.name)}</small></article>`;}).join('')+'</div>';if(!V.state.cozy.petObservations.length)section.innerHTML+='<p>Observe os cães perto de seus responsáveis e guarde uma anotação.</p>';V.$('.modal-body').append(section);};
-D.document=function(maps){return{...prev.document(maps),revision:5};};
-D.normalise=function(doc){const clean=prev.normalise(doc);if((doc.revision||0)<5)for(const[map,d]of Object.entries(clean)){for(const p of placed.filter(p=>p.map===map))if(!d.decor.some(r=>r[6]?.id===p.row[6].id))d.decor.push(copy(p.row));for(const r of V.neighborsContent.residents.filter(r=>r.map===map)){const def=D.defaults[map],id='resident-'+r.id;d.positions[id]??=copy(def.positions[id]);d.routines[id]??=copy(def.routines[id]);for(const a of def.anchors.filter(a=>a[0].startsWith(r.id)))if(!d.anchors.some(b=>b[0]===a[0]))d.anchors.push(copy(a));}}return clean;};
-V.Assets.load=async function(){const entries=[['neighbors-props','assets/tilesets/neighbors-props.png'],['neighbors-animals','assets/characters/neighbors-animals.png'],...V.neighborsContent.residents.flatMap(r=>[[r.character,'assets/characters/'+r.character+'.png'],[r.character+'-portrait','assets/characters/'+r.character+'-portrait.png']])];await Promise.all([prev.assets(),this.loadEntries(entries),new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{V.EditorMaterials.images.neighbors=img;resolve();};img.onerror=()=>{this.errors.push('Cores dos novos móveis');resolve();};img.src=V.neighborsMaterialSources.neighbors;})]);return this.errors;};
-})();
-
+})(function() {
+  (function() {
+    "use strict";
+    const V = window.V, C = V.Cozy, L = V.Living, W = V.World, D = V.SceneDesign, T = 48, copy = (x) => JSON.parse(JSON.stringify(x));
+    const prev = { districts: L.newDistricts.bind(L), residents: L.residents.bind(L), assets: V.Assets.load.bind(V.Assets), prop: C.prop.bind(C), animal: C.prepareAnimal.bind(C), draw: C.drawObject.bind(C), interact: C.interact.bind(C), ensure: C.ensure.bind(C), journal: C.journal.bind(C), normalise: D.normalise.bind(D), document: D.document.bind(D) };
+    for (const key of ["residents", "sources"]) V.cozyContent[key].push(...V.neighborsContent[key]);
+    Object.assign(V.content.characters, V.neighborsContent.characters);
+    const placed = [], add = (map, index, x, y, size = 1.15) => {
+      const row = ["neighbors", index, x, y, size, V.neighborsAssets[index].solid, { id: "neighbors-" + map + "-" + index, layer: V.neighborsAssets[index].layer }];
+      C.layouts[map].decor.push(row);
+      placed.push({ map, row });
+    };
+    add("library", 4, 3.4, 6.5);
+    add("library", 1, 6.3, 10.5, 1);
+    add("library", 5, 20.9, 14.4, 0.9);
+    add("library", 31, 14, 2.1, 0.9);
+    add("market", 9, 26.1, 10.1);
+    add("market", 10, 25.4, 9, 1);
+    add("market", 8, 24, 10.1, 1);
+    add("park", 29, 3, 12.1, 1.4);
+    add("park", 24, 5, 13.6, 0.8);
+    add("garden", 15, 4.7, 9.1, 1.2);
+    add("garden", 16, 2, 10.1, 1.25);
+    add("garden", 27, 8.3, 4.1, 0.9);
+    add("garden", 28, 20.4, 10, 1.2);
+    add("beach", 24, 10, 5.4, 0.8);
+    const homes = { "neighbors-abel": [5, 7.5], "neighbors-yara": [25, 10.5], "neighbors-nilo": [4, 13.5], "neighbors-rute": [6, 14.8] };
+    for (const r of V.neighborsContent.residents) {
+      const d = C.layouts[r.map], id = "resident-" + r.id, p = homes[r.id];
+      d.positions[id] = p;
+      d.anchors.push([r.id + "-work", ...p, r.id === "neighbors-abel" ? "reading" : "working", 28, 3], [r.id + "-pause", p[0] + 1, p[1] + 1, "waiting", 20, 1]);
+      d.routines[id] = [r.id + "-work", r.id + "-pause"];
+      if (r.id === "neighbors-nilo") d.routines[id].push("park-picnic");
+      if (r.id === "neighbors-abel") d.routines[id].push("reading-left");
+      if (r.id === "neighbors-rute") {
+        d.anchors.push([r.id + "-seedlings", 3.5, 11, "working", 30, 2], [r.id + "-labels", 7, 12, "observing", 20, 1]);
+        d.routines[id] = [r.id + "-seedlings", r.id + "-labels", r.id + "-pause"];
+      }
+    }
+    const pets = [["library", 0, 7, 8, "neighbors-abel", "Dengo"], ["market", 1, 26, 12.6, "neighbors-yara", "Teca"], ["park", 2, 5.7, 13, "neighbors-nilo", "Biscoito"], ["beach", 3, 9.5, 6.7, "beach-ivo", "Lua"], ["hub", 4, 24.5, 16.2, "paulo", "Zeca"], ["garden", 5, 7.4, 15.8, "neighbors-rute", "Pingo"]];
+    D.defaults = copy(C.layouts);
+    L.newDistricts = function() {
+      prev.districts();
+      for (const r of V.neighborsContent.residents) {
+        const p = homes[r.id];
+        W.object(W.maps[r.map], "resident", "resident-" + r.id, ...p, "Conversar com " + r.name, { character: r.character, resident: r, homeMap: r.map });
+      }
+      for (const [map, row, x, y, owner, name] of pets) W.object(W.maps[map], "animal", "neighbors-pet-" + row, x, y, "Observar " + name, { neighborAnimal: row, species: 0, coastHome: [x, y], owner, petName: name });
+    };
+    L.residents = function() {
+      const all = V.learning.residents;
+      V.learning.residents = all.filter((r) => !V.neighborsContent.residents.some((n) => n.id === r.id));
+      try {
+        return prev.residents();
+      } finally {
+        V.learning.residents = all;
+      }
+    };
+    C.prepareAnimal = function(m, o) {
+      if (o.neighborAnimal === void 0) return prev.animal(m, o);
+      o.coastAnimal = 0;
+      try {
+        prev.animal(m, o);
+      } finally {
+        delete o.coastAnimal;
+      }
+      o.animalFacing = 1;
+      o.taskTime = 8 + o.neighborAnimal * 2;
+      o.nextIcon = 20 + o.neighborAnimal * 3;
+    };
+    C.prop = function(ctx, family, index, x, y, size = T, materials = null) {
+      if (family !== "neighbors") return prev.prop(ctx, family, index, x, y, size, materials);
+      const colored = V.EditorMaterials.tinted(family, index, materials), img = V.Assets.images["neighbors-props"];
+      if (colored) ctx.drawImage(colored, Math.round(x), Math.round(y), size, size);
+      else if (img) ctx.drawImage(img, index % 8 * 32, Math.floor(index / 8) * 32, 32, 32, Math.round(x), Math.round(y), size, size);
+    };
+    V.Hooks.around(V.Cozy, "drawObject", "neighbors-world:drawObject:1", () => function(ctx, o, cam, time) {
+      if (o.neighborAnimal === void 0) return prev.draw(ctx, o, cam, time);
+      const x = o.x - cam.x, y = o.y - cam.y;
+      L.drawTownAnimal(ctx, o, x, y);
+      if (V.Player.data && V.dist(o, V.Player.data) < 80) L.marker(ctx, x, y, "E", "#d1c9a0");
+    });
+    C.interact = function(o) {
+      if (o?.neighborAnimal === void 0) return prev.interact(o);
+      const a = V.neighborsContent.animals[o.neighborAnimal], owner = V.learning.residents.find((r) => r.id === o.owner)?.name || V.content.characters[o.owner]?.name || "seu respons\xE1vel";
+      V.UI.modal(o.petName + " \xB7 " + a.name, "UM ANIMAL DO BAIRRO", `<div class="field-guide-heading"><canvas id="neighbor-animal-portrait" width="128" height="96" role="img" aria-label="${V.escape(o.petName)}"></canvas></div><p>${V.escape(o.petName)} \xE9 o c\xE3o de ${V.escape(owner)}. Observe a posi\xE7\xE3o das orelhas, o contorno do corpo e o movimento das patas.</p><p>${V.escape(a.description)}</p><p>${V.escape(V.fieldGuideContent.entries[0].fact)}</p><aside class="reader-english"><strong>English \xB7 ${V.escape(a.name)}</strong><p lang="en">${V.escape(o.petName)} is ${o.walking ? "walking" : "resting"} near ${V.escape(owner)}.</p><small>${V.escape(o.petName)} est\xE1 ${o.walking ? "caminhando" : "descansando"} perto de ${V.escape(owner)}.</small></aside>${C.sourceLinks(["neighbors_breed_" + a.id, "field-dog-smell"])}`, `<button id="animal-close" class="primary">Anotar a observa\xE7\xE3o \u2713</button><button id="neighbors-pet-close" class="secondary">Voltar</button>`);
+      L.drawTownAnimal(V.$("#neighbor-animal-portrait").getContext("2d"), o, 64, 83, 96);
+      V.$("#animal-close").onclick = () => {
+        C.ensure();
+        if (!V.state.cozy.petObservations.includes(a.id)) V.state.cozy.petObservations.push(a.id);
+        if (!V.state.observations.includes(o.species)) V.state.observations.push(o.species);
+        L.event("animal", o.species);
+        if (V.state.observations.length >= 4) V.Quests.achieve("naturalist");
+        V.Save.save();
+        V.UI.toast("Observa\xE7\xE3o de " + o.petName + " guardada no caderno.");
+        V.UI.close();
+      };
+      V.$("#neighbors-pet-close").onclick = () => V.UI.close();
+      return true;
+    };
+    C.ensure = function() {
+      prev.ensure();
+      if (V.state) {
+        const ids = V.neighborsContent.animals.map((a) => a.id);
+        V.state.cozy.petObservations = [...new Set((Array.isArray(V.state.cozy.petObservations) ? V.state.cozy.petObservations : []).filter((id) => ids.includes(id)))];
+      }
+    };
+    C.journal = function() {
+      prev.journal();
+      const section = document.createElement("section");
+      section.className = "notebook-pets";
+      section.innerHTML = '<h3>Animais que observei</h3><div class="two-cols">' + V.state.cozy.petObservations.map((id) => {
+        const a = V.neighborsContent.animals.find((a2) => a2.id === id), p = pets.find((p2) => p2[1] === a.row);
+        return `<article class="card"><strong>${V.escape(p[5])} \xB7 ${V.escape(a.name)}</strong><p>${V.escape(a.description)}</p><small>${V.escape(L.location(p[0]))} \xB7 ${V.escape(a.name)}</small></article>`;
+      }).join("") + "</div>";
+      if (!V.state.cozy.petObservations.length) section.innerHTML += "<p>Observe os c\xE3es perto de seus respons\xE1veis e guarde uma anota\xE7\xE3o.</p>";
+      V.$(".modal-body").append(section);
+    };
+    D.document = function(maps) {
+      return { ...prev.document(maps), revision: 5 };
+    };
+    D.normalise = function(doc) {
+      const clean = prev.normalise(doc);
+      if ((doc.revision || 0) < 5) for (const [map, d] of Object.entries(clean)) {
+        for (const p of placed.filter((p2) => p2.map === map)) if (!d.decor.some((r) => r[6]?.id === p.row[6].id)) d.decor.push(copy(p.row));
+        for (const r of V.neighborsContent.residents.filter((r2) => r2.map === map)) {
+          const def = D.defaults[map], id = "resident-" + r.id;
+          d.positions[id] ??= copy(def.positions[id]);
+          d.routines[id] ??= copy(def.routines[id]);
+          for (const a of def.anchors.filter((a2) => a2[0].startsWith(r.id))) if (!d.anchors.some((b) => b[0] === a[0])) d.anchors.push(copy(a));
+        }
+      }
+      return clean;
+    };
+    V.Hooks.around(V.Assets, "load", "neighbors-world:load:1", () => async function() {
+      const entries = [["neighbors-props", "assets/tilesets/neighbors-props.png"], ["neighbors-animals", "assets/characters/neighbors-animals.png"], ...V.neighborsContent.residents.flatMap((r) => [[r.character, "assets/characters/" + r.character + ".png"], [r.character + "-portrait", "assets/characters/" + r.character + "-portrait.png"]])];
+      await Promise.all([prev.assets(), this.loadEntries(entries), new Promise((resolve) => {
+        const img = V.Assets.image();
+        img.onload = () => {
+          V.EditorMaterials.images.neighbors = img;
+          resolve();
+        };
+        img.onerror = () => {
+          this.errors.push("Cores dos novos m\xF3veis");
+          resolve();
+        };
+        img.src = V.neighborsMaterialSources.neighbors;
+      })]);
+      return this.errors;
+    });
+  })();
 });

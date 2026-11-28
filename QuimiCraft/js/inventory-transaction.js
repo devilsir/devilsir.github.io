@@ -1,9 +1,10 @@
 "use strict";
 
 globalThis.QuimiCraftInventory = (() => {
+  const MAX_STACK = 9999;
   const full = "Libere espaço na mochila para receber todos os produtos.";
   const emptyVessels = {water_bucket: "bucket", water_cup: "cup", hazardous_container: "hazardous_container"};
-  const canStack = (item,id) => item?.id === id && !item.liquid && !item.silvered && !(item.venomCharges > 0);
+  const canStack = (item,id) => item?.id === id && !item.liquid && !item.candle && !item.silvered && !(item.venomCharges > 0) && (item.count || 0) < MAX_STACK;
 
   function plan(slots, consumed, produced, profiles = {}, reserved = []) {
     let next = slots.map(item => item ? {...item} : null);
@@ -42,14 +43,25 @@ globalThis.QuimiCraftInventory = (() => {
     }
 
     for (const [id, quantity] of [...returned, ...produced]) {
-      let index = next.findIndex(item => canStack(item,id));
-      if (index < 0) index = next.indexOf(null);
-      if (index < 0) return {ok: false, reason: "full"};
-      if (next[index]) next[index].count += quantity;
-      else next[index] = {id, count: quantity};
+      let remaining = quantity;
+      while (remaining > 0) {
+        let index = next.findIndex(item => canStack(item, id));
+        if (index >= 0) {
+          const room = Math.max(0, MAX_STACK - next[index].count);
+          const add = Math.min(remaining, room);
+          next[index].count += add;
+          remaining -= add;
+          continue;
+        }
+        index = next.indexOf(null);
+        if (index < 0) return {ok: false, reason: "full"};
+        const add = Math.min(remaining, MAX_STACK);
+        next[index] = {id, count: add};
+        remaining -= add;
+      }
     }
     return {ok: true, slots: next};
   }
 
-  return {plan, full, canStack};
+  return {plan, full, canStack, MAX_STACK};
 })();

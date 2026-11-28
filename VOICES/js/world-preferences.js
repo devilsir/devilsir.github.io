@@ -1,21 +1,115 @@
 /* Registered module: world-preferences */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("world-preferences", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function worldPreferences(){
-'use strict';const V=window.V,H=V.Homestead,Q=V.CityCommutes,F=V.FastTravel;
-V.defaultSettings.npcHomeRoutines=false;V.defaultSettings.worldHours=false;
-const R=V.WorldPreferences={bound:null,last:null,
- sync(){if(!V.state)return;const enabled=(V.settings.npcHomeRoutines===true||V.settings.worldHours===true);if(enabled){this.last=true;reconcile(false);return;}let changed=this.bound!==V.state||this.last!==false;if(Q.key!==null||H.commuting){Q.reset();changed=true;}for(const a of H.actors.values()){if(a.baseWork){a.work=a.baseWork;a.workPoint=a.baseWorkPoint||a.workPoint;}if(a.map!==a.work){const p=V.Rooms.safe(V.World.maps[a.work],a.workPoint,9,a.o);if(p){H.transfer(a,a.work,p);changed=true;}}if(a.phase!=='work'||a.o.scheduleManaged){a.phase='work';a.destination=a.work;a.route=[];a.path=null;a.o.route=[];a.o.destination=null;a.o.walking=false;a.o.frame=0;a.o.scheduleManaged=false;a.o.action='waiting';}a.phase='work';a.destination=a.work;}H.lastPhase='work';H.lastHour=Math.floor(V.Environment.time());H.commuting=false;this.bound=V.state;this.last=false;if(changed)V.ObjectiveGuide.invalidate();}
-};
-const reconcile=H.reconcile.bind(H);H.reconcile=function(...args){if(V.settings?.npcHomeRoutines===true||V.settings?.worldHours===true)return reconcile(...args);return R.sync();};
-const open=H.isOpen.bind(H);H.isOpen=function(...args){return V.settings?.worldHours!==true||open(...args);};
-H.permitted=function(dest,npc=false){if(npc)return true;if(!this.isOpen(dest))return false;const offer=this.data.offers.find(o=>o.id===dest);if(offer)return this.owned(dest)||this.preview===dest;const home=this.data.homes.find(h=>h.id===dest);if(home&&V.settings.worldHours===true){const hour=V.Environment.time();return hour>=8&&hour<20;}return true;};
-const hours=F.hours.bind(F);F.hours=function(...args){return V.settings?.worldHours===true?hours(...args):null;};
-const apply=V.Save.applySettings.bind(V.Save);V.Save.applySettings=function(...args){const result=apply(...args);if(V.state&&H.actors.size){R.sync();V.ObjectiveGuide.invalidate();}return result;};
-const settings=V.Game.settings.bind(V.Game);V.Game.settings=function(...args){const result=settings(...args),host=V.$('.modal-body .two-cols');if(host){const group=document.createElement('section');group.className='card world-preferences';group.innerHTML=`<h3>Rotinas e horários da cidade</h3><label class="toggle"><input id="s-npc-home-routines" type="checkbox" ${V.settings.npcHomeRoutines===true?'checked':''}> NPCs voltam para casa à noite</label><p>Quando as duas opções estão desligadas, moradores continuam disponíveis nos locais de atividade.</p><label class="toggle"><input id="s-world-hours" type="checkbox" ${V.settings.worldHours===true?'checked':''}> Horários da cidade: lojas, casas e retorno dos NPCs</label><p>Ativado: os NPCs voltam para casa às 19h e saem às 6h30. Desligado: visitas a qualquer hora; a rotina noturna ainda pode ser ativada na opção acima.</p>`;host.appendChild(group);const button=V.$('#settings-apply'),save=button.onclick;button.onclick=()=>{V.settings.npcHomeRoutines=V.$('#s-npc-home-routines').checked;V.settings.worldHours=V.$('#s-world-hours').checked;save();};}return result;};
-})();
-
+})(function() {
+  (function worldPreferences() {
+    "use strict";
+    const V = window.V, H = V.Homestead, Q = V.CityCommutes, F = V.FastTravel;
+    V.defaultSettings.npcHomeRoutines = false;
+    V.defaultSettings.worldHours = false;
+    const R = V.WorldPreferences = {
+      bound: null,
+      last: null,
+      sync() {
+        if (!V.state) return;
+        const enabled = V.settings.npcHomeRoutines === true || V.settings.worldHours === true;
+        if (enabled) {
+          this.last = true;
+          reconcile(false);
+          return;
+        }
+        let changed = this.bound !== V.state || this.last !== false;
+        if (Q.key !== null || H.commuting) {
+          Q.reset();
+          changed = true;
+        }
+        for (const a of H.actors.values()) {
+          if (a.baseWork) {
+            a.work = a.baseWork;
+            a.workPoint = a.baseWorkPoint || a.workPoint;
+          }
+          if (a.map !== a.work) {
+            const p = V.Rooms.safe(V.World.maps[a.work], a.workPoint, 9, a.o);
+            if (p) {
+              H.transfer(a, a.work, p);
+              changed = true;
+            }
+          }
+          if (a.phase !== "work" || a.o.scheduleManaged) {
+            a.phase = "work";
+            a.destination = a.work;
+            a.route = [];
+            a.path = null;
+            a.o.route = [];
+            a.o.destination = null;
+            a.o.walking = false;
+            a.o.frame = 0;
+            a.o.scheduleManaged = false;
+            a.o.action = "waiting";
+          }
+          a.phase = "work";
+          a.destination = a.work;
+        }
+        H.lastPhase = "work";
+        H.lastHour = Math.floor(V.Environment.time());
+        H.commuting = false;
+        this.bound = V.state;
+        this.last = false;
+        if (changed) V.ObjectiveGuide.invalidate();
+      }
+    };
+    const reconcile = H.reconcile.bind(H);
+    H.reconcile = function(...args) {
+      if (V.settings?.npcHomeRoutines === true || V.settings?.worldHours === true) return reconcile(...args);
+      return R.sync();
+    };
+    const open = H.isOpen.bind(H);
+    H.isOpen = function(...args) {
+      return V.settings?.worldHours !== true || open(...args);
+    };
+    H.permitted = function(dest, npc = false) {
+      if (npc) return true;
+      if (!this.isOpen(dest)) return false;
+      const offer = this.data.offers.find((o) => o.id === dest);
+      if (offer) return this.owned(dest) || this.preview === dest;
+      const home = this.data.homes.find((h) => h.id === dest);
+      if (home && V.settings.worldHours === true) {
+        const hour = V.Environment.time();
+        return hour >= 8 && hour < 20;
+      }
+      return true;
+    };
+    const hours = F.hours.bind(F);
+    F.hours = function(...args) {
+      return V.settings?.worldHours === true ? hours(...args) : null;
+    };
+    const apply = V.Save.applySettings.bind(V.Save);
+    V.Save.applySettings = function(...args) {
+      const result = apply(...args);
+      if (V.state && H.actors.size) {
+        R.sync();
+        V.ObjectiveGuide.invalidate();
+      }
+      return result;
+    };
+    const settings = V.Game.settings.bind(V.Game);
+    V.Game.settings = function(...args) {
+      const result = settings(...args), host = V.$(".modal-body .two-cols");
+      if (host) {
+        const group = document.createElement("section");
+        group.className = "card world-preferences";
+        group.innerHTML = `<h3>Rotinas e hor\xE1rios da cidade</h3><label class="toggle"><input id="s-npc-home-routines" type="checkbox" ${V.settings.npcHomeRoutines === true ? "checked" : ""}> NPCs voltam para casa \xE0 noite</label><p>Quando as duas op\xE7\xF5es est\xE3o desligadas, moradores continuam dispon\xEDveis nos locais de atividade.</p><label class="toggle"><input id="s-world-hours" type="checkbox" ${V.settings.worldHours === true ? "checked" : ""}> Hor\xE1rios da cidade: lojas, casas e retorno dos NPCs</label><p>Ativado: os NPCs voltam para casa \xE0s 19h e saem \xE0s 6h30. Desligado: visitas a qualquer hora; a rotina noturna ainda pode ser ativada na op\xE7\xE3o acima.</p>`;
+        host.appendChild(group);
+        const button = V.$("#settings-apply"), save = button.onclick;
+        button.onclick = () => {
+          V.settings.npcHomeRoutines = V.$("#s-npc-home-routines").checked;
+          V.settings.worldHours = V.$("#s-world-hours").checked;
+          save();
+        };
+      }
+      return result;
+    };
+  })();
 });

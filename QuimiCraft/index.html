@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a1821">
 <title>QuimiCraft Voxel — Ciência & Sobrevivência v7.6</title>
-<link rel="stylesheet" href="styles/main.css?v=11">
-<link rel="stylesheet" href="styles/character-customization.css">
-<link rel="stylesheet" href="styles/science.css?v=2">
-<link rel="stylesheet" href="styles/alchemy.css">
-<link rel="stylesheet" href="styles/vehicles.css?v=2">
-<link rel="stylesheet" href="styles/catalog.css?v=9">
-<link rel="stylesheet" href="styles/exploration-map.css?v=2">
+<link rel="stylesheet" href="styles/main.css?v=22">
+<link rel="stylesheet" href="styles/character-customization.css?v=2">
+<link rel="stylesheet" href="styles/science.css?v=3">
+<link rel="stylesheet" href="styles/alchemy.css?v=2">
+<link rel="stylesheet" href="styles/vehicles.css?v=3">
+<link rel="stylesheet" href="styles/catalog.css?v=13">
+<link rel="stylesheet" href="styles/exploration-map.css?v=3">
 </head>
-<body><div id="climateBadge" aria-live="polite">Primavera · Ensolarado</div>
+<body>
 <div id="game"></div>
 
 <div id="loading" class="screen hidden" aria-live="polite">
@@ -74,75 +74,112 @@
 
 <div id="hud">
   <div id="crosshair"></div>
-  <div class="stats"><div id="fps">FPS 60</div><div id="coords">X 0 &nbsp; Y 0 &nbsp; Z 0</div><div id="biome">PLANÍCIE</div><div id="exterminationTracker" hidden></div></div>
-  <div class="clock"><div class="clock-top"><span id="timeLabel">12:00</span><span id="dayLabel">DIA 1</span><span id="moonLabel" role="img" aria-label="Lua nova" title="Lua nova">🌑</span></div><div class="arc"><span id="orb" class="orb"></span></div></div>
-  <div id="chemHud" class="chem-hud">DESCOBERTAS 0 / 47</div><div id="missionHud" class="mission-hud"></div>
-  <button id="historyHudBtn" class="history-hud-button" type="button" aria-label="Abrir Histórico de mensagens">Histórico</button>
-  <div class="science-hud-actions"><button id="notebookHudBtn" type="button" aria-label="Abrir Caderno Científico"><b>N</b><span>Caderno</span></button><button id="researchHudBtn" type="button" aria-label="Abrir Árvore de Pesquisa"><b>R</b><span>Pesquisa</span></button><button id="mapHudBtn" type="button" aria-label="Abrir mapa de exploração"><b>M</b><span>Mapa</span></button></div>
-  <div id="mapGuide" class="map-guide" role="group" aria-label="Guia do marcador" hidden>
-    <span class="map-guide-dial" aria-hidden="true"><span id="mapGuideArrow">↑</span><span class="map-guide-arrived">✓</span></span>
-    <div><strong id="mapGuideName"></strong><span id="mapGuideInfo"></span></div>
+  <div class="break-wrap" id="breakWrap"><div class="break-fill" id="breakFill"></div></div>
+
+  <div class="hud-top-left">
+    <div class="stats"><div id="fps">FPS 60</div><div id="coords">X 0 &nbsp; Y 0 &nbsp; Z 0</div><div id="biome">PLANÍCIE</div><div id="corruptionStatus" hidden></div><div id="felStatus" hidden></div><div id="exterminationTracker" hidden></div></div>
+    <span id="alchemyLocator" class="alchemy-locator" hidden></span>
+    <div class="left-hazard-stack" aria-label="Riscos e efeitos ativos">
+      <div id="hazardHud" class="hazard-hud" aria-live="polite"></div>
+      <div id="statusEffects" class="status-effects" aria-label="Efeitos ativos"></div>
+    </div>
   </div>
-  <div id="temperatureHud" class="temperature-hud" data-state="comfortable"><div class="temperature-head"><span id="temperatureLabel">Confortável</span><b id="temperatureValue">37.0 °C</b></div><div class="temperature-track"><i id="temperatureFill"></i><span></span></div></div>
-  <div class="left-hazard-stack" aria-label="Riscos e efeitos ativos">
-    <div id="hazardHud" class="hazard-hud" aria-live="polite"></div>
-    <div id="statusEffects" class="status-effects" aria-label="Efeitos ativos"></div>
+
+  <div class="hud-top-center">
+    <div id="dragHint" class="drag-hint" hidden>Arraste ou use as setas para olhar · F atacar/quebrar · Q usar</div>
+    <div id="gamemodeChip" class="gamemode-chip" hidden></div>
+    <div id="mapGuide" class="map-guide" role="group" aria-label="Guia do marcador" hidden>
+      <span class="map-guide-dial" aria-hidden="true"><span id="mapGuideArrow">↑</span><span class="map-guide-arrived">✓</span></span>
+      <div><strong id="mapGuideName"></strong><span id="mapGuideInfo"></span></div>
+    </div>
+    <div id="enemyHud" class="enemy-hud"><div class="enemy-head"><span id="enemyName">CRIATURA</span><span id="enemyHp">0 / 0</span></div><div class="enemy-track"><div id="enemyFill" class="enemy-fill"></div></div></div>
+    <div id="factionWarHud" class="faction-war-hud" aria-live="polite" hidden><div class="faction-war-head"><span id="factionWarTitle">GUERRA DE FACÇÕES</span><b id="factionWarCount"></b></div><div class="faction-war-track"><div id="factionWarFill" class="faction-war-fill"></div></div><small id="factionWarSub"></small></div>
     <div id="petrifiedStatus" class="petrified-status" role="status" hidden>Petrificado</div>
   </div>
-  <div class="field-air-hud"><span id="windStatus">Vento</span><span id="gasStatus" role="status" hidden>Tontura</span><span id="venomStatus" role="status" hidden>Envenenado</span></div>
-  <div class="vitals"><div class="vital-row"><span>VIDA</span><div class="vital-track"><div id="healthFill" class="vital-fill health-fill"></div></div><span id="healthNum" class="vital-num">100</span></div><div class="vital-row"><span>MANA</span><div class="vital-track"><div id="manaFill" class="vital-fill mana-fill"></div></div><span id="manaNum" class="vital-num">100</span></div><div class="vital-row"><span>FOME</span><div class="vital-track"><div id="hungerFill" class="vital-fill hunger-fill"></div></div><span id="hungerNum" class="vital-num">100</span></div><div class="vital-row"><span>SEDE</span><div class="vital-track"><div id="thirstFill" class="vital-fill thirst-fill"></div></div><span id="thirstNum" class="vital-num">100</span></div><div id="breathRow" class="vital-row breath-row"><span>FÔLEGO</span><div class="vital-track"><div id="breathFill" class="vital-fill breath-fill"></div></div><span id="breathNum" class="vital-num">100</span></div></div>
-  <div id="enemyHud" class="enemy-hud"><div class="enemy-head"><span id="enemyName">CRIATURA</span><span id="enemyHp">0 / 0</span></div><div class="enemy-track"><div id="enemyFill" class="enemy-fill"></div></div></div>
-  <div id="hotbar" class="hotbar"></div>
-  <div class="break-wrap" id="breakWrap"><div class="break-fill" id="breakFill"></div></div>
-  <section id="vehicleHud" class="vehicle-hud" aria-label="Painel do veículo" hidden>
-    <header>
-      <strong id="vehicleName"></strong>
-      <b id="vehicleGear" class="vehicle-gear" aria-label="Marcha"></b>
-    </header>
-    <div class="vehicle-readouts">
-      <div class="vehicle-dial">
-        <svg viewBox="0 0 120 87" aria-hidden="true">
-          <path class="dial-base" d="M16 80A48 48 0 1 1 104 80"/>
-          <path class="dial-scale" d="M16 80A48 48 0 1 1 104 80" pathLength="100"/>
-          <path class="dial-level" id="vehicleDialLevel" d="M16 80A48 48 0 1 1 104 80" pathLength="100"/>
-          <g id="vehicleNeedle" transform="rotate(-113 60 61)">
-            <path d="M57.6 64 60 21 62.4 64Z"/>
-          </g>
-          <circle class="dial-hub" cx="60" cy="61" r="4.3"/>
-          <text x="4" y="85">0</text><text id="vehicleDialMax" x="115" y="85" text-anchor="end">80</text>
-        </svg>
-        <span class="vehicle-speed"><b id="vehicleSpeed">0</b> <small>km/h</small></span>
-      </div>
-      <div class="vehicle-indicators">
-        <div id="vehicleStatus" class="vehicle-status"></div>
-        <div id="vehicleNitroPanel" class="vehicle-nitro">
-          <div><b>Nitro</b><span id="vehicleNitroText">100%</span></div>
-          <progress id="vehicleNitro" max="100" value="100" aria-label="Carga de nitro"></progress>
-        </div>
-        <div id="vehicleAltitude" class="vehicle-altitude" hidden></div>
-      </div>
+
+  <div class="hud-top-right">
+    <div class="clock"><div class="clock-top"><span id="timeLabel">12:00</span><span id="dayLabel">DIA 1</span><span id="moonLabel" role="img" aria-label="Lua nova" title="Lua nova">🌑</span></div><div class="arc"><span id="orb" class="orb"></span></div></div>
+    <div id="climateBadge" aria-live="polite">Primavera · Ensolarado</div>
+    <div id="chemHud" class="chem-hud">DESCOBERTAS 0 / 47</div>
+    <div class="hud-right-actions">
+      <button id="factionHudBtn" class="history-hud-button faction-hud-button" type="button" aria-label="Abrir painel de Aliança e Facções">Aliança</button>
+      <button id="gridHudBtn" class="history-hud-button" type="button" aria-label="Grade de construção (H)" aria-pressed="false"><b>H</b> Grade</button>
+      <button id="summonHudBtn" class="history-hud-button summon-hud-button" type="button" aria-label="Abrir Grimório de Invocações (K)"><b>K</b> Invocar</button>
+      <button id="historyHudBtn" class="history-hud-button" type="button" aria-label="Abrir Histórico de mensagens">Histórico</button>
+      <div class="science-hud-actions"><button id="notebookHudBtn" type="button" aria-label="Abrir Caderno Científico"><b>N</b><span>Caderno</span></button><button id="researchHudBtn" type="button" aria-label="Abrir Árvore de Pesquisa"><b>R</b><span>Pesquisa</span></button><button id="mapHudBtn" type="button" aria-label="Abrir mapa de exploração"><b>M</b><span>Mapa</span></button></div>
     </div>
-    <small id="vehicleControls" class="vehicle-controls"></small>
-  </section>
-  <div id="productionHud" class="fishing-status" hidden><span id="productionCopy" role="status"></span><div class="fishing-track"><i id="productionFill"></i></div></div>
-<div id="fishingHud" class="fishing-status" hidden><span id="fishingCopy" role="status"></span><div class="fishing-track"><i id="fishingFill"></i></div></div>
-  <div id="interaction" class="interaction"></div><div id="gamemodeChip" class="gamemode-chip" hidden></div><div id="viewChip" class="view-chip">C · 1ª PESSOA</div><div id="combatChip" class="combat-chip">Cajado do Vento · clique para conjurar</div>
-  <div id="controls"><kbd>WASD</kbd> mover <kbd>ESPAÇO</kbd> nadar/subir <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> usar balde/colocar <kbd>E</kbd> interagir <kbd>G</kbd> coletar amostra <kbd>/</kbd> comandos <kbd>N</kbd> caderno <kbd>R</kbd> pesquisa <kbd>TAB</kbd> inventário <kbd>V</kbd> veículos</div>
+    <div id="summonActiveHud" class="summon-active-hud" hidden></div>
+    <div id="gridBuildStatus" class="grid-build-status" hidden></div>
+    <div id="missionHud" class="mission-hud"></div>
+    <span id="alchemyEffects" class="alchemy-effects" hidden></span>
+  </div>
+
+  <div class="hud-bottom-left">
+    <div id="notificationStack" class="notification-stack" aria-live="polite" aria-relevant="additions text"></div>
+    <div id="temperatureHud" class="temperature-hud" data-state="comfortable"><div class="temperature-head"><span id="temperatureLabel">Confortável</span><b id="temperatureValue">37.0 °C</b></div><div class="temperature-track"><i id="temperatureFill"></i><span></span></div></div>
+    <div class="vitals"><div class="vital-row"><span>VIDA</span><div class="vital-track"><div id="healthFill" class="vital-fill health-fill"></div></div><span id="healthNum" class="vital-num">100</span></div><div class="vital-row"><span>MANA</span><div class="vital-track"><div id="manaFill" class="vital-fill mana-fill"></div></div><span id="manaNum" class="vital-num">100</span></div><div class="vital-row"><span>FOME</span><div class="vital-track"><div id="hungerFill" class="vital-fill hunger-fill"></div></div><span id="hungerNum" class="vital-num">100</span></div><div class="vital-row"><span>SEDE</span><div class="vital-track"><div id="thirstFill" class="vital-fill thirst-fill"></div></div><span id="thirstNum" class="vital-num">100</span></div><div id="sanityRow" class="vital-row"><span>SANIDADE</span><div class="vital-track"><div id="sanityFill" class="vital-fill sanity-fill"></div></div><span id="sanityNum" class="vital-num">100</span></div><div id="breathRow" class="vital-row breath-row"><span>FÔLEGO</span><div class="vital-track"><div id="breathFill" class="vital-fill breath-fill"></div></div><span id="breathNum" class="vital-num">100</span></div></div>
+  </div>
+
+  <div class="hud-bottom-center">
+    <div id="productionHud" class="fishing-status" hidden><span id="productionCopy" role="status"></span><div class="fishing-track"><i id="productionFill"></i></div></div>
+    <div id="fishingHud" class="fishing-status" hidden><span id="fishingCopy" role="status"></span><div class="fishing-track"><i id="fishingFill"></i></div></div>
+    <section id="vehicleHud" class="vehicle-hud" aria-label="Painel do veículo" hidden>
+      <header>
+        <strong id="vehicleName"></strong>
+        <b id="vehicleGear" class="vehicle-gear" aria-label="Marcha"></b>
+      </header>
+      <div class="vehicle-readouts">
+        <div class="vehicle-dial">
+          <svg viewBox="0 0 120 87" aria-hidden="true">
+            <path class="dial-base" d="M16 80A48 48 0 1 1 104 80"/>
+            <path class="dial-scale" d="M16 80A48 48 0 1 1 104 80" pathLength="100"/>
+            <path class="dial-level" id="vehicleDialLevel" d="M16 80A48 48 0 1 1 104 80" pathLength="100"/>
+            <g id="vehicleNeedle" transform="rotate(-113 60 61)">
+              <path d="M57.6 64 60 21 62.4 64Z"/>
+            </g>
+            <circle class="dial-hub" cx="60" cy="61" r="4.3"/>
+            <text x="4" y="85">0</text><text id="vehicleDialMax" x="115" y="85" text-anchor="end">80</text>
+          </svg>
+          <span class="vehicle-speed"><b id="vehicleSpeed">0</b> <small>km/h</small></span>
+        </div>
+        <div class="vehicle-indicators">
+          <div id="vehicleStatus" class="vehicle-status"></div>
+          <div id="vehicleNitroPanel" class="vehicle-nitro">
+            <div><b>Nitro</b><span id="vehicleNitroText">100%</span></div>
+            <progress id="vehicleNitro" max="100" value="100" aria-label="Carga de nitro"></progress>
+          </div>
+          <div id="vehicleAltitude" class="vehicle-altitude" hidden></div>
+        </div>
+      </div>
+      <small id="vehicleControls" class="vehicle-controls"></small>
+    </section>
+    <div id="controls"><kbd>WASD</kbd> mover <kbd>CTRL</kbd> alternar corrida <kbd>ESPAÇO</kbd> nadar/subir <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> usar/colocar <kbd>E</kbd> interagir <kbd>J</kbd> jogar item <kbd>K</kbd> invocar <kbd>H</kbd> grade <kbd>B</kbd> mochila <kbd>/</kbd> comandos <kbd>TAB</kbd> inventário <kbd>V</kbd> veículos</div>
+    <div id="interaction" class="interaction"></div>
+    <div id="combatChip" class="combat-chip">Cajado do Vento · clique para conjurar</div>
+    <div id="hotbar" class="hotbar"></div>
+  </div>
+
+  <div class="hud-bottom-right">
+    <section id="fieldworkPanel" class="fieldwork-panel" aria-labelledby="fieldworkStep" hidden>
+      <button id="fieldworkClose" type="button" aria-label="Ocultar prática guiada">×</button>
+      <b id="fieldworkStep"></b>
+      <p id="fieldworkCopy" aria-live="polite"></p>
+      <button id="fieldworkNotebook" class="secondary" type="button" hidden>Registrar no caderno</button>
+    </section>
+    <div class="field-air-hud"><span id="windStatus">Vento</span><span id="gasStatus" role="status" hidden>Tontura</span><span id="venomStatus" role="status" hidden>Envenenado</span></div>
+    <div id="viewChip" class="view-chip">C · 1ª PESSOA</div>
+  </div>
 </div>
-<div id="dragHint" class="drag-hint" hidden>Arraste ou use as setas para olhar · F atacar/quebrar · Q usar</div>
-<section id="fieldworkPanel" class="fieldwork-panel" aria-labelledby="fieldworkStep" hidden>
-  <button id="fieldworkClose" type="button" aria-label="Ocultar prática guiada">×</button>
-  <b id="fieldworkStep"></b>
-  <p id="fieldworkCopy" aria-live="polite"></p>
-  <button id="fieldworkNotebook" class="secondary" type="button" hidden>Registrar no caderno</button>
-</section>
 <div id="mobileControls" class="mobile-controls" aria-label="Controles móveis">
   <div class="mobile-move"><button type="button" data-mobile-key="KeyW" aria-label="Mover para frente">▲</button><button type="button" data-mobile-key="KeyA" aria-label="Mover para esquerda">◀</button><button type="button" data-mobile-key="KeyS" aria-label="Mover para trás">▼</button><button type="button" data-mobile-key="KeyD" aria-label="Mover para direita">▶</button></div>
   <div class="mobile-actions"><button type="button" data-mobile-action="jump" aria-label="Pular ou subir">↑</button><button type="button" id="mountDescend" data-mobile-key="ShiftLeft" aria-label="Descer com o dragão" hidden>↓</button><button type="button" data-mobile-action="attack" aria-label="Atacar ou quebrar">⚔</button><button type="button" id="offhandAction" data-mobile-action="focus" aria-label="Conjurar com a mão secundária" hidden>✧</button><button type="button" data-mobile-action="use" aria-label="Usar ou colocar">◆</button><button type="button" data-mobile-action="interact" aria-label="Interagir">E</button><button type="button" data-mobile-action="sample" aria-label="Coletar amostra">G</button><button type="button" data-mobile-key="ControlLeft" data-drive aria-label="Frear veículo" hidden>Freio</button><button type="button" data-mobile-key="ShiftLeft" data-drive aria-label="Ativar nitro" hidden>Nitro</button><button type="button" data-mobile-action="vehicle" aria-label="Equipar ou recolher veículo">V</button><button type="button" data-mobile-action="inventory" aria-label="Abrir inventário">▦</button></div>
 </div>
-<div id="waterOverlay" class="water-overlay" aria-hidden="true"><span class="water-caustics"></span><span id="breathWarning" class="breath-warning">FÔLEGO BAIXO</span></div><div id="climateOverlay" class="climate-overlay" aria-hidden="true"></div><div id="damage" class="damage"></div>
+<div id="waterOverlay" class="water-overlay" aria-hidden="true"><span class="water-caustics"></span><span id="breathWarning" class="breath-warning">FÔLEGO BAIXO</span></div><div id="climateOverlay" class="climate-overlay" aria-hidden="true"></div><div id="lavaOverlay" class="lava-overlay" aria-hidden="true"><span></span><span></span></div><div id="damage" class="damage"></div>
 <div id="petrificationOverlay" class="petrification-overlay" aria-hidden="true"></div>
 <div id="gasOverlay" class="gas-overlay" aria-hidden="true"></div>
+<div id="whisperVignette" class="whisper-vignette" aria-hidden="true"></div>
+<div id="sanityOverlay" class="sanity-overlay" aria-hidden="true"></div>
+<div id="ancientWhisper" class="ancient-whisper" role="status" aria-live="polite" hidden><span id="ancientWhisperSpeaker"></span><em id="ancientWhisperText"></em></div>
 
 <section id="inventory" class="modal mc-inventory-modal" aria-hidden="true">
   <div class="mc-inventory-shell">
@@ -182,7 +219,14 @@
       <div id="inventoryGrid" class="mc-slot-grid mc-main-grid" aria-label="Itens da mochila"></div>
       <div class="mc-section-title mc-hotbar-title">Barra rápida</div>
       <div id="inventoryHotbar" class="mc-slot-grid mc-hotbar-grid" aria-label="Barra rápida"></div>
-      <div class="mc-inventory-hint"><kbd>TAB</kbd> fechar <span>•</span> clique ou arraste para equipar <span>•</span> arraste veneno a uma arma corpo a corpo ou banho de prata a uma arma, cajado ou munição</div>
+      <div id="backpackSection" class="backpack-section" hidden>
+        <div class="backpack-head">
+          <div class="mc-section-title">Mochila Equipada <span id="backpackCapLabel" class="chest-summary">0 / 28</span></div>
+          <button id="backpackExpandBtn" class="mc-book-button backpack-expand-btn" type="button">+2 Slots (até 34)</button>
+        </div>
+        <div id="backpackGrid" class="mc-slot-grid backpack-grid" aria-label="Slots extras da mochila equipada"></div>
+      </div>
+      <div class="mc-inventory-hint"><kbd>TAB</kbd> fechar <span>•</span> clique para equipar <span>•</span> com a mochila equipada, arraste ou use <kbd>SHIFT</kbd> + clique para guardar itens</div>
     </div>
   </div>
 </section>
@@ -193,6 +237,91 @@
     <p class="cargo-caption">Clique ou toque em uma pilha para transferi-la.</p>
     <h3>Carga</h3><div id="boatCargoHold" class="cargo-grid"></div>
     <h3>Mochila</h3><div id="boatCargoBackpack" class="cargo-grid"></div>
+  </div>
+</section>
+
+<section id="chestModal" class="modal mc-inventory-modal" aria-hidden="true">
+  <div class="mc-inventory-card chest-card" role="dialog" aria-modal="true" aria-labelledby="chestModalTitle">
+    <div class="mc-window-head">
+      <h2 id="chestModalTitle">Baú</h2>
+      <div class="chest-head-actions">
+        <button type="button" id="chestDepositAll" class="mc-book-button chest-take-btn">Depositar tudo</button>
+        <button type="button" id="chestTakeAll" class="mc-book-button chest-take-btn">Pegar tudo</button>
+        <button type="button" id="closeChestModal" class="mc-close" aria-label="Fechar baú">×</button>
+      </div>
+    </div>
+    <div class="mc-section-title">Baú <span id="chestSlotSummary" class="chest-summary">0 / 100</span></div>
+    <div id="chestGrid" class="mc-slot-grid chest-grid chest-grid-100" aria-label="Slots do baú"></div>
+    <div class="mc-section-title">Inventário</div>
+    <div id="chestInvGrid" class="mc-slot-grid mc-main-grid" aria-label="Itens da mochila"></div>
+    <div class="mc-section-title mc-hotbar-title">Barra rápida</div>
+    <div id="chestHotbarGrid" class="mc-slot-grid mc-hotbar-grid" aria-label="Barra rápida"></div>
+    <div class="mc-inventory-hint"><kbd>ESC</kbd> ou <kbd>E</kbd> fechar <span>•</span> clique para transferir (empilha até 9999) <span>•</span> arraste para organizar slots</div>
+  </div>
+</section>
+
+<section id="signModal" class="modal mc-inventory-modal" aria-hidden="true">
+  <div class="mc-inventory-card sign-card" role="dialog" aria-modal="true" aria-labelledby="signModalTitle">
+    <div class="mc-window-head">
+      <h2 id="signModalTitle">Editar placa de madeira</h2>
+      <button type="button" id="signCloseBtn" class="mc-close" aria-label="Fechar editor de placa">×</button>
+    </div>
+    <div class="sign-board" aria-label="Texto da placa">
+      <input id="signLine0" class="sign-line" type="text" maxlength="22" placeholder="Linha 1" autocomplete="off">
+      <input id="signLine1" class="sign-line" type="text" maxlength="22" placeholder="Linha 2" autocomplete="off">
+      <input id="signLine2" class="sign-line" type="text" maxlength="22" placeholder="Linha 3" autocomplete="off">
+      <input id="signLine3" class="sign-line" type="text" maxlength="22" placeholder="Linha 4" autocomplete="off">
+    </div>
+    <div class="sign-actions">
+      <button type="button" id="signSaveBtn" class="primary">Salvar placa</button>
+      <button type="button" id="signCancelBtn" class="secondary">Cancelar</button>
+    </div>
+  </div>
+</section>
+<section id="gridBuildModal" class="modal" aria-hidden="true">
+  <div class="modal-card grid-build-card" role="dialog" aria-modal="true" aria-labelledby="gridBuildTitle">
+    <div class="modal-head">
+      <div><h2 id="gridBuildTitle" class="modal-title">Construção por grade</h2>
+        <p class="modal-sub">Segure um bloco. Use duas vezes para marcar o início e confirmar a forma. No teclado, use Q ou o botão direito.</p></div>
+      <button id="gridCloseBtn" class="close" type="button" aria-label="Fechar grade">×</button>
+    </div>
+    <div class="grid-build-options">
+      <label>Forma <select id="gridShape"></select></label>
+      <label>Espelhar a partir do início
+        <select id="gridMirror"><option value="off">Desativado</option><option value="x">Eixo X</option><option value="z">Eixo Z</option></select>
+      </label>
+      <label>Quantidade de cópias
+        <select id="gridRepeats"><option value="1">1 construção</option><option value="2">2 construções</option><option value="3">3 construções</option></select>
+      </label>
+      <label>Direção das cópias
+        <select id="gridAxis"><option value="x">X positivo</option><option value="y">Para cima</option><option value="z">Z positivo</option></select>
+      </label>
+      <label>Espaço entre cópias <input id="gridGap" type="number" min="0" max="12" value="1"></label>
+    </div>
+    <p id="gridBuildFeedback" role="status"></p>
+    <div class="grid-build-actions">
+      <button id="gridToggleBtn" class="primary" type="button">Ativar grade</button>
+      <button id="gridUndoBtn" class="secondary" type="button">Desfazer</button>
+      <button id="gridRedoBtn" class="secondary" type="button">Refazer</button>
+    </div>
+  </div>
+</section>
+<section id="summonModal" class="modal" aria-hidden="true">
+  <div class="modal-card summon-card" role="dialog" aria-modal="true" aria-labelledby="summonModalTitle">
+    <div class="modal-head">
+      <div>
+        <p class="eyebrow">Magia de Invocação · Tecla K</p>
+        <h2 id="summonModalTitle" class="modal-title">Grimório de Invocações</h2>
+        <p class="modal-sub">Conjure elementais, infernais, cães da fenda, golens, seres de luz, seres do caos e espíritos aliados.</p>
+      </div>
+      <button type="button" id="summonCloseBtn" class="close" aria-label="Fechar invocações">×</button>
+    </div>
+    <div class="summon-toolbar">
+      <div id="summonActiveBar" class="summon-active-bar">Aliados ativos: 0 / 4</div>
+      <button type="button" id="summonDismissAllBtn" class="secondary">Dispensar aliados</button>
+    </div>
+    <div id="summonTabs" class="summon-tabs" role="group" aria-label="Tipos de invocação"></div>
+    <div id="summonSpellGrid" class="summon-grid"></div>
   </div>
 </section>
 <div id="sleepScreen" class="sleep-screen" aria-hidden="true"><span>Descansando até amanhecer…</span></div>
@@ -279,6 +408,18 @@
   <div class="history-scroll"><div id="historyList" class="history-list"></div><p id="historyEmpty" class="history-empty">Nenhuma mensagem nesta categoria.</p></div>
 </div></section>
 
+<section id="factionModal" class="modal faction-modal" aria-hidden="true"><div class="modal-card faction-card" role="dialog" aria-modal="true" aria-labelledby="factionModalTitle">
+  <div class="modal-head"><div><p class="eyebrow">Facções do QuimiCraft</p><h2 id="factionModalTitle" class="modal-title">Aliança e Batalhas</h2><p id="factionModalSub" class="modal-sub">Escolha um lado para lutar junto de patrulhas, defender ou invadir fortalezas e ganhar reputação.</p></div><button class="close" data-close="factionModal" type="button" aria-label="Fechar painel de facções">×</button></div>
+  <div class="faction-modal-body">
+    <div id="factionCurrentBanner" class="faction-current-banner"></div>
+    <div id="factionCards" class="faction-cards"></div>
+    <div class="faction-war-controls">
+      <div class="faction-war-controls-head"><b>Patrulhas e Invasões</b><span>Comandos: <code>/faccao</code> e <code>/invasao</code></span></div>
+      <div id="factionBattleActions" class="faction-battle-actions"></div>
+    </div>
+  </div>
+</div></section>
+
 <section id="scientificNotebook" class="modal science-modal" aria-hidden="true"><div class="modal-card science-card notebook-card" role="dialog" aria-modal="true" aria-labelledby="scientificNotebookTitle">
   <div class="modal-head science-modal-head"><div><p class="eyebrow">Arquivo de campo persistente</p><h2 id="scientificNotebookTitle" class="modal-title">Caderno Científico</h2><p id="notebookStats" class="modal-sub">0 amostras · 0 pontos disponíveis</p></div><button class="close" data-close-science="scientificNotebook" type="button" aria-label="Fechar Caderno Científico">×</button></div>
   <div class="science-layout"><nav id="notebookTabs" class="notebook-tabs" aria-label="Seções do Caderno Científico"></nav><main id="notebookContent" class="science-content"></main></div>
@@ -337,12 +478,10 @@
   </div>
 </section>
 <section id="devMenu" class="modal" aria-hidden="true"><div class="modal-card dev-card">
-  <div class="modal-head"><div><p class="eyebrow">Console experimental</p><h2 class="modal-title">Modo DEV</h2><p class="modal-sub">Ferramentas locais deste mundo. Digite <b>-mododev</b> no chat para reabrir.</p></div><button class="close" data-close="devMenu">×</button></div>
+<div class="modal-head"><div><h2 class="modal-title">Modo DEV</h2><p class="modal-sub">Digite <b>-mododev</b> no chat para reabrir.</p></div><div class="dev-head-actions"><button id="openCommandMenu" class="secondary" type="button">Buscar comandos <kbd>/</kbd></button><button class="close" data-close="devMenu" aria-label="Fechar modo DEV">×</button></div></div>
   <div class="dev-body"><div id="devStatus" class="dev-status"></div><div id="devGrid" class="dev-grid"></div><div class="dev-command-wrap"><div id="devCmdSuggest" class="cmd-suggest" role="listbox" aria-label="Sugestões de comando" hidden></div><div id="devCmdHint" class="cmd-hint" hidden></div><div class="command-row"><input id="devCommand" autocomplete="off" spellcheck="false" placeholder="Ex.: gamemode creative, summon orca, give pedra 64 (Tab autocompleta)"><button id="runCommand" class="primary">Executar</button></div></div><div class="dev-help">gamemode creative|survival · summon criatura|bloco|id|nome · give bloco|item|id|nome qtd · setblock ~ ~ ~ bloco · fill · fly · heal · speed 1–5 · time · weather · tp · kill · clear</div></div>
 </div></section>
 
-<span id="alchemyLocator" class="alchemy-locator" hidden></span>
-<span id="alchemyEffects" class="alchemy-effects" hidden></span>
 <section id="alchemyWorkshop" class="modal" aria-hidden="true">
   <div class="modal-card alchemy-card" role="dialog" aria-modal="true" aria-labelledby="alchemyTitle">
     <header class="modal-head"><h2 id="alchemyTitle">Oficina alquímica</h2><button class="close" id="alchemyClose" type="button" aria-label="Fechar oficina alquímica">×</button></header>
@@ -377,11 +516,29 @@
         <button type="button" class="secondary" data-category="aquatic">Vida aquática</button>
         <button type="button" class="secondary" data-category="fantasy">Criaturas</button>
         <button type="button" class="secondary" data-category="extermination">Extermínio</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_light" data-faction="light">Exército Dourado</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_scourge" data-faction="scourge">Flagelo da Geada</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_fel" data-faction="fel">Legião da Fenda Vil</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_ancient" data-faction="ancient">Deuses Antigos</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_druid" data-faction="druid">Círculo Druídico</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_alchemist" data-faction="alchemist">Ordem dos Alquimistas</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_villager" data-faction="villager">Liga dos Aldeões</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_arvoroso" data-faction="arvoroso">Conselho dos Arvorosos</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_brasa" data-faction="brasa">Pacto da Brasa</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_farol" data-faction="farol">Concílio do Farol</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_tambor" data-faction="tambor">Hostes do Tambor</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_marco" data-faction="marco">Guardiões do Limiar</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_vento" data-faction="vento">Vigília dos Ventos</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_revoadas" data-faction="revoadas">Revoadas Dracônicas</button>
+        <button type="button" class="secondary" data-category="summon">Invocações</button>
+        <button type="button" class="secondary catalog-faction-btn" data-category="faction_elemental" data-faction="elemental">Elementais</button>
       </div>
       <div class="catalog-filters catalog-block-filters" role="group" aria-label="Tipos de bloco" hidden>
-        <button type="button" class="secondary" data-block-filter="all">Todos os blocos</button>
+        <button type="button" class="secondary" data-block-filter="all">Todos os tipos</button>
         <button type="button" class="secondary" data-block-filter="natural">Terreno</button>
         <button type="button" class="secondary" data-block-filter="building">Construção</button>
+        <button type="button" class="secondary" data-block-filter="decoration">Decorações</button>
+        <button type="button" class="secondary" data-block-filter="units" hidden>Unidades</button>
         <button type="button" class="secondary" data-block-filter="mineral">Minérios</button>
         <button type="button" class="secondary" data-block-filter="station">Estações</button>
         <button type="button" class="secondary" data-block-filter="plant">Vegetação</button>
@@ -430,76 +587,95 @@
       </div>
       <h3>História</h3>
       <p id="catalogStory"></p>
-      <h3>Curiosidades</h3>
+      <h3 id="catalogTriviaTitle">Curiosidades</h3>
       <p id="catalogTrivia"></p>
+      <div id="catalogInsight" class="catalog-insight" hidden>
+        <h3 id="catalogInsightTitle"></h3>
+        <p id="catalogInsightText"></p>
+        <ul id="catalogInsightSources" class="catalog-insight-sources" hidden></ul>
+      </div>
     </section>
   </dialog>
 </section>
 <input type="file" id="worldImportFile" accept=".json,application/json" hidden>
-<div id="notificationStack" class="notification-stack" aria-live="polite" aria-relevant="additions text"></div>
-<div id="chat" class="chat"><div id="cmdSuggest" class="cmd-suggest" role="listbox" aria-label="Sugestões de comando" hidden></div><div id="cmdHint" class="cmd-hint" hidden></div><input id="chatInput" class="chat-box" maxlength="180" autocomplete="off" spellcheck="false" placeholder="Mensagem ou /comando… (Tab autocompleta)"></div>
+<div id="chat" class="chat"><div class="command-overlay-title">Comandos <button id="closeCommandMenu" type="button" class="close" aria-label="Fechar menu de comandos">×</button></div><div id="cmdSuggest" class="cmd-suggest" role="listbox" aria-label="Sugestões de comando" hidden></div><div id="cmdHint" class="cmd-hint" hidden></div><input id="chatInput" class="chat-box" maxlength="180" autocomplete="off" spellcheck="false" placeholder="Mensagem ou /comando… (Tab autocompleta)"></div>
 <div id="toast"></div>
 
 <script src="assets/three.min.js"></script>
 <script src="js/character-customization.js"></script>
 <script src="js/quimicraft-systems.js"></script>
 <script src="js/field-laboratory.js?v=7"></script>
-<script src="js/arsenal.js?v=12"></script>
+<script src="js/arsenal.js?v=17"></script>
 <script src="js/science-core.js?v=4"></script>
 <script src="js/science-ui.js?v=3"></script>
 <script src="js/frontier.js?v=3"></script>
 <script src="js/regions.js?v=2"></script>
 <script src="js/habitats.js"></script>
 <script src="js/extermination.js?v=2"></script>
-<script src="js/settlements.js?v=3"></script>
-<script src="js/workshops.js?v=2"></script>
+<script src="js/settlements.js?v=5"></script>
+<script src="js/workshops.js?v=3"></script>
 <script src="js/professions.js?v=3"></script>
-<script src="js/combat-effects.js?v=8"></script>
+<script src="js/combat-effects.js?v=9"></script>
 <script src="js/avatar-preview.js"></script>
-<script src="js/terrain.js"></script>
+<script src="js/terrain.js?v=4"></script>
 <script src="js/horizon.js?v=2"></script>
 <script src="js/laboratory-door.js"></script>
 <script src="js/laboratory-layout.js"></script>
 <script src="js/player-input.js"></script>
-<script src="js/inventory-transaction.js?v=3"></script>
-<script src="js/world-storage.js?v=2"></script>
-<script src="js/player-models.js?v=20"></script>
-<script src="js/biome-fauna.js?v=16"></script>
-<script src="js/dragons.js?v=7"></script>
-<script src="js/creature-poses.js?v=18"></script>
-<script src="js/expeditions.js?v=4"></script>
-<script src="js/mounts.js?v=4"></script>
+<script src="js/inventory-transaction.js?v=4"></script>
+<script src="js/world-storage.js?v=3"></script>
+<script src="js/player-models.js?v=35"></script>
+<script src="js/biome-fauna.js?v=22"></script>
+<script src="js/dragons.js?v=9"></script>
+<script src="js/creature-poses.js?v=20"></script>
+<script src="js/expeditions.js?v=9"></script>
+<script src="js/mounts.js?v=6"></script>
+<script src="js/grove.js?v=4"></script>
 <script src="js/npc-looks.js?v=4"></script>
-<script src="js/mob-spawn.js?v=3"></script>
+<script src="js/mob-spawn.js?v=5"></script>
 <script src="js/breeding.js"></script>
-<script src="js/entity-ai.js?v=8"></script>
+<script src="js/entity-ai.js?v=11"></script>
 <script src="js/alchemy.js"></script>
-<script src="js/alchemy-world.js"></script>
+<script src="js/alchemy-world.js?v=4"></script>
 <script src="js/alchemy-ui.js"></script>
-<script src="js/alchemy-play.js?v=2"></script>
-<script src="js/vehicle-models.js?v=8"></script>
-<script src="js/vehicles.js?v=8"></script>
-<script src="js/surface-art.js?v=2"></script>
-<script src="js/plant-models.js?v=4"></script>
-<script src="js/block-models.js?v=6"></script>
+<script src="js/alchemy-play.js?v=3"></script>
+<script src="js/vehicle-models.js?v=9"></script>
+<script src="js/vehicles.js?v=10"></script>
+<script src="js/surface-art.js?v=3"></script>
+<script src="js/plant-models.js?v=5"></script>
+<script src="js/faction-ornaments.js?v=3"></script>
+<script src="js/faction-building.js?v=4"></script>
+<script src="js/block-models.js?v=14"></script>
 <script src="js/marine-life.js?v=4"></script>
-<script src="js/depths.js?v=18"></script>
+<script src="js/depths.js?v=20"></script>
 <script src="js/aquatic.js?v=13"></script>
-<script src="js/wildlife-models.js?v=40"></script>
-<script src="js/fauna-models.js?v=4"></script>
+<script src="js/wildlife-models.js?v=47"></script>
+<script src="js/fauna-models.js?v=5"></script>
 <script src="js/wildlife-behavior.js?v=9"></script>
-<script src="js/catalog-lore.js?v=18"></script>
-<script src="js/catalog-lore-items.js?v=2"></script>
-<script src="js/catalog.js?v=26"></script>
+<script src="js/catalog-field-guide.js?v=3"></script>
+<script src="js/catalog-lore.js?v=29"></script>
+<script src="js/catalog-lore-items.js?v=3"></script>
+<script src="js/catalog.js?v=31"></script>
 <script src="js/menu-backdrop.js?v=2"></script>
 <script src="js/geology.js"></script>
-<script src="js/folklore.js?v=3"></script>
+<script src="js/folklore.js?v=5"></script>
 <script src="js/fluid-flow.js?v=3"></script>
-<script src="js/spectral.js?v=2"></script>
+<script src="js/spectral.js?v=3"></script>
 <script src="js/screamer.js"></script>
-<script src="js/survival.js?v=1"></script>
-<script src="js/exploration-map.js?v=3"></script>
-<script src="js/commands.js?v=2"></script>
-<script src="js/game.js?v=67"></script>
+<script src="js/survival.js?v=4"></script>
+<script src="js/exploration-map.js?v=4"></script>
+<script src="js/faction-routines.js?v=3"></script>
+<script src="js/ancients.js?v=10"></script>
+<script src="js/ancient-models.js?v=4"></script>
+<script src="js/divine-factions.js?v=5"></script>
+<script src="js/divine-models.js?v=4"></script>
+<script src="js/dragon-lairs.js?v=2"></script>
+<script src="js/factions.js?v=19"></script>
+<script src="js/faction-models.js?v=10"></script>
+<script src="js/elemental-rifts.js?v=7"></script>
+<script src="js/summon-magic.js?v=2"></script>
+<script src="js/commands.js?v=11"></script>
+<script src="js/build-grid.js?v=2"></script>
+<script src="js/game.js?v=103"></script>
 </body>
 </html>

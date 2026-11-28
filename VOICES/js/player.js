@@ -1,15 +1,74 @@
 /* Registered module: player */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("player", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function(){'use strict';const V=window.V;
-V.Player={data:null,walkTime:0,moved:0,
- create(x=768,y=760){this.data={x,y,dir:0,frame:0,moving:false,radius:11};this.walkTime=0;},
- update(dt){if(!this.data)return;const p=this.data;p.actionTime=Math.max(0,(p.actionTime||0)-dt);p.celebrateTime=Math.max(0,(p.celebrateTime||0)-dt);const axis=V.Input.axis();const speed=150*V.settings.speed*(V.Life?.movementMultiplier()??1);const dx=axis.x*speed*dt,dy=axis.y*speed*dt;p.moving=Math.abs(dx)+Math.abs(dy)>.01;if(p.moving){if(Math.abs(axis.x)>Math.abs(axis.y))p.dir=axis.x<0?1:2;else p.dir=axis.y<0?3:0;const oldx=p.x,oldy=p.y;const clear=(x,y)=>!V.World.collides(x,y,p.radius)&&(V.Homestead?.commuting||!V.World.current.objects.some(o=>(V.Cozy?V.Cozy.person(o):['npc','resident','service'].includes(o.type))&&Math.hypot(o.x-x,o.y-y)<12+12*(o.visualScale||1)));if(clear(p.x+dx,p.y))p.x+=dx;if(clear(p.x,p.y+dy))p.y+=dy;this.moved+=Math.hypot(p.x-oldx,p.y-oldy);this.walkTime+=dt;p.frame=Math.floor(this.walkTime*8)%4;}else p.frame=0;const target=V.Viewport?V.Viewport.target(V.World.current,p):{x:V.clamp(p.x-480,0,V.World.current.width*48-960),y:V.clamp(p.y-270,0,V.World.current.height*48-540)};V.World.camera.x+=(target.x-V.World.camera.x)*Math.min(1,dt*9);V.World.camera.y+=(target.y-V.World.camera.y)*Math.min(1,dt*9);},
- render(ctx){const p=this.data,cam=V.World.camera;if(!p)return;const x=p.x-cam.x,y=p.y-cam.y;ctx.fillStyle='#060d1a70';ctx.beginPath();ctx.ellipse(x,y+5,15,5,0,0,Math.PI*2);ctx.fill();if(V.state.cosmetic){ctx.strokeStyle=V.state.cosmetic;ctx.globalAlpha=.65;ctx.beginPath();ctx.ellipse(x,y+4,19,8,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;}V.Assets.sprite(ctx,V.state.character,x,y,p.celebrateTime?5:p.actionTime?4:p.dir,p.celebrateTime||p.actionTime?Math.floor(V.Engine.time*7)%4:p.frame,56);},
- nearest(){if(!this.data||!V.World.current)return null;let closest=null,range=80;V.World.interactables().forEach(o=>{const d=V.dist(this.data,o);if(d<range){range=d;closest=o;}});return closest;}
-};})();
-
+})(function() {
+  (function() {
+    "use strict";
+    const V = window.V;
+    V.Player = {
+      data: null,
+      walkTime: 0,
+      moved: 0,
+      create(x = 768, y = 760) {
+        this.data = { x, y, dir: 0, frame: 0, moving: false, radius: 11 };
+        this.walkTime = 0;
+      },
+      update(dt) {
+        if (!this.data) return;
+        const p = this.data;
+        p.actionTime = Math.max(0, (p.actionTime || 0) - dt);
+        p.celebrateTime = Math.max(0, (p.celebrateTime || 0) - dt);
+        const axis = V.Input.axis();
+        const speed = 150 * V.settings.speed * (V.Life?.movementMultiplier() ?? 1);
+        const dx = axis.x * speed * dt, dy = axis.y * speed * dt;
+        p.moving = Math.abs(dx) + Math.abs(dy) > 0.01;
+        if (p.moving) {
+          if (Math.abs(axis.x) > Math.abs(axis.y)) p.dir = axis.x < 0 ? 1 : 2;
+          else p.dir = axis.y < 0 ? 3 : 0;
+          const oldx = p.x, oldy = p.y;
+          const clear = (x, y) => !V.World.collides(x, y, p.radius) && (V.Homestead?.commuting || !V.World.current.objects.some((o) => (V.Cozy ? V.Cozy.person(o) : ["npc", "resident", "service"].includes(o.type)) && Math.hypot(o.x - x, o.y - y) < 12 + 12 * (o.visualScale || 1)));
+          if (clear(p.x + dx, p.y)) p.x += dx;
+          if (clear(p.x, p.y + dy)) p.y += dy;
+          this.moved += Math.hypot(p.x - oldx, p.y - oldy);
+          this.walkTime += dt;
+          p.frame = Math.floor(this.walkTime * 8) % 4;
+        } else p.frame = 0;
+        const target = V.Viewport ? V.Viewport.target(V.World.current, p) : { x: V.clamp(p.x - 480, 0, V.World.current.width * 48 - 960), y: V.clamp(p.y - 270, 0, V.World.current.height * 48 - 540) };
+        V.World.camera.x += (target.x - V.World.camera.x) * Math.min(1, dt * 9);
+        V.World.camera.y += (target.y - V.World.camera.y) * Math.min(1, dt * 9);
+      },
+      render(ctx) {
+        const p = this.data, cam = V.World.camera;
+        if (!p) return;
+        const x = p.x - cam.x, y = p.y - cam.y;
+        ctx.fillStyle = "#060d1a70";
+        ctx.beginPath();
+        ctx.ellipse(x, y + 5, 15, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        if (V.state.cosmetic) {
+          ctx.strokeStyle = V.state.cosmetic;
+          ctx.globalAlpha = 0.65;
+          ctx.beginPath();
+          ctx.ellipse(x, y + 4, 19, 8, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+        V.Assets.sprite(ctx, V.state.character, x, y, p.celebrateTime ? 5 : p.actionTime ? 4 : p.dir, p.celebrateTime || p.actionTime ? Math.floor(V.Engine.time * 7) % 4 : p.frame, 56);
+      },
+      nearest() {
+        if (!this.data || !V.World.current) return null;
+        let closest = null, range = 80;
+        V.World.interactables().forEach((o) => {
+          const d = V.dist(this.data, o);
+          if (d < range) {
+            range = d;
+            closest = o;
+          }
+        });
+        return closest;
+      }
+    };
+  })();
 });

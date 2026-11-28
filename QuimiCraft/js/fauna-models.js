@@ -13,6 +13,7 @@ globalThis.QuimiCraftFaunaModels=(()=>{
     rime_fox:[.66,.18,.19,.58,.16,.17,.50,.43,.21,.75,.17],
     maned_wolf:[1.07,.18,.20,.58,.16,.17,.76,.81,.21,.51,.26],
     hoary_fox:[.65,.18,.19,.53,.16,.18,.52,.41,.20,.64,.16],
+    lumen_fox:[.66,.18,.19,.54,.16,.18,.52,.41,.20,.70,.19],
     brown_bear:[.80,.37,.38,.76,.23,.24,.70,.37,.22,.10,.11],
     black_bear:[.77,.32,.34,.71,.21,.225,.64,.39,.23,.08,.11],
     polar_bear:[.83,.34,.36,.79,.21,.22,.73,.41,.26,.09,.084]
@@ -24,6 +25,7 @@ globalThis.QuimiCraftFaunaModels=(()=>{
     iguana:[.20,.107,.095,.36,.079,.093,.30,.13,.095,.79,.012],
     tatu:[.225,.214,.20,.32,.087,.081,.28,.13,.115,.14,.05],
     pampas_deer:[.82,.192,.229,.56,.118,.154,.53,.54,.15,.17,.16],
+    lumen_deer:[.85,.196,.232,.59,.122,.158,.55,.56,.16,.20,.17],
     coati:[.40,.16,.17,.40,.11,.125,.38,.24,.14,.61,.065]
   };
   const birds={
@@ -212,7 +214,7 @@ globalThis.QuimiCraftFaunaModels=(()=>{
             i%2?warm:mix(coat,trim,.40),5,.72);
         }
       }
-      const headY=y+h*(dog?.30:shape==="pampas_deer"?1.08:cat?.42:.29);
+      const headY=y+h*(dog?.30:(shape==="pampas_deer"||shape==="lumen_deer")?1.08:cat?.42:.29);
       const head=pivot(g,0,headY,-front);
       rig.head=head;
       taper(body,[0,h*.02,-length*.49],[0,headY-y,-front+h*.24],w*.85,hx*.94,coat,8);
@@ -222,9 +224,9 @@ globalThis.QuimiCraftFaunaModels=(()=>{
         [-hy*.56-reach*.55,snoutY,hx*(cat?.72:shape==="hippopotamus"?1.05:.63),hy*.51],[-hy*.30,snoutY,hx*.80,hy*.62]],8,
         (row,side)=>side<0?trim:shape==="hippopotamus"?belly:coat);
       const noseZ=-hy*.70-reach;
-      if(cat||dog||bear||["coati","pampas_deer"].includes(shape))
+      if(cat||dog||bear||["coati","pampas_deer","lumen_deer"].includes(shape))
         mound(head,0,snoutY+hy*.08,noseZ,hx*.32,hy*.19,hy*.14,ink,6);
-      eyes(head,hx*.76,hy*.24,-hy*.69,shape==="elephant"?0xb19b80:0xe3b366);
+      eyes(head,hx*.76,hy*.24,-hy*.69,def.biolum?(def.glow||0x66fbff):shape==="elephant"?0xb19b80:0xe3b366);
       for(const side of [-1,1]){
         if(shape==="elephant"){
           const flap=mound(head,side*.56,.02,.10,.43,.56,.115,mix(coat,trim,.30),7);
@@ -266,12 +268,25 @@ globalThis.QuimiCraftFaunaModels=(()=>{
           mound(head,side*.23,0,noseZ*.88,.09,.052,.068,shade,6);
           taper(jaw,[side*.28,.04,-.54],[side*.28,.19,-.56],.048,.018,0xeadaaa);
         }
-      }else if(shape==="pampas_deer"){
+      }else if(shape==="pampas_deer"||shape==="lumen_deer"){
+        const isLumen=shape==="lumen_deer";
+        const glowMat=isLumen?new T.MeshBasicMaterial({color:def.glow||0x66fbff,toneMapped:false}):null;
         for(const side of [-1,1]){
           const antler=pivot(head,side*.074,hy*.77,.035);
-          taper(antler,[0,0,0],[side*.051,.24,.054],.024,.009,0xa79473,5);
-          taper(antler,[side*.031,.12,.021],[side*.044,.205,-.058],.014,.005,0xb39e78,5);
-          taper(antler,[side*.038,.18,.045],[side*.083,.253,.022],.013,.004,0xb39e78,5);
+          const a1=taper(antler,[0,0,0],[side*.058,isLumen?.31:.24,.054],.024,.009,isLumen?0x7dfbff:0xa79473,5);
+          const a2=taper(antler,[side*.031,.13,.021],[side*.052,isLumen?.25:.205,-.068],.014,.005,isLumen?0xb8ffff:0xb39e78,5);
+          const a3=taper(antler,[side*.042,.20,.045],[side*.098,isLumen?.31:.253,.024],.013,.004,isLumen?0xb8ffff:0xb39e78,5);
+          if(glowMat){a1.material=a2.material=a3.material=glowMat}
+        }
+        if(isLumen&&glowMat){
+          const orbGeo=new T.OctahedronGeometry(.045,1);
+          const orb=new T.Mesh(orbGeo,glowMat);orb.position.set(0,hy*1.45,.04);orb.userData.ownGeometry=true;head.add(orb);
+          for(let i=0;i<5;i++){
+            const dot=new T.Mesh(new T.SphereGeometry(.026,6,5),glowMat);
+            dot.position.set((i%2?1:-1)*w*.72,h*.55,-length*.45+i*length*.22);
+            dot.userData.ownGeometry=true;body.add(dot);
+          }
+          if(globalThis.QuimiCraftSpectral?.halo)QuimiCraftSpectral.halo(T,head,0x5ef8ff,[0,hy*1.4,.04],.58,.58,.42);
         }
       }else if(shape==="iguana"){
         for(let i=0;i<9;i++){
@@ -307,6 +322,21 @@ globalThis.QuimiCraftFaunaModels=(()=>{
       taper(tail,tailBase,tailMid,thick,thick*.85,coat,7);
       taper(tail,tailMid,tailTip,thick*.85,thick*.54,brush?trim:shade,7);
       taper(tail,tailTip,[0,tailTip[1]+(cat?.08:-.015),tailLength],thick*.54,.007,pattern==="blacklegs"||id==="lion"?ink:coat,7);
+      if(id==="lumen_fox"){
+        const fxGlow=new T.MeshBasicMaterial({color:0x76f7ff,toneMapped:false});
+        const fxViolet=new T.MeshBasicMaterial({color:0xb586ff,toneMapped:false});
+        const tipOrb=new T.Mesh(new T.SphereGeometry(thick*.62,7,6),fxGlow);
+        tipOrb.position.set(0,tailTip[1],tailLength*.88);tipOrb.userData.ownGeometry=true;tail.add(tipOrb);
+        for(const side of [-1,1]){
+          const earGlow=new T.Mesh(new T.ConeGeometry(hx*.22,ear*.65,5),fxViolet);
+          earGlow.position.set(side*(hx*.78+ear*.26),hy*.64+ear*.88,hy*.04);earGlow.userData.ownGeometry=true;head.add(earGlow);
+        }
+        for(let i=0;i<4;i++){
+          const rune=new T.Mesh(new T.SphereGeometry(.022,6,5),i%2?fxViolet:fxGlow);
+          rune.position.set((i%2?1:-1)*w*.72,h*.48,-length*.35+i*length*.24);rune.userData.ownGeometry=true;body.add(rune);
+        }
+        if(globalThis.QuimiCraftSpectral?.halo)QuimiCraftSpectral.halo(T,tail,0x7cf8ff,[0,tailTip[1],tailLength*.88],.44,.44,.38);
+      }
       if(shape==="coati")for(let i=1;i<5;i++){
         const t=i/5;
         taper(tail,[0,tailLength*t*.99,tailLength*t*.95],[0,tailLength*(t+.045)*.99,tailLength*(t+.045)*.95],
@@ -350,8 +380,45 @@ globalThis.QuimiCraftFaunaModels=(()=>{
       for(const i of [-1,0,1])taper(fan,[i*w*.14,0,0],[i*tail*.31,-tail*.23,tail],w*.30,w*.14,shade,6,.33);
     }
 
+    function frog(def,g,rig){
+      const coat=def.coat,trim=def.trim,shade=mix(coat,0x0c2429,.42);
+      const glowMat=new T.MeshBasicMaterial({color:def.glow||0x58ffa8,toneMapped:false});
+      const eyeMat=new T.MeshBasicMaterial({color:0xb8fff0,toneMapped:false});
+      const body=pivot(g,0,.15,0);rig.body=body;
+      loft(body,[[-.18,-.01,.09,.065],[-.09,.025,.155,.105],[.03,.04,.165,.11],[.15,.01,.13,.08],[.20,-.02,.07,.045]],9,
+        (row,side,edge)=>side<-.42?trim:(row+edge)%3===0?shade:coat);
+      const head=pivot(g,0,.20,-.15);rig.head=head;
+      mound(head,0,0,0,.135,.085,.12,coat,8);
+      // Bioluminescent vocal sac under chin
+      const sac=new T.Mesh(new T.SphereGeometry(.072,8,6),glowMat);
+      sac.scale.set(1.08,.75,.95);sac.position.set(0,-.055,-.045);sac.userData.ownGeometry=true;head.add(sac);
+      for(const side of [-1,1]){
+        const dome=new T.Mesh(new T.SphereGeometry(.044,7,6),eyeMat);
+        dome.position.set(side*.082,.075,-.03);dome.userData.ownGeometry=true;head.add(dome);
+        const pupil=new T.Mesh(new T.SphereGeometry(.021,6,5),new T.MeshBasicMaterial({color:0x0b1620}));
+        pupil.position.set(side*.092,.082,-.058);pupil.userData.ownGeometry=true;head.add(pupil);
+      }
+      // Glowing dorsal spots
+      for(const [sx,sy,sz,sr] of [[0,.145,-.02,.028],[-.075,.12,.04,.022],[.075,.12,.04,.022],[0,.11,.10,.025],[-.065,.11,-.08,.019],[.065,.11,-.08,.019]]){
+        const wart=new T.Mesh(new T.SphereGeometry(sr,6,5),glowMat);
+        wart.scale.set(1,.55,1);wart.position.set(sx,sy,sz);wart.userData.ownGeometry=true;body.add(wart);
+      }
+      if(globalThis.QuimiCraftSpectral?.halo)QuimiCraftSpectral.halo(T,body,def.glow||0x58ffa8,[0,.08,0],.46,.46,.34);
+      // Front & powerful folded hind legs
+      for(const side of [-1,1]){
+        const front=pivot(g,side*.13,.11,-.12);front.userData.phase=side>0?0:Math.PI;rig.legs.push(front);
+        taper(front,[0,0,0],[side*.04,-.095,-.04],.034,.022,coat,6);
+        mound(front,side*.045,-.102,-.06,.042,.015,.046,trim,6);
+        const hind=pivot(g,side*.14,.13,.11);hind.userData.phase=side>0?Math.PI:0;rig.legs.push(hind);
+        taper(hind,[0,0,0],[side*.06,-.045,-.06],.054,.038,shade,6);
+        taper(hind,[side*.06,-.045,-.06],[side*.05,-.115,.03],.036,.024,coat,6);
+        mound(hind,side*.06,-.122,-.02,.054,.014,.062,trim,6);
+      }
+    }
+
     function terrestrial(id,def,g,rig,seed){
       if(def.shape==="tamarin")tamarin(def,g,rig);
+      else if(def.shape==="lumen_frog")frog(def,g,rig);
       else if(birds[def.shape])bird(def.shape,def,g,rig);
       else quadruped(id,def,g,rig,seed);
       batchSurfaces(g,rig);
@@ -415,7 +482,7 @@ globalThis.QuimiCraftFaunaModels=(()=>{
 
     return {terrestrial,freshwater};
   }
-  const has=model=>model==="tamarin"||Object.hasOwn(carnivore,model)||Object.hasOwn(mammals,model)||Object.hasOwn(birds,model);
+  const has=model=>model==="tamarin"||model==="lumen_frog"||Object.hasOwn(carnivore,model)||Object.hasOwn(mammals,model)||Object.hasOwn(birds,model);
   return {create,has};
 })();
 

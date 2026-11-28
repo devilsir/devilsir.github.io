@@ -4,16 +4,16 @@
   const V=window.V, directory='assets/adventure/fragment/';
   const trailDecor=new Set(['jade','marsh','mist','amber','trunks','ruins','water','wayside','understory','relics']
     .map(name=>'trail-decor-'+name));
-  const assetGroup=V.AssetLoader.group.bind(V.AssetLoader);
-  V.AssetLoader.group=function(path){
+  
+  V.AssetLoader.addGroupRule("fragment-art:group:1", function (path) {
     const key=path.startsWith(directory)&&path.endsWith('.webp')?path.slice(directory.length,-5):null;
-    return trailDecor.has(key)?key:assetGroup(path);
-  };
+    return trailDecor.has(key)?key:undefined;
+  });
   const cells={allies:192,portraits:96,creatures:192,spells:160,woods:192,'ally-battle':144,'trail-props':192,'trail-mobs':192};
   for(const key of trailDecor)cells[key]=192;
   const files=[...Object.keys(cells),'clearing','ground','trail-arena'],images={},textures=[];
-  const load=V.Assets.load.bind(V.Assets);
-  V.Assets.load=async function(...args){
+  
+  V.Hooks.around(V.Assets, "load", "fragment-art:load:1", load => async function(...args){
     const pictures=files.map(key=>new Promise(resolve=>{
       const img=V.Assets.image();
       if(!trailDecor.has(key))images[key]=img;
@@ -24,7 +24,7 @@
     }));
     const [result]=await Promise.all([load(...args),...pictures]);
     return result;
-  };
+  });
   function tile(key,index,className){
     const rows=key==='spells'?4:key==='trail-mobs'?2:3;
     return `<span aria-hidden="true" class="fragment-tile ${className}" style="background-image:url('${directory+key}.webp');background-size:400% ${rows*100}%;background-position:${index%4*100/3}% ${Math.floor(index/4)*100/(rows-1)}%"></span>`;

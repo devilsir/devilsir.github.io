@@ -144,8 +144,8 @@ globalThis.QuimiCraftSurfaceArt=(()=>{
     }
     if(frame||cross){
       const shade=edge===1||cross&&dx<0?23:0;
-      return lead?[46+shade,62+shade,72+shade,246]:
-        [r*.61+shade,g*.62+shade,b*.66+shade,211];
+      return lead?[46+shade,62+shade,72+shade,255]:
+        [r*.61+shade,g*.62+shade,b*.66+shade,255];
     }
     if(rim){alpha+=54;r+=27;g+=25;b+=24}
     if(bright){alpha+=clear?39:37;r+=59;g+=53;b+=47}

@@ -29,6 +29,18 @@ globalThis.QuimiCraftArsenal=(()=>{
       detail:"Centelhas velozes por 5 de mana. O botão direito dispara duas centelhas por 13 de mana."},
     bow:{family:"bow",name:"Arco comum",damage:13,speed:26,cooldown:.54,color:"#b4814c"},
     wind_staff:{family:"staff",name:"Cajado do Vento",damage:8,speed:17,cooldown:.42,mana:12,color:"#63dce7",special:"Ciclone expansivo",altMana:28,altDelay:1.45},
+    holy_staff:{family:"staff",name:"Cajado da Luz Sagrada",damage:16,speed:25,cooldown:.61,mana:13,color:"#ffd875",trim:"#fff1bc",style:"holy",
+      school:"light",special:"Consagração",altMana:30,altDelay:1.8,durability:480,
+      ingredients:[["HOLY_LIGHT",1],["gold_nugget",2],["stick",2]],repair:[["gold_nugget",1],["stick",1]],
+      detail:"Orbes de Luz Sagrada causam dano extra a mortos-vivos e demônios. Consagração cura 24 PV, remove até 65% de corrupção demoníaca e atinge inimigos próximos."},
+    death_staff:{family:"staff",name:"Cajado de Magia da Morte",damage:18,speed:22,cooldown:.66,mana:15,color:"#61c7f3",trim:"#ad9afb",style:"death",
+      school:"scourge",slow:1.5,special:"Colheita de Almas",altMana:31,altDelay:1.85,durability:480,
+      ingredients:[["death_rune",3],["crystal_shard",1],["stick",2]],repair:[["death_rune",1],["stick",1]],
+      detail:"Dispara um orbe que desacelera. Colheita de Almas drena vida dos inimigos próximos, com efeito reduzido sobre outros mortos-vivos."},
+    fel_staff:{family:"staff",name:"Cajado de Fel",damage:19,speed:25,cooldown:.67,mana:14,color:"#a7f854",trim:"#f5ff90",style:"fel",
+      school:"fel",special:"Rajada da Ruptura",altMana:32,altDelay:1.9,durability:490,
+      ingredients:[["fel_ember",3],["OBSIDIAN",1],["stick",2]],repair:[["fel_ember",1],["stick",1]],
+      detail:"Arremessa fogo vil. Rajada da Ruptura dispara três projéteis em leque. Conjurar Fel acumula corrupção demoníaca."},
     bronze_sword:{family:"sword",name:"Espada de bronze",damage:13,reach:3.15,cooldown:.29,color:"#de9a58",trim:"#fdcf87",style:"bronze",
       ingredients:[["bronze_ingot",2],["stick",1]],repair:[["bronze_ingot",1]],durability:375,detail:"Golpes rápidos. 13 de dano."},
     obsidian_sword:{family:"sword",name:"Espada de obsidiana",damage:22,reach:3.45,cooldown:.62,color:"#77518f",trim:"#d0a7e3",style:"obsidian",
@@ -62,7 +74,27 @@ globalThis.QuimiCraftArsenal=(()=>{
     spectral_staff:{family:"staff",name:"Cajado fantasmagórico",damage:16,speed:21,cooldown:.56,mana:14,style:"spectralStaff",
       special:"Orbes do véu",altMana:27,altDelay:1.68,spectralWeapon:true,color:"#56d3d4",trim:"#c1fff3",durability:405,
       ingredients:[["stick",2],["ectoplasm",3],["crystal_shard",1]],repair:[["ectoplasm",1],["stick",1]],
-      detail:"Dispara um orbe ou três orbes em leque. Ambos ferem criaturas na forma fantasma."}
+      detail:"Dispara um orbe ou três orbes em leque. Ambos ferem criaturas na forma fantasma."},
+    corrupted_blade:{family:"sword",name:"Lâmina Sussurrante",damage:27,reach:3.75,cooldown:.41,style:"corruptedBlade",
+      corrupted:true,lifesteal:2,slow:1.1,color:"#4a2568",trim:"#f187ff",durability:720,
+      ingredients:[["corrupted_ingot",3],["corrupted_shard",2],["stick",1]],repair:[["corrupted_ingot",1],["corrupted_shard",1]],
+      detail:"Lâmina forjada de minério corrompido com um olho vigilante na guarda. Causa 27 de dano, drena 2 PV por golpe e sussurra para quem a empunha."},
+    corrupted_greatsword:{family:"sword",name:"Devoradora de Mentes",damage:36,reach:4.55,cooldown:.78,style:"corruptedGreatsword",
+      corrupted:true,twoHanded:true,targets:3,arc:.46,knockback:7.4,lifesteal:3,slow:1.4,color:"#371950",trim:"#ff7cb8",durability:880,
+      ingredients:[["corrupted_ingot",4],["CORRUPTED_GEM",2],["old_god_eye",1]],repair:[["corrupted_ingot",2],["corrupted_shard",1]],
+      detail:"Montante abissal de 36 de dano que atinge até três alvos, drena 3 PV por acerto e murmura promessas sombrias em combate. Ocupa as duas mãos."},
+    corrupted_staff:{family:"staff",name:"Cajado dos Mil Olhos",damage:23,speed:26,cooldown:.56,mana:15,style:"corruptedStaff",
+      corrupted:true,school:"void",slow:1.6,special:"Olhar do Abismo",altMana:30,altDelay:1.75,color:"#6f35a6",trim:"#ffb3e6",durability:620,
+      ingredients:[["corrupted_ingot",2],["CORRUPTED_GEM",2],["old_god_eye",1],["stick",2]],repair:[["corrupted_ingot",1],["corrupted_shard",1]],
+      detail:"Canaliza energia dos Deuses Antigos. Olhar do Abismo dispara três orbes sombrios e libera uma onda psíquica que drena vida dos inimigos próximos."},
+    corrupted_bow:{family:"bow",name:"Arco dos Sussurros",damage:24,speed:37,cooldown:.56,style:"corruptedBow",
+      corrupted:true,slow:1.0,color:"#4b2266",trim:"#e58cff",durability:640,
+      ingredients:[["corrupted_ingot",2],["CORRUPTED_GEM",1],["wool",2],["stick",1]],repair:[["corrupted_ingot",1],["wool",1]],
+      detail:"Arco orgânico cravejado de olhos diminutos. Dispara flechas velozes de 24 de dano enquanto sussurra ao ouvido do arqueiro."},
+    summon_staff:{family:"staff",name:"Cajado do Invocador",damage:15,speed:24,cooldown:.58,mana:14,style:"summon",
+      school:"summon",special:"Conjurar Aliado",altMana:24,altDelay:1.6,color:"#56d4c4",trim:"#ffe688",durability:540,
+      ingredients:[["elemental_core",2],["crystal_shard",2],["stick",2]],repair:[["elemental_core",1],["stick",1]],
+      detail:"Cajado rúnico de invocação. Clique dispara orbe arcano; botão direito invoca o aliado selecionado no Grimório (K)."}
   };
   const shields=Object.freeze({
     shield_oval:{name:"Escudo oval",shape:"oval",color:"#a3744a",trim:"#d3a55a",armor:.08,blockChance:.31,reduction:.53,
@@ -77,7 +109,17 @@ globalThis.QuimiCraftArsenal=(()=>{
       repair:[["OBSIDIAN",1],["bronze_ingot",1]],detail:"Reduz em 61% o dano das baforadas comuns. É a única peça capaz de bloquear uma rajada dracônica enquanto tiver durabilidade."},
     shield_mirror:{name:"Escudo de Espelho",shape:"mirror",color:"#aac8d1",trim:"#b68b59",armor:.10,blockChance:.25,reduction:.47,
       mirrorGuard:true,protections:{physical:.12},durability:475,ingredients:[["GLASS",2],["silver_ingot",2],["bronze_ingot",1],["hide",1]],
-      repair:[["silver_ingot",1],["bronze_ingot",1]],detail:"Levanta automaticamente com a mão secundária livre e reflete o olhar petrificante das medusas. Cada reflexo desgasta a prata."}
+      repair:[["silver_ingot",1],["bronze_ingot",1]],detail:"Levanta automaticamente com a mão secundária livre e reflete o olhar petrificante das medusas. Cada reflexo desgasta a prata."},
+    shield_corrupted:{name:"Égide dos Olhos Antigos",shape:"corrupted",corrupted:true,color:"#381d4d",trim:"#e886ff",
+      armor:.19,blockChance:.34,reduction:.34,protections:{physical:.24},durability:760,
+      ingredients:[["corrupted_ingot",3],["CORRUPTED_GEM",1],["corrupted_shard",2]],
+      repair:[["corrupted_ingot",1],["corrupted_shard",1]],
+      detail:"Escudo vivo forjado com minério corrompido. Seu olho central observa os atacantes, amplia a defesa física e sussurra quando equipado."},
+    shield_light:{name:"Égide da Primeira Luz",shape:"sacred",lightGear:true,color:"#394454",trim:"#efc66d",
+      armor:.20,blockChance:.35,reduction:.35,sanityWard:.65,sanityRegen:2.5,protections:{physical:.24},durability:780,
+      ingredients:[["DAWN_GOLD",3],["HOLY_LIGHT",1],["gold_nugget",3]],
+      repair:[["DAWN_GOLD",1],["gold_nugget",1]],
+      detail:"Escudo sagrado com asas de prata e o martelo do Sol em relevo. Reduz em 65% a perda de sanidade por sussurros, regenera sanidade e protege contra ataques físicos."}
   });
   const focuses=Object.freeze({
     grimoire:{name:"Grimório dos Selos",shape:"book",color:"#5f526d",trim:"#e8c894",
@@ -87,7 +129,20 @@ globalThis.QuimiCraftArsenal=(()=>{
     resonant_orb:{name:"Orbe ressonante",shape:"orb",color:"#54af9a",trim:"#b9f9d8",
       special:"Pulso ressonante",mana:12,cooldown:1.42,damage:11,speed:25,slow:.75,
       ingredients:[["crystal_shard",2],["wind_essence",1],["copper_ingot",1]],repair:[["crystal_shard",1]],
-      durability:420,detail:"Mão secundária. X dispara um pulso de 11 de dano por 12 de mana."}
+      durability:420,detail:"Mão secundária. X dispara um pulso de 11 de dano por 12 de mana."},
+    corrupted_grimoire:{name:"Tomo dos Sussurros Antigos",shape:"corruptedBook",corrupted:true,color:"#36184c",trim:"#ff84d4",
+      special:"Tentáculos do Vazio",mana:16,cooldown:2.1,damage:16,reach:6.4,slow:2.2,
+      ingredients:[["lab_note",1],["CORRUPTED_GEM",2],["corrupted_shard",2]],repair:[["corrupted_shard",1]],
+      durability:480,detail:"Mão secundária. X libera uma onda sombria que fere, desacelera e drena vida de inimigos próximos enquanto sussurra em sua mente."},
+    naaru_relic:{name:"Relíquia de Naaru",shape:"naaruOrb",lightGear:true,color:"#ffdf78",trim:"#9df8ff",
+      sanityWard:.80,sanityRegen:4.0,
+      special:"Pulso Purificador de Naaru",mana:15,cooldown:2.0,damage:18,reach:7.5,slow:1.2,
+      ingredients:[["HOLY_LIGHT",2],["DAWN_GOLD",2],["crystal_shard",2]],repair:[["DAWN_GOLD",1],["crystal_shard",1]],
+      detail:"Mão secundária de Luz Sagrada. Bloqueia 80% da perda de sanidade por sussurros, ilumina ao redor e com X dispara um pulso de Naaru que restaura sanidade e dissipa todas as visões."},
+    summon_grimoire:{name:"Grimório de Invocação",shape:"summonBook",color:"#2d586e",trim:"#ffd974",
+      special:"Invocar Aliado Selecionado",mana:20,cooldown:1.8,damage:12,reach:6.0,
+      ingredients:[["lab_note",1],["elemental_core",2],["crystal_shard",2]],repair:[["crystal_shard",1]],
+      detail:"Mão secundária de conjuração. Aperte X para invocar o aliado escolhido no menu de Invocações (K) — elementais, infernais, cães da fenda, golens, seres de luz ou do caos."}
   });
   const classGear=Object.freeze({
     mage_circlet:{name:"Diadema prismático",role:"Mago",shape:"circlet",slot:"head",color:"#6c518f",trim:"#9df0db",durability:300,
@@ -166,9 +221,47 @@ globalThis.QuimiCraftArsenal=(()=>{
     repair:[["ectoplasm",1],["wool",1]],
     detail:"Reduz em "+Math.round(ward*100)+"% o dano de criaturas fantasma enquanto estiver íntegro."
   }]));
+  const corruptedApparel=Object.freeze({
+    corrupted_helm:{name:"Elmo dos Mil Olhos",role:"Corrompido",shape:"helm",slot:"head",color:"#361c4e",trim:"#eb82ff",
+      finish:"corrupted",corrupted:true,durability:760,stats:{armor:.16,meleePower:.08,magicPower:.08},protections:{physical:.12},
+      ingredients:[["corrupted_ingot",3],["corrupted_shard",2],["CORRUPTED_GEM",1]],repair:[["corrupted_ingot",1],["corrupted_shard",1]],
+      detail:"Corrompido. Elmo vivo com olhos brilhantes. +8% de dano físico e mágico, alta defesa e sussurros antigos constantes."},
+    corrupted_plate:{name:"Peitoral Corrompido",role:"Corrompido",shape:"plate",slot:"chest",color:"#2d1642",trim:"#f079cf",
+      finish:"corrupted",corrupted:true,durability:940,stats:{armor:.36,meleePower:.14,magicPower:.12},protections:{physical:.16},
+      ingredients:[["corrupted_ingot",5],["corrupted_shard",3],["CORRUPTED_GEM",1]],repair:[["corrupted_ingot",2],["corrupted_shard",1]],
+      detail:"Corrompido. Armadura pesada de metal abissal. +14% de dano corpo a corpo, +12% de poder mágico e sussurros dos Deuses Antigos."},
+    corrupted_leggings:{name:"Perneiras Corrompidas",role:"Corrompido",shape:"metalLegs",slot:"legs",color:"#321847",trim:"#d97aff",
+      finish:"corrupted",corrupted:true,durability:820,stats:{armor:.22,meleePower:.08,archeryPower:.08},
+      ingredients:[["corrupted_ingot",4],["corrupted_shard",2]],repair:[["corrupted_ingot",1],["corrupted_shard",1]],
+      detail:"Corrompido. Placas sombrias articuladas. +8% de dano físico e à distância com sussurros abissais."},
+    corrupted_boots:{name:"Botas Corrompidas",role:"Corrompido",shape:"metalBoots",slot:"feet",color:"#28133a",trim:"#d97aff",
+      finish:"corrupted",corrupted:true,durability:740,stats:{armor:.14,fall:.72},
+      ingredients:[["corrupted_ingot",3],["corrupted_shard",2]],repair:[["corrupted_ingot",1]],
+      detail:"Corrompido. Botas pesadas do Império Negro que reduzem em 28% o dano de queda e ecoam sussurros a cada passo."},
+    corrupted_mantle:{name:"Manto do Império Negro",role:"Corrompido",shape:"mageCape",slot:"back",color:"#311446",trim:"#ff84c8",
+      finish:"corrupted",corrupted:true,durability:520,stats:{magicPower:.12,manaRegen:.28},
+      ingredients:[["wool",3],["corrupted_ingot",1],["CORRUPTED_GEM",1],["corrupted_shard",2]],repair:[["corrupted_shard",1],["wool",1]],
+      detail:"Corrompido. Manto encharcado de sombras antigas. +12% de dano mágico, +28% de regeneração de mana e sussurros constantes."}
+  });
+  const lightApparel=Object.freeze({
+    light_halo_crown:{name:"Coroa Radiante da Luz",role:"Luz Sagrada",shape:"circlet",slot:"head",color:"#f3cc5a",trim:"#fff9d6",
+      finish:"light",lightGear:true,durability:740,stats:{armor:.16,magicPower:.10,sanityWard:.75,sanityRegen:3.2},protections:{physical:.10},
+      ingredients:[["DAWN_GOLD",3],["HOLY_LIGHT",1],["gold_nugget",2]],repair:[["DAWN_GOLD",1],["gold_nugget",1]],
+      detail:"Equipamento de Luz. Emite claridade dourada, reduz em 75% a perda de sanidade causada por sussurros e restaura a mente continuamente."},
+    light_aegis_plate:{name:"Couraça da Luz Sagrada",role:"Luz Sagrada",shape:"plate",slot:"chest",color:"#f0e5c8",trim:"#ffd966",
+      finish:"light",lightGear:true,durability:920,stats:{armor:.35,meleePower:.10,sanityWard:.65,sanityRegen:2.6},protections:{physical:.18},
+      ingredients:[["DAWN_GOLD",4],["DAWN_MARBLE",3],["HOLY_LIGHT",1]],repair:[["DAWN_GOLD",2],["DAWN_MARBLE",1]],
+      detail:"Armadura abençoada pela Primeira Luz. Reduz em 65% a perda de sanidade e protege contra corrupção ancestral e golpes físicos."},
+    light_dawn_mantle:{name:"Manto da Alvorada",role:"Luz Sagrada",shape:"mageCape",slot:"back",color:"#f5eed8",trim:"#ffe07a",
+      finish:"light",lightGear:true,durability:540,stats:{manaRegen:.26,sanityWard:.55,sanityRegen:2.4},
+      ingredients:[["wool",4],["DAWN_GOLD",2],["HOLY_LIGHT",1]],repair:[["wool",2],["DAWN_GOLD",1]],
+      detail:"Manto tecido sob bênção de Naaru. Reduz em 55% a perda de sanidade por sussurros e regenera mana e lucidez."}
+  });
   const apparel=Object.freeze({
     ...classGear,
     ...spectralApparel,
+    ...corruptedApparel,
+    ...lightApparel,
     buffer_armor:{name:"Armadura Tampônica",role:"Proteção",shape:"bufferSuit",slot:"chest",color:"#274849",trim:"#c9bd54",
       durability:160,stats:{armor:.19},ingredients:[["ceramic_plate",2],["bronze_ingot",2],["hide",2],["buffer_solution",2]],
       repair:[["buffer_solution",1],["ceramic_plate",1]],
@@ -180,6 +273,10 @@ globalThis.QuimiCraftArsenal=(()=>{
       durability:245,stats:{armor:.045,insulation:.18,coldResistance:.12},protections:{thermal:.12},
       ingredients:[["wool",3],["hide",1]],repair:[["wool",1]],
       detail:"Túnica de lã com faixa de couro, forro leve e proteção térmica."},
+    explorer_backpack:{name:"Mochila do Explorador",role:"Mochila",shape:"backpack",slot:"back",color:"#7c5334",trim:"#d9b25f",
+      durability:900,stats:{backpackSlots:28,backpackMaxSlots:34},
+      ingredients:[["hide",5],["wool",3],["iron_ingot",2]],repair:[["hide",2]],
+      detail:"Equipada nas costas. Concede 28 slots extras de inventário (expansível até 34 slots com Bolsos de Expansão). Abra no Inventário (Tab) ou com B."},
     archmage_robe:{name:"Traje arcano de mago",role:"Mago",shape:"arcaneRobe",slot:"chest",color:"#2e4268",trim:"#9ce6d6",
       durability:400,stats:{armor:.08,magicPower:.20,manaDiscount:.14},protections:{electric:.12},
       ingredients:[["wool",5],["crystal_shard",3],["wind_essence",2]],repair:[["wool",2],["crystal_shard",1]],
@@ -221,6 +318,13 @@ globalThis.QuimiCraftArsenal=(()=>{
     twoHanded:true,durability:375,ingredients:[["ectoplasm",4],["hide",2],["silver_ingot",1]],
     repair:[["ectoplasm",1],["hide",1]],detail:"Um par de manoplas luminosas que permite atingir criaturas fantasma com socos."
   };
+  weapons.corrupted_gauntlets={
+    name:"Garras do Abismo",family:"gauntlet",style:"corruptedGauntlets",element:"void",
+    corrupted:true,lifesteal:2,color:"#3c1b59",trim:"#f484ff",damage:25,cooldown:.30,reach:2.65,arc:.45,
+    twoHanded:true,durability:560,ingredients:[["corrupted_ingot",3],["corrupted_shard",3],["hide",2]],
+    repair:[["corrupted_ingot",1],["corrupted_shard",1]],
+    detail:"Manoplas vivas cravejadas de olhos e garras. Golpes rápidos de 25 de dano drenam 2 PV e despertam sussurros antigos."
+  };
   const melee=weapon=>Number.isFinite(weapon?.reach)&&weapon.family!=="staff";
   const entries=Object.entries(weapons),variants=entries.filter(([,w])=>w.style);
   const blockId=(id,B)=>Object.hasOwn(B,id)?B[id]:id;
@@ -237,22 +341,26 @@ globalThis.QuimiCraftArsenal=(()=>{
   function equipment(){
     const abbr={sword:"LÂMINA",bow:"ARCO",crossbow:"BALESTRA",staff:"CAJADO",mace:"MAÇA",gauntlet:"LUVAS"};
     const tools=Object.fromEntries(variants.map(([id,w])=>[id,{
-      slot:"tool",abbr:w.style==="wand"?"VARINHA":abbr[w.family],maxDurability:w.durability,protections:{},effect:w.detail,repair:w.repair
+      slot:"tool",abbr:w.style==="wand"?"VARINHA":abbr[w.family],corrupted:!!w.corrupted,maxDurability:w.durability,protections:{},effect:w.detail,repair:w.repair
     }]));
     const guard=Object.fromEntries(Object.entries(shields).map(([id,s])=>[id,{
-      slot:"offhand",abbr:"ESCUDO",armor:s.armor,blockChance:s.blockChance,blockReduction:s.reduction,dragonGuard:s.dragonGuard,mirrorGuard:s.mirrorGuard,
+      slot:"offhand",abbr:"ESCUDO",corrupted:!!s.corrupted,lightGear:!!s.lightGear,armor:s.armor,blockChance:s.blockChance,blockReduction:s.reduction,dragonGuard:s.dragonGuard,mirrorGuard:s.mirrorGuard,
+      sanityWard:s.sanityWard||0,sanityRegen:s.sanityRegen||0,
       protections:s.protections,maxDurability:s.durability,effect:s.detail,repair:s.repair
     }]));
     const held=Object.fromEntries(Object.entries(focuses).map(([id,item])=>[id,{
-      slot:"offhand",abbr:item.shape==="book"?"LIVRO":"ORBE",maxDurability:item.durability,
+      slot:"offhand",abbr:item.shape==="book"||item.shape==="corruptedBook"||item.shape==="summonBook"?"LIVRO":"ORBE",corrupted:!!item.corrupted,lightGear:!!item.lightGear,
+      sanityWard:item.sanityWard||0,sanityRegen:item.sanityRegen||0,maxDurability:item.durability,
       protections:{},effect:item.detail,repair:item.repair
     }]));
     const wearables=Object.fromEntries(Object.entries(apparel).map(([id,item])=>[id,{
-      slot:item.slot,abbr:item.role==="Corpo a corpo"?"VANG.":item.role.toUpperCase(),
-      maxDurability:item.durability,protections:item.protections??{},effect:item.detail,repair:item.repair,...item.stats
+      slot:item.slot,abbr:item.role==="Corpo a corpo"?"VANG.":item.role==="Corrompido"?"ABISMO":item.role==="Luz Sagrada"?"LUZ":item.role.toUpperCase(),
+      corrupted:!!item.corrupted,lightGear:!!item.lightGear,maxDurability:item.durability,protections:item.protections??{},effect:item.detail,repair:item.repair,...item.stats
     }]));
     return {...tools,...guard,...held,...wearables};
   }
-  return {weapons:Object.freeze(weapons),shields,focuses,classGear,apparel,recipes,shieldRecipes,focusRecipes,classGearRecipes,apparelRecipes,equipment,melee};
+  const isCorrupted=id=>!!(weapons[id]?.corrupted||shields[id]?.corrupted||focuses[id]?.corrupted||apparel[id]?.corrupted);
+  const isLightGear=id=>!!(weapons[id]?.lightGear||shields[id]?.lightGear||focuses[id]?.lightGear||apparel[id]?.lightGear||id==="holy_staff");
+  return {weapons:Object.freeze(weapons),shields,focuses,classGear,apparel,recipes,shieldRecipes,focusRecipes,classGearRecipes,apparelRecipes,equipment,melee,isCorrupted,isLightGear};
 })();
 

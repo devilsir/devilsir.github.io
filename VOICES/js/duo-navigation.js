@@ -75,12 +75,12 @@ const help=N.help.bind(N);N.help=function(...args){const out=help(...args),i=D.c
 };
 V.Hooks.around(V.Game, 'update', 'duo-navigation:update:1', nextHook => function(dt){const result=nextHook(dt);B.refresh();return result;});
 const persist=D.persist.bind(D);D.persist=function(...args){const result=persist(...args);if(this.enabled()&&this.owner===V.state&&this.actors.length===2&&V.state.duoWorld?.players)for(let i=0;i<2;i++)V.state.duoWorld.players[i].boat=B.snapshot(i);return result;};
-const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){
+V.Hooks.around(V.Game, "startGame", "duo-navigation:startGame:1", start => function(...args){
  const source=V.state,records=copy(source?.duoWorld?.players)||[],sea=source&&M.ensure(),legacy=sea?.boat?{...copy(sea.boat),course:copy(sea.course)}:null;
  const result=start(...args),state=V.state;
  if(D.enabled())queueMicrotask(()=>{if(V.state===state&&B.enabled())B.restore(source===state?records:[],source===state?legacy:null);});
  return result;
-};
+});
 })();
 
 });

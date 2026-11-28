@@ -23,6 +23,42 @@ globalThis.QuimiCraftBiomeFauna=(()=>{
     const gaze={...strike("gaze",9,7.8,windup,7.8),color:glow,stoneSeconds};
     return monster(name,"medusa",tint,regions,hp,.95,3.18,.61,2.10,gaze,{aspect,glow,trim,loot:[["medusa_tear",1,2],...loot]});
   }
+  const elementalKinds={
+    fire:{name:"Fogo",tint:0x97443a,trim:0x471e2c,glow:0xffa343,loot:"SULFUR",walk:1.18,run:3.68,
+      attack:{name:"Descarga de fogo",kind:"shot",damage:14,range:8.4,effect:"fire",speed:13}},
+    wind:{name:"Vento",tint:0x76a6ae,trim:0x324d66,glow:0xb5fff1,loot:"wind_essence",walk:1.54,run:4.62,
+      attack:{name:"Rajada que empurra",kind:"shot",damage:12,range:9.6,effect:"sonic",speed:16,push:1.8}},
+    water:{name:"Água",tint:0x237fb1,trim:0x1c3a72,glow:0x81ecff,loot:"SALT",walk:1.28,run:3.94,
+      attack:{name:"Projétil frio que desacelera",kind:"shot",damage:13,range:8.8,effect:"thermal",speed:12,slow:1.35}},
+    earth:{name:"Terra",tint:0x9d7550,trim:0x483933,glow:0xe4bd79,loot:"IRON",walk:.97,run:2.96,
+      attack:{name:"Impacto sísmico",kind:"slam",damage:20,range:2.7,effect:"physical"}},
+    arcane:{name:"Arcano",tint:0x7946ab,trim:0x302043,glow:0xe2aaff,loot:"crystal_shard",walk:1.22,run:3.72,
+      attack:{name:"Descarga prismática",kind:"shot",damage:17,range:10.2,effect:"electric",speed:15}},
+    ice:{name:"Gelo",tint:0x5eaed8,trim:0x224a6e,glow:0xb8f6ff,loot:"ICE",walk:1.15,run:3.48,
+      attack:{name:"Estilhaço glacial",kind:"shot",damage:14,range:9.0,effect:"thermal",speed:13,slow:1.8}},
+    lightning:{name:"Raio",tint:0x4b5ca8,trim:0x212952,glow:0xfff078,loot:"voltaic_cell",walk:1.58,run:4.82,
+      attack:{name:"Relâmpago arqueado",kind:"shot",damage:16,range:10.4,effect:"electric",speed:18}},
+    nature:{name:"Natureza",tint:0x3f8c54,trim:0x264830,glow:0x8eff82,loot:"MOSS",walk:1.18,run:3.52,
+      attack:{name:"Rajada de esporos vivos",kind:"shot",damage:13,range:8.8,effect:"biological",speed:13,slow:1.2}}
+  };
+  function elemental(name,element,regions,hp,variant="",ancestral=null){
+    const base=elementalKinds[element];
+    const {name:elementName,loot,walk,run,attack}=base;
+    const {tint,trim,glow}={...base,...ancestral};
+    const lord=variant==="lord",orb=variant==="orb",scale=lord?1.57:orb?.66:1;
+    const combat={...attack,elemental:element,color:glow,windup:lord?.92:.60,cooldown:lord?3.3:2.25};
+    if(lord){
+      combat.damage=Math.round(combat.damage*2.15);
+      combat.range+=combat.kind==="slam"?1.5:3.4;
+      if(combat.kind==="slam")combat.vertical=2.9;
+    }else if(orb)combat.damage=10;
+    if(ancestral)Object.assign(combat,ancestral.attack);
+    const drops=lord?[[loot,4,7],["crystal_shard",2,4],["gold_nugget",1,2],["elemental_core",1,2]]:
+      loot==="crystal_shard"?[[loot,1,2]]:[[loot,1,3],["crystal_shard",1,1,.28]];
+    const lordTitle=lord?(ancestral?.title??(ancestral?"Senhor elemental ancestral":"Senhor elemental")):null;
+    return monster(name,"elemental",tint,regions,hp,walk,run,(orb?.51:ancestral&&element==="earth"?.93:.76)*scale,(orb?1.91:2.64)*scale,
+      combat,{element,elementName,trim,glow,lord,lordTitle,orb,scale,ancestral:!!ancestral,flying:true,hover:element==="earth"?.26:orb?.73:.48,loot:drops});
+  }
   const exterminationTools={
     fracture_hammer:{name:"Martelo de Fratura",color:"#8295a1",detail:"Rompe a placa carbonática da Sentinela de Travertino Fendido. O martelo é reutilizável."},
     osmotic_salt:{name:"Sachê Osmótico",color:"#e6dec3",consumable:true,detail:"Retira água do Limo de Maré por osmose. Consome um sachê por finalização."},
@@ -113,6 +149,15 @@ globalThis.QuimiCraftBiomeFauna=(()=>{
     greater_rhea:bird("Ema","rhea",0x82796e,0xc2afa0,["savana","chapadas ocres","planície"],38,6.15,.49,1.85,false),
     coati:animal("Quati","coati",0x88603f,0xd2ba8c,"",.32,.70,1,
       ["floresta","selva tropical","pântano","chapadas ocres"],"skittish",21,1.18,4.1,8),
+    lumen_deer:{...animal("Cervo Bioluminescente","lumen_deer",0x1c3f59,0x7bf8ff,"biolum",.46,1.42,1.04,
+      ["floresta","bosque lilás","bosque de cristais","bosque de cerejeiras","campina de aurora","pântano"],"skittish",36,1.25,5.9,10),
+      glow:0x5ef8ff,biolum:true},
+    lumen_fox:{...animal("Raposa Bioluminescente","dog",0x242e5c,0x8dfcff,"biolum",.31,.76,.72,
+      ["floresta","bosque lilás","bosque de cerejeiras","bosque de cristais","taiga","campina de aurora"],"skittish",22,1.32,5.6,9),
+      glow:0x9c7cff,biolum:true},
+    lumen_frog:{...animal("Sapo Bioluminescente","lumen_frog",0x154b52,0x72ffb8,"biolum",.25,.35,1,
+      ["pântano","manguezal","selva tropical","delta salobro","floresta","bosque lilás"],"skittish",14,.95,3.8,7),
+      glow:0x58ffa8,biolum:true},
     bison:animal("Bisão das Pradarias","bison",0x725144,0x9c783f,"shoulder",.73,1.89,1.12,["planície","planície florida","prado alpino","savana"],"neutral",70,.81,4.1,8,strike("slam",13,2.24,.7,2.8)),
     badger:animal("Texugo-das-Pedras","bear",0x697077,0xcfcdc3,"mask",.41,.86,.60,["bosque lilás","floresta","cânion calcário","termas minerais"],"skittish",19,1.2,3.9,7),
     cave_shade:monster("Sombra de Mina","wisp",0x51467a,[],27,1.21,3.9,.37,1.32,strike("shot",8,7.2,.54,2.4,"electric")),
@@ -131,6 +176,30 @@ globalThis.QuimiCraftBiomeFauna=(()=>{
       {alloy:0x9daab6,glow:0xffbd74,scale:1.12,loot:[["iron_ingot",1,3]]}),
     cobalt_elemental:monster("Elemental de Escória Azul","magma",0x304356,["caldeira vítrea","bosque de cristais","vulcânico"],55,.90,3.02,.63,2.09,strike("slam",15,2.25,.67,2.29,"fire"),
       {glow:0x6fdbff,hot:0x6f9bff,loot:[["SCORIA",1,3],["crystal_shard",1,1,.47]]}),
+    fire_elemental:elemental("Elemental do Fogo","fire",["vulcânico","caldeira vítrea","badlands"],76),
+    wind_elemental:elemental("Elemental do Vento","wind",["prado alpino","montanha","deserto","chapadas ocres"],62),
+    water_elemental:elemental("Elemental da Água","water",["delta salobro","manguezal","fiordes glaciais","termas minerais"],70),
+    earth_elemental:elemental("Elemental da Terra","earth",["cânion calcário","badlands","montanha","chapadas ocres"],104),
+    fire_lord:elemental("Auvrasa, Senhor das Brasas","fire",["vulcânico","caldeira vítrea"],318,"lord"),
+    wind_lord:elemental("Cisalva, Senhor dos Vendavais","wind",["prado alpino","montanha"],268,"lord"),
+    water_lord:elemental("Refluor, Senhor das Marés","water",["delta salobro","fiordes glaciais"],294,"lord"),
+    earth_lord:elemental("Estratão, Senhor dos Estratos","earth",["cânion calcário","chapadas ocres"],365,"lord"),
+    forge_lord:elemental("Vulcrisol, Regente da Fornalha","fire",["vulcânico","caldeira vítrea"],390,"lord",
+      {tint:0x823321,trim:0x2d232b,glow:0xffbe51,attack:{name:"Martelada de escória",kind:"slam",damage:36,range:4.0,vertical:3.2,windup:1.16}}),
+    current_lord:elemental("Talassar, Regente das Correntes","water",["delta salobro","termas minerais","fiordes glaciais"],350,"lord",
+      {tint:0x266b88,trim:0x163c53,glow:0x68f3dd,attack:{name:"Corrente glacial que desacelera",damage:30,slow:2.1}}),
+    geode_matriarch:elemental("Basalta, Matriarca das Geodas","earth",["cânion calcário","bosque de cristais"],430,"lord",
+      {title:"Senhora elemental ancestral",tint:0x665268,trim:0x35323b,glow:0xe6acfc,attack:{name:"Abalo de geodas",damage:38,range:4.65,vertical:3.1,windup:1.12}}),
+    storm_lord:elemental("Siroco, Regente da Tormenta","wind",["prado alpino","montanha","campina de aurora"],326,"lord",
+      {tint:0x53659a,trim:0x263550,glow:0xf8df9e,attack:{name:"Rajada de tormenta que empurra",damage:27,push:3.7,speed:18}}),
+    arcane_wisp:elemental("Centelha Arcana","arcane",["bosque de cristais","campina de aurora","bosque lilás"],43,"orb"),
+    arcane_sentinel:elemental("Sentinela Arcana do Prisma","arcane",["bosque de cristais","campina de aurora"],131),
+    ice_elemental:elemental("Elemental do Gelo","ice",["fiordes glaciais","tundra","taiga"],74),
+    ice_lord:elemental("Glacírius, Senhor do Gelo","ice",["fiordes glaciais","tundra"],310,"lord"),
+    lightning_elemental:elemental("Elemental do Raio","lightning",["montanha","prado alpino","campina de aurora"],72),
+    lightning_lord:elemental("Voltaris, Senhor dos Raios","lightning",["montanha","prado alpino"],322,"lord"),
+    nature_elemental:elemental("Elemental da Natureza","nature",["floresta","planície florida","bosque de cerejeiras"],82),
+    nature_lord:elemental("Sylvaron, Senhor da Natureza","nature",["floresta","planície florida"],335,"lord"),
     salt_crab:monster("Caranguejo de Sal","crab",0xa2988d,["salinas","delta salobro","cânion calcário"],32,1.25,4.20,.58,.75,strike("lunge",9,1.85,.43,1.67),
       {glow:0xcad8d4,loot:[["SALT",2,4],["chitin",1,2]]}),
     rust_crab:monster("Caranguejo Ferrugem","crab",0xb45f46,["manguezal","termas minerais","chapadas ocres"],39,1.24,4.45,.63,.81,strike("lunge",11,1.94,.52,1.73,"corrosion"),
@@ -147,13 +216,14 @@ globalThis.QuimiCraftBiomeFauna=(()=>{
   const pets=["cat","dog"];
   function ambient(biome){return entries.filter(([,p])=>p.shape!=="fantasy"&&p.regions.includes(biome)).map(([id])=>id)}
   function hostile(biome,underground){
-    const local=entries.filter(([,p])=>p.shape==="fantasy"&&!p.contractOnly&&p.regions.includes(biome)).map(([id])=>id);
+    const local=entries.filter(([,p])=>p.shape==="fantasy"&&!p.contractOnly&&!p.lord&&p.regions.includes(biome)).map(([id])=>id);
     return underground?["cave_shade","cave_shade","slime","golem","cave_spider",...local]:["wisp","scorpion","slime",...local,...local];
   }
+  function lords(biome){return entries.filter(([,p])=>p.lord&&p.regions.includes(biome)).map(([id])=>id)}
   function gazeProtection(guard,remaining){
     if(guard?.mirrorGuard&&!guard.broken)return "reflect";
     return remaining>0?"stoned":"petrify";
   }
-  return {species,pets,ambient,hostile,gazeProtection,exterminationTools,finishFraction};
+  return {species,elementalKinds,pets,ambient,hostile,lords,gazeProtection,exterminationTools,finishFraction};
 })();
 

@@ -275,8 +275,33 @@ globalThis.QuimiCraftCommands = (() => {
     const tpPlaceEntries = [
       makeEntry({ token: "lab", name: "Laboratório Carbono", badge: "Local", aliases: ["laboratorio", "carbono"], priority: 1 }),
       makeEntry({ token: "vila", name: "Vila dos Elementos", badge: "Local", aliases: ["village", "aldeia"], priority: 2 }),
-      makeEntry({ token: "spawn", name: "Ponto inicial", badge: "Local", aliases: ["inicio", "origem"], priority: 3 })
+      makeEntry({ token: "spawn", name: "Ponto inicial", badge: "Local", aliases: ["inicio", "origem"], priority: 3 }),
+      ...[
+        ["vila_regional","Vila regional mais próxima",["vilas","povoado"]],
+        ["vila_alquimista","Vila alquimista mais próxima",["aldeia_alquimista","vila_dos_alquimistas"]],
+        ["covil_draconico","Covil dracônico mais próximo",["covil","dragao"]],
+        ["templo_das_dunas","Templo das Dunas mais próximo",["dunas"]],
+        ["laboratorio_soterrado","Laboratório soterrado mais próximo",["lab_soterrado"]],
+        ["aldeia_das_copas_proxima","Aldeia das Copas mais próxima",["bosque_arvoroso"]],
+        ["ruinas_submersas","Ruínas submersas mais próximas",["ruinas_submersas","lago"]],
+        ["ruinas_distantes","Ruínas de superfície mais próximas",["ruinas_de_superficie"]],
+        ["refugio_distante","Refúgio distante mais próximo",["refugio"]],
+        ["posto_distante","Posto alquímico distante mais próximo",["posto_abandonado"]]
+      ].map(([token,name,aliases])=>makeEntry({token,name,aliases,badge:"Destino procedural",priority:5})),
+      ...(globalThis.QuimiCraftAncients?.profiles??[]).map(p=>makeEntry({
+        token:p.id,name:p.cave,badge:"Caverna ancestral",priority:4
+      })),
+      ...(globalThis.QuimiCraftFactions?.places??[]).map(p=>makeEntry({
+        token:p.id,name:p.name,badge:p.divine?"Templo de facção":"Fortaleza / Comunidade",aliases:p.aliases,priority:4
+      })),
+      ...(globalThis.QuimiCraftDragonLairs?.places??[]).map(p=>makeEntry({
+        token:p.id,name:p.name,badge:"Covil de revoada",aliases:p.aliases,priority:4
+      })),
+      ...(globalThis.QuimiCraftElementalRifts?.places??[]).map(p=>makeEntry({
+        token:p.id,name:p.name,badge:"Fissura Elemental",aliases:p.aliases,priority:4
+      }))
     ];
+    const teleportEntries=()=>[...tpPlaceEntries,...(api.teleportSuggestions?.()??[]).map(makeEntry)];
 
     const clearEntries = [
       makeEntry({ token: "mobs", name: "Criaturas terrestres", badge: "Limpar", aliases: ["criaturas", "entidades"], priority: 1 }),
@@ -297,6 +322,33 @@ globalThis.QuimiCraftCommands = (() => {
     const qtyEntries = [1, 16, 32, 64].map((n, i) =>
       makeEntry({ token: String(n), name: `${n} unidade${n > 1 ? "s" : ""}`, badge: "Quantidade", priority: i + 1 })
     );
+
+    const factionAllianceEntries = [
+      makeEntry({ token: "luz", name: "Exército Dourado (Luz)", badge: "Facção", aliases: ["light", "exercito_dourado", "ouro", "palacio"], value: "light", priority: 1 }),
+      makeEntry({ token: "flagelo", name: "Flagelo da Geada (Mortos-vivos)", badge: "Facção", aliases: ["scourge", "mortos_vivos", "lich", "gelo"], value: "scourge", priority: 2 }),
+      makeEntry({ token: "fel", name: "Legião da Fenda Vil (Demônios)", badge: "Facção", aliases: ["legiao", "demonios", "fenda", "brasa"], value: "fel", priority: 3 }),
+      makeEntry({ token: "druida", name: "Círculo Druídico Xamânico", badge: "Facção", aliases: ["druid", "druidas", "xama", "xamanico", "circulo"], value: "druid", priority: 4 }),
+      makeEntry({ token: "alquimista", name: "Ordem dos Alquimistas", badge: "Facção", aliases: ["alchemist", "alquimistas", "alquimia"], value: "alchemist", priority: 5 }),
+      makeEntry({ token: "aldeao", name: "Liga dos Aldeões", badge: "Facção", aliases: ["villager", "aldeoes", "vila", "milicia"], value: "villager", priority: 6 }),
+      makeEntry({ token: "arvorosos", name: "Conselho dos Arvorosos", badge: "Facção", aliases: ["arvoroso", "copas", "conselho_dos_arvorosos"], value: "arvoroso", priority: 7 }),
+      makeEntry({ token: "neutro", name: "Neutro (sem aliança)", badge: "Facção", aliases: ["none", "nenhuma", "sair", "neutral"], value: null, priority: 7 })
+    ];
+
+    const summonSpellEntries = [
+      makeEntry({ token: "dispensar", name: "Dispensar todos os aliados invocados", badge: "Ação", aliases: ["dismiss", "clear", "remover"], value: "__dismiss__", priority: 0 }),
+      ...(globalThis.QuimiCraftSummons?.spells ?? []).map((s, i) => makeEntry({
+        token: s.id, name: `${s.name} (${s.mana} mana)`, badge: "Magia de Invocação", aliases: [s.name, s.category, ...(s.id==="brown_bear"?["bear","urso"]:[])], value: s.id, priority: i + 1
+      }))
+    ];
+
+    const invasionTargetEntries = [
+      makeEntry({ token: "patrulha", name: "Confronto de patrulhas perto de você", badge: "Batalha", aliases: ["patrol", "escaramuca", "batalha", "perto"], priority: 1 }),
+      ...(globalThis.QuimiCraftFactions?.places ?? []).map((p, i) => makeEntry({
+        token: p.id, name: `Invadir ${p.name}`, badge: "Fortaleza", aliases: p.aliases, priority: i + 2
+      }))
+    ];
+
+    const invasionAttackerEntries = factionAllianceEntries.filter(e => e.value);
 
     const COMMANDS = [
       {
@@ -366,7 +418,7 @@ globalThis.QuimiCraftCommands = (() => {
           let count = null;
           let nameParts = args;
           if (args.length >= 2 && /^\d+$/.test(args[args.length - 1])) {
-            count = Math.max(1, Math.min(999, Number(args[args.length - 1])));
+            count = Math.max(1, Math.min(9999, Number(args[args.length - 1])));
             nameParts = args.slice(0, -1);
           }
           const query = nameParts.join(" ");
@@ -447,12 +499,12 @@ globalThis.QuimiCraftCommands = (() => {
       {
         name: "tp",
         aliases: ["teleport"],
-        usage: "/tp <x> <y> <z>  ou  /tp <lab|vila|spawn>",
+        usage: "/tp <x> <y> <z>  ou  /tp <local>",
         desc: "Teleporta para coordenadas (aceita ~) ou ponto conhecido",
         complete(args, idx) {
           if (idx === 0) {
             return [
-              ...rankMatches(tpPlaceEntries, args[0] || ""),
+              ...rankMatches(teleportEntries(), args[0] || ""),
               ...coordSuggestions(0, args[0] || "", false)
             ];
           }
@@ -460,13 +512,15 @@ globalThis.QuimiCraftCommands = (() => {
           return [];
         },
         run(args) {
-          if (!args.length) return { ok: false, msg: "Use: /tp <x> <y> <z> ou /tp lab|vila|spawn" };
-          if (args.length === 1) {
-            const place = resolveEntry(tpPlaceEntries, args[0]);
-            if (!place) return { ok: false, msg: "Destino não reconhecido. Use: lab, vila, spawn ou x y z." };
-            return api.teleportNamed(place.token);
+          if (!args.length) return { ok: false, msg: "Use /tp <x> <y> <z> ou /tp <local>." };
+          if (!isCoordToken(args[0])) {
+            const query=args.join(" ");
+            const place = resolveEntry(teleportEntries(),query);
+            if (place) return api.teleportNamed(place.token);
+            if (/^(?:vila|alquimia|den|temple|lab|grove|marco|ruina):-?\d+:-?\d+$/.test(normalize(query)))return api.teleportNamed(normalize(query));
+            return {ok:false,msg:"Destino não reconhecido. Consulte as sugestões de /tp."};
           }
-          if (args.length < 3) return { ok: false, msg: "Informe as três coordenadas: /tp x y z" };
+          if (args.length !== 3) return { ok: false, msg: "Informe as três coordenadas: /tp x y z" };
           const p = api.playerPos();
           const x = parseCoord(args[0], p.x), y = parseCoord(args[1], p.y), z = parseCoord(args[2], p.z);
           if (![x, y, z].every(Number.isFinite)) return { ok: false, msg: "Coordenadas inválidas." };
@@ -602,6 +656,95 @@ globalThis.QuimiCraftCommands = (() => {
         }
       },
       {
+        name: "faccao",
+        aliases: ["alianca", "faction", "ally"],
+        usage: "/faccao <luz|flagelo|fel|druida|alquimista|aldeao|arvorosos|neutro>",
+        desc: "Alia-se a uma facção (Luz, Flagelo, Legião Vil, Druidas, Alquimistas, Aldeões) ou volta a neutro",
+        complete(args, idx) {
+          return idx === 0 ? rankMatches(factionAllianceEntries, args[0] || "") : [];
+        },
+        run(args) {
+          if (!args.length) {
+            return api.getFactionStatus ? api.getFactionStatus() : { ok: true, msg: "Use /faccao luz|flagelo|fel|druida|alquimista|aldeao|arvorosos|neutro" };
+          }
+          const match = resolveEntry(factionAllianceEntries, args.join(" "));
+          if (!match) return { ok: false, msg: "Facção inválida. Use: luz, flagelo, fel, druida, alquimista, aldeao ou neutro." };
+          return api.setFactionAlliance ? api.setFactionAlliance(match.value) : { ok: false, msg: "Sistema de facções indisponível." };
+        }
+      },
+      {
+        name: "conjurar",
+        aliases: ["conjure", "aliado", "invocacao"],
+        usage: "/conjurar <criatura|dispensar>",
+        desc: "Conjura um aliado de combate (elemental, infernal, cão infernal, golem, luz, caos) usando magia de invocação",
+        complete(args, idx) {
+          return idx === 0 ? rankMatches(summonSpellEntries, args[0] || "") : [];
+        },
+        run(args) {
+          if (!api.castSummonSpell) return { ok: false, msg: "Sistema de magia de invocação indisponível." };
+          if (!args.length) return api.castSummonSpell(null);
+          const match = resolveEntry(summonSpellEntries, args.join(" "));
+          if (!match) return { ok: false, msg: `Invocação não encontrada: "${args.join(" ")}". Aperte K para ver o Grimório.` };
+          return api.castSummonSpell(match.value);
+        }
+      },
+      {
+        name: "invasao",
+        aliases: ["invasion", "patrulha", "batalha"],
+        usage: "/invasao [fortaleza|patrulha] [luz|flagelo|fel]",
+        desc: "Inicia uma invasão de facção a uma fortaleza ou um confronto de patrulhas perto de você",
+        complete(args, idx) {
+          if (idx === 0) return rankMatches(invasionTargetEntries, args[0] || "");
+          if (idx === 1) return rankMatches(invasionAttackerEntries, args[1] || "");
+          return [];
+        },
+        run(args) {
+          if (!api.triggerFactionEvent) return { ok: false, msg: "Sistema de invasões indisponível." };
+          const targetMatch = args[0] ? resolveEntry(invasionTargetEntries, args[0]) : null;
+          const attackerMatch = args[1] ? resolveEntry(invasionAttackerEntries, args[1]) : null;
+          if (args[0] && !targetMatch) {
+            const asAttacker = resolveEntry(invasionAttackerEntries, args[0]);
+            if (asAttacker) return api.triggerFactionEvent("patrulha", asAttacker.value);
+            return { ok: false, msg: `Destino não encontrado: "${args[0]}". Use patrulha ou o nome de uma fortaleza.` };
+          }
+          return api.triggerFactionEvent(targetMatch ? targetMatch.token : "auto", attackerMatch ? attackerMatch.value : null);
+        }
+      },
+      {
+        name: "sanidade",
+        aliases: ["sanity", "mente"],
+        usage: "/sanidade [0-100]",
+        desc: "Consulta ou ajusta a sanidade do jogador (visões ocorrem abaixo de 60)",
+        complete(args, idx) {
+          if (idx !== 0) return [];
+          const list = [
+            makeEntry({ token: "100", name: "Mente lúcida (100%)", badge: "Sanidade", priority: 1 }),
+            makeEntry({ token: "50", name: "Abalada — alucinações leves (50%)", badge: "Sanidade", priority: 2 }),
+            makeEntry({ token: "25", name: "Perturbada — visões e passagens falsas (25%)", badge: "Sanidade", priority: 3 }),
+            makeEntry({ token: "5", name: "Colapso mental — delírio extremo (5%)", badge: "Sanidade", priority: 4 })
+          ];
+          return rankMatches(list, args[0] || "");
+        },
+        run(args) {
+          if (!api.setSanity) return { ok: false, msg: "Sistema de sanidade indisponível." };
+          if (!args.length) return api.setSanity(null);
+          const v = Number(args[0]);
+          if (!Number.isFinite(v)) return { ok: false, msg: "Use um número entre 0 e 100. Ex.: /sanidade 25" };
+          return api.setSanity(Math.max(0, Math.min(100, v)));
+        }
+      },
+      {
+        name: "sussurro",
+        aliases: ["whisper", "visao"],
+        usage: "/sussurro",
+        desc: "Dispara um sussurro dos Deuses Antigos (drena sanidade se sem Luz)",
+        complete() { return []; },
+        run() {
+          if (!api.triggerWhisper) return { ok: false, msg: "Sussurros indisponíveis." };
+          return api.triggerWhisper();
+        }
+      },
+      {
         name: "recipes",
         aliases: ["receitas"],
         usage: "/recipes",
@@ -683,7 +826,7 @@ globalThis.QuimiCraftCommands = (() => {
         const z = parseCoord(targetArgs[targetArgs.length - 2], pos.z);
         if ([x, y, z].every(Number.isFinite)) {
           coords = [x, y, z];
-          count = Math.max(1, Math.min(999, Number(targetArgs[targetArgs.length - 1])));
+          count = Math.max(1, Math.min(9999, Number(targetArgs[targetArgs.length - 1])));
           targetArgs = targetArgs.slice(0, -4);
         }
       } else if (targetArgs.length >= 4 && isCoordToken(targetArgs[targetArgs.length - 3]) && isCoordToken(targetArgs[targetArgs.length - 2]) && isCoordToken(targetArgs[targetArgs.length - 1])) {
@@ -695,7 +838,7 @@ globalThis.QuimiCraftCommands = (() => {
           targetArgs = targetArgs.slice(0, -3);
         }
       } else if (targetArgs.length >= 2 && /^\d+$/.test(targetArgs[targetArgs.length - 1])) {
-        count = Math.max(1, Math.min(999, Number(targetArgs[targetArgs.length - 1])));
+        count = Math.max(1, Math.min(9999, Number(targetArgs[targetArgs.length - 1])));
         targetArgs = targetArgs.slice(0, -1);
       }
 

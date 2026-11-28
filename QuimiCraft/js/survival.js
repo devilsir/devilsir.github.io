@@ -19,11 +19,13 @@
           detail:"gate",tex,icon,hard:key==="IRON"?1.6:.85,gate:{first,axis,open}};
       }
     });
-    blocks.BED=680;
-    for(let variant=0;variant<8;variant++){
-      const head=variant>=4,heading=variant%4;
-      defs[blocks.BED+variant]={name:"Cama",solid:true,partial:true,hidden:variant!==0,
-        detail:"bed",tex:228,icon:"#a8374a",hard:.55,bed:{head,heading},collisionTop:.55};
+    for(const [key,first,name,tex,icon] of [["BED",680,"Cama",228,"#a8374a"],["CANOPY_BED",1200,"Cama das Copas",478,"#608e4d"]]){
+      blocks[key]=first;
+      for(let variant=0;variant<8;variant++){
+        const head=variant>=4,heading=variant%4;
+        defs[first+variant]={name,solid:true,partial:true,hidden:variant!==0,
+          detail:"bed",tex,icon,hard:.55,bed:{head,heading,first,tex,canopy:key==="CANOPY_BED"},collisionTop:.55};
+      }
     }
   }
 
@@ -32,21 +34,24 @@
       ...gateMaterials.map(([key,material,,,stock,frame])=>({name:"Portão de "+material,desc:"Abre e fecha com E",
         need:stock===frame?[[frame,5]]:[[blocks[stock]??stock,3],[frame,2]],out:[blocks["GATE_"+key],1]})),
       {name:"Cama",desc:"Dorme até amanhecer e marca o ponto de retorno",
-        need:[[blocks.PLANK,3],["wool",3]],out:[blocks.BED,1]}
+        need:[[blocks.PLANK,3],["wool",3]],out:[blocks.BED,1]},
+      {name:"Cama das Copas",desc:"Cama gigante de 4 × 8 blocos, com armação de casca e coberta verde",
+        need:[[blocks.CANOPY_PLANK,4],["wool",12],[blocks.MOSS,4]],out:[blocks.CANOPY_BED,1]}
     ];
   }
 
-  function bedParts(blocks,{x,y,z},heading){
+  function bedParts(blocks,{x,y,z},heading,first=blocks.BED){
     const [dx,dz]=headings[heading];
-    return [{x,y,z,id:blocks.BED+heading},
-      {x:x+dx,y,z:z+dz,id:blocks.BED+heading+4}];
+    return [{x,y,z,id:first+heading},
+      {x:x+dx,y,z:z+dz,id:first+heading+4}];
   }
 
   function bedAt(blocks,defs,read,{x,y,z,id}){
     const bed=defs[id]?.bed;
     if(!bed)return null;
+    if(defs[id]?.giantPart)return QuimiCraftGrove.giantAt(read,{x,y,z,id},true);
     const [dx,dz]=headings[bed.heading];
-    const parts=bedParts(blocks,{x:x-(bed.head?dx:0),y,z:z-(bed.head?dz:0)},bed.heading);
+    const parts=bedParts(blocks,{x:x-(bed.head?dx:0),y,z:z-(bed.head?dz:0)},bed.heading,bed.first);
     return parts.every(part=>read(part.x,part.y,part.z)===part.id)?parts:null;
   }
 
@@ -64,11 +69,26 @@
     return axis?boxes.map(([x,y,z,w,h,d,material])=>[z,y,x,d,h,w,material]):boxes;
   }
 
-  function bedBoxes({head,heading}){
-    const boxes=[[.05,.15,head?0:.05,.9,.15,.95,"wood"],[.07,.30,head?0:.07,.86,.14,.93,"linen"],
+  function bedBoxes({head,heading,canopy}){
+    const boxes=canopy?[[.10,.13,head?0:.06,.80,.17,.94,"wood"],[.12,.29,head?0:.085,.76,.15,.915,"linen"],
+      [.14,.39,head?0:.09,.72,.078,head?.40:.91,"blanket"]]:
+      [[.05,.15,head?0:.05,.9,.15,.95,"wood"],[.07,.30,head?0:.07,.86,.14,.93,"linen"],
       [.078,.40,head?0:.07,.844,.065,head?.40:.93,"blanket"]];
     for(const x of [.10,.77])boxes.push([x,0,head?.76:.11,.13,.16,.13,"wood"]);
-    if(head){
+    if(canopy){
+      for(const side of [.055,.84]){
+        boxes.push([side,.18,head?.03:.09,.105,.22,.91,"root"],[side,.04,head?.83:.07,.105,.32,.11,"wood"]);
+        if(head)boxes.push([side,.34,.81,.105,.38,.14,"root"],[side-.008,.70,.804,.122,.082,.154,"leaf"]);
+      }
+      if(head){
+        boxes.push([.13,.42,.84,.74,.16,.11,"wood"],[.24,.56,.86,.52,.105,.08,"leaf"],
+          [.19,.43,.58,.27,.095,.22,"linen"],[.54,.43,.58,.27,.095,.22,"linen"]);
+      }else{
+        for(const [x,z,w,d] of [[.42,.36,.16,.29],[.34,.40,.32,.086],[.38,.48,.24,.095],[.47,.28,.06,.08]])
+          boxes.push([x,.467,z,w,.022,d,"leaf"]);
+        boxes.push([.14,.42,.14,.72,.083,.083,"root"]);
+      }
+    }else if(head){
       boxes.push([.045,.25,.90,.91,.30,.075,"wood"],[.16,.43,.54,.68,.10,.28,"linen"],
         [.10,.435,.37,.80,.032,.045,"linen"]);
     }else boxes.push([.095,.425,.11,.81,.041,.075,"blanket"]);

@@ -679,6 +679,51 @@ globalThis.QuimiCraftPlantModels=(()=>{
     PINE_CONE:pine,PRICKLY_PEAR:p=>succulent(p,false),VERMILION_AGAVE:p=>succulent(p,true),
     BLUE_MUSHROOM:p=>mushroom(p,{tint:[.42,.54,1.24],cap:.201,height:.425}),
     GLOW_FUNGUS:p=>mushroom(p,{tint:[.97,1.38,1.13],cap:.184,height:.38,glowing:true}),
+    LUMEN_FLOWER:p=>{
+      // Radiant bioluminescent cyan lotus with curved stems, glowing double petals & star stamen
+      const cyan=[.52,1.38,1.42],pale=[.95,1.42,1.46],darkLeaf=[.28,.76,.72];
+      for(let i=0;i<5;i++){
+        const a=i*Math.PI*2/5+.18;
+        blade(p,[.5,.02,.5],vec(.5,.19,.5,a,.34),.082,.024,darkLeaf,leafTile);
+      }
+      p.rod([.5,.02,.5],[.51,.52,.49],.020,leafTile,leafTile,5,darkLeaf);
+      for(let i=0;i<7;i++){
+        const a=i*Math.PI*2/7+.12;
+        blade(p,vec(.5,.50,.5,a,.04),vec(.5,.61,.5,a,.28),.076,.028,i%2?cyan:pale,glow);
+        blade(p,vec(.5,.53,.5,a+.44,.03),vec(.5,.68,.5,a+.44,.19),.052,.022,pale,glow);
+      }
+      p.shell([[.5,.51,.5,.07,.07],[.5,.59,.5,.095,.095],[.5,.66,.5,.05,.05]],glow,glow,6,.2,undefined,[1.35,1.40,.92]);
+      for(let i=0;i<4;i++)berry(p,...vec(.5,.73,.5,i*1.57+.3,.11),.028,[.80,1.42,1.46],glow);
+    },
+    GLOW_FERN:p=>{
+      // Phosphorescent emerald-teal fern fronds with luminous glowing spore tips
+      const frondGlow=[.36,1.38,1.02],mint=[.68,1.44,1.18];
+      for(let k=0;k<5;k++){
+        const a=k*Math.PI*2/5+.25,root=[.5,.02,.5],mid=vec(.5,.37,.5,a,.18),end=vec(.5,.56,.5,a,.39);
+        p.rod(root,mid,.015,leafTile,leafTile,4,[.28,.78,.68]);
+        p.rod(mid,end,.011,glow,glow,4,frondGlow);
+        for(let i=0;i<4;i++){
+          const h=.19+i*.08,o=vec(.5,h,.5,a,.08+i*.065);
+          for(const dir of [-1,1]){
+            const reach=.15-i*.018;
+            blade(p,o,vec(o[0],h+.045,o[2],a+dir*.84,reach),.046-i*.005,.014,i>=2?mint:frondGlow,i>=1?glow:leafTile);
+          }
+        }
+        berry(p,...end,.027,mint,glow);
+      }
+    },
+    STAR_SHROOM:p=>{
+      // Ethereal violet-cyan glowing star mushroom cluster
+      const caps=[[.50,.50,.48,.22,[.92,.58,1.45]],[.30,.60,.31,.14,[.52,1.26,1.46]],[.68,.40,.27,.13,[1.18,.68,1.42]]];
+      for(const [x,z,h,r,tint] of caps){
+        p.rod([x,.015,z],[x,h-.04,z],r*.22,glow,glow,6,[.78,.95,1.25]);
+        p.shell([[x,h-.05,z,r*.45,r*.45],[x,h,z,r,r],[x,h+r*.38,z,r*.78,r*.78],[x,h+r*.62,z,r*.24,r*.24]],glow,glow,8,.25,undefined,tint);
+        for(let i=0;i<4;i++){
+          const a=i*1.57+x*4;
+          berry(p,x+Math.cos(a)*r*.58,h+r*.36,z+Math.sin(a)*r*.58,r*.14,[1.15,1.42,1.46],glow);
+        }
+      }
+    },
     FOREST_MUSHROOM:p=>mushroom(p,{tint:[1.15,.75,.49],cap:.212,height:.414}),
     LICHEN:p=>lichen(p,false),FROST_LICHEN:p=>lichen(p,true),
     CACTUS:p=>cactus(p),BAMBOO:p=>cactus(p,true),JACARANDA_LEAF:jacaranda

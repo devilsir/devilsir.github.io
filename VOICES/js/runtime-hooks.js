@@ -7,7 +7,7 @@
 /* Named extension points. Each registration receives the previous implementation. */
 (function () {
   'use strict';
-  const V = window.V, targets = new WeakMap();
+  const V = window.V = window.V || {}, targets = new WeakMap();
   V.Hooks = {
     around(target, method, name, factory) {
       if (typeof target?.[method] !== 'function') throw new TypeError('Unknown hook: ' + method);

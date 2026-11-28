@@ -1,13 +1,32 @@
 /* Registered module: regional-furniture */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("regional-furniture", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function(){'use strict';
-const V=window.V,C=V.Cozy,prior={load:V.Assets.load.bind(V.Assets),prop:C.prop.bind(C)};
-C.prop=function(ctx,family,index,x,y,size=48,materials=null){if(family!=='regional')return prior.prop(ctx,family,index,x,y,size,materials);const colored=V.EditorMaterials.tinted(family,index,materials),img=V.Assets.images['regional-props'];if(colored)ctx.drawImage(colored,Math.round(x),Math.round(y),size,size);else if(img)ctx.drawImage(img,index%8*32,Math.floor(index/8)*32,32,32,Math.round(x),Math.round(y),size,size);};
-V.Assets.load=async function(){await Promise.all([prior.load(),this.loadEntries([['regional-props','assets/tilesets/regional-props.png']]),new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{V.EditorMaterials.images.regional=img;resolve();};img.onerror=()=>{this.errors.push('Cores dos móveis regionais');resolve();};img.src=V.regionalMaterialSources.regional;})]);return this.errors;};
-})();
-
+})(function() {
+  (function() {
+    "use strict";
+    const V = window.V, C = V.Cozy, prior = { load: V.Assets.load.bind(V.Assets), prop: C.prop.bind(C) };
+    C.prop = function(ctx, family, index, x, y, size = 48, materials = null) {
+      if (family !== "regional") return prior.prop(ctx, family, index, x, y, size, materials);
+      const colored = V.EditorMaterials.tinted(family, index, materials), img = V.Assets.images["regional-props"];
+      if (colored) ctx.drawImage(colored, Math.round(x), Math.round(y), size, size);
+      else if (img) ctx.drawImage(img, index % 8 * 32, Math.floor(index / 8) * 32, 32, 32, Math.round(x), Math.round(y), size, size);
+    };
+    V.Hooks.around(V.Assets, "load", "regional-furniture:load:1", () => async function() {
+      await Promise.all([prior.load(), this.loadEntries([["regional-props", "assets/tilesets/regional-props.png"]]), new Promise((resolve) => {
+        const img = V.Assets.image();
+        img.onload = () => {
+          V.EditorMaterials.images.regional = img;
+          resolve();
+        };
+        img.onerror = () => {
+          this.errors.push("Cores dos m\xF3veis regionais");
+          resolve();
+        };
+        img.src = V.regionalMaterialSources.regional;
+      })]);
+      return this.errors;
+    });
+  })();
 });

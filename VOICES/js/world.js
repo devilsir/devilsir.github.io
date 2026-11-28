@@ -1,49 +1,402 @@
 /* Registered module: world */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("world", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function(){'use strict';const V=window.V;const TILE=48;
-const themes={hub:{bg:'#223246',road:'#415563',grass:'#2d625c',accent:'#27c8d8',name:'Praça das vozes'},rhythm:{bg:'#262542',road:'#594d68',grass:'#3c4e62',accent:'#e96687'},museum:{bg:'#2e3045',road:'#726959',grass:'#465557',accent:'#f4b85a'},lab:{bg:'#1d3343',road:'#405b69',grass:'#326364',accent:'#27c8d8'},network:{bg:'#161d36',road:'#303254',grass:'#283b5d',accent:'#b18aff'},community:{bg:'#244243',road:'#677566',grass:'#417664',accent:'#a0dfa1'},final:{bg:'#1a1735',road:'#403c60',grass:'#2a294c',accent:'#e96687'},room:{bg:'#262c40',road:'#4b5268',grass:'#343c54',accent:'#f4b85a'}};
-// Reusable authored maps; a 32px art tile is rendered at 48px.
-V.World={maps:{},current:null,camera:{x:0,y:0},transition:0,nearest:null,props:{tree:0,book:9,mural:7,computer:19,portal:33,lamp:5},
- init(){for(const id of Object.keys(this.maps))delete this.maps[id];this.maps.hub=this.makeHub();V.content.chapters.forEach(c=>{this.maps['chapter-'+c.id]=this.makeChapter(c);this.maps['room-'+c.id]=this.makeRoom(c);});this.maps.library=this.makeRoom(null);},
- base(id,theme,width=32,height=22){return{id,theme,width,height,name:themes[theme]?.name||'',objects:[],buildings:[],solids:[],trees:[],floor:[],decor:[],cache:null};},
- tile(map,x,y,prop,solid=false){map.decor.push({x:x*TILE,y:y*TILE,prop});if(solid)map.solids.push({x:x*TILE+7,y:y*TILE+15,w:34,h:30});},
- object(map,type,id,x,y,label,data={}){map.objects.push({type,id,x:x*TILE+24,y:y*TILE+24,label,...data});},
- building(map,x,y,w,h,label,color,doorId){map.buildings.push({x:x*TILE,y:y*TILE,w:w*TILE,h:h*TILE,label,color});map.solids.push({x:x*TILE,y:y*TILE,w:w*TILE,h:h*TILE});this.object(map,'door','door-'+doorId,x+w/2-.5,y+h+.1,'Entrar: '+label,{to:doorId});},
- trees(map,locations){locations.forEach(([x,y])=>this.tile(map,x,y,0,true));},
- makeHub(){const m=this.base('hub','hub');this.building(m,2,2,7,4,'BIBLIOTECA','#7145cb','library');this.building(m,23,2,7,4,'CENTRAL VOICES','#287786','room-6');m.solids.push({x:14*TILE,y:9*TILE,w:4*TILE,h:3*TILE});this.object(m,'fountain','fountain',15.5,12.2,'Fonte de memórias');this.object(m,'npc','hub-pix',17,16.7,'Conversar com PIX',{character:'pix',hub:true});this.object(m,'npc','hub-nia',12,14.3,'Conversar com Nia',{character:'nia',hub:true});this.object(m,'npc','hub-student',25,16,'Conversar com Rafa',{character:'town-rafa',hub:true});
- const spots=[[4,10],[10,7],[22,8],[27,12],[22,17],[7,17]];V.content.chapters.forEach((c,i)=>this.object(m,'portal','portal-'+c.id,spots[i][0],spots[i][1],c.name,{chapter:c.id}));this.object(m,'sign','guide',16,18.5,'Mapa de New Harmony');this.object(m,'terminal','terminal-hub',28,17,'Terminal de treino');this.object(m,'side','word-runner',3,17,'Word Runner — palavras em movimento');this.object(m,'bonus','hub-record',9,12,'Registro escondido: Escutar',{word:'listen'});this.scenery(m);this.trees(m,[[1,8],[1,13],[2,14],[5,7],[6,7],[12,3],[14,3],[17,3],[20,4],[29,8],[30,15],[15,19],[18,19],[11,19]]);[[10,12],[21,12],[6,15],[26,9],[27,18],[3,8]].forEach(([x,y])=>this.tile(m,x,y,5));return m;},
- makeChapter(c){const keys=['rhythm','museum','lab','network','community','final'];const m=this.base('chapter-'+c.id,keys[c.id-1]);m.name=c.name;m.chapter=c.id;this.building(m,2,2,7,4,c.id===1?'ESTÚDIO / REHEARSAL':c.id===2?'ARQUIVO / ARCHIVE':c.id===3?'OFICINA / WORKSHOP':c.id===4?'FONTES / SOURCES':c.id===5?'CENTRO COMUNITÁRIO':'ARQUIVO CENTRAL',c.color,'room-'+c.id);this.building(m,23,2,7,4,c.id===1?'PALCO FESTIVAL':c.id===2?'GALERIA RESTAURADA':c.id===3?'OBSERVATÓRIO':c.id===4?'SERVIDORES':c.id===5?'ESCOLA ABERTA':'NÚCLEO DO SISTEMA',c.color,'room-'+c.id);
- const clueSpots=[[10,9],[23,13],[6,14]];c.clues.forEach((clue,i)=>this.object(m,'clue',clue.id,clueSpots[i][0],clueSpots[i][1],'Investigar: '+clue.title,{clue,prop:[7,13,19][i]}));c.npcs.forEach((npc,i)=>this.object(m,'npc','npc-'+c.id+'-'+i,[12,24][i],[13,17][i],'Conversar com '+npc.name,{npc,character:npc.character,index:i}));this.object(m,'station','station-'+c.id,16,10,c.id===1?'Reparar a mesa de som':c.id===2?'Decodificador de cronologia':c.id===3?'Ligar evidências aos autores':c.id===4?'Analisar a rede':c.id===5?'Planejar com a comunidade':'Reconstituir o arquivo',{chapter:c.id,prop:c.id===1?24:19});this.object(m,'boss','boss-'+c.id,27,8.5,'Confrontar '+c.boss.name,{chapter:c.id});this.object(m,'exit','exit-'+c.id,16,19,'Voltar à praça');this.object(m,'terminal','terminal-'+c.id,4,18,'Terminal de inglês',{chapter:c.id});this.object(m,'sign','sign-'+c.id,17,15,c.id===4?'Verificação e apoio':c.id===5?'Ouvir antes de construir':'Painel de investigação',{chapter:c.id});this.object(m,'bonus','bonus-'+c.id,21,5.8,'Uma palavra escondida',{word:['rhythm','history','evidence','source','community','responsibility'][c.id-1]});
- this.scenery(m);this.trees(m,[[1,8],[1,12],[1,16],[3,10],[8,19],[10,3],[12,3],[14,3],[16,3],[18,3],[20,4],[30,8],[30,13],[30,17],[27,19]]);[[9,11],[20,12],[6,18],[22,18],[16,6],[26,10]].forEach(([x,y],i)=>this.tile(m,x,y,5));[[4,8],[7,11],[21,9],[25,15],[13,17],[18,13]].forEach(([x,y],i)=>this.tile(m,x,y,c.id===1?[25,26,27,7,23,22][i]:c.id===3?[17,18,19,20,16,15][i]:c.id===4?[19,20,18,19,45,19][i]:[9,12,10,14,28,4][i]));return m;},
- makeRoom(c){const id=c?'room-'+c.id:'library',m=this.base(id,'room',24,18);m.chapter=c?.id;m.name=c?`${c.name} · interior`:'Biblioteca · sala de leitura';m.solids.push({x:0,y:0,w:24*TILE,h:TILE*2},{x:0,y:0,w:TILE,h:18*TILE},{x:23*TILE,y:0,w:TILE,h:18*TILE});for(let x=2;x<22;x+=3){this.tile(m,x,3,10,true);this.tile(m,x,4,12,true);}for(let x=3;x<21;x+=5){this.tile(m,x,8,c?.id===3?16:11,true);this.tile(m,x,11,9);}this.object(m,'npc','room-librarian',12,7,'Conversar com Davi',{character:'librarian',library:true});this.object(m,'side','room-runner-'+id,7,13,'Word Runner — desafio do arquivo');this.object(m,'bonus','room-bonus-'+id,18,12,'Registro raro: Memórias plurais',{word:c?'knowledge':'memory'});this.object(m,'terminal','room-terminal-'+id,4,6,'Terminal de inglês',{chapter:c?.id||1});this.object(m,'exit','room-exit-'+id,12,15.5,'Sair do edifício',{to:c?'chapter-'+c.id:'hub'});this.object(m,'sign','room-source-'+id,20,6,'Consultar fontes históricas',{sources:true});return m;},
- load(id,position=null){const m=this.maps[id]||this.maps.hub;this.current=m;this.transition=1;const spawn=position||{x:(m.width/2)*TILE+24,y:m.id==='hub'?15.5*TILE:(m.theme==='room'?(m.height-4)*TILE+24:15*TILE)};V.Player.create(V.clamp(spawn.x,72,m.width*TILE-72),V.clamp(spawn.y,100,m.height*TILE-72));if(this.collides(V.Player.data.x,V.Player.data.y,11)){V.Player.data.x=m.width*TILE/2;V.Player.data.y=(m.height-4)*TILE;}this.camera={x:V.clamp(V.Player.data.x-480,0,m.width*TILE-960),y:V.clamp(V.Player.data.y-270,0,m.height*TILE-540)};V.state.map=m.id;V.$('#location-name').textContent=m.name;V.Audio.setTheme(m.theme);this.nearest=null;V.Game.updateHUD();V.Engine.particles=[];V.Audio.sfx('portal');V.Save.save();V.MapAssets?.schedule(m);},
- collides(x,y,r){const m=this.current;if(!m)return true;if(x-r<TILE||y-r<TILE||x+r>(m.width-1)*TILE||y+r>(m.height-1)*TILE)return true;return m.solids.some(s=>x+r>s.x&&x-r<s.x+s.w&&y+r>s.y&&y-r<s.y+s.h);},
- interactables(){return this.current.objects;},
- update(dt){this.transition=Math.max(0,this.transition-dt*2);this.nearest=V.Player.nearest();const hint=V.$('#interact-hint');hint.hidden=!this.nearest||!!V.modal||V.Dialogue.active||V.Game.mode!=='explore';if(this.nearest){const label=hint.querySelector('span');if(label.textContent!==this.nearest.label)label.textContent=this.nearest.label;}},
- ground(m){const c=V.GroundCache.create(m, m.width*TILE, m.height*TILE);;;const ctx=c.getContext('2d'),t=themes[m.theme];ctx.imageSmoothingEnabled=false;ctx.fillStyle=t.bg;ctx.fillRect(0,0,V.GroundCache.width(c),V.GroundCache.height(c));for(let y=0;y<m.height;y++){for(let x=0;x<m.width;x++){const indoor=m.theme==='room';const road=indoor||Math.abs(x-16)<=2||y>=15&&y<=17||y>=8&&y<=10;ctx.fillStyle=road?t.road:t.grass;ctx.fillRect(x*TILE,y*TILE,TILE,TILE);const tile=V.Assets.images.tiles;const tileId=indoor?11:road?({hub:7,rhythm:13,museum:10,lab:12,network:24,community:29,final:24}[m.theme]??4):({hub:0,rhythm:1,museum:3,lab:1,network:24,community:30,final:28}[m.theme]??0);if(tile){ctx.globalAlpha=.28;ctx.drawImage(tile,(tileId%8)*32,Math.floor(tileId/8)*32,32,32,x*TILE,y*TILE,TILE,TILE);ctx.globalAlpha=1;}ctx.fillStyle=road?'#ffffff07':'#ffffff08';ctx.fillRect(x*TILE,y*TILE,TILE,1);ctx.fillRect(x*TILE,y*TILE,1,TILE);const seed=(x*17+y*23)%9;if(!road){ctx.fillStyle='#0714271c';ctx.fillRect(x*TILE+seed*4,y*TILE+11,5,2);ctx.fillStyle='#c0e5ca22';ctx.fillRect(x*TILE+17,y*TILE+seed*4+8,3,3);}else if((x+y)%3===0){ctx.fillStyle='#ffffff0a';ctx.fillRect(x*TILE+7,y*TILE+10,7,3);}}}ctx.strokeStyle=t.accent+'40';ctx.lineWidth=3;ctx.strokeRect(TILE,TILE,V.GroundCache.width(c)-TILE*2,V.GroundCache.height(c)-TILE*2);if(m.theme==='network'||m.theme==='final'){ctx.strokeStyle=t.accent+'20';for(let x=3;x<m.width;x+=4){ctx.beginPath();ctx.moveTo(x*TILE,TILE);ctx.lineTo(x*TILE,13*TILE);ctx.lineTo((x+2)*TILE,13*TILE);ctx.lineTo((x+2)*TILE,V.GroundCache.height(c)-TILE);ctx.stroke();}for(let y=2;y<m.height;y+=4){ctx.fillStyle=t.accent+'30';ctx.fillRect(2*TILE,y*TILE,V.GroundCache.width(c)-4*TILE,2);}}
- const tileImg=V.Assets.images.tiles;if(tileImg){for(let x=0;x<m.width;x++){ctx.drawImage(tileImg,4*32,0,32,32,x*TILE,0,TILE,TILE);ctx.drawImage(tileImg,4*32,0,32,32,x*TILE,(m.height-1)*TILE,TILE,TILE);}}
- m.cache=c;},
- scenery(m){const region=m.theme;const garden=[[2,18],[4,19],[6,19],[23,19],[25,19],[28,17],[28,13],[3,12],[8,12],[19,16]];garden.forEach(([x,y],i)=>{this.tile(m,x,y,i%3===0?29:28);});if(region==='hub'){[[5,14,31],[7,14,4],[11,16,4],[21,14,4],[25,14,31],[26,18,40],[8,8,30],[23,10,30]].forEach(([x,y,p])=>this.tile(m,x,y,p));}if(region==='rhythm'){[[4,16,25],[5,16,26],[6,16,27],[4,17,23],[7,17,23],[9,16,22],[19,14,7],[20,14,30],[21,14,8],[26,14,24]].forEach(([x,y,p])=>this.tile(m,x,y,p));}if(region==='museum'){[[5,16,14],[9,16,15],[19,16,13],[25,15,12],[6,12,10],[24,10,47],[10,18,14],[21,15,15]].forEach(([x,y,p])=>this.tile(m,x,y,p));}if(region==='lab'){[[4,16,16],[5,16,18],[9,16,17],[19,16,18],[20,16,19],[25,15,20],[5,12,45],[24,10,16]].forEach(([x,y,p])=>this.tile(m,x,y,p));}if(region==='network'||region==='final'){[[5,16,19],[8,16,20],[19,16,19],[23,15,45],[7,12,12],[25,10,19],[10,18,19],[21,15,20]].forEach(([x,y,p])=>this.tile(m,x,y,p));}if(region==='community'){[[5,16,40],[9,16,4],[19,16,37],[25,15,42],[6,12,31],[24,10,4],[10,18,4],[21,15,47]].forEach(([x,y,p])=>this.tile(m,x,y,p));}},
- drawBuilding(ctx,b,cam){const x=b.x-cam.x,y=b.y-cam.y,w=b.w,h=b.h;ctx.fillStyle='#060b1c66';ctx.fillRect(x+10,y+12,w,h+12);ctx.fillStyle='#222d43';ctx.fillRect(x,y,w,h);ctx.fillStyle=b.color;ctx.fillRect(x-4,y-8,w+8,23);ctx.fillStyle='#ffffff14';ctx.fillRect(x,y+20,w,8);ctx.fillStyle='#10172a';ctx.fillRect(x+12,y+40,w-24,16);for(let i=22;i<w-30;i+=56){ctx.fillStyle='#101628';ctx.fillRect(x+i,y+72,35,50);ctx.fillStyle='#f4b85a';ctx.globalAlpha=.65;ctx.fillRect(x+i+4,y+76,27,42);ctx.globalAlpha=1;ctx.fillStyle='#32314a';ctx.fillRect(x+i+17,y+76,3,42);ctx.fillRect(x+i+4,y+94,27,3);}ctx.fillStyle='#131d31';ctx.fillRect(x+w/2-22,y+h-62,44,62);ctx.fillStyle='#27c8d840';ctx.fillRect(x+w/2-16,y+h-54,32,54);ctx.fillStyle='#27c8d8';ctx.fillRect(x+w/2+7,y+h-25,4,4);ctx.fillStyle='#7a8090';ctx.fillRect(x+w/2-30,y+h,60,9);},
- drawFountain(ctx,cam){const x=16*TILE-cam.x,y=10.5*TILE-cam.y;ctx.fillStyle='#172337';ctx.beginPath();ctx.ellipse(x,y+34,104,47,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#79b9c4';ctx.lineWidth=7;ctx.stroke();ctx.fillStyle='#27c8d840';ctx.beginPath();ctx.ellipse(x,y+32,95,36,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#587585';ctx.fillRect(x-22,y-48,44,85);ctx.fillStyle='#93dde5';ctx.fillRect(x-32,y-58,64,17);ctx.fillStyle='#27c8d8';for(let i=0;i<9;i++){const yy=y-75+Math.sin(V.Engine.time*2+i)*18;ctx.fillRect(x-3+i%3*3,yy-i*3,3,30);ctx.globalAlpha=.5;ctx.fillRect(x-67+i*17,y+20+Math.sin(V.Engine.time*3+i)*10,5,3);ctx.globalAlpha=1;}},
- drawObject(ctx,o,cam,t){const x=o.x-cam.x,y=o.y-cam.y;if(x<-120||x>(V.Engine.canvas?.width||960)+120||y<-120||y>(V.Engine.canvas?.height||540)+120)return;const near=this.nearest?.id===o.id;const done=o.type==='clue'&&V.state.evidence.includes(o.id)||o.type==='bonus'&&V.state.bonus.includes(o.id);let marker='';let color=t.accent;
- if(o.type==='npc'){V.Assets.sprite(ctx,o.character,x,y,0,Math.floor(V.Engine.time*1.6)%4,56);const talked=o.hub?V.state.flags.prologueStarted:V.state.talked.includes(o.id);marker=talked?'…':'!';}
- else if(o.type==='portal'){const unlocked=V.Quests.isUnlocked(o.chapter);color=unlocked?V.content.chapters[o.chapter-1].color:'#647086';ctx.fillStyle='#101c32';ctx.fillRect(x-29,y-72,58,77);ctx.strokeStyle=color;ctx.lineWidth=6;ctx.strokeRect(x-28,y-73,56,77);ctx.fillStyle=color+'45';ctx.fillRect(x-22,y-65,44,65);if(unlocked){ctx.globalAlpha=.4+Math.sin(V.Engine.time*3)*.1;ctx.fillStyle=color;ctx.fillRect(x-16,y-52,32,42);ctx.globalAlpha=1;}V.Engine.text(ctx,String(o.chapter),x,y-20,color,25,'center');marker=unlocked?'→':'×';}
- else if(o.type==='boss'){const c=V.content.chapters[o.chapter-1];const ready=V.Quests.ready(o.chapter);const won=V.state.completed.includes(o.chapter);V.Assets.boss(ctx,c.boss.id,x,y-18,Math.floor(V.Engine.time*3)%4,100);marker=won?'✓':ready?'!':'×';color=ready?'#e96687':'#9095ad';}
- else if(o.type==='clue'){V.Assets.prop(ctx,o.prop||13,x-24,y-36,48);marker=done?'✓':'?';}
- else if(o.type==='station'){V.Assets.prop(ctx,o.prop||19,x-29,y-49,58);marker=V.state.minis.includes(o.chapter)?'✓':'◆';}
- else if(o.type==='side'){V.Assets.prop(ctx,33,x-25,y-40,50);marker='W';}
- else if(o.type==='terminal'){V.Assets.prop(ctx,19,x-24,y-38,48);marker='EN';}
- else if(o.type==='sign'){V.Assets.prop(ctx,36,x-24,y-37,48);marker='i';}
- else if(o.type==='bonus'){if(!done){const float=V.settings.reducedMotion?0:Math.sin(V.Engine.time*3)*5;V.Assets.effect(ctx,0,x,y-23+float,35);marker='+';}}
- else if(o.type==='exit'){ctx.fillStyle='#27c8d825';ctx.fillRect(x-38,y-30,76,36);V.Engine.text(ctx,'↓ SAÍDA',x,y-8,'#bde8ee',12,'center');}
- if(marker&&(near||['npc','clue','boss','portal','station'].includes(o.type))){ctx.fillStyle='#121a2aec';ctx.fillRect(x-13,y-83,26,23);ctx.strokeStyle=color;ctx.lineWidth=1;ctx.strokeRect(x-13,y-83,26,23);V.Engine.text(ctx,marker,x,y-67,color,12,'center');}if(near){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,y+7,23,10,0,0,Math.PI*2);ctx.stroke();}},
- drawProjects(ctx,cam){const names={ramp:'ROTA ACESSÍVEL',bus:'TRANSPORTE',assembly:'CONSELHO',archive:'HISTÓRIAS VIVAS',workshop:'ESTÚDIO ABERTO',signs:'INFORMAÇÃO'};const props={ramp:37,bus:40,assembly:47,archive:12,workshop:24,signs:36};V.state.projects.forEach((id,i)=>{const x=(9+i%3*5)*48-cam.x,y=(6+Math.floor(i/3)*6)*48-cam.y;V.Assets.prop(ctx,props[id],x,y,48);V.Engine.text(ctx,names[id],x+24,y+62,'#cae7cb',9,'center');});},
- drawMiniMap(){const canvas=V.$('#minimap'),ctx=canvas.getContext('2d'),m=this.current;ctx.fillStyle='#182638';ctx.fillRect(0,0,128,88);const sx=128/(m.width*TILE),sy=88/(m.height*TILE);m.solids.forEach(s=>{ctx.fillStyle='#4b5c70';ctx.fillRect(s.x*sx,s.y*sy,s.w*sx,s.h*sy);});m.objects.forEach(o=>{ctx.fillStyle=o.type==='clue'?'#f4b85a':o.type==='portal'||o.type==='exit'?'#a388e8':o.type==='npc'?'#e96687':'#53718a';ctx.fillRect(o.x*sx-1,o.y*sy-1,3,3);});const p=V.Player.data;ctx.fillStyle='#fff';ctx.fillRect(p.x*sx-2,p.y*sy-2,4,4);}
-};})();
-
+})(function() {
+  (function() {
+    "use strict";
+    const V = window.V;
+    const TILE = 48;
+    const themes = { hub: { bg: "#223246", road: "#415563", grass: "#2d625c", accent: "#27c8d8", name: "Pra\xE7a das vozes" }, rhythm: { bg: "#262542", road: "#594d68", grass: "#3c4e62", accent: "#e96687" }, museum: { bg: "#2e3045", road: "#726959", grass: "#465557", accent: "#f4b85a" }, lab: { bg: "#1d3343", road: "#405b69", grass: "#326364", accent: "#27c8d8" }, network: { bg: "#161d36", road: "#303254", grass: "#283b5d", accent: "#b18aff" }, community: { bg: "#244243", road: "#677566", grass: "#417664", accent: "#a0dfa1" }, final: { bg: "#1a1735", road: "#403c60", grass: "#2a294c", accent: "#e96687" }, room: { bg: "#262c40", road: "#4b5268", grass: "#343c54", accent: "#f4b85a" } };
+    // Reusable authored maps; a 32px art tile is rendered at 48px.
+    V.World = {
+      maps: {},
+      current: null,
+      camera: { x: 0, y: 0 },
+      transition: 0,
+      nearest: null,
+      props: { tree: 0, book: 9, mural: 7, computer: 19, portal: 33, lamp: 5 },
+      init() {
+        for (const id of Object.keys(this.maps)) delete this.maps[id];
+        this.maps.hub = this.makeHub();
+        V.content.chapters.forEach((c) => {
+          this.maps["chapter-" + c.id] = this.makeChapter(c);
+          this.maps["room-" + c.id] = this.makeRoom(c);
+        });
+        this.maps.library = this.makeRoom(null);
+      },
+      base(id, theme, width = 32, height = 22) {
+        return { id, theme, width, height, name: themes[theme]?.name || "", objects: [], buildings: [], solids: [], trees: [], floor: [], decor: [], cache: null };
+      },
+      tile(map, x, y, prop, solid = false) {
+        map.decor.push({ x: x * TILE, y: y * TILE, prop });
+        if (solid) map.solids.push({ x: x * TILE + 7, y: y * TILE + 15, w: 34, h: 30 });
+      },
+      object(map, type, id, x, y, label, data = {}) {
+        map.objects.push({ type, id, x: x * TILE + 24, y: y * TILE + 24, label, ...data });
+      },
+      building(map, x, y, w, h, label, color, doorId) {
+        map.buildings.push({ x: x * TILE, y: y * TILE, w: w * TILE, h: h * TILE, label, color });
+        map.solids.push({ x: x * TILE, y: y * TILE, w: w * TILE, h: h * TILE });
+        this.object(map, "door", "door-" + doorId, x + w / 2 - 0.5, y + h + 0.1, "Entrar: " + label, { to: doorId });
+      },
+      trees(map, locations) {
+        locations.forEach(([x, y]) => this.tile(map, x, y, 0, true));
+      },
+      makeHub() {
+        const m = this.base("hub", "hub");
+        this.building(m, 2, 2, 7, 4, "BIBLIOTECA", "#7145cb", "library");
+        this.building(m, 23, 2, 7, 4, "CENTRAL VOICES", "#287786", "room-6");
+        m.solids.push({ x: 14 * TILE, y: 9 * TILE, w: 4 * TILE, h: 3 * TILE });
+        this.object(m, "fountain", "fountain", 15.5, 12.2, "Fonte de mem\xF3rias");
+        this.object(m, "npc", "hub-pix", 17, 16.7, "Conversar com PIX", { character: "pix", hub: true });
+        this.object(m, "npc", "hub-nia", 12, 14.3, "Conversar com Nia", { character: "nia", hub: true });
+        this.object(m, "npc", "hub-student", 25, 16, "Conversar com Rafa", { character: "town-rafa", hub: true });
+        const spots = [[4, 10], [10, 7], [22, 8], [27, 12], [22, 17], [7, 17]];
+        V.content.chapters.forEach((c, i) => this.object(m, "portal", "portal-" + c.id, spots[i][0], spots[i][1], c.name, { chapter: c.id }));
+        this.object(m, "sign", "guide", 16, 18.5, "Mapa de New Harmony");
+        this.object(m, "terminal", "terminal-hub", 28, 17, "Terminal de treino");
+        this.object(m, "side", "word-runner", 3, 17, "Word Runner \u2014 palavras em movimento");
+        this.object(m, "bonus", "hub-record", 9, 12, "Registro escondido: Escutar", { word: "listen" });
+        this.scenery(m);
+        this.trees(m, [[1, 8], [1, 13], [2, 14], [5, 7], [6, 7], [12, 3], [14, 3], [17, 3], [20, 4], [29, 8], [30, 15], [15, 19], [18, 19], [11, 19]]);
+        [[10, 12], [21, 12], [6, 15], [26, 9], [27, 18], [3, 8]].forEach(([x, y]) => this.tile(m, x, y, 5));
+        return m;
+      },
+      makeChapter(c) {
+        const keys = ["rhythm", "museum", "lab", "network", "community", "final"];
+        const m = this.base("chapter-" + c.id, keys[c.id - 1]);
+        m.name = c.name;
+        m.chapter = c.id;
+        this.building(m, 2, 2, 7, 4, c.id === 1 ? "EST\xDADIO / REHEARSAL" : c.id === 2 ? "ARQUIVO / ARCHIVE" : c.id === 3 ? "OFICINA / WORKSHOP" : c.id === 4 ? "FONTES / SOURCES" : c.id === 5 ? "CENTRO COMUNIT\xC1RIO" : "ARQUIVO CENTRAL", c.color, "room-" + c.id);
+        this.building(m, 23, 2, 7, 4, c.id === 1 ? "PALCO FESTIVAL" : c.id === 2 ? "GALERIA RESTAURADA" : c.id === 3 ? "OBSERVAT\xD3RIO" : c.id === 4 ? "SERVIDORES" : c.id === 5 ? "ESCOLA ABERTA" : "N\xDACLEO DO SISTEMA", c.color, "room-" + c.id);
+        const clueSpots = [[10, 9], [23, 13], [6, 14]];
+        c.clues.forEach((clue, i) => this.object(m, "clue", clue.id, clueSpots[i][0], clueSpots[i][1], "Investigar: " + clue.title, { clue, prop: [7, 13, 19][i] }));
+        c.npcs.forEach((npc, i) => this.object(m, "npc", "npc-" + c.id + "-" + i, [12, 24][i], [13, 17][i], "Conversar com " + npc.name, { npc, character: npc.character, index: i }));
+        this.object(m, "station", "station-" + c.id, 16, 10, c.id === 1 ? "Reparar a mesa de som" : c.id === 2 ? "Decodificador de cronologia" : c.id === 3 ? "Ligar evid\xEAncias aos autores" : c.id === 4 ? "Analisar a rede" : c.id === 5 ? "Planejar com a comunidade" : "Reconstituir o arquivo", { chapter: c.id, prop: c.id === 1 ? 24 : 19 });
+        this.object(m, "boss", "boss-" + c.id, 27, 8.5, "Confrontar " + c.boss.name, { chapter: c.id });
+        this.object(m, "exit", "exit-" + c.id, 16, 19, "Voltar \xE0 pra\xE7a");
+        this.object(m, "terminal", "terminal-" + c.id, 4, 18, "Terminal de ingl\xEAs", { chapter: c.id });
+        this.object(m, "sign", "sign-" + c.id, 17, 15, c.id === 4 ? "Verifica\xE7\xE3o e apoio" : c.id === 5 ? "Ouvir antes de construir" : "Painel de investiga\xE7\xE3o", { chapter: c.id });
+        this.object(m, "bonus", "bonus-" + c.id, 21, 5.8, "Uma palavra escondida", { word: ["rhythm", "history", "evidence", "source", "community", "responsibility"][c.id - 1] });
+        this.scenery(m);
+        this.trees(m, [[1, 8], [1, 12], [1, 16], [3, 10], [8, 19], [10, 3], [12, 3], [14, 3], [16, 3], [18, 3], [20, 4], [30, 8], [30, 13], [30, 17], [27, 19]]);
+        [[9, 11], [20, 12], [6, 18], [22, 18], [16, 6], [26, 10]].forEach(([x, y], i) => this.tile(m, x, y, 5));
+        [[4, 8], [7, 11], [21, 9], [25, 15], [13, 17], [18, 13]].forEach(([x, y], i) => this.tile(m, x, y, c.id === 1 ? [25, 26, 27, 7, 23, 22][i] : c.id === 3 ? [17, 18, 19, 20, 16, 15][i] : c.id === 4 ? [19, 20, 18, 19, 45, 19][i] : [9, 12, 10, 14, 28, 4][i]));
+        return m;
+      },
+      makeRoom(c) {
+        const id = c ? "room-" + c.id : "library", m = this.base(id, "room", 24, 18);
+        m.chapter = c?.id;
+        m.name = c ? `${c.name} \xB7 interior` : "Biblioteca \xB7 sala de leitura";
+        m.solids.push({ x: 0, y: 0, w: 24 * TILE, h: TILE * 2 }, { x: 0, y: 0, w: TILE, h: 18 * TILE }, { x: 23 * TILE, y: 0, w: TILE, h: 18 * TILE });
+        for (let x = 2; x < 22; x += 3) {
+          this.tile(m, x, 3, 10, true);
+          this.tile(m, x, 4, 12, true);
+        }
+        for (let x = 3; x < 21; x += 5) {
+          this.tile(m, x, 8, c?.id === 3 ? 16 : 11, true);
+          this.tile(m, x, 11, 9);
+        }
+        this.object(m, "npc", "room-librarian", 12, 7, "Conversar com Davi", { character: "librarian", library: true });
+        this.object(m, "side", "room-runner-" + id, 7, 13, "Word Runner \u2014 desafio do arquivo");
+        this.object(m, "bonus", "room-bonus-" + id, 18, 12, "Registro raro: Mem\xF3rias plurais", { word: c ? "knowledge" : "memory" });
+        this.object(m, "terminal", "room-terminal-" + id, 4, 6, "Terminal de ingl\xEAs", { chapter: c?.id || 1 });
+        this.object(m, "exit", "room-exit-" + id, 12, 15.5, "Sair do edif\xEDcio", { to: c ? "chapter-" + c.id : "hub" });
+        this.object(m, "sign", "room-source-" + id, 20, 6, "Consultar fontes hist\xF3ricas", { sources: true });
+        return m;
+      },
+      load(id, position = null) {
+        const m = this.maps[id] || this.maps.hub;
+        this.current = m;
+        this.transition = 1;
+        const spawn = position || { x: m.width / 2 * TILE + 24, y: m.id === "hub" ? 15.5 * TILE : m.theme === "room" ? (m.height - 4) * TILE + 24 : 15 * TILE };
+        V.Player.create(V.clamp(spawn.x, 72, m.width * TILE - 72), V.clamp(spawn.y, 100, m.height * TILE - 72));
+        if (this.collides(V.Player.data.x, V.Player.data.y, 11)) {
+          V.Player.data.x = m.width * TILE / 2;
+          V.Player.data.y = (m.height - 4) * TILE;
+        }
+        this.camera = { x: V.clamp(V.Player.data.x - 480, 0, m.width * TILE - 960), y: V.clamp(V.Player.data.y - 270, 0, m.height * TILE - 540) };
+        V.state.map = m.id;
+        V.$("#location-name").textContent = m.name;
+        V.Audio.setTheme(m.theme);
+        this.nearest = null;
+        V.Game.updateHUD();
+        V.Engine.particles = [];
+        V.Audio.sfx("portal");
+        V.Save.save();
+        V.MapAssets?.schedule(m);
+      },
+      collides(x, y, r) {
+        const m = this.current;
+        if (!m) return true;
+        if (x - r < TILE || y - r < TILE || x + r > (m.width - 1) * TILE || y + r > (m.height - 1) * TILE) return true;
+        return m.solids.some((s) => x + r > s.x && x - r < s.x + s.w && y + r > s.y && y - r < s.y + s.h);
+      },
+      interactables() {
+        return this.current.objects;
+      },
+      update(dt) {
+        this.transition = Math.max(0, this.transition - dt * 2);
+        this.nearest = V.Player.nearest();
+        const hint = V.$("#interact-hint");
+        hint.hidden = !this.nearest || !!V.modal || V.Dialogue.active || V.Game.mode !== "explore";
+        if (this.nearest) {
+          const label = hint.querySelector("span");
+          if (label.textContent !== this.nearest.label) label.textContent = this.nearest.label;
+        }
+      },
+      ground(m) {
+        const c = V.GroundCache.create(m, m.width * TILE, m.height * TILE);
+        ;
+        ;
+        const ctx = c.getContext("2d"), t = themes[m.theme];
+        ctx.imageSmoothingEnabled = false;
+        ctx.fillStyle = t.bg;
+        ctx.fillRect(0, 0, V.GroundCache.width(c), V.GroundCache.height(c));
+        for (let y = 0; y < m.height; y++) {
+          for (let x = 0; x < m.width; x++) {
+            const indoor = m.theme === "room";
+            const road = indoor || Math.abs(x - 16) <= 2 || y >= 15 && y <= 17 || y >= 8 && y <= 10;
+            ctx.fillStyle = road ? t.road : t.grass;
+            ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+            const tile = V.Assets.images.tiles;
+            const tileId = indoor ? 11 : road ? { hub: 7, rhythm: 13, museum: 10, lab: 12, network: 24, community: 29, final: 24 }[m.theme] ?? 4 : { hub: 0, rhythm: 1, museum: 3, lab: 1, network: 24, community: 30, final: 28 }[m.theme] ?? 0;
+            if (tile) {
+              ctx.globalAlpha = 0.28;
+              ctx.drawImage(tile, tileId % 8 * 32, Math.floor(tileId / 8) * 32, 32, 32, x * TILE, y * TILE, TILE, TILE);
+              ctx.globalAlpha = 1;
+            }
+            ctx.fillStyle = road ? "#ffffff07" : "#ffffff08";
+            ctx.fillRect(x * TILE, y * TILE, TILE, 1);
+            ctx.fillRect(x * TILE, y * TILE, 1, TILE);
+            const seed = (x * 17 + y * 23) % 9;
+            if (!road) {
+              ctx.fillStyle = "#0714271c";
+              ctx.fillRect(x * TILE + seed * 4, y * TILE + 11, 5, 2);
+              ctx.fillStyle = "#c0e5ca22";
+              ctx.fillRect(x * TILE + 17, y * TILE + seed * 4 + 8, 3, 3);
+            } else if ((x + y) % 3 === 0) {
+              ctx.fillStyle = "#ffffff0a";
+              ctx.fillRect(x * TILE + 7, y * TILE + 10, 7, 3);
+            }
+          }
+        }
+        ctx.strokeStyle = t.accent + "40";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(TILE, TILE, V.GroundCache.width(c) - TILE * 2, V.GroundCache.height(c) - TILE * 2);
+        if (m.theme === "network" || m.theme === "final") {
+          ctx.strokeStyle = t.accent + "20";
+          for (let x = 3; x < m.width; x += 4) {
+            ctx.beginPath();
+            ctx.moveTo(x * TILE, TILE);
+            ctx.lineTo(x * TILE, 13 * TILE);
+            ctx.lineTo((x + 2) * TILE, 13 * TILE);
+            ctx.lineTo((x + 2) * TILE, V.GroundCache.height(c) - TILE);
+            ctx.stroke();
+          }
+          for (let y = 2; y < m.height; y += 4) {
+            ctx.fillStyle = t.accent + "30";
+            ctx.fillRect(2 * TILE, y * TILE, V.GroundCache.width(c) - 4 * TILE, 2);
+          }
+        }
+        const tileImg = V.Assets.images.tiles;
+        if (tileImg) {
+          for (let x = 0; x < m.width; x++) {
+            ctx.drawImage(tileImg, 4 * 32, 0, 32, 32, x * TILE, 0, TILE, TILE);
+            ctx.drawImage(tileImg, 4 * 32, 0, 32, 32, x * TILE, (m.height - 1) * TILE, TILE, TILE);
+          }
+        }
+        m.cache = c;
+      },
+      scenery(m) {
+        const region = m.theme;
+        const garden = [[2, 18], [4, 19], [6, 19], [23, 19], [25, 19], [28, 17], [28, 13], [3, 12], [8, 12], [19, 16]];
+        garden.forEach(([x, y], i) => {
+          this.tile(m, x, y, i % 3 === 0 ? 29 : 28);
+        });
+        if (region === "hub") {
+          [[5, 14, 31], [7, 14, 4], [11, 16, 4], [21, 14, 4], [25, 14, 31], [26, 18, 40], [8, 8, 30], [23, 10, 30]].forEach(([x, y, p]) => this.tile(m, x, y, p));
+        }
+        if (region === "rhythm") {
+          [[4, 16, 25], [5, 16, 26], [6, 16, 27], [4, 17, 23], [7, 17, 23], [9, 16, 22], [19, 14, 7], [20, 14, 30], [21, 14, 8], [26, 14, 24]].forEach(([x, y, p]) => this.tile(m, x, y, p));
+        }
+        if (region === "museum") {
+          [[5, 16, 14], [9, 16, 15], [19, 16, 13], [25, 15, 12], [6, 12, 10], [24, 10, 47], [10, 18, 14], [21, 15, 15]].forEach(([x, y, p]) => this.tile(m, x, y, p));
+        }
+        if (region === "lab") {
+          [[4, 16, 16], [5, 16, 18], [9, 16, 17], [19, 16, 18], [20, 16, 19], [25, 15, 20], [5, 12, 45], [24, 10, 16]].forEach(([x, y, p]) => this.tile(m, x, y, p));
+        }
+        if (region === "network" || region === "final") {
+          [[5, 16, 19], [8, 16, 20], [19, 16, 19], [23, 15, 45], [7, 12, 12], [25, 10, 19], [10, 18, 19], [21, 15, 20]].forEach(([x, y, p]) => this.tile(m, x, y, p));
+        }
+        if (region === "community") {
+          [[5, 16, 40], [9, 16, 4], [19, 16, 37], [25, 15, 42], [6, 12, 31], [24, 10, 4], [10, 18, 4], [21, 15, 47]].forEach(([x, y, p]) => this.tile(m, x, y, p));
+        }
+      },
+      drawBuilding(ctx, b, cam) {
+        const x = b.x - cam.x, y = b.y - cam.y, w = b.w, h = b.h;
+        ctx.fillStyle = "#060b1c66";
+        ctx.fillRect(x + 10, y + 12, w, h + 12);
+        ctx.fillStyle = "#222d43";
+        ctx.fillRect(x, y, w, h);
+        ctx.fillStyle = b.color;
+        ctx.fillRect(x - 4, y - 8, w + 8, 23);
+        ctx.fillStyle = "#ffffff14";
+        ctx.fillRect(x, y + 20, w, 8);
+        ctx.fillStyle = "#10172a";
+        ctx.fillRect(x + 12, y + 40, w - 24, 16);
+        for (let i = 22; i < w - 30; i += 56) {
+          ctx.fillStyle = "#101628";
+          ctx.fillRect(x + i, y + 72, 35, 50);
+          ctx.fillStyle = "#f4b85a";
+          ctx.globalAlpha = 0.65;
+          ctx.fillRect(x + i + 4, y + 76, 27, 42);
+          ctx.globalAlpha = 1;
+          ctx.fillStyle = "#32314a";
+          ctx.fillRect(x + i + 17, y + 76, 3, 42);
+          ctx.fillRect(x + i + 4, y + 94, 27, 3);
+        }
+        ctx.fillStyle = "#131d31";
+        ctx.fillRect(x + w / 2 - 22, y + h - 62, 44, 62);
+        ctx.fillStyle = "#27c8d840";
+        ctx.fillRect(x + w / 2 - 16, y + h - 54, 32, 54);
+        ctx.fillStyle = "#27c8d8";
+        ctx.fillRect(x + w / 2 + 7, y + h - 25, 4, 4);
+        ctx.fillStyle = "#7a8090";
+        ctx.fillRect(x + w / 2 - 30, y + h, 60, 9);
+      },
+      drawFountain(ctx, cam) {
+        const x = 16 * TILE - cam.x, y = 10.5 * TILE - cam.y;
+        ctx.fillStyle = "#172337";
+        ctx.beginPath();
+        ctx.ellipse(x, y + 34, 104, 47, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#79b9c4";
+        ctx.lineWidth = 7;
+        ctx.stroke();
+        ctx.fillStyle = "#27c8d840";
+        ctx.beginPath();
+        ctx.ellipse(x, y + 32, 95, 36, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#587585";
+        ctx.fillRect(x - 22, y - 48, 44, 85);
+        ctx.fillStyle = "#93dde5";
+        ctx.fillRect(x - 32, y - 58, 64, 17);
+        ctx.fillStyle = "#27c8d8";
+        for (let i = 0; i < 9; i++) {
+          const yy = y - 75 + Math.sin(V.Engine.time * 2 + i) * 18;
+          ctx.fillRect(x - 3 + i % 3 * 3, yy - i * 3, 3, 30);
+          ctx.globalAlpha = 0.5;
+          ctx.fillRect(x - 67 + i * 17, y + 20 + Math.sin(V.Engine.time * 3 + i) * 10, 5, 3);
+          ctx.globalAlpha = 1;
+        }
+      },
+      drawObject(ctx, o, cam, t) {
+        const x = o.x - cam.x, y = o.y - cam.y;
+        if (x < -120 || x > (V.Engine.canvas?.width || 960) + 120 || y < -120 || y > (V.Engine.canvas?.height || 540) + 120) return;
+        const near = this.nearest?.id === o.id;
+        const done = o.type === "clue" && V.state.evidence.includes(o.id) || o.type === "bonus" && V.state.bonus.includes(o.id);
+        let marker = "";
+        let color = t.accent;
+        if (o.type === "npc") {
+          V.Assets.sprite(ctx, o.character, x, y, 0, Math.floor(V.Engine.time * 1.6) % 4, 56);
+          const talked = o.hub ? V.state.flags.prologueStarted : V.state.talked.includes(o.id);
+          marker = talked ? "\u2026" : "!";
+        } else if (o.type === "portal") {
+          const unlocked = V.Quests.isUnlocked(o.chapter);
+          color = unlocked ? V.content.chapters[o.chapter - 1].color : "#647086";
+          ctx.fillStyle = "#101c32";
+          ctx.fillRect(x - 29, y - 72, 58, 77);
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 6;
+          ctx.strokeRect(x - 28, y - 73, 56, 77);
+          ctx.fillStyle = color + "45";
+          ctx.fillRect(x - 22, y - 65, 44, 65);
+          if (unlocked) {
+            ctx.globalAlpha = 0.4 + Math.sin(V.Engine.time * 3) * 0.1;
+            ctx.fillStyle = color;
+            ctx.fillRect(x - 16, y - 52, 32, 42);
+            ctx.globalAlpha = 1;
+          }
+          V.Engine.text(ctx, String(o.chapter), x, y - 20, color, 25, "center");
+          marker = unlocked ? "\u2192" : "\xD7";
+        } else if (o.type === "boss") {
+          const c = V.content.chapters[o.chapter - 1];
+          const ready = V.Quests.ready(o.chapter);
+          const won = V.state.completed.includes(o.chapter);
+          V.Assets.boss(ctx, c.boss.id, x, y - 18, Math.floor(V.Engine.time * 3) % 4, 100);
+          marker = won ? "\u2713" : ready ? "!" : "\xD7";
+          color = ready ? "#e96687" : "#9095ad";
+        } else if (o.type === "clue") {
+          V.Assets.prop(ctx, o.prop || 13, x - 24, y - 36, 48);
+          marker = done ? "\u2713" : "?";
+        } else if (o.type === "station") {
+          V.Assets.prop(ctx, o.prop || 19, x - 29, y - 49, 58);
+          marker = V.state.minis.includes(o.chapter) ? "\u2713" : "\u25C6";
+        } else if (o.type === "side") {
+          V.Assets.prop(ctx, 33, x - 25, y - 40, 50);
+          marker = "W";
+        } else if (o.type === "terminal") {
+          V.Assets.prop(ctx, 19, x - 24, y - 38, 48);
+          marker = "EN";
+        } else if (o.type === "sign") {
+          V.Assets.prop(ctx, 36, x - 24, y - 37, 48);
+          marker = "i";
+        } else if (o.type === "bonus") {
+          if (!done) {
+            const float = V.settings.reducedMotion ? 0 : Math.sin(V.Engine.time * 3) * 5;
+            V.Assets.effect(ctx, 0, x, y - 23 + float, 35);
+            marker = "+";
+          }
+        } else if (o.type === "exit") {
+          ctx.fillStyle = "#27c8d825";
+          ctx.fillRect(x - 38, y - 30, 76, 36);
+          V.Engine.text(ctx, "\u2193 SA\xCDDA", x, y - 8, "#bde8ee", 12, "center");
+        }
+        if (marker && (near || ["npc", "clue", "boss", "portal", "station"].includes(o.type))) {
+          ctx.fillStyle = "#121a2aec";
+          ctx.fillRect(x - 13, y - 83, 26, 23);
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(x - 13, y - 83, 26, 23);
+          V.Engine.text(ctx, marker, x, y - 67, color, 12, "center");
+        }
+        if (near) {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.ellipse(x, y + 7, 23, 10, 0, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      },
+      drawProjects(ctx, cam) {
+        const names = { ramp: "ROTA ACESS\xCDVEL", bus: "TRANSPORTE", assembly: "CONSELHO", archive: "HIST\xD3RIAS VIVAS", workshop: "EST\xDADIO ABERTO", signs: "INFORMA\xC7\xC3O" };
+        const props = { ramp: 37, bus: 40, assembly: 47, archive: 12, workshop: 24, signs: 36 };
+        V.state.projects.forEach((id, i) => {
+          const x = (9 + i % 3 * 5) * 48 - cam.x, y = (6 + Math.floor(i / 3) * 6) * 48 - cam.y;
+          V.Assets.prop(ctx, props[id], x, y, 48);
+          V.Engine.text(ctx, names[id], x + 24, y + 62, "#cae7cb", 9, "center");
+        });
+      },
+      drawMiniMap() {
+        const canvas = V.$("#minimap"), ctx = canvas.getContext("2d"), m = this.current;
+        ctx.fillStyle = "#182638";
+        ctx.fillRect(0, 0, 128, 88);
+        const sx = 128 / (m.width * TILE), sy = 88 / (m.height * TILE);
+        m.solids.forEach((s) => {
+          ctx.fillStyle = "#4b5c70";
+          ctx.fillRect(s.x * sx, s.y * sy, s.w * sx, s.h * sy);
+        });
+        m.objects.forEach((o) => {
+          ctx.fillStyle = o.type === "clue" ? "#f4b85a" : o.type === "portal" || o.type === "exit" ? "#a388e8" : o.type === "npc" ? "#e96687" : "#53718a";
+          ctx.fillRect(o.x * sx - 1, o.y * sy - 1, 3, 3);
+        });
+        const p = V.Player.data;
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(p.x * sx - 2, p.y * sy - 2, 4, 4);
+      }
+    };
+  })();
 });

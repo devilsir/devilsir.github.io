@@ -260,8 +260,8 @@ window.VoicesModules.define('basketball-art', function () {
       c.restore();
     }
   };
-  const group=V.AssetLoader.group.bind(V.AssetLoader);
-  V.AssetLoader.group=key=>key.startsWith('assets/basketball/')?'basketball':group(key);
-  const load=V.Assets.load.bind(V.Assets);
-  V.Assets.load=function(...args){A.load();return load(...args);};
+  
+  V.AssetLoader.addGroupRule("basketball-art:group:1", key => key.startsWith('assets/basketball/')?'basketball':undefined);
+  
+  V.Hooks.around(V.Assets, "load", "basketball-art:load:1", load => function(...args){A.load();return load(...args);});
 });

@@ -13,20 +13,20 @@ globalThis.QuimiCraftModels = (() => {
     outline.closePath();
     const faceted = new THREE.ExtrudeGeometry(outline, {depth:.86, bevelEnabled:true, bevelThickness:.07, bevelSize:.07, bevelSegments:1});
     faceted.translate(0, 0, -.43);
-    const metal = new THREE.MeshStandardMaterial({color:0xa5c2cc, metalness:.5, roughness:.33});
-    const edge = new THREE.MeshStandardMaterial({color:0xe3f5f1, metalness:.42, roughness:.22});
-    const brass = new THREE.MeshStandardMaterial({color:0xcb9b48, metalness:.48, roughness:.4});
+    const metal = new THREE.MeshStandardMaterial({color:0xa5c2cc, metalness:.64, roughness:.26});
+    const edge = new THREE.MeshStandardMaterial({color:0xe8f8f5, metalness:.62, roughness:.18});
+    const brass = new THREE.MeshStandardMaterial({color:0xd4a44e, metalness:.72, roughness:.28});
     const stone = new THREE.MeshLambertMaterial({color:0x7c8b89});
-    const dark = new THREE.MeshLambertMaterial({color:0x19262d});
+    const dark = new THREE.MeshStandardMaterial({color:0x1b2830, metalness:.28, roughness:.62});
     const wood = new THREE.MeshLambertMaterial({color:0x734d34});
     const lightWood = new THREE.MeshLambertMaterial({color:0xac7749});
     const leather = new THREE.MeshLambertMaterial({color:0x49342e});
     const thread = new THREE.MeshLambertMaterial({color:0xd8c4a8});
-    const crystal = new THREE.MeshStandardMaterial({color:0x65ddcf, emissive:0x208c84, emissiveIntensity:.62, roughness:.24, flatShading:true});
-    const bufferLiquid=new THREE.MeshStandardMaterial({color:0xb0d75f,roughness:.29,metalness:.11,emissive:0x1a2009});
+    const crystal = new THREE.MeshStandardMaterial({color:0x78f0e4, emissive:0x28b8ad, emissiveIntensity:.82, roughness:.14, metalness:.16, transparent:true, opacity:.88, flatShading:true});
+    const bufferLiquid=new THREE.MeshStandardMaterial({color:0xb0d75f,roughness:.24,metalness:.12,emissive:0x2d400e,emissiveIntensity:.45,transparent:true,opacity:.86});
     const globe = new THREE.OctahedronGeometry(1, 0);
-    const torus = new THREE.TorusGeometry(1, .048, 5, 22);
-    const cyl = new THREE.CylinderGeometry(.5, .5, 1, 8);
+    const torus = new THREE.TorusGeometry(1, .048, 6, 26);
+    const cyl = new THREE.CylinderGeometry(.5, .5, 1, 14);
     const materialCache = new Map();
     const textures = new Map();
     const icons = new Map();
@@ -34,6 +34,46 @@ globalThis.QuimiCraftModels = (() => {
     const capeModels=new Map();
     const itemMatt = new THREE.MeshLambertMaterial({map:atlas.texture, alphaTest:.38, color:0xffffff, side:THREE.DoubleSide,
       emissive:0x141414, emissiveIntensity:.62});
+
+    function alloyMat(key, color, metalness = .76, roughness = .22, emissive = 0x000000, emissiveIntensity = 0) {
+      const k = `alloy:${key}:${color}:${metalness}:${roughness}:${emissive}:${emissiveIntensity}`;
+      if (!materialCache.has(k)) materialCache.set(k, new THREE.MeshStandardMaterial({
+        color, metalness, roughness, emissive, emissiveIntensity
+      }));
+      return materialCache.get(k);
+    }
+    function glassMat(key, color, opacity = .32, roughness = .06, emissive = 0x000000, emissiveIntensity = 0) {
+      const k = `glass:${key}:${color}:${opacity}:${roughness}:${emissive}:${emissiveIntensity}`;
+      if (!materialCache.has(k)) materialCache.set(k, new THREE.MeshStandardMaterial({
+        color, metalness:.16, roughness, transparent:true, opacity, depthWrite:false,
+        emissive, emissiveIntensity, side:THREE.DoubleSide
+      }));
+      return materialCache.get(k);
+    }
+    function glowGemMat(key, color, emissive = color, emissiveIntensity = .95, opacity = .86) {
+      const k = `gem:${key}:${color}:${emissive}:${emissiveIntensity}:${opacity}`;
+      if (!materialCache.has(k)) materialCache.set(k, new THREE.MeshStandardMaterial({
+        color, emissive, emissiveIntensity, roughness:.14, metalness:.14,
+        transparent:opacity < 1, opacity, flatShading:true
+      }));
+      return materialCache.get(k);
+    }
+    function glowHalo(root, parent, color, pos, size, opacity = .64) {
+      const k = `halo:${color}:${opacity}`;
+      if (!materialCache.has(k)) materialCache.set(k, new THREE.SpriteMaterial({
+        map:haloTexture, color, transparent:true, blending:THREE.AdditiveBlending,
+        depthWrite:false, toneMapped:false, opacity
+      }));
+      const sprite = new THREE.Sprite(materialCache.get(k));
+      sprite.position.set(...pos);
+      sprite.scale.set(size, size, 1);
+      sprite.userData.baseSize = size;
+      sprite.userData.phase = (root.userData.pulseHalos?.length || 0) * 1.37;
+      sprite.userData.noShadow = true;
+      parent.add(sprite);
+      (root.userData.pulseHalos ??= []).push(sprite);
+      return sprite;
+    }
 
     function mesh(parent, geometry, mat, xyz, size, rotation = [0,0,0]) {
       const node = new THREE.Mesh(geometry, mat);
@@ -99,19 +139,32 @@ globalThis.QuimiCraftModels = (() => {
     }
 
     function staffVariant(root,w){
-      const frost=w.style==="frost",silver=w.style==="silver",shade=tint(w.style,w.color),trim=tint(w.style+"-trim",w.trim);
-      const shaft=silver?metal:frost?dark:wood;
+      const frost=w.style==="frost",silver=w.style==="silver",corrupted=!!w.corrupted,shade=tint(w.style,w.color),trim=tint(w.style+"-trim",w.trim);
+      const shaft=corrupted?alloyMat("corrupt-shaft",0x241133,.42,.52,0x351052,.28):silver?metal:frost?dark:wood;
       bar(root,shaft,[0,-.62,0],[0,1.06,0],.096);
       grip(root,.39);
       for(const y of [-.58,.55,.87])bevel(root,trim,[0,y,0],[.143,.067,.137]);
       const center=[0,1.20,0],key=w.style+"-glow";
       if(!materialCache.has(key))materialCache.set(key,new THREE.MeshStandardMaterial({
-        color:w.color,emissive:w.color,emissiveIntensity:.45,roughness:.24,flatShading:true
+        color:w.color,emissive:w.color,emissiveIntensity:corrupted?.85:.45,roughness:.24,flatShading:true
       }));
       const coreMaterial=w.spectralWeapon?spectralFinish(w.color,w.trim,.83,.56):materialCache.get(key);
-      root.userData.core=mesh(root,globe,coreMaterial,center,frost?[.143,.29,.141]:[.21,.24,.18],[.12,.36,.24]);
+      root.userData.core=mesh(root,globe,coreMaterial,center,frost?[.143,.29,.141]:corrupted?[.23,.23,.21]:[.21,.24,.18],[.12,.36,.24]);
       root.userData.coreSize=root.userData.core.scale.clone();
-      if(w.spectralWeapon){
+      if(corrupted){
+        const eyeGlow=glowGemMat("corrupt-staff-eye",0xffd89e,0xff74e0,1.35,.95);
+        const pupil=alloyMat("corrupt-pupil",0x09040e,.2,.3);
+        const claw=alloyMat("corrupt-claw",0x35184d,.52,.44,0x4c1770,.24);
+        mesh(root,globe,eyeGlow,[0,1.20,-.15],[.14,.14,.09]);
+        mesh(root,globe,pupil,[0,1.20,-.22],[.036,.125,.04]);
+        glowHalo(root,root,0xd966ff,[0,1.20,-.18],.72,.58);
+        for(let i=0;i<4;i++){
+          const a=i*Math.PI/2+Math.PI/4,cx=Math.cos(a)*.24,cz=Math.sin(a)*.24;
+          bar(root,claw,[0,.84,0],[cx,1.08,cz],.048);
+          bar(root,claw,[cx,1.08,cz],[cx*.72,1.44,cz*.72],.038);
+          mesh(root,globe,trim,[cx*.72,1.47,cz*.72],[.046,.082,.046]);
+        }
+      }else if(w.spectralWeapon){
         QuimiCraftSpectral.halo(THREE,root,0x44dfd2,[0,1.23,-.07],.67,.74,.38);
         for(const side of [-1,1]){
           bar(root,coreMaterial,[0,.88,0],[side*.23,1.09,.04],.038);
@@ -170,13 +223,18 @@ globalThis.QuimiCraftModels = (() => {
     }
 
     function bow(root,w) {
-      const variant=w?.style,steel=variant==="steel",bamboo=variant==="bamboo",spectral=w?.spectralWeapon;
-      const limb=spectral?spectralFinish(w.color,w.trim,.34,.59):variant?tint(variant,w.color):wood;
-      const laminate=spectral?spectralFinish(w.trim,w.trim,.80):variant?tint(variant+"-trim",w.trim):lightWood;
+      const variant=w?.style,steel=variant==="steel",bamboo=variant==="bamboo",spectral=w?.spectralWeapon,corrupted=!!w?.corrupted;
+      const limb=spectral?spectralFinish(w.color,w.trim,.34,.59):corrupted?alloyMat("corrupt-bow",w.color,.45,.46,0x49186b,.30):variant?tint(variant,w.color):wood;
+      const laminate=spectral?spectralFinish(w.trim,w.trim,.80):corrupted?glowGemMat("corrupt-bow-trim",w.trim,0xd862ff,1.05,.92):variant?tint(variant+"-trim",w.trim):lightWood;
       grip(root,.31);
+      if(corrupted){
+        mesh(root,globe,glowGemMat("corrupt-bow-eye",0xffd7a3,0xff6ee0,1.25,.95),[0,.02,-.075],[.064,.082,.042]);
+        mesh(root,globe,dark,[0,.02,-.108],[.018,.068,.024]);
+        glowHalo(root,root,0xd966ff,[0,.02,-.11],.34,.54);
+      }
       const tips = [];
       for (const side of [-1,1]) {
-        const path=spectral?[[0,side*.09,-.064],[0,side*.27,-.052],[0,side*.54,.12],[0,side*.76,.30],[0,side*.95,.24],[0,side*1.04,.12]]:
+        const path=spectral||corrupted?[[0,side*.09,-.064],[0,side*.27,-.052],[0,side*.54,.12],[0,side*.76,.30],[0,side*.95,.24],[0,side*1.04,.12]]:
           bamboo?[[0,side*.1,-.055],[0,side*.32,-.005],[0,side*.62,.237],[0,side*.75,.31],[0,side*.9,.19]]:
           steel?[[0,side*.08,-.048],[0,side*.37,-.011],[0,side*.65,.163],[0,side*.94,.289]]:
           [[0,side*.1,-.035],[0,side*.31,.043],[0,side*.60,.212],[0,side*.77,.305]];
@@ -187,11 +245,11 @@ globalThis.QuimiCraftModels = (() => {
           bar(root,laminate,strip[0],strip[1],.028,.018);
         }
         const cap=variant?path.at(-2):[0,side*.667,.252];
-        bevel(root,steel?dark:brass,cap,[.105,.075,.096],[side*.23,0,0]);
+        bevel(root,steel||corrupted?dark:brass,cap,[.105,.075,.096],[side*.23,0,0]);
         if(variant)for(const pt of path.slice(1,-1)){
           bevel(root,laminate,pt,[.109,.045,.098],[side*.19,0,0]);
           if(steel)bevel(root,brass,[.057,pt[1],pt[2]],[.032,.039,.046]);
-          if(spectral)mesh(root,globe,laminate,[-.055,pt[1],pt[2]],[.051,.045,.047]);
+          if(spectral||corrupted)mesh(root,globe,laminate,[-.055,pt[1],pt[2]],[.051,.045,.047]);
         }
       }
       root.userData.bowTips = tips.map(tip=>new THREE.Vector3(...tip));
@@ -230,89 +288,473 @@ globalThis.QuimiCraftModels = (() => {
       root.userData.string=tips.map(()=>bevel(root,thread,[0,0,0],[.014,1,.014]));
       root.userData.arrow=bolt(root);
     }
-    function shield(root,s){
+    function sacredHammer(root,{gold,highlight,bronze,channel,silver}){
+      const hammer=new THREE.Group();hammer.rotation.z=.22;hammer.position.set(0,.008,-.212);
+      hammer.name="Martelo do Sol";root.add(hammer);
+      mesh(hammer,cyl,bronze,[0,-.077,0],[.047,.456,.047]);
+      for(let i=0;i<7;i++){
+        mesh(hammer,torus,i%2?highlight:gold,[0,-.264+i*.023,0],[.023,.023,.035],[Math.PI/2+.18,0,0]);
+      }
+      bevel(hammer,gold,[0,-.286,0],[.065,.035,.065]);
+      mesh(hammer,globe,highlight,[0,-.310,0],[.031,.042,.033]);
+      const head=new THREE.Group();head.position.y=.168;head.name="Cabeça de aço do martelo";hammer.add(head);
+      bevel(head,bronze,[0,0,0],[.232,.113,.093]);
+      bevel(head,gold,[0,0,-.040],[.233,.118,.028]);
+      bevel(head,silver,[0,0,-.059],[.185,.077,.020]);
+      for(const sign of [-1,1]){
+        bevel(head,highlight,[sign*.101,0,-.020],[.032,.127,.093]);
+        mesh(head,globe,gold,[sign*.072,0,-.071],[.015,.017,.009]);
+      }
+      const hand=new THREE.Group();hand.position.set(.008,.038,0);hand.name="Manopla fechada no cabo";hammer.add(hand);
+      bevel(hand,bronze,[.054,-.015,.018],[.079,.138,.063],[0,0,.17]);
+      bevel(hand,channel,[.063,-.017,.023],[.076,.119,.074],[0,0,.13]);
+      bevel(hand,silver,[.081,-.024,.001],[.055,.092,.051],[0,0,.24]);
+      bevel(hand,bronze,[.091,-.072,.017],[.081,.060,.091],[0,0,.53]);
+      bevel(hand,highlight,[.091,-.067,-.038],[.081,.035,.024],[0,0,.53]);
+      for(const [i,[height,length,radius]] of [[.060,1,.015],[.025,1.07,.017],[-.011,.97,.016],[-.044,.83,.013]].entries()){
+        const key="sacred:finger:"+i;
+        let digit=shieldShapes.get(key);
+        if(!digit){
+          const path=[[.054,0,.032],[.049,.003,-.022],[.023,.005,-.050],
+            [-.012*length,.003,-.055],[-.036*length,-.002,-.035],[-.031*length,-.007,-.007]];
+          digit=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(path.map(p=>new THREE.Vector3(...p))),18,radius,8,false);
+          shieldShapes.set(key,digit);
+        }
+        mesh(hand,digit,bronze,[0,height,0],[1,1,1]).name="Dedo curvado";
+        bevel(hand,silver,[.024,height+.006,-.054],[.038*length,.027,.022],[0,.20,.10]);
+        bevel(hand,gold,[-.010*length,height+.002,-.057],[.025,.025,.020],[0,-.23,.09]);
+        mesh(hand,globe,silver,[-.032*length,height-.007,-.010],[radius*.91,radius*.91,radius]);
+      }
+      bar(hand,channel,[.055,-.052,.009],[.014,-.053,-.058],.031,.028);
+      bar(hand,highlight,[.010,-.051,-.065],[-.020,-.019,-.061],.033,.028);
+      bevel(hand,silver,[-.031,-.011,-.055],[.028,.035,.025],[.14,-.29,.72]).name="Polegar sobre o cabo";
+    }
+    function sacredSphere(root,view){
+      if(!shieldShapes.has("sacred:sphere"))shieldShapes.set("sacred:sphere",new THREE.SphereGeometry(1,48,32));
+      if(!materialCache.has("sacred:sphere")){
+        materialCache.set("sacred:sphere",new THREE.ShaderMaterial({
+          uniforms:{pulse:{value:0},strength:{value:1}},
+          transparent:true,depthWrite:false,side:THREE.FrontSide,
+          blending:THREE.AdditiveBlending,toneMapped:false,
+          vertexShader:`
+            varying vec3 normalView, toEye, shell;
+            void main(){
+              shell=position;
+              vec4 viewPosition=modelViewMatrix*vec4(position,1.);
+              normalView=normalMatrix*normal;
+              toEye=-viewPosition.xyz;
+              gl_Position=projectionMatrix*viewPosition;
+            }`,
+          fragmentShader:`
+            uniform float pulse,strength;
+            varying vec3 normalView,toEye,shell;
+            void main(){
+              float facing=clamp(dot(normalize(normalView),normalize(toEye)),0.,1.);
+              float edge=1.-facing;
+              float rim=pow(edge,3.15);
+              vec3 direction=normalize(shell);
+              vec3 meridian=normalize(vec3(cos(pulse),.42,sin(pulse)));
+              float arc=1.-smoothstep(.013,.061,abs(dot(direction,meridian)));
+              float parallel=1.-smoothstep(.012,.051,abs(dot(direction,vec3(.08,.97,.23))-.36));
+              float shimmer=.75+.25*sin(direction.y*8.+direction.x*5.-pulse*5.);
+              float alpha=(.010+.29*rim+.10*smoothstep(.85,.99,edge)+(.064*arc+.040*parallel)*shimmer)*strength;
+              gl_FragColor=vec4(mix(vec3(1.,.48,.09),vec3(1.,.88,.47),rim),alpha);
+            }`
+        }));
+      }
+      const material=materialCache.get("sacred:sphere");
+      const radius=.716;
+      const sphere=mesh(root,shieldShapes.get("sacred:sphere"),material,[0,.010,-.079],[radius,radius,radius]);
+      sphere.name="Esfera de Luz Sagrada";
+      sphere.renderOrder=4;
+      sphere.userData.radius=radius;
+      sphere.userData.pulse=0;
+      const base=view==="first"?.60:view==="drop"?.73:1;
+      sphere.userData.strength=base;
+      sphere.userData.baseStrength=base;
+      sphere.onBeforeRender=()=>{
+        material.uniforms.pulse.value=sphere.userData.pulse;
+        material.uniforms.strength.value=sphere.userData.strength;
+        material.uniformsNeedUpdate=true;
+      };
+      root.userData.sacredSphere=sphere;
+    }
+    function sacredShield(root,view){
+      const gold=alloyMat("sacred-gold",0xeab648,.76,.29,0x823700,.13);
+      const highlight=alloyMat("sacred-edge",0xffdb8c,.65,.22,0x994807,.19);
+      const bronze=alloyMat("sacred-side",0x68422a,.65,.41);
+      const channel=alloyMat("sacred-channel",0x2e262b,.36,.45);
+      const silver=alloyMat("sacred-silver",0xe7dfcd,.59,.30,0x715b39,.13);
+      const blue=alloyMat("sacred-blue",0x374454,.47,.34,0x111c35,.17);
+      if(!materialCache.has("sacred:sunlight"))materialCache.set("sacred:sunlight",new THREE.MeshBasicMaterial({color:0xffdf82,toneMapped:false}));
+      const sunlight=materialCache.get("sacred:sunlight");
+      let crest=shieldShapes.get("sacred:crest"),feather=shieldShapes.get("sacred:feather");
+      if(!crest){
+        const profile=new THREE.Shape();
+        profile.moveTo(0,.565);
+        profile.lineTo(.139,.463);profile.quadraticCurveTo(.253,.423,.331,.403);
+        profile.quadraticCurveTo(.344,.105,.305,-.183);
+        profile.quadraticCurveTo(.266,-.392,0,-.594);
+        profile.quadraticCurveTo(-.266,-.392,-.305,-.183);
+        profile.quadraticCurveTo(-.344,.105,-.331,.403);
+        profile.quadraticCurveTo(-.253,.423,-.139,.463);profile.closePath();
+        crest=new THREE.ExtrudeGeometry(profile,{depth:.062,bevelSize:.018,bevelThickness:.016,bevelSegments:2,curveSegments:12});
+        shieldShapes.set("sacred:crest",crest);
+        const plume=new THREE.Shape();
+        plume.moveTo(0,-.17);
+        plume.bezierCurveTo(.029,-.013,.065,.115,.039,.218);
+        plume.bezierCurveTo(.02,.159,-.043,.097,-.066,.019);
+        plume.bezierCurveTo(-.091,-.062,-.049,-.145,0,-.17);
+        feather=new THREE.ExtrudeGeometry(plume,{depth:.008,bevelSize:.006,bevelThickness:.005,bevelSegments:1,curveSegments:8});
+        shieldShapes.set("sacred:feather",feather);
+      }
+      mesh(root,crest,bronze,[0,0,0],[1.04,1.035,1.1]).name="Estrutura de bronze";
+      mesh(root,crest,highlight,[0,0,-.041],[1.015,1,1]).name="Borda facetada de ouro";
+      mesh(root,crest,channel,[0,0,-.053],[.934,.948,.85]);
+      mesh(root,crest,gold,[0,.005,-.063],[.887,.9,.78]);
+      mesh(root,crest,blue,[0,.008,-.076],[.801,.824,.66]).name="Chapa azul de aço";
+      mesh(root,crest,gold,[0,0,.075],[.879,.91,.22]).name="Moldura traseira";
+      mesh(root,crest,channel,[0,.004,.087],[.82,.85,.26]);
+      mesh(root,crest,blue,[0,.004,.100],[.76,.79,.18]).name="Chapa interna reforçada";
+      for(const side of [-1,1]){
+        bar(root,bronze,[side*.205,.297,.113],[side*.183,-.227,.113],.026,.025);
+        bar(root,gold,[side*.157,-.268,.113],[0,-.421,.113],.014,.016);
+        for(const y of [-.222,.297])mesh(root,globe,highlight,[side*.190,y,.128],[.025,.024,.013]);
+      }
+      mesh(root,globe,gold,[0,.294,.113],[.068,.082,.015]);
+      mesh(root,globe,bronze,[0,.296,.127],[.048,.058,.011]);
+      for(const side of [-1,1]){
+        bevel(root,leather,[side*.126,.007,.112],[.053,.27,.083],[0,0,side*.11]);
+        bevel(root,brass,[side*.126,.104,.154],[.069,.048,.033]);
+        bar(root,gold,[side*.195,-.279,-.087],[side*.089,-.373,-.089],.025,.013);
+        for(const [index,[x,y,scale]] of [[.19,.307,1],[.244,.157,.68],[.158,-.255,1.13],[.104,-.375,.71]].entries()){
+          const key="sacred:scroll:"+index;
+          if(!shieldShapes.has(key)){
+            const points=Array.from({length:25},(_,j)=>{
+              const t=j/24,a=t*5.4-1.5,r=(1-t*.78)*.070;
+              return new THREE.Vector3(Math.cos(a)*r,Math.sin(a)*r,0);
+            });
+            shieldShapes.set(key,new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),24,.008,5,false));
+          }
+          mesh(root,shieldShapes.get(key),gold,[side*x,y,-.094],[side*scale,scale,1],[0,0,index<2?side*.18:side*2.55]).name="Filigrana";
+        }
+        const wing=new THREE.Group();wing.scale.x=side;wing.name="Asa de prata";
+        root.add(wing);
+        for(let i=0;i<7;i++){
+          const pose=[.245+i*.022,.229-i*.048,-.134-i*.003],rot=[0,-.055,-.31-i*.168];
+          const length=1.21-i*.067;
+          mesh(wing,feather,bronze,pose,[.97,length,1],rot);
+          mesh(wing,feather,i%3===0?silver:highlight,[pose[0]-.012,pose[1]+.006,pose[2]-.011],[.77,length*.975,1],rot);
+          mesh(wing,feather,silver,[.171+i*.017,.15-i*.035,-.168-i*.003],[.58,.66-i*.022,.76],[0,-.08,-.49-i*.14]);
+        }
+      }
+      bar(root,leather,[-.116,.009,.145],[.116,.009,.145],.057);
+      for(const [y,size] of [[.411,1],[-.447,.91]]){
+        mesh(root,globe,gold,[0,y,-.104],[.089*size,.131*size,.032]);
+        mesh(root,globe,silver,[0,y,-.124],[.057*size,.084*size,.022]);
+      }
+      const sunY=.073;
+      for(let i=0;i<12;i++){
+        const angle=i*Math.PI/6,x=Math.sin(angle),y=Math.cos(angle);
+        mesh(root,globe,gold,[x*.161,sunY+y*.161,-.107],[.032,i%3===0?.092:.055,.021],[0,0,-angle]);
+      }
+      mesh(root,cyl,bronze,[0,sunY,-.131],[.375,.06,.375],[Math.PI/2,0,0]);
+      mesh(root,cyl,gold,[0,sunY,-.153],[.336,.047,.336],[Math.PI/2,0,0]).name="Medalhão solar";
+      mesh(root,torus,highlight,[0,sunY,-.186],[.161,.161,.079]);
+      mesh(root,torus,sunlight,[0,sunY,-.189],[.139,.139,.033]);
+      sacredHammer(root,{gold,highlight,bronze,channel,silver});
+      sacredSphere(root,view);
+      root.userData.sacredGlow=glowHalo(root,root,0xffb73d,[0,sunY,-.179],view==="first"?.43:.72,.43);
+      if(view==="catalog"){
+        const halo=new THREE.Group();halo.position.set(0,.005,.098);root.add(halo);
+        halo.name="Runas em órbita";
+        for(let i=0;i<12;i++){
+          const angle=i*Math.PI/6,x=Math.sin(angle),y=Math.cos(angle);
+          const rune=new THREE.Group();
+          rune.position.set(x*.657,y*.657,-.01);rune.rotation.z=-angle;halo.add(rune);
+          bar(rune,sunlight,[0,-.018,0],[0,.018,0],.006);
+          bar(rune,sunlight,[0,.003,0],[i%2?.015:-.015,.013,0],.006);
+          if(i%3===0)bar(rune,sunlight,[0,-.003,0],[-.014,-.01,0],.006);
+        }
+        root.userData.sacredHalo=halo;
+      }
+    }
+    const baseShieldDef = {name:"Escudo de bronze",shape:"heater",color:"#b1683a",trim:"#cf8c50"};
+    let bronzeFinish;
+    function bronzeMaterials(){
+      if(bronzeFinish)return bronzeFinish;
+      const width=128,height=64,rgba=new Uint8Array(width*height*4);
+      for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+        const u=x/width,v=y/height;
+        const panel=(center,yc,sx,sy)=>{
+          const du=Math.abs(u-center),wrapped=Math.min(du,1-du);
+          return Math.exp(-(.5*(wrapped/sx)**2+.5*((v-yc)/sy)**2));
+        };
+        const value=62+41*Math.sin(Math.PI*v)+145*panel(.22,.67,.065,.19)
+          +112*panel(.70,.37,.12,.065)+72*panel(.91,.62,.033,.25);
+        const k=(x+y*width)*4;
+        rgba[k]=Math.min(255,value*1.03);
+        rgba[k+1]=Math.min(255,value);
+        rgba[k+2]=Math.min(255,value*.94);
+        rgba[k+3]=255;
+      }
+      const reflection=new THREE.DataTexture(rgba,width,height,THREE.RGBAFormat);
+      reflection.mapping=THREE.EquirectangularReflectionMapping;
+      reflection.encoding=THREE.sRGBEncoding;
+      reflection.minFilter=reflection.magFilter=THREE.LinearFilter;
+      reflection.needsUpdate=true;
+      const brushed=new Uint8Array(64*64*4);
+      for(let y=0;y<64;y++)for(let x=0;x<64;x++){
+        const k=(x+y*64)*4;
+        brushed[k]=brushed[k+1]=brushed[k+2]=221+19*Math.sin(y*.71+x*.04)+9*Math.cos(y*2.36+x*.26);
+        brushed[k+3]=255;
+      }
+      const roughnessMap=new THREE.DataTexture(brushed,64,64,THREE.RGBAFormat);
+      roughnessMap.minFilter=roughnessMap.magFilter=THREE.LinearFilter;
+      roughnessMap.needsUpdate=true;
+      const finish=(color,metalness,roughness,envMapIntensity)=>new THREE.MeshStandardMaterial({
+        color,metalness,roughness,envMap:reflection,envMapIntensity
+      });
+      const face=finish(baseShieldDef.color,.81,.35,.98);
+      face.roughnessMap=roughnessMap;
+      bronzeFinish=[face,finish(baseShieldDef.trim,.87,.24,1.15),
+        finish(0x6b3b25,.78,.40,.86),finish(0xbe7544,.86,.27,1.14)];
+      return bronzeFinish;
+    }
+    function bronzeShield(root){
+      const materials=bronzeMaterials(),[,rim,groove,boss]=materials;
+      if(!shieldShapes.has("bronze:buckler")){
+        const contour=new THREE.Shape();
+        contour.moveTo(0,-.52);
+        contour.quadraticCurveTo(.23,-.45,.31,-.20);
+        contour.quadraticCurveTo(.36,.02,.34,.26);
+        contour.quadraticCurveTo(.34,.37,.294,.43);
+        contour.quadraticCurveTo(.16,.50,0,.46);
+        contour.quadraticCurveTo(-.16,.50,-.294,.43);
+        contour.quadraticCurveTo(-.34,.37,-.34,.26);
+        contour.quadraticCurveTo(-.36,.02,-.31,-.20);
+        contour.quadraticCurveTo(-.23,-.45,0,-.52);
+        const outline=contour.getPoints(6).slice(0,-1);
+        const levels=[[.22,.055,0],[.87,.047,0],[.97,.028,1],[1,.006,1],[.995,-.024,1],
+          [.962,-.050,1],[.912,-.060,2],[.875,-.066,0],[.75,-.092,0],[.57,-.115,0],
+          [.40,-.132,0],[.20,-.144,0],[.075,-.149,0]];
+        const geometry=new THREE.BufferGeometry(),points=[],uvs=[],indices=[],size=outline.length;
+        const vertex=(x,y,z)=>{points.push(x,y,z);uvs.push(.5+x,.5+y*.90);};
+        for(const [scale,z] of levels)for(const {x,y} of outline)vertex(x*scale,y*scale,z);
+        const back=points.length/3;
+        vertex(0,0,.055);vertex(0,0,-.151);
+        for(let i=0;i<size;i++)indices.push(back,i,(i+1)%size);
+        geometry.addGroup(0,indices.length,0);
+        for(let band=0;band<levels.length-1;band++){
+          const start=indices.length;
+          for(let i=0;i<size;i++){
+            const a=band*size+i,b=a+size,c=band*size+(i+1)%size,d=c+size;
+            indices.push(a,b,c,c,b,d);
+          }
+          geometry.addGroup(start,indices.length-start,levels[band][2]);
+        }
+        const start=indices.length,last=(levels.length-1)*size;
+        for(let i=0;i<size;i++)indices.push(last+i,back+1,last+(i+1)%size);
+        geometry.addGroup(start,indices.length-start,0);
+        geometry.setAttribute("position",new THREE.Float32BufferAttribute(points,3));
+        geometry.setAttribute("uv",new THREE.Float32BufferAttribute(uvs,2));
+        geometry.setIndex(indices);geometry.computeVertexNormals();
+        shieldShapes.set("bronze:buckler",geometry);
+        shieldShapes.set("bronze:rounded",new THREE.SphereGeometry(.5,24,14));
+      }
+      const body=mesh(root,shieldShapes.get("bronze:buckler"),materials,[0,0,0],[1,1,1]);
+      body.name="Chapa convexa de bronze escovado";
+      const round=shieldShapes.get("bronze:rounded");
+      mesh(root,torus,groove,[0,.009,-.144],[.147,.147,.26]);
+      mesh(root,torus,rim,[0,.009,-.153],[.127,.127,.25]);
+      mesh(root,round,boss,[0,.009,-.150],[.241,.241,.145]).name="Umbão de bronze polido";
+      for(const side of [-1,1]){
+        for(const [x,y,z] of [[.224,.348,-.056],[.292,.215,-.056],[.290,.033,-.058],
+          [.251,-.173,-.057],[.172,-.328,-.054]]){
+          mesh(root,round,rim,[x*side,y,z-.012],[.042,.042,.034]);
+        }
+        bevel(root,leather,[side*.136,.017,.085],[.050,.30,.080],[0,0,side*.15]);
+        for(const y of [-.12,.145])bevel(root,rim,[side*.136,y,.069],[.072,.043,.038]);
+      }
+      mesh(root,round,rim,[0,-.437,-.057],[.041,.041,.034]);
+      bar(root,leather,[-.124,.016,.122],[.124,.016,.122],.047);
+    }
+    function shield(root,s,view){
+      if(s.shape==="sacred"){sacredShield(root,view);return}
       if(!shieldShapes.has(s.shape)){
         const path=new THREE.Shape();
-        if(s.shape==="oval"||s.shape==="mirror")path.absellipse(0,0,.31,.453,0,Math.PI*2);
-        else{
+        if(s.shape==="oval"||s.shape==="mirror")path.absellipse(0,0,.315,.46,0,Math.PI*2);
+        else if(s.shape==="heater"){
+          const form=[[0,-.53],[.25,-.34],[.33,.08],[.31,.43],[.18,.48],[0,.45],[-.18,.48],[-.31,.43],[-.33,.08],[-.25,-.34]];
+          path.moveTo(...form[0]);for(const pt of form.slice(1))path.lineTo(...pt);path.closePath();
+        }else{
           const form=s.shape==="tower"?[[-.28,-.53],[.28,-.53],[.343,-.44],[.343,.44],[.260,.53],[-.260,.53],[-.343,.44],[-.343,-.44]]:
             [[0,-.55],[.28,-.35],[.37,.11],[.33,.38],[.18,.48],[0,.40],[-.18,.48],[-.33,.38],[-.37,.11],[-.28,-.35]];
           path.moveTo(...form[0]);for(const pt of form.slice(1))path.lineTo(...pt);path.closePath();
         }
-        shieldShapes.set(s.shape,new THREE.ExtrudeGeometry(path,{depth:.07,bevelEnabled:true,bevelThickness:.026,bevelSize:.031,bevelSegments:s.shape==="mirror"?2:1,curveSegments:s.shape==="mirror"?22:6}));
+        const smooth=s.shape==="mirror"||s.shape==="oval";
+        shieldShapes.set(s.shape,new THREE.ExtrudeGeometry(path,{
+          depth:.068,bevelEnabled:true,bevelThickness:.028,bevelSize:.033,
+          bevelSegments:smooth?3:2,curveSegments:smooth?28:8
+        }));
       }
-      const geo=shieldShapes.get(s.shape),plate=tint("shield-"+s.shape,s.color),rim=tint("rim-"+s.shape,s.trim);
-      mesh(root,geo,rim,[0,0,-.003],[1,1,1]);
-      mesh(root,geo,plate,[0,0,-.032],[.87,.90,1]);
+      const geo=shieldShapes.get(s.shape);
+      const isWood=s.shape==="oval";
+      const plate=alloyMat("shield-"+s.shape,s.color,isWood?.20:s.shape==="dragon"?.70:.76,isWood?.46:s.shape==="mirror"?.16:.24);
+      const rim=alloyMat("rim-"+s.shape,s.trim,s.shape==="mirror"?.88:.82,s.shape==="mirror"?.14:.20);
+      const shadowChannel=alloyMat("shield-ch-"+s.shape,0x111a22,.52,.58);
+      const glint=alloyMat("shield-glint-"+s.shape,0xeef9ff,.88,.12);
+      mesh(root,geo,rim,[0,0,-.002],[1,1,1]);
+      mesh(root,geo,shadowChannel,[0,0,-.020],[.925,.942,1.02]);
+      mesh(root,geo,plate,[0,0,-.034],[.865,.895,1.01]);
       for(const side of [-1,1]){
-        for(const y of [-.29,.28])mesh(root,globe,rim,[side*.20,y,-.058],[.041,.039,.026],[0,0,Math.PI/4]);
-        bevel(root,leather,[side*.147,.018,.139],[.048,.281,.091],[0,0,side*.14]);
+        for(const y of [-.29,.28]){
+          mesh(root,globe,rim,[side*.205,y,-.064],[.041,.039,.028],[0,0,Math.PI/4]);
+          mesh(root,globe,glint,[side*.205,y,-.079],[.015,.015,.012],[0,0,Math.PI/4]);
+        }
+        bevel(root,leather,[side*.147,.018,.139],[.048,.285,.092],[0,0,side*.14]);
+        bevel(root,brass,[side*.147,.115,.152],[.062,.038,.032],[0,0,side*.14]);
         if(s.shape==="tower"){
-          for(const x of [.101,.215])bevel(root,rim,[side*x,.005,-.067],[.023,.82,.043]);
+          for(const x of [.105,.218])bevel(root,rim,[side*x,.005,-.072],[.025,.84,.046]);
+          for(const y of [-.38,0,.38])mesh(root,globe,glint,[side*.272,y,-.056],[.022,.022,.018]);
         }else if(s.shape==="dragon"){
-          for(const y of [-.225,.219])mesh(root,globe,rim,[side*.228,y,-.075],[.025,.035,.026]);
+          for(const y of [-.235,.225]){
+            mesh(root,globe,rim,[side*.238,y,-.078],[.032,.042,.028]);
+            mesh(root,globe,glowGemMat("dr-rivet",0xff9f45,0xff6b22,1.05,.90),[side*.238,y,-.095],[.014,.020,.014]);
+          }
+          bar(root,rim,[side*.29,.35,-.045],[side*.18,.44,-.062],.032,.028);
+        }else if(s.shape==="heater"){
+          bar(root,rim,[side*.255,.355,-.055],[side*.195,-.265,-.055],.022,.020);
+          mesh(root,globe,glint,[side*.255,.355,-.068],[.022,.022,.016]);
         }else if(s.shape!=="mirror"){
-          bevel(root,lightWood,[side*.102,-.004,-.063],[.029,.691,.032],[0,0,side*.05]);
+          bevel(root,alloyMat("oak-rib",0x875d39,.22,.50),[side*.105,-.004,-.065],[.029,.70,.034],[0,0,side*.05]);
+          bar(root,rim,[side*.215,.30,-.062],[side*.255,0,-.056],.020,.018);
+          bar(root,rim,[side*.255,0,-.056],[side*.215,-.30,-.062],.020,.018);
         }
       }
       if(s.shape==="dragon")dragonShieldFace(root,rim);
-      else if(s.shape==="mirror")mirrorFace(root);
-      else mesh(root,cyl,rim,[0,0,-.080],[.257,.082,.267],[Math.PI/2,0,0]);
+      else if(s.shape==="mirror")mirrorFace(root,rim);
+      else if(s.shape==="corrupted"){
+        const eyeGlow=glowGemMat("corrupt-shield-eye",0xffd4a2,0xff62dc,1.35,.95);
+        const pupil=alloyMat("corrupt-shield-pupil",0x09040e,.2,.3);
+        const fangMat=alloyMat("corrupt-shield-fang",0xd8ccb4,.18,.48);
+        const fleshy=alloyMat("corrupt-shield-lid",0x53194f,.3,.65,0x350b3a,.28);
+        mesh(root,torus,fleshy,[0,.02,-.075],[.175,.21,.16]);
+        mesh(root,globe,eyeGlow,[0,.02,-.095],[.14,.17,.065]);
+        mesh(root,globe,pupil,[0,.02,-.145],[.034,.145,.028]);
+        glowHalo(root,root,0xd966ff,[0,.02,-.165],.62,.62);
+        for(let i=0;i<8;i++){
+          const a=i*Math.PI/4;
+          mesh(root,globe,fangMat,[Math.cos(a)*.255,Math.sin(a)*.33,-.075],[.036,.075,.034],[0,0,a-Math.PI/2]);
+        }
+      }else if(s.shape==="tower"){
+        const runeGlow=glowGemMat("tower-rune",0x7ce8ff,0x34b7e8,1.05,.86);
+        const visorGlass=glassMat("tower-visor",0xaef2ff,.36,.07,0x3ca8d4,.45);
+        bevel(root,rim,[0,.01,-.074],[.064,.82,.044]);
+        bevel(root,runeGlow,[0,.01,-.094],[.024,.64,.016]);
+        bevel(root,shadowChannel,[0,.30,-.074],[.27,.082,.040]);
+        bevel(root,visorGlass,[0,.30,-.094],[.22,.046,.014]);
+        mesh(root,cyl,rim,[0,-.02,-.086],[.185,.074,.185],[Math.PI/2,0,0]);
+        mesh(root,globe,runeGlow,[0,-.02,-.122],[.064,.095,.030]);
+        glowHalo(root,root,0x5fdcff,[0,-.02,-.145],.44,.52);
+        glowHalo(root,root,0x7ce8ff,[0,.30,-.118],.32,.36);
+      }else if(s.shape==="heater"){
+        const sapph=glowGemMat("heater-gem",0x6fd8ff,0x2fa8f0,1.0,.86);
+        const dome=glassMat("heater-dome",0xd8f8ff,.30,.05,0x6fd8ff,.30);
+        bevel(root,rim,[0,.02,-.068],[.046,.76,.032]);
+        bevel(root,rim,[0,.06,-.068],[.44,.046,.032]);
+        mesh(root,cyl,shadowChannel,[0,.06,-.082],[.22,.056,.22],[Math.PI/2,0,0]);
+        mesh(root,cyl,rim,[0,.06,-.088],[.195,.066,.195],[Math.PI/2,0,0]);
+        mesh(root,globe,sapph,[0,.06,-.122],[.068,.082,.038],[0,0,Math.PI/4]);
+        mesh(root,globe,dome,[0,.06,-.128],[.092,.106,.048],[0,0,Math.PI/4]);
+        glowHalo(root,root,0x59d2ff,[0,.06,-.156],.44,.54);
+      }else{
+        const amber=glowGemMat("oval-gem",0xffcf6e,0xf09224,1.0,.88);
+        const glaze=glassMat("oval-glaze",0xfff0c8,.28,.06,0xffbd4f,.24);
+        mesh(root,cyl,shadowChannel,[0,0,-.076],[.295,.058,.295],[Math.PI/2,0,0]);
+        mesh(root,cyl,rim,[0,0,-.084],[.265,.080,.265],[Math.PI/2,0,0]);
+        mesh(root,torus,glint,[0,0,-.118],[.118,.118,.12]);
+        mesh(root,globe,amber,[0,0,-.124],[.078,.094,.040],[0,0,Math.PI/4]);
+        mesh(root,globe,glaze,[0,0,-.130],[.104,.118,.048],[0,0,Math.PI/4]);
+        glowHalo(root,root,0xffbe54,[0,0,-.162],.48,.52);
+      }
       bar(root,leather,[-.130,.015,.153],[.130,.015,.153],.060);
     }
     const mirrorGeometry=new THREE.CircleGeometry(1,48);
-    const mirrorEdgeGeometry=new THREE.TorusGeometry(1,.031,8,48);
+    const mirrorEdgeGeometry=new THREE.TorusGeometry(1,.034,10,48);
     const mirrorMaterial=new THREE.ShaderMaterial({
+      uniforms:{mirrorTime:{value:0}},
       vertexShader:`varying vec3 normalInView,looking;varying vec2 facet;
         void main(){facet=uv*2.-1.;vec4 view=modelViewMatrix*vec4(position,1.);
           normalInView=normalMatrix*normal;looking=-view.xyz;gl_Position=projectionMatrix*view;}`,
-      fragmentShader:`varying vec3 normalInView,looking;varying vec2 facet;
+      fragmentShader:`uniform float mirrorTime;varying vec3 normalInView,looking;varying vec2 facet;
         void main(){
-          vec3 ray=reflect(-normalize(looking),normalize(normalInView));
-          float diagonal=facet.x*.70+facet.y*.48+ray.x*.39;
-          float band=smoothstep(.04,.18,diagonal)*(1.-smoothstep(.22,.39,diagonal));
-          float horizon=smoothstep(-.55,.80,facet.y+ray.y*.83);
-          float rim=smoothstep(.57,1.,length(facet));
-          vec3 color=mix(vec3(.25,.42,.52),vec3(.70,.88,.93),horizon);
-          color=mix(color,vec3(.91,.98,1.),band*.80);
-          gl_FragColor=vec4(color-rim*.11,1.);
+          vec3 N=normalize(normalInView),V=normalize(looking);
+          vec3 ray=reflect(-V,N);
+          float fresnel=pow(1.-clamp(abs(dot(N,V)),0.,1.),2.4);
+          float sweep=sin(mirrorTime*1.9)*.34;
+          float diagonal=facet.x*.72+facet.y*.48+ray.x*.39+sweep;
+          float band=smoothstep(.02,.15,diagonal)*(1.-smoothstep(.19,.36,diagonal));
+          float glint=smoothstep(.34,.42,diagonal+.26)*(1.-smoothstep(.44,.52,diagonal+.26));
+          float horizon=smoothstep(-.55,.82,facet.y+ray.y*.85);
+          float rim=smoothstep(.64,1.,length(facet));
+          vec3 color=mix(vec3(.22,.44,.56),vec3(.76,.93,.98),horizon);
+          color=mix(color,vec3(.96,1.,1.),band*.88+glint*.55);
+          color+=vec3(.52,.94,1.)*fresnel*.58;
+          gl_FragColor=vec4(color-rim*.08,1.);
         }`
     });
-    function mirrorFace(root){
-      mesh(root,mirrorGeometry,mirrorMaterial,[0,0,-.068],[.266,.390,1],[0,Math.PI,0]).name="Espelho polido";
-      mesh(root,mirrorEdgeGeometry,edge,[0,0,-.077],[.273,.403,.47]);
+    function mirrorFace(root,rim){
+      const silver=alloyMat("mirror-silver",0xeef8ff,.92,.10);
+      const lensGlass=glassMat("mirror-lens",0xc8f6ff,.24,.04,0x7ce6ff,.28);
+      const mirrorGem=glowGemMat("mirror-gem",0xa8fbff,0x52e0ff,1.15,.88);
+      mesh(root,mirrorGeometry,mirrorMaterial,[0,0,-.068],[.268,.392,1],[0,Math.PI,0]).name="Espelho polido";
+      mesh(root,mirrorGeometry,lensGlass,[0,0,-.084],[.265,.388,1],[0,Math.PI,0]).name="Cristal refletor";
+      mesh(root,mirrorEdgeGeometry,silver,[0,0,-.078],[.274,.404,.52]);
+      mesh(root,mirrorEdgeGeometry,rim,[0,0,-.086],[.292,.425,.38]);
       for(const side of [-1,1]){
-        mesh(root,globe,brass,[0,side*.413,-.076],[.044,.038,.020],[0,0,Math.PI/4]);
-        mesh(root,globe,crystal,[0,side*.413,-.092],[.018,.020,.011],[0,0,Math.PI/4]);
+        mesh(root,globe,rim,[0,side*.415,-.080],[.050,.044,.024],[0,0,Math.PI/4]);
+        mesh(root,globe,mirrorGem,[0,side*.415,-.098],[.024,.028,.016],[0,0,Math.PI/4]);
+        glowHalo(root,root,0x8ef5ff,[0,side*.415,-.115],.28,.55);
+        mesh(root,globe,silver,[side*.285,0,-.078],[.030,.042,.020],[0,0,Math.PI/4]);
+        mesh(root,globe,mirrorGem,[side*.285,0,-.094],[.015,.022,.012],[0,0,Math.PI/4]);
       }
+      glowHalo(root,root,0xb8fbff,[0,.08,-.115],.62,.30);
     }
     function dragonShieldFace(root,rim){
       function relief(key,points,material,z,mirror=1){
         if(!shieldShapes.has(key)){
           const shape=new THREE.Shape();
           shape.moveTo(...points[0]);for(const p of points.slice(1))shape.lineTo(...p);shape.closePath();
-          shieldShapes.set(key,new THREE.ExtrudeGeometry(shape,{depth:.038,bevelSize:.012,bevelThickness:.012,bevelSegments:2}));
+          shieldShapes.set(key,new THREE.ExtrudeGeometry(shape,{depth:.038,bevelSize:.013,bevelThickness:.013,bevelSegments:2}));
         }
         return mesh(root,shieldShapes.get(key),material,[0,0,z],[mirror,1,1]);
       }
-      const bronze=tint("dragon-relief",0xa77544);
+      const bronze=alloyMat("dragon-relief",0xb47d47,.76,.26);
+      const gold=alloyMat("dragon-gold",0xe8c474,.86,.18);
+      const dragonEye=glowGemMat("dragon-eye",0x7fffe8,0x2cf2d2,1.35,.92);
+      const wardGem=glowGemMat("dragon-ward-gem",0xffb657,0xff6e21,1.25,.88);
+      const wardVeil=glassMat("dragon-ward-veil",0x5ff0dc,.16,.08,0x32d4c2,.55);
       relief("dragon-head",[[0,.225],[.145,.201],[.191,.105],[.155,-.043],[.125,-.096],
         [.092,-.229],[0,-.267],[-.092,-.229],[-.125,-.096],[-.155,-.043],[-.191,.105],[-.145,.201]],bronze,-.119);
       for(const side of [-1,1]){
-        relief("dragon-horn",[[.108,.163],[.154,.249],[.206,.302],[.240,.391],[.249,.283],[.225,.198],[.160,.123]],rim,-.126,side);
+        relief("dragon-horn",[[.108,.163],[.154,.249],[.206,.302],[.240,.391],[.249,.283],[.225,.198],[.160,.123]],gold,-.126,side);
         relief("dragon-cheek",[[.095,.138],[.182,.131],[.205,.053],[.147,.031],[.168,-.073],
           [.104,-.137],[.063,-.077],[.052,.075]],rim,-.149,side);
         const eye=bevel(root,dark,[side*.111,.071,-.152],[.087,.044,.025],[0,0,-side*.37]);
         eye.name="Olho do dragão";
-        mesh(root,globe,crystal,[side*.108,.073,-.169],[.038,.014,.016],[0,0,-side*.37]);
-        bevel(root,rim,[side*.103,.110,-.170],[.107,.025,.032],[0,0,-side*.28]);
-        mesh(root,globe,edge,[side*.077,-.175,-.221],[.021,.062,.023],[0,0,-side*.17]);
+        mesh(root,globe,dragonEye,[side*.108,.073,-.172],[.041,.016,.018],[0,0,-side*.37]);
+        glowHalo(root,root,0x55ffe4,[side*.108,.073,-.192],.24,.66);
+        bevel(root,gold,[side*.103,.110,-.170],[.107,.025,.032],[0,0,-side*.28]);
+        mesh(root,globe,edge,[side*.077,-.175,-.221],[.022,.066,.024],[0,0,-side*.17]);
       }
       bevel(root,bronze,[0,-.124,-.171],[.180,.173,.093]);
-      bevel(root,rim,[0,-.106,-.212],[.144,.092,.032]);
+      bevel(root,gold,[0,-.106,-.212],[.144,.092,.032]);
       for(const side of [-1,1])bevel(root,dark,[side*.040,-.109,-.231],[.032,.016,.015],[0,0,side*.27]);
       bevel(root,dark,[0,-.181,-.209],[.113,.018,.018]);
-      mesh(root,globe,crystal,[0,.168,-.152],[.036,.058,.023],[0,0,Math.PI*.1]);
+      mesh(root,globe,wardGem,[0,.168,-.156],[.040,.064,.028],[0,0,Math.PI*.1]);
+      glowHalo(root,root,0xffa842,[0,.168,-.186],.34,.64);
+      mesh(root,shieldShapes.get("dragon"),wardVeil,[0,0,-.110],[.82,.85,.22]).name="Aura antidragão";
     }
 
     function capeShape(wizard,s,t){
@@ -320,7 +762,8 @@ globalThis.QuimiCraftModels = (() => {
       return [s*(.241+t*.153),-t*(wizard?.86-edge*.14:.69+edge*.049),.038+t*.102+wave*(.011+t*.026)+s*s*.061];
     }
     function capeSurface(parent,gear,wizard){
-      if(!capeModels.has(gear.shape)){
+      const key=gear.shape+":"+gear.color;
+      if(!capeModels.has(key)){
         const vertices=[],indices=[],columns=12,rows=8;
         for(let row=0;row<=rows;row++)for(let col=0;col<=columns;col++){
           vertices.push(...capeShape(wizard,2*col/columns-1,row/rows));
@@ -331,10 +774,14 @@ globalThis.QuimiCraftModels = (() => {
         const geometry=new THREE.BufferGeometry();
         geometry.setAttribute("position",new THREE.Float32BufferAttribute(vertices,3));
         geometry.setIndex(indices);geometry.computeVertexNormals();
-        const material=new THREE.MeshStandardMaterial({color:gear.color,roughness:.94,side:THREE.DoubleSide});
-        capeModels.set(gear.shape,{geometry,material});
+        const material=gear.finish==="corrupted"
+          ?new THREE.MeshStandardMaterial({color:gear.color,emissive:0x360d54,emissiveIntensity:.35,roughness:.85,side:THREE.DoubleSide})
+          :gear.finish==="light"
+            ?new THREE.MeshStandardMaterial({color:gear.color,emissive:0xffd86b,emissiveIntensity:.32,roughness:.42,metalness:.25,side:THREE.DoubleSide})
+            :new THREE.MeshStandardMaterial({color:gear.color,roughness:.94,side:THREE.DoubleSide});
+        capeModels.set(key,{geometry,material});
       }
-      const {geometry,material}=capeModels.get(gear.shape);
+      const {geometry,material}=capeModels.get(key);
       mesh(parent,geometry,material,[0,0,0],[1,1,1]);
     }
     function spectralFinish(color,light,strength,opacity=1){
@@ -353,6 +800,18 @@ globalThis.QuimiCraftModels = (() => {
       const {color,trim,finish}=gear;
       if(finish==="spectral"){
         return [spectralFinish(color,trim,.31,.56),spectralFinish(trim,trim,.78)];
+      }
+      if(finish==="corrupted"){
+        return [
+          alloyMat("corrupt-armor",0x1a0a29,.52,.38,0x260940,.28),
+          glowGemMat("corrupt-trim",0xcf56ff,0x9e24e8,.92,.96)
+        ];
+      }
+      if(finish==="light"){
+        return [
+          alloyMat("light-armor",color,.62,.24,0x8f6b1e,.20),
+          glowGemMat("light-trim",trim,0xffdf75,1.05,.96)
+        ];
       }
       if(finish!=="metal")return [tint("apparel",color),tint("apparel-trim",trim)];
       return [color,trim].map(swatch=>{
@@ -373,7 +832,7 @@ globalThis.QuimiCraftModels = (() => {
     }
     function apparelLeg(thigh,shin,gear,side){
       const [fabric,trim]=apparelMaterials(gear);
-      const plated=gear.finish==="metal",scaled=gear.finish==="dragon";
+      const plated=gear.finish==="metal"||gear.finish==="corrupted",scaled=gear.finish==="dragon";
       bevel(thigh,plated?leather:fabric,[0,-.173,0],[.279,.412,.285]);
       bevel(shin,plated?leather:fabric,[0,-.103,.004],[.236,.256,.241]);
       if(plated){
@@ -398,7 +857,7 @@ globalThis.QuimiCraftModels = (() => {
     }
     function apparelBoot(root,gear,side){
       const [fabric,trim]=apparelMaterials(gear);
-      const plated=gear.finish==="metal",scaled=gear.finish==="dragon",mage=gear.shape==="mageBoots";
+      const plated=gear.finish==="metal"||gear.finish==="corrupted",scaled=gear.finish==="dragon",mage=gear.shape==="mageBoots";
       bevel(root,dark,[0,-.405,-.057],[.258,.052,.361]);
       bevel(root,plated?leather:fabric,[0,-.310,-.06],[.252,.174,.35]);
       bevel(root,fabric,[0,-.235,.009],[.24,.218,.254],[.08,0,0]);
@@ -482,13 +941,23 @@ globalThis.QuimiCraftModels = (() => {
           bevel(root,metal,[0,.266,-.055],[.085,.184,.313],[-.33,0,0]);
           bevel(root,fabric,[0,-.051,-.257],[.376,.120,.074]);
           bevel(root,trim,[0,.034,-.298],[.066,.162,.042]);
+          if(gear.finish==="corrupted"){
+            mesh(root,globe,trim,[0,.18,-.292],[.064,.052,.028]);
+            mesh(root,globe,dark,[0,.18,-.315],[.018,.044,.014]);
+            for(const side of [-1,1])mesh(root,globe,trim,[side*.14,.16,-.276],[.032,.028,.020]);
+            glowHalo(root,root,0xd966ff,[0,.18,-.33],.36,.48);
+          }
         }
       }else if(gear.slot==="chest"){
         bevel(root,fabric,[0,.002,0],[.577,.654,.348]);
-        const plate=shape==="plate"||gear.finish==="metal",scaled=gear.finish==="dragon",robe=shape==="arcaneRobe";
+        const plate=shape==="plate"||gear.finish==="metal"||gear.finish==="corrupted",scaled=gear.finish==="dragon",robe=shape==="arcaneRobe";
         for(const side of [-1,1]){
-          bevel(root,shape==="plate"?metal:fabric,[side*.236,.193,-.012],[.234,.236,.467],[.07,0,side*.16]);
+          bevel(root,shape==="plate"&&gear.finish!=="corrupted"?metal:fabric,[side*.236,.193,-.012],[.234,.236,.467],[.07,0,side*.16]);
           bevel(root,trim,[side*.265,.273,-.040],[.214,.047,.406],[.07,0,side*.16]);
+          if(gear.finish==="corrupted"){
+            mesh(root,globe,trim,[side*.25,.21,-.245],[.046,.046,.024]);
+            mesh(root,globe,dark,[side*.25,.21,-.264],[.014,.038,.012]);
+          }
           if(plate){
             for(const y of [-.134,.01,.163])bevel(root,fabric,[side*.128,y,-.191],[.261,.155,.080],[.05,side*.08,-side*.071]);
             if(gear.finish==="metal")for(const y of [-.153,-.008,.149]){
@@ -521,7 +990,11 @@ globalThis.QuimiCraftModels = (() => {
           for(const y of [-.07,.04,.15])bevel(root,trim,[0,y,.267],[.33,.026,.032]);
         }
         if(shape==="jerkin")bar(root,leather,[-.221,.284,-.219],[.213,-.250,-.235],.084,.046);
-        mesh(root,globe,shape==="vestment"||robe?crystal:trim,[0,.095,-.249],[.056,.073,.024]);
+        mesh(root,globe,shape==="vestment"||robe?crystal:trim,[0,.095,-.249],[gear.finish==="corrupted"?.082:.056,gear.finish==="corrupted"?.096:.073,.028]);
+        if(gear.finish==="corrupted"){
+          mesh(root,globe,dark,[0,.095,-.272],[.022,.078,.015]);
+          glowHalo(root,root,0xe066ff,[0,.095,-.29],.44,.52);
+        }
         if(shape==="tunic"||robe||scaled){
           const length=robe?.47:scaled?.21:.25;
           root.userData.hems=[-1,1].map(side=>{
@@ -553,6 +1026,27 @@ globalThis.QuimiCraftModels = (() => {
           bevel(caseRoot,i%2?thread:trim,[x,y+.212,z],[.052,.137,.021],[0,0,-.12]);
         }
         bar(root,leather,[.207,.278,-.206],[-.193,-.272,-.197],.043,.025);
+      }else if(shape==="backpack"){
+        // Sculpted 3D Explorer Backpack with leather straps, brass buckles, bedroll & side pouches!
+        const pack=new THREE.Group();
+        pack.position.set(0,-.02,.27);root.add(pack);
+        const packMat=alloyMat("explorer-pack",gear.color,.18,.68);
+        const strapMat=alloyMat("explorer-strap",0x4a301e,.16,.74);
+        const rollMat=alloyMat("explorer-roll",0xb89f72,.10,.84);
+        bevel(pack,packMat,[0,0,0],[.46,.52,.24]);
+        bevel(pack,strapMat,[0,.21,.02],[.48,.11,.26]); // Top leather flap
+        bevel(pack,packMat,[0,-.10,.13],[.36,.24,.08]); // Front pocket
+        for(const s of [-1,1]){
+          bevel(pack,packMat,[s*.26,-.06,.01],[.10,.26,.16]); // Side expansion pouches
+          bevel(pack,brass,[s*.13,.09,.15],[.055,.065,.028]); // Brass buckles
+          bar(pack,strapMat,[s*.13,.24,.14],[s*.13,-.16,.14],.034,.018);
+          // Shoulder straps wrapping around torso
+          bar(root,strapMat,[s*.17,.26,.18],[s*.17,.26,-.20],.042,.020);
+          bar(root,strapMat,[s*.17,.26,-.20],[s*.17,-.22,-.20],.042,.018);
+        }
+        // Bedroll strapped on top
+        mesh(pack,cyl,rollMat,[0,.32,-.02],[.11,.46,.11],[0,0,Math.PI/2]);
+        for(const s of [-1,1])mesh(pack,torus,strapMat,[s*.14,.32,-.02],[.118,.118,.04],[0,Math.PI/2,0]);
       }else{
         const cape=new THREE.Group();
         cape.position.set(0,.235,.171);cape.rotation.x=-.12;root.add(cape);root.userData.cloth=cape;
@@ -580,9 +1074,9 @@ globalThis.QuimiCraftModels = (() => {
     }
 
     function gauntlet(root,w){
-      const body=w.spectralWeapon?spectralFinish(w.color,w.trim,.34,.59):tint(w.style+"-glove",w.color);
-      const trim=w.spectralWeapon?spectralFinish(w.trim,w.trim,.80):tint(w.style+"-knuckle",w.trim);
-      const crystal=["ice","venom","lightning","spectral"].includes(w.element);
+      const body=w.spectralWeapon?spectralFinish(w.color,w.trim,.34,.59):w.corrupted?alloyMat("corrupt-glove",w.color,.52,.42,0x3c125c,.30):tint(w.style+"-glove",w.color);
+      const trim=w.spectralWeapon?spectralFinish(w.trim,w.trim,.80):w.corrupted?glowGemMat("corrupt-knuckle",w.trim,0xd964ff,1.15,.94):tint(w.style+"-knuckle",w.trim);
+      const crystal=["ice","venom","lightning","spectral","void"].includes(w.element);
       bevel(root,leather,[0,.014,.089],[.43,.35,.35]);
       bevel(root,body,[0,.023,-.060],[.472,.374,.41],[.07,0,0]);
       bevel(root,dark,[0,.032,.201],[.468,.39,.104]);
@@ -616,6 +1110,11 @@ globalThis.QuimiCraftModels = (() => {
         mesh(root,torus,trim,[0,.221,-.061],[.091,.121,.087],[Math.PI/2,0,0]);
         mesh(root,globe,trim,[0,.232,-.064],[.047,.070,.054],[.18,0,.21]);
         for(const side of [-1,1])bar(root,trim,[side*.19,.146,.15],[side*.108,.174,-.193],.023);
+      }else if(w.element==="void"){
+        mesh(root,globe,trim,[0,.225,-.055],[.095,.085,.095]);
+        mesh(root,globe,dark,[0,.255,-.095],[.025,.072,.042]);
+        glowHalo(root,root,0xe266ff,[0,.23,-.12],.48,.58);
+        for(const side of [-1,1])bar(root,trim,[side*.19,.146,.15],[side*.108,.18,-.22],.028);
       }else if(w.element==="lightning"){
         const bolt=[[-.08,.222,.114],[.029,.225,-.006],[-.027,.228,-.04],[.092,.231,-.17]];
         for(let i=1;i<bolt.length;i++)bar(root,trim,bolt[i-1],bolt[i],.044);
@@ -646,13 +1145,17 @@ globalThis.QuimiCraftModels = (() => {
       greatsword:{grip:.56,width:.20,guard:.31,fuller:[[0,.46],[0,1.74]],path:[[0,2.06],[-.095,1.92],[-.165,.85],[-.20,.61],[-.13,.52],[-.134,.31],[.134,.31],[.13,.52],[.20,.61],[.165,.85],[.095,1.92]]},
       spectralBlade:{grip:.34,width:.19,guard:.25,fuller:[[0,.29],[.018,.68],[-.017,1.13],[.017,1.53]],
         path:[[.03,1.66],[-.089,1.43],[-.097,1.25],[-.148,1.15],[-.091,.98],[-.127,.67],[-.081,.47],[-.095,.24],[.091,.24],[.116,.61],[.084,.86],[.145,1.21],[.082,1.38]]},
+      corruptedBlade:{grip:.35,width:.20,guard:.27,fuller:[[0,.28],[-.025,.66],[.032,1.10],[-.014,1.54]],
+        path:[[.05,1.72],[-.095,1.48],[-.15,1.24],[-.085,1.06],[-.16,.78],[-.095,.54],[-.11,.24],[.105,.24],[.15,.52],[.09,.74],[.17,1.08],[.11,1.38]]},
+      corruptedGreatsword:{grip:.58,width:.24,guard:.36,fuller:[[0,.45],[0,1.20],[0,1.88]],
+        path:[[0,2.22],[-.11,1.98],[-.22,1.56],[-.14,1.36],[-.23,.92],[-.18,.62],[-.15,.32],[.15,.32],[.18,.62],[.23,.92],[.14,1.36],[.22,1.56],[.11,1.98]]},
       scimitar:{grip:.33,width:.16,guard:.195,fuller:[[0,.29],[.009,.73],[.082,1.04],[.269,1.33]],path:[[.44,1.53],[.264,1.39],[.113,1.22],[-.008,.99],[-.087,.72],[-.093,.32],[-.059,.205],[.063,.205],[.116,.40],[.135,.76],[.247,1.055],[.404,1.292]]}
     };
     function forgedSword(root,w){
       const {grip:handle,width,guard,path,fuller}=forgedBlades[w.style];
-      const body=w.spectralWeapon?spectralFinish(w.color,w.trim,.46,.54):tint(w.style,w.color);
-      const edgeTone=w.spectralWeapon?spectralFinish(w.trim,w.trim,.88):tint(w.style+"-edge",w.trim);
-      const hilt=w.style==="scimitar"?brass:metal,guardY=handle*.49,two=w.twoHanded;
+      const body=w.spectralWeapon?spectralFinish(w.color,w.trim,.46,.54):w.corrupted?alloyMat("corrupt-blade",0x1c0b2b,.58,.30,0x2a0845,.28):tint(w.style,w.color);
+      const edgeTone=w.spectralWeapon?spectralFinish(w.trim,w.trim,.88):w.corrupted?glowGemMat("corrupt-edge",0xc74fff,0x9b24e8,.88,.95):tint(w.style+"-edge",w.trim);
+      const hilt=w.style==="scimitar"?brass:w.corrupted?dark:metal,guardY=handle*.49,two=w.twoHanded;
       grip(root,handle);
       bevel(root,hilt,[0,-handle*.52,0],[width*.98,.10,width*.76],[0,.20,Math.PI*.25]);
       if(two)for(const y of [-.236,-.114,0,.107])bevel(root,metal,[0,y,0],[.122,.033,.115]);
@@ -678,6 +1181,14 @@ globalThis.QuimiCraftModels = (() => {
       mesh(root,bladeProfiles.get(w.style),[body,edgeTone],[0,0,0],[1,1,1]);
       if(w.spectralWeapon)for(const y of [.51,.93,1.36]){
         QuimiCraftSpectral.halo(THREE,root,0x43e8d7,[0,y,-.046],.49,.85,.30);
+      }
+      if(w.corrupted){
+        const eyeGlow=glowGemMat("corrupt-sword-eye",0xffd4a2,0xff62dc,1.35,.95);
+        for(const side of [-1,1]){
+          mesh(root,globe,eyeGlow,[0,guardY+.12,side*.082],[two?.095:.074,two?.118:.090,.032]);
+          mesh(root,globe,dark,[0,guardY+.12,side*.108],[two?.024:.019,two?.095:.072,.015]);
+        }
+        glowHalo(root,root,0xe266ff,[0,guardY+.12,-.10],two?.62:.48,.62);
       }
       for(const side of [-1,1])mesh(root,globe,two?crystal:edgeTone,[0,guardY,side*.079],[.051,.046,.021],[0,0,.78]);
     }
@@ -705,11 +1216,23 @@ globalThis.QuimiCraftModels = (() => {
       root.userData.coreSize=root.userData.core.scale.clone();
     }
     function focus(root,item){
-      const primary=tint(item.shape,item.color),accent=tint(item.shape+"-gilt",item.trim);
-      if(item.shape==="book"){
-        const pages=tint("parchment","#ece0bb"),ink=tint("sigils","#765c64");
+      const corrupted=!!item.corrupted;
+      const primary=corrupted?alloyMat("corrupt-focus",item.color,.42,.48,0x3c105c,.32):tint(item.shape,item.color);
+      const accent=corrupted?glowGemMat("corrupt-focus-trim",item.trim,0xdf5eff,1.15,.95):tint(item.shape+"-gilt",item.trim);
+      if(item.shape==="book"||item.shape==="corruptedBook"||item.shape==="summonBook"){
+        const summonB=item.shape==="summonBook";
+        const pages=tint(corrupted?"corrupt-pages":summonB?"summon-pages":"parchment",corrupted?"#d6c4dc":summonB?"#daf6f2":"#ece0bb"),ink=tint(corrupted?"corrupt-ink":summonB?"summon-ink":"sigils",corrupted?"#a43de0":summonB?"#209c8a":"#765c64");
         bevel(root,primary,[0,-.15,0],[.627,.095,.477]);
         bevel(root,accent,[0,-.087,0],[.05,.15,.49]);
+        if(corrupted){
+          mesh(root,globe,glowGemMat("corrupt-book-eye",0xffd4a2,0xff62dc,1.35,.95),[0,.02,0],[.088,.055,.115]);
+          mesh(root,globe,dark,[0,.062,0],[.022,.025,.092]);
+          glowHalo(root,root,0xe266ff,[0,.08,0],.48,.58);
+        }else if(summonB){
+          mesh(root,torus,glowGemMat("summon-book-sigil",0x7fffe4,0x44f2d0,1.4,.96),[0,.03,0],[.11,.11,.06],[Math.PI/2,0,0]);
+          mesh(root,globe,glowGemMat("summon-book-gem",0xffe885,0xffc842,1.5,.98),[0,.04,0],[.055,.055,.055]);
+          glowHalo(root,root,0x5ef8e0,[0,.08,0],.52,.60);
+        }
         for(const side of [-1,1]){
           const leaf=new THREE.Group();leaf.position.x=side*.041;leaf.rotation.z=side*.19;root.add(leaf);
           bevel(leaf,primary,[side*.161,-.098,0],[.343,.059,.493]);
@@ -731,6 +1254,25 @@ globalThis.QuimiCraftModels = (() => {
         }
         bar(root,primary,[.024,-.028,.019],[.097,-.082,.297],.051,.008);
         root.rotation.x=-.16;
+        return;
+      }
+      if(item.shape==="naaruOrb"){
+        const goldLight=alloyMat("naaru-gold",0xf0c858,.86,.18,0x996d1a,.30);
+        const coreLight=glowGemMat("naaru-core",0xfff8d6,0xffde70,1.65,.98);
+        const cyanShard=glowGemMat("naaru-cyan",0x9bf8ff,0x4ceeff,1.35,.94);
+        root.userData.core=mesh(root,globe,coreLight,[0,.06,0],[.15,.22,.14]);
+        root.userData.coreSize=root.userData.core.scale.clone();
+        for(const s of [-1,1]){
+          bevel(root,goldLight,[s*.16,.24,0],[.055,.24,.042],[0,0,-s*.36]);
+          bevel(root,cyanShard,[s*.26,.04,0],[.052,.22,.038],[0,0,-s*1.08]);
+          bevel(root,goldLight,[s*.14,-.16,0],[.048,.20,.038],[0,0,s*.28]);
+        }
+        root.userData.rings=[0,1].map(i=>{
+          const ring=mesh(root,torus,i?cyanShard:goldLight,[0,.06,0],[.21+i*.06,.21+i*.06,.12]);
+          ring.userData.phase=i*Math.PI*.5;
+          return ring;
+        });
+        glowHalo(root,root,0xffe485,[0,.06,-.04],.68,.76);
         return;
       }
       bevel(root,metal,[0,-.233,0],[.226,.083,.225]);
@@ -811,90 +1353,406 @@ globalThis.QuimiCraftModels = (() => {
       const arsenal=globalThis.QuimiCraftArsenal,weapon=arsenal?.weapons[id],guard=arsenal?.shields[id],artifact=arsenal?.focuses[id],
         gear=arsenal?.apparel[id],produce=produceMiniature?.(id);
       if(produce){produce.scale.setScalar(.86);produce.rotation.z=id==="carrot"?-.21:-.10;root.add(produce)}
+      else if(id==="folklore_sieve"){
+        mesh(root,torus,lightWood,[0,0,0],[.29,.29,.36]);
+        for(let i=-3;i<=3;i++){
+          const across=i*.061,length=Math.sqrt(.265**2-across**2)*2;
+          box(root,thread,[across,0,-.005],[.012,length,.024]);
+          box(root,thread,[0,across,.008],[length,.012,.024]);
+        }
+        box(root,wood,[0,0,.024],[.545,.042,.039]);
+        box(root,wood,[0,0,.024],[.042,.545,.039]);
+      }
+      else if(id==="curupira_knot"){
+        const reed=alloyMat("curupira-knot",0x739748,.04,.84);
+        mesh(root,torus,reed,[-.10,.04,0],[.14,.23,.65],[.38,0,-.62]);
+        mesh(root,torus,reed,[.10,.01,.035],[.14,.22,.65],[-.36,0,.74]);
+        box(root,reed,[.035,-.19,0],[.045,.30,.046],[.20,0,.38]);
+        box(root,reed,[-.062,-.15,-.022],[.042,.25,.044],[-.30,0,-.68]);
+      }
+      else if(id==="charcoal"){
+        for(const [x,y,z,w] of [[-.12,.015,-.035,.22],[.095,.061,.011,.23],[.04,-.04,-.11,.17]]){
+          const lump=bevel(root,dark,[x,y,z],[w,w*.80,w*.86]);
+          lump.rotation.set(.24+x,.22-y,.30-z);
+        }
+      }
       else if (id === "wind_staff") staff(root);
       else if (id === "bow"||weapon?.family==="bow") {bow(root,weapon);root.rotation.y=first?-.62:-.24}
       else if (weapon?.family==="crossbow") {crossbow(root,weapon);root.rotation.y=first?-.14:-.17}
-      else if (guard) shield(root,guard);
+      else if (id === "shield") bronzeShield(root);
+      else if (guard) shield(root,guard,view);
       else if (artifact) focus(root,artifact);
       else if (gear){
         classApparel(root,gear);
         if(gear.slot==="back")root.rotation.y=Math.PI;
         if(gear.finish==="spectral")QuimiCraftSpectral.halo(THREE,root,0x39e0cf,[0,.17,-.12],1.11,.93,.29);
+        if(gear.finish==="corrupted")glowHalo(root,root,0xd966ff,[0,.14,-.14],.78,.34);
+      }
+      else if (id==="iron_leggings"){
+        classApparel(root,{slot:"legs",color:"#8b9aa3",trim:"#d5e4ec",finish:"metal"});
+      }
+      else if (id==="iron_helmet"){
+        classApparel(root,{slot:"head",shape:"helm",color:"#8d9da6",trim:"#d7e6ed",finish:"metal"});
+      }
+      else if (id==="iron_chestplate"||id==="chainmail"){
+        const mail=id==="chainmail";
+        classApparel(root,{slot:"chest",shape:"plate",color:mail?"#96a3aa":"#8b9aa3",trim:mail?"#5d6d76":"#d7e6ed",finish:"metal"});
+        if(mail)for(let r=-1;r<=1;r++)for(let c=-2;c<=2;c++){
+          mesh(root,torus,edge,[c*.095,r*.14,-.205],[.032,.032,.022]);
+        }
+      }
+      else if (id==="chitin_armor"){
+        classApparel(root,{slot:"chest",shape:"tunic",color:"#9a6f49",trim:"#d8b279",finish:"dragon"});
+      }
+      else if (id==="lab_coat"||id==="chemical_lab_coat"||id==="thermal_coat"||id==="cooling_vest"||id==="radiation_suit"||id==="fire_suit"||id==="diving_suit"||id==="pressure_suit"){
+        const suitSpecs={
+          lab_coat:{color:"#e9f1ef",trim:"#8ca8ad",shape:"tunic"},
+          chemical_lab_coat:{color:"#d2eee7",trim:"#429b8e",shape:"tunic"},
+          thermal_coat:{color:"#527699",trim:"#d8e4ef",shape:"tunic"},
+          cooling_vest:{color:"#4bb7c6",trim:"#b6f6ff",shape:"vestment"},
+          radiation_suit:{color:"#d2c444",trim:"#2b2c22",shape:"tunic"},
+          fire_suit:{color:"#a44a39",trim:"#e0b355",shape:"tunic"},
+          diving_suit:{color:"#20526b",trim:"#6bd2dd",shape:"vestment"},
+          pressure_suit:{color:"#384e60",trim:"#d4a44e",shape:"plate",finish:"metal"}
+        };
+        const spec=suitSpecs[id];
+        classApparel(root,{slot:"chest",...spec});
+        if(id==="cooling_vest"){
+          const cryo=glowGemMat("cool-tube",0x8df5ff,0x34d2eb,.95,.88);
+          for(const x of [-.17,0,.17])mesh(root,cyl,cryo,[x,.03,-.205],[.055,.42,.055]);
+        }else if(id==="radiation_suit"){
+          bevel(root,dark,[0,.08,-.205],[.17,.17,.035],[0,0,Math.PI/4]);
+          mesh(root,globe,tint("rad-mark",0xf2df4a),[0,.08,-.225],[.058,.058,.02]);
+        }else if(id==="fire_suit"){
+          for(const y of [-.14,.04,.18])bevel(root,brass,[0,y,-.205],[.52,.038,.032]);
+        }else if(id==="pressure_suit"||id==="diving_suit"){
+          mesh(root,cyl,brass,[0,.10,-.215],[.15,.055,.15],[Math.PI/2,0,0]);
+          mesh(root,cyl,glassMat("dive-dial",0xb8f6ff,.55,.06,0x5ce0f0,.35),[0,.10,-.245],[.11,.02,.11],[Math.PI/2,0,0]);
+        }else if(id==="lab_coat"||id==="chemical_lab_coat"){
+          for(const side of [-1,1])bar(root,tint("coat-lapel",spec.trim),[side*.15,.26,-.19],[side*.04,.04,-.195],.038,.02);
+          bevel(root,tint("coat-pocket",spec.trim),[.15,-.06,-.195],[.13,.13,.024]);
+        }
+      }
+      else if (id==="iron_boots"||id==="rubber_boots"||id==="insulated_boots"){
+        const bootSpecs={
+          iron_boots:{color:"#8f9fa8",trim:"#d7e6ed",finish:"metal"},
+          rubber_boots:{color:"#b48a38",trim:"#2d3338",finish:"cloth"},
+          insulated_boots:{color:"#455b6f",trim:"#dce8f0",finish:"cloth"}
+        };
+        classApparel(root,{slot:"feet",...bootSpecs[id]});
+      }
+      else if (id==="fins"){
+        const finMat=tint("fins",0x379990),rimMat=tint("fins-rim",0x1c4a52);
+        for(const side of [-1,1]){
+          const x=side*.19;
+          bevel(root,rimMat,[x,.04,.16],[.17,.14,.24]);
+          bevel(root,finMat,[x,-.01,-.18],[.23,.038,.56],[.08,0,0]);
+          for(const r of [-.07,0,.07])bevel(root,rimMat,[x+r,.005,-.18],[.025,.046,.52],[.08,0,0]);
+        }
+      }
+      else if (id==="disposable_gloves"||id==="chemical_gloves"||id==="heat_gloves"){
+        const gMat=tint(id,itemColor(id)),cuffMat=id==="heat_gloves"?brass:id==="chemical_gloves"?dark:edge;
+        for(const side of [-1,1]){
+          const g=new THREE.Group();g.position.set(side*.22,-.04,0);g.rotation.set(.18,side*-.18,side*-.12);root.add(g);
+          bevel(g,cuffMat,[0,-.22,0],[.21,.11,.13]);
+          bevel(g,gMat,[0,-.03,0],[.22,.28,.11]);
+          for(let i=0;i<4;i++)bevel(g,gMat,[(i-1.5)*.052,.17+(i===1||i===2?.03:0),0],[.044,.16,.065]);
+          bevel(g,gMat,[-side*.13,.01,-.01],[.055,.14,.068],[0,0,side*.65]);
+        }
+      }
+      else if (id==="protective_goggles"||id==="diving_mask"||id==="face_shield"){
+        const lens=glassMat("sci-lens",0x9ef2ff,.44,.06,0x48d0e8,.32);
+        if(id==="protective_goggles"){
+          for(const x of [-.14,.14]){
+            mesh(root,torus,metal,[x,.02,-.18],[.11,.085,.12]);
+            bevel(root,lens,[x,.02,-.19],[.18,.12,.02]);
+          }
+          bevel(root,leather,[0,.02,-.18],[.09,.035,.03]);
+          mesh(root,torus,leather,[0,.02,.04],[.27,.24,.10],[Math.PI/2,0,0]);
+        }else if(id==="diving_mask"){
+          bevel(root,dark,[0,.02,-.17],[.46,.24,.10]);
+          bevel(root,lens,[0,.03,-.215],[.39,.16,.024]);
+          bevel(root,tint("dive-trim",0x4a91a7),[0,-.07,-.21],[.11,.10,.08]);
+          mesh(root,torus,dark,[0,.02,.05],[.27,.24,.10],[Math.PI/2,0,0]);
+        }else{
+          bevel(root,metal,[0,.22,-.04],[.48,.07,.38]);
+          bevel(root,lens,[0,-.04,-.22],[.46,.42,.03]);
+          for(const side of [-1,1])mesh(root,cyl,brass,[side*.24,.21,-.18],[.055,.04,.055],[0,0,Math.PI/2]);
+        }
+      }
+      else if (id==="respirator_mask"||id==="gas_mask"){
+        const full=id==="gas_mask";
+        const rubber=alloyMat("mask-rub",full?0x2b3b36:0x3e4c54,.22,.68);
+        bevel(root,rubber,[0,full?.02:-.05,-.10],[full?.42:.34,full?.44:.28,.22]);
+        mesh(root,cyl,metal,[0,-.11,-.23],[.15,.08,.15],[Math.PI/2,0,0]);
+        for(const side of [-1,1]){
+          mesh(root,cyl,dark,[side*.20,-.11,-.17],[.14,.13,.14],[Math.PI/2,0,side*.28]);
+          mesh(root,torus,brass,[side*.21,-.11,-.23],[.065,.065,.05],[0,0,0]);
+        }
+        if(full){
+          const lens=glassMat("gas-lens",0x9bf0c2,.48,.06,0x45b878,.28);
+          for(const side of [-1,1]){
+            mesh(root,cyl,metal,[side*.105,.10,-.21],[.14,.04,.14],[Math.PI/2,0,0]);
+            mesh(root,cyl,lens,[side*.105,.10,-.23],[.115,.02,.115],[Math.PI/2,0,0]);
+          }
+        }
+        mesh(root,torus,leather,[0,.02,.08],[.24,.22,.08],[Math.PI/2,0,0]);
+      }
+      else if (id==="snorkel"){
+        const tube=tint("snorkel-tube",0xe0704f);
+        bar(root,tube,[.08,-.20,0],[.08,.36,0],.075);
+        bar(root,dark,[.08,-.20,0],[-.12,-.24,-.06],.075);
+        bevel(root,dark,[-.16,-.24,-.08],[.13,.09,.10]);
+        bevel(root,brass,[.08,.39,0],[.10,.08,.10]);
+        bevel(root,dark,[.08,.06,.05],[.10,.05,.09]);
+      }
+      else if (id==="oxygen_tank"||id==="reinforced_oxygen_tank"){
+        const twin=id==="reinforced_oxygen_tank";
+        const tankMat=alloyMat(id,twin?0x4c788e:0x6ea6b3,.74,.26);
+        bevel(root,dark,[0,0,.09],[twin?.48:.26,.54,.08]);
+        for(const x of twin?[-.13,.13]:[0]){
+          mesh(root,cyl,tankMat,[x,-.03,-.04],[.21,.56,.21]);
+          mesh(root,globe,tankMat,[x,.25,-.04],[.105,.09,.105]);
+          mesh(root,cyl,brass,[x,.35,-.04],[.08,.10,.08]);
+          mesh(root,cyl,dark,[x,.39,-.04],[.12,.03,.12]);
+          for(const y of [-.16,.14])bevel(root,leather,[x,y,-.02],[.23,.05,.24]);
+        }
+      }
+      else if (id==="sample_case"){
+        bevel(root,leather,[0,-.02,0],[.54,.38,.20]);
+        bevel(root,brass,[0,.02,-.105],[.55,.04,.025]);
+        for(const x of [-.16,.16])bevel(root,brass,[x,.02,-.115],[.06,.08,.03]);
+        bar(root,dark,[-.11,.22,0],[.11,.22,0],.04);
+        for(const x of [-.11,.11])bar(root,brass,[x,.16,0],[x,.22,0],.032);
+      }
+      else if (id==="underwater_flashlight"){
+        mesh(root,cyl,alloyMat("torch-body",0x344955,.78,.26),[0,-.05,0],[.15,.44,.15]);
+        mesh(root,cyl,brass,[0,.20,0],[.22,.12,.22]);
+        const beamLens=glowGemMat("torch-lens",0xfff08a,0xffd040,1.4,.95);
+        mesh(root,cyl,beamLens,[0,.265,0],[.18,.03,.18]);
+        bevel(root,dark,[0,.02,-.085],[.05,.10,.04]);
+        glowHalo(root,root,0xffe478,[0,.30,0],.55,.65);
+      }
+      else if (id==="depth_gauge"){
+        mesh(root,cyl,brass,[0,0,0],[.38,.11,.38],[Math.PI/2,0,0]);
+        mesh(root,cyl,edge,[0,0,-.05],[.30,.025,.30],[Math.PI/2,0,0]);
+        mesh(root,cyl,glassMat("gauge-glass",0xb8f6ff,.36,.05,0x64d8f0,.25),[0,0,-.065],[.31,.02,.31],[Math.PI/2,0,0]);
+        bar(root,tint("gauge-needle",0xd94444),[0,0,-.068],[.09,.08,-.068],.018);
+        bevel(root,leather,[0,.23,0],[.14,.16,.05]);
+        bevel(root,leather,[0,-.23,0],[.14,.16,.05]);
+      }
+      else if (id==="thermal_blanket"){
+        const foil=alloyMat("foil-blanket",0xe2bf65,.88,.16,0x8a6518,.16);
+        bevel(root,foil,[0,0,0],[.46,.34,.11],[.12,.18,0]);
+        for(const y of [-.08,.08])bevel(root,brass,[0,y,-.058],[.44,.022,.015],[.12,.18,0]);
+      }
+      else if (id==="old_god_eye"){
+        mesh(root,globe,glowGemMat("og-eye-sclera",0xf5e5c4,0xd96bff,.42,1),[0,0,0],[.25,.25,.25]);
+        mesh(root,globe,glowGemMat("og-eye-iris",0xff92e0,0xe648d8,1.35,.96),[0,0,-.15],[.15,.15,.11]);
+        mesh(root,globe,dark,[0,0,-.23],[.042,.13,.04]);
+        glowHalo(root,root,0xe864ff,[0,0,-.22],.62,.62);
+      }
+      else if (id==="corrupted_ingot"){
+        bevel(root,alloyMat("corrupt-ingot",0x462066,.68,.28,0x491470,.38),[0,0,0],[.46,.18,.26],[.12,.35,0]);
+        bevel(root,glowGemMat("corrupt-ingot-vein",0xee84ff,0xd452ff,1.2,.95),[0,.03,-.12],[.26,.045,.045],[.12,.35,.18]);
+        glowHalo(root,root,0xd666ff,[0,.02,-.15],.44,.42);
+      }
+      else if (id==="corrupted_shard"){
+        mesh(root,globe,glowGemMat("corrupt-shard",0xd66dff,0xb838ff,1.25,.92),[0,.02,0],[.15,.30,.12],[.18,.42,.24]);
+        glowHalo(root,root,0xd966ff,[0,.02,-.08],.44,.50);
       }
       else if (id==="dragon_hide"){
         bevel(root,tint("dragonhide",0x593b48),[0,0,0],[.53,.51,.093],[0,0,-.14]);
         dragonLeatherScales(root,0,.163,-.057,5,5,.083,.078);
       }
       else if(id==="fracture_hammer"){
-        bevel(root,wood,[0,-.19,0],[.105,.72,.095]);
-        bevel(root,dark,[0,-.39,0],[.135,.24,.13]);
-        bevel(root,metal,[0,.17,0],[.48,.24,.22]);
-        bevel(root,edge,[-.23,.17,0],[.13,.26,.23]);
-        bevel(root,brass,[.02,.032,0],[.14,.08,.14]);
+        const forged=alloyMat("fh-steel",0x7e94a3,.82,.20),silver=alloyMat("fh-edge",0xe6f6fc,.88,.14);
+        const pulseCore=glowGemMat("fh-core",0x7aeaff,0x2cc8ff,1.25,.88);
+        const crystalVeil=glassMat("fh-veil",0x9bf0ff,.30,.08,0x45d6ff,.35);
+        bevel(root,wood,[0,-.19,0],[.096,.74,.090]);
+        bevel(root,leather,[0,-.37,0],[.120,.26,.116]);
+        for(let i=0;i<4;i++)bevel(root,thread,[0,-.45+i*.06,-.055],[.124,.016,.018],[0,0,-.18]);
+        bevel(root,brass,[0,-.52,0],[.138,.075,.134]);
+        bevel(root,brass,[0,.028,0],[.152,.072,.148]);
+        bevel(root,forged,[.02,.18,0],[.48,.25,.23]);
+        bevel(root,dark,[.02,.18,0],[.20,.262,.242]);
+        bevel(root,silver,[-.24,.18,0],[.135,.27,.242],[0,0,.04]);
+        bevel(root,silver,[.265,.18,0],[.082,.235,.215]);
+        for(const side of [-1,1]){
+          bevel(root,pulseCore,[.02,.18,side*.118],[.28,.040,.024]);
+          mesh(root,globe,pulseCore,[.02,.18,side*.128],[.056,.068,.024],[0,0,Math.PI/4]);
+          bevel(root,brass,[-.16,.18,side*.118],[.032,.215,.020]);
+          bevel(root,brass,[.19,.18,side*.118],[.032,.215,.020]);
+        }
+        mesh(root,globe,crystalVeil,[-.28,.18,0],[.078,.17,.14]);
+        glowHalo(root,root,0x58dcff,[.02,.18,-.15],.46,.56);
+        glowHalo(root,root,0x9beeff,[-.27,.18,-.08],.32,.40);
       }
       else if(id==="osmotic_salt"||id==="brine_cold_pack"){
-        const cold=id==="brine_cold_pack",shell=tint(id,itemColor(id));
-        bevel(root,cold?shell:lightWood,[0,-.025,0],[.31,.36,.155],[0,0,-.09]);
-        bevel(root,cold?metal:wood,[.014,.14,0],[.32,.053,.17],[0,0,-.09]);
-        for(const x of [-.06,0,.06])mesh(root,globe,cold?edge:shell,[x,-.019+Math.abs(x)*.45,-.084],[.026,.027,.012]);
-      }
-      else if(id==="copper_ampoule"){
-        const solution=tint(id,itemColor(id));
-        mesh(root,cyl,edge,[0,-.085,0],[.22,.27,.22]);
-        mesh(root,cyl,solution,[0,-.109,-.006],[.215,.18,.215]);
-        mesh(root,cyl,metal,[0,.095,0],[.118,.123,.118]);
-        bevel(root,brass,[0,.171,0],[.146,.079,.133]);
-        bevel(root,tint("ampoule-reflection",0xc8ece4),[-.066,-.068,-.091],[.022,.178,.022]);
-      }
-      else if(id==="echo_fork"){
-        const alloy=tint(id,itemColor(id));
-        bevel(root,wood,[0,-.24,0],[.09,.39,.083]);
-        bevel(root,brass,[0,-.044,0],[.135,.092,.116]);
-        bevel(root,alloy,[0,.052,0],[.21,.109,.09]);
-        for(const side of [-1,1]){
-          bevel(root,alloy,[side*.107,.208,0],[.072,.33,.077],[0,0,-side*.085]);
-          bevel(root,edge,[side*.12,.363,0],[.083,.058,.09]);
+        const cold=id==="brine_cold_pack";
+        if(cold){
+          const cryoGlass=glassMat("brine-shell",0x79dcff,.60,.10,0x2ea7df,.38);
+          const frostCore=glowGemMat("brine-core",0xcff8ff,0x52d8ff,1.25,.90);
+          const steelFrame=alloyMat("brine-frame",0x375264,.78,.24);
+          bevel(root,cryoGlass,[0,-.02,0],[.32,.38,.17],[0,0,-.06]);
+          bevel(root,frostCore,[0,-.03,0],[.22,.26,.095],[0,0,-.06]);
+          for(const side of [-1,1]){
+            bevel(root,steelFrame,[side*.155,-.02,0],[.038,.39,.185],[0,0,-.06]);
+            bevel(root,edge,[side*.155,.14,0],[.046,.044,.195],[0,0,-.06]);
+          }
+          bevel(root,steelFrame,[.012,.155,0],[.34,.058,.19],[0,0,-.06]);
+          bevel(root,brass,[.018,.205,0],[.095,.060,.095],[0,0,-.06]);
+          for(const [x,y,z] of [[-.06,-.04,-.095],[.01,.03,-.098],[.07,-.05,-.094]]){
+            mesh(root,globe,frostCore,[x,y,z],[.034,.044,.018],[.2,.3,.4]);
+          }
+          glowHalo(root,root,0x6ae6ff,[0,-.01,-.13],.54,.58);
+        }else{
+          const pouch=alloyMat("salt-pouch",0x9b7952,.12,.72);
+          const saltWindow=glassMat("salt-win",0xe8f9ff,.44,.08,0x8ce8df,.22);
+          const saltCrystal=glowGemMat("salt-crys",0xf4fffd,0xa4f0e8,.72,.88);
+          bevel(root,pouch,[0,-.03,0],[.32,.36,.165],[0,0,-.07]);
+          bevel(root,dark,[.012,.125,0],[.335,.046,.18],[0,0,-.07]);
+          bevel(root,brass,[.014,.155,0],[.315,.040,.172],[0,0,-.07]);
+          bevel(root,saltWindow,[0,-.035,-.082],[.22,.22,.028],[0,0,-.07]);
+          for(const [x,y,s] of [[-.06,-.06,.042],[.01,-.01,.050],[.065,-.055,.040],[-.02,.04,.036],[.045,.045,.034]]){
+            bevel(root,saltCrystal,[x,y,-.078],[s,s,s],[.3,.5,.4]);
+          }
+          for(const [x,z] of [[-.05,.01],[.02,-.02],[.07,.015]])bevel(root,saltCrystal,[x,.195,z],[.044,.052,.044],[.4,.3,.2]);
+          glowHalo(root,root,0xbef9f0,[0,.02,-.12],.44,.46);
         }
       }
+      else if(id==="copper_ampoule"){
+        const glass=glassMat("ampoule-glass",0xdbfcff,.32,.05,0x6aeae0,.22);
+        const liquidMat=glowGemMat("ampoule-liq",0x34e2c2,0x19c9a6,1.15,.82);
+        const copperCage=alloyMat("ampoule-cu",0xd8834a,.84,.20);
+        const bubbleMat=glowGemMat("ampoule-bub",0xd4fff7,0x8affef,1.25,.88);
+        mesh(root,cyl,glass,[0,-.085,0],[.25,.29,.25]);
+        mesh(root,cyl,liquidMat,[0,-.112,0],[.205,.185,.205]);
+        mesh(root,cyl,glass,[0,.105,0],[.124,.135,.124]);
+        mesh(root,torus,glass,[0,.165,0],[.072,.072,.065],[Math.PI/2,0,0]);
+        mesh(root,cyl,brass,[0,.205,0],[.118,.075,.118]);
+        for(const y of [-.215,.048])mesh(root,torus,copperCage,[0,y,0],[.128,.128,.085],[Math.PI/2,0,0]);
+        for(let i=0;i<4;i++){
+          const a=i*Math.PI/2+Math.PI/4;
+          bar(root,copperCage,[Math.cos(a)*.128,-.215,Math.sin(a)*.128],[Math.cos(a)*.128,.048,Math.sin(a)*.128],.020);
+        }
+        for(const [x,y,z,s] of [[-.04,-.12,-.04,.024],[.045,-.08,.02,.020],[0,-.15,.03,.026],[.01,-.05,-.05,.018]]){
+          mesh(root,globe,bubbleMat,[x,y,z],[s,s,s]);
+        }
+        bevel(root,glassMat("ampoule-spec",0xffffff,.55,.04,0xffffff,.35),[-.085,-.08,-.096],[.018,.18,.014]);
+        glowHalo(root,root,0x3ff5d3,[0,-.09,-.08],.56,.62);
+      }
+      else if(id==="echo_fork"){
+        const alloy=alloyMat("echo-alloy",0xc8aff7,.84,.18,0x673db8,.22);
+        const silver=alloyMat("echo-tip",0xf1e8ff,.90,.12,0xa284ff,.28);
+        const piezo=glowGemMat("echo-piezo",0xd7a8ff,0x9e5bff,1.35,.90);
+        const waveMat=glassMat("echo-wave",0xc8a4ff,.38,.08,0xaa7aff,.95);
+        bevel(root,wood,[0,-.25,0],[.086,.39,.082]);
+        bevel(root,leather,[0,-.31,0],[.102,.18,.098]);
+        bevel(root,brass,[0,-.45,0],[.116,.058,.112]);
+        bevel(root,brass,[0,-.048,0],[.148,.084,.128]);
+        bevel(root,alloy,[0,.056,0],[.235,.108,.096]);
+        mesh(root,globe,piezo,[0,.056,-.054],[.054,.074,.034]);
+        for(const side of [-1,1]){
+          bevel(root,alloy,[side*.112,.222,0],[.068,.355,.074],[0,0,-side*.075]);
+          bevel(root,silver,[side*.126,.392,0],[.082,.064,.088]);
+        }
+        root.userData.waveRings=[0,1,2].map(i=>{
+          const ring=mesh(root,torus,waveMat,[0,.24+i*.065,0],[.058+i*.028,.058+i*.028,.042],[Math.PI/2,0,0]);
+          ring.userData.phase=i*2.1;
+          return ring;
+        });
+        glowHalo(root,root,0xb884ff,[0,.27,-.04],.54,.62);
+        glowHalo(root,root,0xd9b8ff,[0,.056,-.08],.32,.48);
+      }
       else if(id==="sealing_cartridge"){
-        mesh(root,cyl,tint(id,itemColor(id)),[0,-.02,0],[.19,.33,.19]);
-        mesh(root,cyl,brass,[0,.16,0],[.20,.068,.20]);
-        mesh(root,cyl,metal,[0,-.19,0],[.209,.065,.209]);
-        bevel(root,tint("seal-mark",0x73474b),[0,-.02,-.096],[.103,.125,.024]);
+        const glass=glassMat("seal-glass",0xfff1d6,.34,.06,0xffaa42,.22);
+        const resin=glowGemMat("seal-resin",0xf2a746,0xd97316,1.05,.86);
+        const cap=alloyMat("seal-brass",0xdba554,.84,.22);
+        const base=alloyMat("seal-steel",0x4a5d68,.80,.24);
+        const sealCrest=alloyMat("seal-crest",0x8f3942,.50,.32,0x5e181f,.35);
+        mesh(root,cyl,glass,[0,-.02,0],[.225,.35,.225]);
+        mesh(root,cyl,resin,[0,-.03,0],[.185,.28,.185]);
+        mesh(root,cyl,cap,[0,.175,0],[.24,.072,.24]);
+        mesh(root,cyl,base,[0,-.205,0],[.245,.072,.245]);
+        mesh(root,cyl,brass,[0,.24,0],[.095,.072,.095]);
+        bar(root,cap,[.128,-.18,0],[.128,.16,0],.024);
+        bar(root,cap,[-.128,-.18,0],[-.128,.16,0],.024);
+        bevel(root,sealCrest,[0,-.02,-.115],[.112,.132,.028]);
+        mesh(root,globe,glowGemMat("seal-gauge",0xffe08a,0xffaa2b,1.2,.92),[0,-.02,-.134],[.036,.042,.016]);
+        glowHalo(root,root,0xffb14a,[0,-.02,-.14],.50,.56);
       }
       else if(id==="hunt_badge"){
-        bevel(root,brass,[0,0,0],[.32,.32,.092],[0,0,Math.PI/4]);
-        bevel(root,dark,[0,0,-.045],[.255,.255,.032],[0,0,Math.PI/4]);
-        mesh(root,globe,tint(id,itemColor(id)),[0,0,-.073],[.111,.147,.024]);
-        for(const side of [-1,1])bevel(root,brass,[side*.103,0,-.067],[.029,.13,.032],[0,0,-side*.43]);
+        const gold=alloyMat("hb-gold",0xe8bc5f,.88,.16);
+        const darkMetal=alloyMat("hb-dark",0x24343c,.68,.32);
+        const heartGem=glowGemMat("hb-gem",0xffd166,0xff8b24,1.30,.88);
+        const gemAura=glassMat("hb-aura",0xffe9a3,.30,.05,0xffb845,.45);
+        bevel(root,gold,[0,0,0],[.34,.34,.095],[0,0,Math.PI/4]);
+        bevel(root,darkMetal,[0,0,-.042],[.272,.272,.042],[0,0,Math.PI/4]);
+        mesh(root,torus,gold,[0,0,-.066],[.126,.126,.11]);
+        mesh(root,globe,heartGem,[0,0,-.082],[.096,.132,.038]);
+        mesh(root,globe,gemAura,[0,0,-.088],[.122,.156,.048]);
+        for(const side of [-1,1]){
+          bevel(root,edge,[side*.115,.01,-.070],[.030,.16,.028],[0,0,-side*.45]);
+          mesh(root,globe,gold,[side*.195,0,-.048],[.034,.034,.024],[0,0,Math.PI/4]);
+          mesh(root,globe,gold,[0,side*.195,-.048],[.034,.034,.024],[0,0,Math.PI/4]);
+        }
+        glowHalo(root,root,0xffc95c,[0,0,-.12],.62,.70);
       }
       else if(id==="quartz_whetstone"){
-        const abrasive=tint(id,itemColor(id));
-        bevel(root,abrasive,[0,-.014,0],[.235,.43,.15],[.16,0,-.34]);
-        bevel(root,metal,[.017,-.01,.064],[.251,.436,.048],[.16,0,-.34]);
-        for(const y of [-.10,.015,.11])bevel(root,edge,[0,y,-.082],[.12,.013,.013],[.16,0,-.34]);
+        const quartz=glowGemMat("qw-stone",0xd7c2ea,0x9c72c9,.62,.82);
+        const cradle=alloyMat("qw-cradle",0x4c5d69,.78,.24);
+        const shard=glowGemMat("qw-shard",0xf3e8ff,0xc9a8ff,1.10,.90);
+        bevel(root,quartz,[0,-.014,0],[.245,.44,.152],[.16,0,-.34]);
+        bevel(root,cradle,[.019,-.01,.068],[.264,.452,.054],[.16,0,-.34]);
+        for(const y of [-.14,.14])bevel(root,brass,[.012,y,.032],[.275,.046,.115],[.16,0,-.34]);
+        for(const y of [-.10,.015,.11])bevel(root,shard,[0,y,-.085],[.135,.018,.018],[.16,0,-.34]);
+        glowHalo(root,root,0xd2b4ff,[0,0,-.11],.46,.46);
       }
       else if(id==="soot_filter"){
-        mesh(root,cyl,tint(id,itemColor(id)),[0,-.035,0],[.30,.25,.30]);
-        mesh(root,cyl,metal,[0,.10,0],[.326,.055,.326]);
-        mesh(root,cyl,brass,[0,-.169,0],[.32,.055,.32]);
-        for(const x of [-.082,0,.082])bevel(root,dark,[x,-.016,-.143],[.036,.14,.024]);
+        const body=alloyMat("sf-body",0x53626e,.78,.26);
+        const glassBand=glassMat("sf-glass",0x7ad4cc,.38,.08,0x2eb39e,.28);
+        const statusLed=glowGemMat("sf-led",0x68ffd6,0x25e8b2,1.25,.92);
+        mesh(root,cyl,body,[0,-.035,0],[.31,.26,.31]);
+        mesh(root,cyl,alloyMat("sf-top",0xc0d4dc,.84,.20),[0,.105,0],[.336,.058,.336]);
+        mesh(root,cyl,brass,[0,-.172,0],[.332,.058,.332]);
+        mesh(root,cyl,glassBand,[0,.032,0],[.324,.064,.324]);
+        for(const x of [-.085,0,.085])bevel(root,dark,[x,-.055,-.152],[.036,.12,.028]);
+        bevel(root,statusLed,[0,.032,-.164],[.135,.028,.020]);
+        glowHalo(root,root,0x54ffcf,[0,.032,-.19],.38,.52);
       }
       else if(id==="vein_probe"){
-        bevel(root,dark,[0,-.16,0],[.15,.34,.16]);
-        bevel(root,metal,[0,.055,0],[.20,.163,.166]);
-        for(const side of [-1,1])bevel(root,brass,[side*.111,.14,0],[.063,.24,.077],[0,0,-side*.24]);
-        mesh(root,globe,tint(id,itemColor(id)),[0,.22,.004],[.116,.176,.101],[0,.3,.22]);
-        bevel(root,tint("probe-indicator",0xc9b7f2),[0,.049,-.089],[.126,.045,.031]);
+        const chassis=alloyMat("vp-body",0x24313a,.74,.28);
+        const headMat=alloyMat("vp-head",0x8ea8b5,.84,.20);
+        const crystalCore=glowGemMat("vp-crystal",0xd89eff,0xa652ff,1.35,.86);
+        const scanRing=glassMat("vp-ring",0xd6b0ff,.46,.06,0xb672ff,.95);
+        bevel(root,chassis,[0,-.17,0],[.152,.35,.162]);
+        bevel(root,headMat,[0,.055,0],[.215,.165,.172]);
+        for(const side of [-1,1]){
+          bevel(root,brass,[side*.118,.148,0],[.058,.25,.074],[0,0,-side*.25]);
+          mesh(root,globe,edge,[side*.142,.265,0],[.026,.026,.026]);
+        }
+        root.userData.core=mesh(root,globe,crystalCore,[0,.235,.004],[.118,.182,.105],[0,.3,.22]);
+        root.userData.coreSize=root.userData.core.scale.clone();
+        root.userData.rings=[mesh(root,torus,scanRing,[0,.235,.004],[.165,.165,.14],[Math.PI/2,.35,0])];
+        root.userData.rings[0].userData.phase=.4;
+        bevel(root,crystalCore,[0,.049,-.094],[.132,.042,.028]);
+        glowHalo(root,root,0xc278ff,[0,.235,-.04],.58,.66);
       }
       else if(id==="refractory_boots"){
-        const ceramic=tint(id,itemColor(id));
+        const ceramic=alloyMat("rb-cer",0xc97b52,.22,.22,0x662209,.28);
+        const steel=alloyMat("rb-steel",0x667885,.80,.24);
+        const ember=glowGemMat("rb-ember",0xff9d42,0xff5912,1.25,.92);
+        const glaze=glassMat("rb-glaze",0xffcfb0,.28,.06,0xff8c42,.24);
         for(const side of [-1,1]){
-          const x=side*.127;
-          bevel(root,metal,[x,.033,.04],[.214,.25,.23]);
-          bevel(root,ceramic,[x,-.036,-.048],[.218,.155,.35]);
-          bevel(root,dark,[x,-.128,-.054],[.228,.061,.36]);
-          bevel(root,edge,[x,.102,-.042],[.193,.044,.04]);
+          const x=side*.132;
+          bevel(root,steel,[x,.040,.04],[.216,.258,.234]);
+          bevel(root,ceramic,[x,-.038,-.048],[.222,.158,.356]);
+          bevel(root,glaze,[x,-.035,-.062],[.232,.140,.340]);
+          bevel(root,dark,[x,-.130,-.054],[.232,.062,.368]);
+          bevel(root,brass,[x,.112,-.044],[.205,.042,.046]);
+          bevel(root,ember,[x,-.018,-.226],[.155,.028,.024]);
+          glowHalo(root,root,0xff7f2e,[x,-.018,-.25],.28,.48);
         }
       }
       else if (id === "iron_sword") sword(root);
@@ -991,10 +1849,257 @@ globalThis.QuimiCraftModels = (() => {
         bevel(root,tintGlass,[0,.12,0],[.12,.16,.13]);
         bevel(root,lightWood,[0,.216,0],[.137,.09,.143]);
         bevel(root,edge,[-.072,.005,-.113],[.027,.13,.014]);
+      } else if(/ingot$|plated_iron|tempered_alloy|sodium_metal/.test(String(id))){
+        const barMat=alloyMat("ingot-"+id,itemColor(id),.80,.24);
+        bevel(root,barMat,[0,-.04,0],[.50,.17,.26],[.08,.34,0]);
+        bevel(root,barMat,[0,.055,0],[.38,.09,.19],[.08,.34,0]);
+        bevel(root,edge,[0,.10,-.01],[.26,.02,.04],[.08,.34,0]);
+      } else if(id==="gold_nugget"){
+        const goldMat=alloyMat("gold-nug",0xf4c44e,.90,.16,0x7a4e08,.18);
+        for(const [x,y,z,s] of [[0,0,0,.17],[.12,-.05,.04,.12],[-.11,-.04,-.03,.11],[.02,.10,-.02,.10]]){
+          mesh(root,globe,goldMat,[x,y,z],[s,s*.88,s*.92],[x*4,y*5,z*3]);
+        }
+      } else if(id==="death_rune"||id==="lich_sigil"||id==="fel_ember"||id==="fel_sigil"){
+        const fel=id.startsWith("fel_");
+        const darkMat=alloyMat("rel-dark",fel?0x1f1924:0x1b2738,.62,.36);
+        const glowCol=fel?0xa6ff36:0x6ef2ff;
+        const gemMat=glowGemMat("rel-"+id,glowCol,glowCol,1.35,.95);
+        if(id==="death_rune"||id==="fel_ember"){
+          bevel(root,darkMat,[0,0,0],[.32,.44,.11],[.06,.18,0]);
+          bevel(root,gemMat,[0,.02,-.06],[.055,.28,.025],[.06,.18,0]);
+          bevel(root,gemMat,[0,.08,-.06],[.18,.045,.025],[.06,.18,0]);
+          glowHalo(root,root,glowCol,[0,.02,-.10],.54,.58);
+        }else{
+          mesh(root,torus,darkMat,[0,0,0],[.24,.24,.18]);
+          mesh(root,globe,gemMat,[0,0,-.02],[.13,.17,.08]);
+          for(const s of [-1,1])bar(root,darkMat,[s*.16,.12,0],[s*.28,.34,0],.055);
+          glowHalo(root,root,glowCol,[0,0,-.08],.62,.64);
+        }
+      } else if(id==="ectoplasm"||id==="wind_essence"){
+        const col=id==="ectoplasm"?0x48f2d8:0xa6f4ff;
+        const mat=glowGemMat("ess-"+id,col,col,1.35,.78);
+        root.userData.core=mesh(root,globe,mat,[0,.02,0],[.20,.26,.20],[.2,.4,.1]);
+        root.userData.coreSize=root.userData.core.scale.clone();
+        root.userData.rings=[0,1].map(i=>{
+          const ring=mesh(root,torus,mat,[0,.02,0],[.27+i*.06,.27+i*.06,.10]);
+          ring.userData.phase=i*1.8;return ring;
+        });
+        glowHalo(root,root,col,[0,.02,0],.68,.65);
+      } else if(/crystal|aquamarine|quartz|nodule|lumen|draconic_/.test(String(id))){
+        const col=itemColor(id),bright=/lumen|frost|ember|crystal|resonant|draconic_/.test(String(id));
+        const mat=glowGemMat("crys-"+id,col,col,bright?.95:.35,.90);
+        mesh(root,globe,mat,[0,.06,0],[.13,.30,.12],[.08,.25,.05]);
+        mesh(root,globe,mat,[.11,-.04,.04],[.09,.22,.09],[.12,.1,-.38]);
+        mesh(root,globe,mat,[-.11,-.05,-.03],[.085,.20,.085],[-.18,.4,.36]);
+        bevel(root,dark,[0,-.18,0],[.28,.09,.24]);
+        if(bright)glowHalo(root,root,new THREE.Color(col).getHex(),[0,.08,-.05],.52,.48);
+      } else if(id==="copper_core"||id==="voltaic_cell"||id==="catalyst"){
+        const cMat=alloyMat("coil-"+id,itemColor(id),.82,.22);
+        if(id==="voltaic_cell"){
+          mesh(root,cyl,glassMat("volt-gl",0xc8f4ff,.36,.06,0x58e2f0,.25),[0,-.02,0],[.30,.36,.30]);
+          mesh(root,cyl,glowGemMat("volt-el",0x4ce8d8,0x25c8b8,1.0,.82),[0,-.06,0],[.25,.24,.25]);
+          bar(root,brass,[-.06,-.12,0],[-.06,.26,0],.04);
+          bar(root,metal,[.06,-.12,0],[.06,.26,0],.04);
+          mesh(root,cyl,dark,[0,.17,0],[.31,.05,.31]);
+          glowHalo(root,root,0x52f2e0,[0,-.02,-.08],.48,.48);
+        }else{
+          mesh(root,cyl,dark,[0,0,0],[.22,.36,.22]);
+          for(let i=-2;i<=2;i++)mesh(root,torus,cMat,[0,i*.065,0],[.14,.14,.09],[Math.PI/2,0,0]);
+          mesh(root,cyl,brass,[0,.21,0],[.12,.06,.12]);
+          mesh(root,cyl,brass,[0,-.21,0],[.12,.06,.12]);
+        }
+      } else if(id==="ceramic_plate"||id==="armor_plate"||id==="refractory_plate"||id==="chitin"||id==="sentinel_crust"||id==="furnace_carapace"||id==="geode_carapace"||id==="ember_scale"||id==="shell_carbonate"){
+        const pMat=alloyMat("plate-"+id,itemColor(id),/plate|crust/.test(id)?.45:.25,.38);
+        bevel(root,pMat,[0,0,0],[.42,.44,.085],[.08,.18,0]);
+        for(const y of [-.12,0,.12])bevel(root,dark,[0,y,-.048],[.34,.026,.024],[.08,.18,0]);
+        for(const sx of [-.14,.14])for(const sy of [-.14,.14])mesh(root,globe,brass,[sx,sy,-.052],[.024,.024,.018]);
+      } else if(id==="beaker"||id==="graduated_cylinder"||id==="lab_glassware"||id==="test_tube"||id==="glass_myc_field_sample"||id==="petri_dish"||id==="pipette"||id==="sterile_swab"){
+        const gl=glassMat("lab-gl",0xcff6ff,.42,.05,0x6cd8e8,.24);
+        const liq=glowGemMat("lab-liq-"+id,itemColor(id),itemColor(id),.55,.84);
+        if(id==="petri_dish"){
+          mesh(root,cyl,gl,[0,-.02,0],[.44,.09,.44]);
+          mesh(root,cyl,liq,[0,-.035,0],[.38,.04,.38]);
+          for(const [x,z] of [[-.08,.04],[.09,-.05],[.02,.09]])mesh(root,globe,edge,[x,-.01,z],[.03,.015,.03]);
+        }else if(id==="test_tube"||id==="glass_myc_field_sample"){
+          mesh(root,cyl,gl,[0,0,0],[.11,.48,.11],[0,0,-.22]);
+          mesh(root,cyl,liq,[.03,-.09,0],[.082,.22,.082],[0,0,-.22]);
+          mesh(root,cyl,lightWood,[-.05,.24,0],[.095,.07,.095],[0,0,-.22]);
+        }else if(id==="pipette"||id==="sterile_swab"){
+          bar(root,id==="pipette"?gl:edge,[0,-.26,0],[0,.18,0],.036);
+          mesh(root,globe,id==="pipette"?tint("pip-bulb",0xd96846):edge,[0,.22,0],[.068,.095,.068]);
+        }else if(id==="lab_glassware"){
+          bevel(root,wood,[0,-.18,0],[.50,.06,.24]);
+          mesh(root,cyl,gl,[-.14,.02,0],[.18,.30,.18]);
+          mesh(root,cyl,liq,[-.14,-.04,0],[.14,.14,.14]);
+          mesh(root,cyl,gl,[.10,-.02,0],[.14,.22,.14]);
+          mesh(root,cyl,gl,[.10,.15,0],[.07,.14,.07]);
+          mesh(root,cyl,glowGemMat("lab-liq2",0x68f0b8,0x2cd896,.7,.82),[.10,-.06,0],[.11,.10,.11]);
+        }else{
+          const tall=id==="graduated_cylinder";
+          mesh(root,cyl,gl,[0,0,0],[tall?.14:.30,tall?.52:.38,tall?.14:.30]);
+          mesh(root,cyl,liq,[0,-.07,0],[tall?.11:.25,tall?.26:.20,tall?.11:.25]);
+          mesh(root,torus,gl,[0,tall?.26:.19,0],[tall?.075:.155,tall?.075:.155,.06],[Math.PI/2,0,0]);
+          for(let i=-1;i<=2;i++)bevel(root,edge,[0,i*.07,tall?-.075:-.155],[tall?.05:.09,.012,.01]);
+        }
+      } else if(id==="soil_sample_bag"||id==="air_canister"||id==="filter_cartridge"||id==="carbon_filter"){
+        if(id==="soil_sample_bag"){
+          bevel(root,tint("soil-bag",0xa47d54),[0,-.05,0],[.34,.36,.20]);
+          bevel(root,thread,[0,.13,0],[.22,.05,.16]);
+          bevel(root,tint("soil-top",0x8b6844),[0,.20,0],[.26,.09,.15]);
+        }else{
+          const canMat=alloyMat("can-"+id,itemColor(id),.68,.32);
+          mesh(root,cyl,canMat,[0,-.02,0],[.28,.40,.28]);
+          for(const y of [-.20,.16])mesh(root,cyl,brass,[0,y,0],[.30,.055,.30]);
+          mesh(root,cyl,dark,[0,.23,0],[.12,.08,.12]);
+        }
+      } else if(id==="carbon_rod"){
+        mesh(root,cyl,alloyMat("c-rod",0x242a30,.45,.42),[0,0,0],[.10,.64,.10],[0,0,-.32]);
+        for(const s of [-1,1])mesh(root,cyl,brass,[-s*.10,s*.30,0],[.115,.07,.115],[0,0,-.32]);
+      } else if(id==="spectrometer_lens"){
+        mesh(root,torus,brass,[0,0,0],[.24,.24,.18]);
+        mesh(root,cyl,glassMat("spec-lens",0x9bf4ff,.46,.04,0x54d8f5,.55),[0,0,0],[.44,.04,.44],[Math.PI/2,0,0]);
+        glowHalo(root,root,0x7ceeff,[0,0,-.06],.48,.48);
+      } else if(id==="lab_note"||id==="chromatography_strip"||id==="spectral_data"||id==="ph_kit"){
+        if(id==="lab_note"){
+          bevel(root,leather,[0,0,0],[.36,.44,.10],[.14,.22,0]);
+          bevel(root,edge,[.01,0,0],[.33,.40,.065],[.14,.22,0]);
+          bevel(root,brass,[-.14,0,-.055],[.05,.44,.03],[.14,.22,0]);
+        }else if(id==="spectral_data"){
+          bevel(root,dark,[0,0,0],[.46,.34,.05]);
+          for(let i=0;i<6;i++)bevel(root,glowGemMat("sp-"+i,[0xff5555,0xffaa33,0xffee44,0x44ee88,0x44ccff,0xb866ff][i],[0xff5555,0xffaa33,0xffee44,0x44ee88,0x44ccff,0xb866ff][i],1.1,.95),[(i-2.5)*.065,0,-.032],[.045,.20,.016]);
+        }else{
+          bevel(root,edge,[0,0,0],[.18,.48,.03],[0,.15,0]);
+          const cols=[0xd94b4b,0xeba834,0x58c46a,0x4a9ee6];
+          for(let i=0;i<4;i++)bevel(root,tint("ph-"+i,cols[i]),[0,-.14+i*.095,-.02],[.14,.055,.012],[0,.15,0]);
+        }
+      } else if(id==="periodic_key"){
+        const keyGold=alloyMat("pkey",0xe8bd52,.86,.18,0x7a5410,.22);
+        mesh(root,torus,keyGold,[0,.22,0],[.15,.15,.16]);
+        mesh(root,globe,crystal,[0,.22,0],[.08,.08,.05]);
+        bar(root,keyGold,[0,.08,0],[0,-.34,0],.058);
+        bevel(root,keyGold,[.09,-.24,0],[.14,.055,.045]);
+        bevel(root,keyGold,[.07,-.33,0],[.10,.055,.045]);
+        glowHalo(root,root,0x78f0e4,[0,.22,-.04],.46,.52);
+      } else if(id==="lucky_charm"||id==="prism_pendant"||id==="storm_focus"){
+        const col=itemColor(id);
+        mesh(root,torus,brass,[0,.20,0],[.12,.12,.10]);
+        mesh(root,torus,brass,[0,-.04,0],[.18,.20,.14]);
+        mesh(root,globe,glowGemMat("amulet-"+id,col,col,1.15,.90),[0,-.04,0],[.13,.17,.09]);
+        glowHalo(root,root,new THREE.Color(col).getHex(),[0,-.04,-.06],.50,.55);
+      } else if(id==="bread"||id==="carrot_loaf"){
+        const crust=tint("bread-cr",itemColor(id)),inner=tint("bread-in",0xe8c98a);
+        bevel(root,crust,[0,-.03,0],[.48,.22,.28],[0,.22,0]);
+        bevel(root,crust,[0,.06,0],[.42,.13,.23],[0,.22,0]);
+        for(const x of [-.11,0,.11])bevel(root,inner,[x,.125,0],[.032,.022,.16],[0,.58,0]);
+      } else if(id==="cheese"){
+        const ch=tint("cheese-body",0xf0c748),hole=tint("cheese-hole",0xc79222);
+        bevel(root,ch,[0,0,0],[.42,.22,.34],[0,.35,0]);
+        for(const [x,y,z,s] of [[-.08,.03,-.175,.045],[.09,-.04,-.175,.055],[.02,.115,.02,.048]]){
+          mesh(root,globe,hole,[x,y,z],[s,s,.02]);
+        }
+      } else if(id==="honey"||id==="prickly_jam"||id==="alpine_compote"){
+        const col=itemColor(id);
+        mesh(root,cyl,glassMat("jar-gl",0xfff6e0,.36,.06),[0,-.03,0],[.30,.34,.30]);
+        mesh(root,cyl,glowGemMat("jar-f-"+id,col,col,.45,.90),[0,-.05,0],[.25,.26,.25]);
+        mesh(root,cyl,id==="honey"?lightWood:tint("jar-lid",0xd96858),[0,.16,0],[.24,.08,.24]);
+      } else if(id==="berries"||id==="alpine_berries"||id==="wild_cherries"||id==="pine_nuts"){
+        const bMat=tint("berry-"+id,itemColor(id)),leafMat=tint("berry-leaf",0x4d8a48);
+        for(const [x,y,z,s] of [[0,0,0,.10],[.11,-.04,.04,.09],[-.11,-.03,.05,.09],[.04,.09,-.04,.085],[-.05,-.09,-.04,.085]]){
+          mesh(root,globe,bMat,[x,y,z],[s,s,s]);
+        }
+        bevel(root,leafMat,[0,.15,0],[.22,.03,.12],[.2,.3,.18]);
+      } else if(id==="cacao_cake"||id==="berry_tart"||id==="cherry_crumble"){
+        const base=tint("cake-b",0xc99655),top=tint("cake-t",itemColor(id));
+        mesh(root,cyl,base,[0,-.06,0],[.44,.14,.44]);
+        mesh(root,cyl,top,[0,.03,0],[.40,.08,.40]);
+        for(let i=0;i<5;i++){
+          const a=i*Math.PI*2/5;
+          mesh(root,globe,id==="cacao_cake"?edge:tint("tart-ber",0xc43248),[Math.cos(a)*.12,.09,Math.sin(a)*.12],[.042,.042,.042]);
+        }
+      } else if(id==="bog_risotto"||id==="shellfish_broth"||id==="mushroom_rice"){
+        mesh(root,cyl,dark,[0,-.05,0],[.42,.16,.42]);
+        mesh(root,cyl,tint("bowl-"+id,itemColor(id)),[0,.02,0],[.36,.05,.36]);
+        for(const [x,z] of [[-.08,.04],[.09,-.05],[0,.08]])bevel(root,lightWood,[x,.055,z],[.065,.04,.065],[0,.4,0]);
+      } else if(id==="mint_fish"||id==="fish_fillet"||id==="grilled_game"||id==="baked_potato"){
+        bevel(root,wood,[0,-.08,0],[.48,.05,.32],[0,.2,0]);
+        bevel(root,tint("dish-"+id,itemColor(id)),[0,0,0],[.36,.12,.22],[0,.2,0]);
+        bevel(root,tint("herb-g",0x5ca856),[.06,.075,0],[.12,.03,.08],[0,.5,.12]);
+      } else if(id==="forest_mushroom"){
+        mesh(root,cyl,edge,[0,-.09,0],[.12,.24,.12]);
+        mesh(root,globe,tint("mush-cap",itemColor(id)),[0,.08,0],[.25,.14,.25]);
+      } else if(id==="wild_mint"||id==="samphire"||id==="wild_rice"||id==="prickly_fruit"||id==="cacao"){
+        const fMat=tint("forage-"+id,itemColor(id));
+        if(id==="cacao"||id==="prickly_fruit"){
+          mesh(root,globe,fMat,[0,0,0],[.18,.26,.16],[.12,.2,.22]);
+          bar(root,wood,[0,.22,0],[.04,.32,0],.035);
+        }else{
+          for(let i=-1;i<=1;i++){
+            bar(root,fMat,[i*.04,-.22,0],[i*.13,.22,i*.04],.035);
+            bevel(root,fMat,[i*.14,.14,i*.04],[.10,.14,.03],[0,i*.4,i*-.3]);
+          }
+        }
+      } else if(id==="feather"){
+        bar(root,edge,[-.08,-.28,0],[.10,.28,0],.024);
+        bevel(root,tint("feath",itemColor(id)),[.03,.05,0],[.18,.40,.025],[0,0,-.28]);
+        bevel(root,edge,[.06,.16,-.01],[.12,.14,.02],[0,0,-.28]);
+      } else if(id==="hide"){
+        mesh(root,cyl,tint("hide-r",itemColor(id)),[0,0,0],[.22,.46,.22],[0,0,Math.PI/2-.22]);
+        for(const x of [-.12,.12])mesh(root,torus,thread,[x,0,0],[.12,.12,.08],[0,Math.PI/2,0]);
+      } else if(id==="wool"||id==="soot_silk"){
+        const yMat=tint("yarn-"+id,itemColor(id));
+        mesh(root,globe,yMat,[0,0,0],[.22,.20,.22]);
+        for(let i=0;i<3;i++)mesh(root,torus,yMat,[0,0,0],[.21,.21,.10],[i*.9,i*1.1,0]);
+      } else if(id==="candle"){
+        const wax=tint("candle-wax",0xf8efd8),drip=tint("candle-drip",0xede0be);
+        const outerFlame=glowGemMat("candle-flame-o",0xffa428,0xff7410,1.65,.92);
+        const innerFlame=glowGemMat("candle-flame-i",0xfff6b8,0xffe46b,1.95,.98);
+        mesh(root,cyl,brass,[0,-.22,0],[.30,.06,.30]);
+        mesh(root,torus,brass,[.15,-.19,0],[.07,.07,.05]);
+        mesh(root,cyl,wax,[0,-.02,0],[.18,.36,.18]);
+        for(const [dx,dy,dz,h] of [[.085,.08,-.02,.13],[-.075,.06,.04,.16],[.01,.09,-.088,.10]]){
+          mesh(root,cyl,drip,[dx,dy,dz],[.042,h,.042]);
+        }
+        bar(root,dark,[0,.15,0],[0,.21,0],.018);
+        mesh(root,globe,outerFlame,[0,.28,0],[.068,.135,.068]);
+        mesh(root,globe,innerFlame,[0,.265,0],[.036,.078,.036]);
+        glowHalo(root,root,0xffb44c,[0,.28,-.04],.58,.62);
+      } else if(id==="soap"){
+        bevel(root,tint("soap-b",itemColor(id)),[0,0,0],[.36,.14,.24],[.18,.32,0]);
+        bevel(root,edge,[0,.075,0],[.20,.02,.11],[.18,.32,0]);
+      } else if(id==="bait"||id==="herb_bait"||id==="mineral_lure"||id==="fishing_junk"){
+        const lMat=tint("lure-"+id,itemColor(id));
+        mesh(root,globe,lMat,[0,.04,0],[.12,.19,.10]);
+        mesh(root,torus,metal,[0,-.14,0],[.09,.10,.06]);
+        bar(root,edge,[0,.22,0],[0,.34,0],.02);
+      } else if(/hydrogen$|oxygen$|chlorine|carbon_dioxide|steam/.test(String(id))){
+        const gCol=itemColor(id);
+        mesh(root,cyl,glassMat("gas-tube",0xd8f6ff,.38,.05),[0,0,0],[.24,.42,.24]);
+        mesh(root,globe,glowGemMat("gas-cloud-"+id,gCol,gCol,.75,.68),[0,0,0],[.14,.18,.14]);
+        mesh(root,cyl,brass,[0,.23,0],[.26,.06,.26]);
+        mesh(root,cyl,brass,[0,-.23,0],[.26,.06,.26]);
+        mesh(root,torus,metal,[0,.29,0],[.08,.08,.07],[Math.PI/2,0,0]);
+      } else if(/water|acid|alkali|ammonia|ethanol|oil|indicator|solution|tetraammine|antidote|bath|nitrogen|mash|medium|resin|gel|mucus/.test(String(id))){
+        const lCol=itemColor(id);
+        const glowing=/glow|oscillating|nitrogen|acid/.test(String(id));
+        const gl=glassMat("reag-gl",0xd4f4ff,.36,.05);
+        const liq=glowGemMat("reag-"+id,lCol,lCol,glowing?1.05:.35,.88);
+        mesh(root,cyl,gl,[0,-.05,0],[.28,.30,.28]);
+        mesh(root,cyl,liq,[0,-.08,0],[.23,.21,.23]);
+        mesh(root,cyl,gl,[0,.14,0],[.13,.12,.13]);
+        mesh(root,cyl,lightWood,[0,.22,0],[.12,.07,.12]);
+        bevel(root,edge,[0,-.04,-.145],[.16,.11,.015]);
+        if(glowing)glowHalo(root,root,new THREE.Color(lCol).getHex(),[0,-.05,-.08],.46,.48);
+      } else if(/sulfur|sulfate|fertilizer|lime|salt|pigment|nitrate|chloride|hydroxide|carbon|oxide|dust|abrasive|adsorbent|exchange|alginate|mix|precipitate|residue/.test(String(id))){
+        const pCol=itemColor(id);
+        mesh(root,cyl,alloyMat("mortar",0x9ea8ad,.18,.68),[0,-.10,0],[.38,.16,.38]);
+        mesh(root,globe,tint("pow-"+id,pCol),[0,-.01,0],[.18,.13,.18]);
+        for(const [x,z] of [[-.09,.04],[.08,-.05],[.02,.08]])mesh(root,globe,tint("pow-"+id,pCol),[x,.04,z],[.065,.055,.065]);
+        bar(root,edge,[.06,.02,.02],[.22,.22,-.04],.05);
       } else {
         const color = itemColor(id);
-        mesh(root,globe,tint(id,color),[0,0,0],[.18,.16,.13],[.14,.35,.22]);
-        bevel(root,tint(id,color),[.09,-.06,.015],[.14,.1,.115],[0,0,.27]);
+        bevel(root,wood,[0,-.02,0],[.34,.28,.26],[.08,.24,0]);
+        bevel(root,tint(id,color),[0,.02,-.135],[.22,.16,.03],[.08,.24,0]);
+        bevel(root,brass,[0,.13,0],[.36,.045,.28],[.08,.24,0]);
       }
       const scale = dropped ? .42 : first ? .72 : .58;
       root.scale.setScalar(scale);
@@ -1003,7 +2108,30 @@ globalThis.QuimiCraftModels = (() => {
 
     function animateItem(root, now, action = 0, motion = 1, hasArrow = true) {
       if (!root) return;
-      const {core,rings,string,bowTips} = root.userData;
+      mirrorMaterial.uniforms.mirrorTime.value = now * .001 * motion;
+      const {core,rings,string,bowTips,pulseHalos,waveRings,sacredHalo,sacredGlow,sacredSphere} = root.userData;
+      if(sacredSphere){
+        const aura=sacredSphere.userData,phase=now*.00058*motion;
+        aura.pulse=phase;
+        aura.strength=aura.baseStrength*(1+Math.sin(phase*3.2)*.065*motion+action*.46);
+        sacredSphere.scale.setScalar(aura.radius*(1+Math.sin(phase*3.2)*.008*motion+action*.022));
+      }
+      if(sacredHalo){
+        const phase=now*.00048*motion;
+        sacredHalo.rotation.z=phase;
+        sacredHalo.scale.setScalar(1+Math.sin(phase*4)*.012*motion+action*.045);
+      }
+      pulseHalos?.forEach(halo=>{
+        const s = (halo.userData.baseSize || .4) * (1 + Math.sin(now * .0042 + halo.userData.phase) * .12 * motion);
+        halo.scale.set(s, s, 1);
+      });
+      if(sacredGlow){sacredGlow.scale.x*=1+action*.24;sacredGlow.scale.y*=1+action*.24}
+      waveRings?.forEach((ring,i)=>{
+        const pulse = 1 + Math.sin(now * .0065 * motion + ring.userData.phase) * .22;
+        const base = .058 + i * .028;
+        ring.scale.set(base * pulse, base * pulse, .042);
+        ring.position.y = .22 + ((now * .00028 * motion + i / 3) % 1) * .17;
+      });
       root.userData.gloveSparks?.forEach((spark,i)=>{
         const t=(now*.0014+i*.163)%1,a=i*2.399+t*2;
         spark.visible=motion>0;
@@ -1044,15 +2172,20 @@ globalThis.QuimiCraftModels = (() => {
       const finisher=globalThis.QuimiCraftBiomeFauna?.exterminationTools[id];
       const labUtility=globalThis.QuimiCraftFieldLab?.huntUtilities[id];
       const weapon=globalThis.QuimiCraftArsenal?.weapons[id];
-      const guard=globalThis.QuimiCraftArsenal?.shields[id];
+      const guard=id==="shield"?baseShieldDef:globalThis.QuimiCraftArsenal?.shields[id];
       const artifact=globalThis.QuimiCraftArsenal?.focuses[id];
       const gear=globalThis.QuimiCraftArsenal?.apparel[id];
-      if (!weapon&&!guard&&!artifact&&!gear&&!vehicleItem&&!alchemyItem&&!finisher&&!labUtility&&!["wind_staff","bow","iron_sword","stone_pickaxe","iron_pickaxe","copper_pickaxe","hoe","fishing_rod","reinforced_rod","pan","mallet","arrow","bolt","carbon_badge","dragon_hide","hunt_badge"].includes(id)) return "";
+      if (!weapon&&!guard&&!artifact&&!gear&&!vehicleItem&&!alchemyItem&&!finisher&&!labUtility&&!["wind_staff","bow","iron_sword","stone_pickaxe","iron_pickaxe","copper_pickaxe","hoe","fishing_rod","reinforced_rod","pan","mallet","arrow","bolt","carbon_badge","dragon_hide","hunt_badge","shield","corrupted_ingot","corrupted_shard","old_god_eye","candle"].includes(id)) return "";
       const canvas = document.createElement("canvas");
       canvas.width=canvas.height=64;
       const ctx = canvas.getContext("2d");
       ctx.lineCap="round";
       ctx.lineJoin="round";
+      function glowDisc(x,y,r,inner,outer){
+        const g=ctx.createRadialGradient(x,y,1,x,y,r);
+        g.addColorStop(0,inner);g.addColorStop(1,outer);
+        ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+      }
       function line(points, color, width) {
         ctx.beginPath(); ctx.moveTo(...points[0]);
         for (const point of points.slice(1)) ctx.lineTo(...point);
@@ -1066,24 +2199,32 @@ globalThis.QuimiCraftModels = (() => {
       const handle=[[13,54],[37,27]];
       if(labUtility){
         if(id==="quartz_whetstone"){
-          tile([[16,44],[37,11],[51,21],[28,55]],"#9d8ba9");
-          line([[18,44],[43,16]],"#e6deea",5);
-          line([[26,47],[47,21]],"#60566d",3);
+          glowDisc(33,31,26,"#d6b8ff77","#d6b8ff00");
+          tile([[16,44],[37,11],[51,21],[28,55]],"#b598cf");
+          line([[18,44],[43,16]],"#f5ecff",5);
+          line([[26,47],[47,21]],"#5a516b",3);
+          tile([[28,27],[35,20],[38,24],[31,32]],"#ffffffaa");
         }else if(id==="soot_filter"){
-          tile([[18,17],[46,17],[47,48],[41,53],[23,53],[17,47]],"#64717e");
-          line([[19,18],[45,18]],"#a6bac0",5);
-          for(const x of [25,32,39])line([[x,27],[x,43]],"#313741",4);
-          line([[21,51],[43,51]],"#b99865",4);
+          glowDisc(32,26,24,"#5cffd655","#5cffd600");
+          tile([[18,17],[46,17],[47,48],[41,53],[23,53],[17,47]],"#5b6c7a");
+          line([[19,18],[45,18]],"#c8dee6",5);
+          line([[20,24],[44,24]],"#5effd8",4);
+          for(const x of [25,32,39])line([[x,30],[x,45]],"#262e38",4);
+          line([[21,51],[43,51]],"#d8aa64",4);
         }else if(id==="vein_probe"){
-          line([[31,54],[32,30]],"#50606e",12);
-          line([[23,19],[23,32],[40,32],[40,19]],"#a98b60",4);
-          tile([[32,7],[40,19],[32,30],[24,19]],"#bb91ea");
-          line([[28,36],[35,36]],"#d5c5ff",3);
+          glowDisc(32,19,24,"#c680ff99","#c680ff00");
+          line([[31,54],[32,30]],"#3e4d5a",12);
+          line([[23,19],[23,32],[40,32],[40,19]],"#d2a968",4);
+          tile([[32,6],[41,19],[32,31],[23,19]],"#cf9aff");
+          tile([[32,9],[36,19],[32,26],[28,19]],"#f7ebff");
+          line([[27,37],[36,37]],"#d6b4ff",3.5);
         }else{
+          glowDisc(34,39,24,"#ff8a3866","#ff8a3800");
           for(const shift of [14,-8]){
-            tile([[26+shift,17],[39+shift,17],[39+shift,47],[21+shift,47],[20+shift,38],[26+shift,35]],"#a96548");
-            line([[20+shift,45],[39+shift,45]],"#435359",4);
-            line([[29+shift,22],[36+shift,22]],"#e4bb8b",3);
+            tile([[26+shift,17],[39+shift,17],[39+shift,47],[21+shift,47],[20+shift,38],[26+shift,35]],"#c2724a");
+            line([[20+shift,45],[39+shift,45]],"#34424a",4);
+            line([[29+shift,22],[36+shift,22]],"#f3c98d",3);
+            line([[22+shift,39],[33+shift,39]],"#ffae52",2.5);
           }
         }
         const source=canvas.toDataURL("image/png");
@@ -1092,30 +2233,45 @@ globalThis.QuimiCraftModels = (() => {
       }
       if(finisher||id==="hunt_badge"){
         if(id==="fracture_hammer"){
+          glowDisc(37,22,24,"#5ad8ff80","#5ad8ff00");
           line([[18,53],[41,23]],"#75523d",10);
           line([[18,53],[28,40]],"#37424a",10);
-          tile([[23,13],[32,5],[55,22],[48,35],[21,18]],finisher.color);
-          line([[24,12],[48,31]],"#d3e0e5",4);
+          tile([[23,13],[32,5],[55,22],[48,35],[21,18]],"#8ca6b8");
+          line([[24,12],[48,31]],"#e8f8ff",4);
+          line([[31,18],[44,28]],"#62e4ff",3.5);
         }else if(id==="copper_ampoule"||id==="sealing_cartridge"){
           const copper=id==="copper_ampoule";
-          if(copper)tile([[26,15],[38,15],[38,24],[44,30],[44,54],[20,54],[20,30],[26,24]],finisher.color);
-          else tile([[21,18],[43,18],[44,52],[20,52]],finisher.color);
-          line([[copper?26:20,copper?14:19],[copper?38:44,copper?14:19]],"#b2a485",5);
-          line([[24,51],[40,51]],"#425057",4);
-          if(copper)line([[25,32],[25,43]],"#c9f5e4",3);
-          else tile([[28,30],[37,30],[37,41],[28,41]],"#754750");
+          glowDisc(32,36,26,copper?"#3cf2ce99":"#ffae4299",copper?"#3cf2ce00":"#ffae4200");
+          if(copper){
+            tile([[26,14],[38,14],[38,24],[45,31],[45,54],[19,54],[19,31],[26,24]],"#a8edf299");
+            tile([[21,34],[43,34],[43,52],[21,52]],"#36e0bd");
+            line([[21,31],[21,52]],"#d8854c",3);line([[43,31],[43,52]],"#d8854c",3);
+            line([[24,33],[24,46]],"#e4fffb",2.5);
+          }else{
+            tile([[21,18],[43,18],[44,52],[20,52]],"#f0a642");
+            tile([[28,30],[37,30],[37,41],[28,41]],"#8c3842");
+            glowDisc(32,35,6,"#ffe48f","#ffae3400");
+          }
+          line([[copper?26:20,copper?14:19],[copper?38:44,copper?14:19]],"#ddb062",5);
+          line([[22,52],[42,52]],"#42545e",4);
         }else if(id==="echo_fork"){
-          line([[32,53],[32,33]],"#96694e",8);
-          line([[22,13],[22,29],[26,36],[38,36],[42,29],[42,13]],finisher.color,7);
-          line([[24,12],[24,26]],"#e8d9ff",3);
+          glowDisc(32,22,25,"#bc84ff99","#bc84ff00");
+          line([[32,53],[32,33]],"#8c6248",8);
+          line([[22,13],[22,29],[26,36],[38,36],[42,29],[42,13]],"#cfb5ff",7);
+          line([[24,12],[24,26]],"#f6eeff",3);
+          line([[27,21],[37,21]],"#e0c2ffaa",2.5);line([[28,15],[36,15]],"#e0c2ff88",2);
         }else if(id==="hunt_badge"){
-          tile([[32,6],[57,31],[32,57],[7,31]],"#dbab60");
-          tile([[32,12],[51,31],[32,51],[13,31]],"#374b52");
-          tile([[32,17],[39,31],[32,45],[25,31]],"#f3cb77");
+          glowDisc(32,31,29,"#ffc757aa","#ffc75700");
+          tile([[32,5],[58,31],[32,58],[6,31]],"#eac065");
+          tile([[32,12],[51,31],[32,51],[13,31]],"#263942");
+          tile([[32,16],[40,31],[32,46],[24,31]],"#ffae3a");
+          tile([[32,20],[36,31],[32,42],[28,31]],"#fff3be");
         }else{
-          tile([[16,11],[46,14],[51,49],[41,56],[17,54],[12,45]],finisher.color);
-          line([[15,14],[46,16]],id==="brine_cold_pack"?"#33678c":"#92734b",5);
-          for(const [x,y] of [[23,36],[34,29],[41,40]])tile([[x,y-4],[x+4,y],[x,y+4],[x-4,y]],"#f5fbeb");
+          const cold=id==="brine_cold_pack";
+          glowDisc(32,34,26,cold?"#5ce0ff99":"#c4faf088",cold?"#5ce0ff00":"#c4faf000");
+          tile([[16,11],[46,14],[51,49],[41,56],[17,54],[12,45]],cold?"#67cef2":finisher.color);
+          line([[15,14],[46,16]],cold?"#325870":"#c89c54",5);
+          for(const [x,y] of [[23,36],[34,29],[41,40]])tile([[x,y-4],[x+4,y],[x,y+4],[x-4,y]],"#f7ffff");
         }
         const source=canvas.toDataURL("image/png");
         icons.set(id,source);
@@ -1192,42 +2348,128 @@ globalThis.QuimiCraftModels = (() => {
         line(handle,"#a8835b",7);
         tile([[26,15],[45,26],[40,36],[21,26]],"#9ca9ae");
         line([[22,24],[27,15],[44,25]],"#d2d8da",2);
+      } else if(id==="candle"){
+        glowDisc(32,16,24,"#ffcf66cc","#ff902200");
+        tile([[20,48],[44,48],[46,54],[18,54]],"#c89b49");
+        tile([[25,25],[39,25],[39,49],[25,49]],"#f7eed5");
+        tile([[25,25],[31,25],[31,37],[28,39],[25,35]],"#e6d7b0");
+        line([[32,25],[32,20]],"#2d2420",2.5);
+        tile([[32,6],[38,16],[35,22],[29,22],[26,16]],"#ff9c28");
+        tile([[32,11],[35,17],[32,21],[29,17]],"#fff5ba");
+      } else if(id==="old_god_eye"){
+        glowDisc(32,32,29,"#eb68ffaa","#eb68ff00");
+        ctx.fillStyle="#f2e2c2";ctx.beginPath();ctx.arc(32,32,20,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle="#de58dc";ctx.beginPath();ctx.arc(32,32,12,0,Math.PI*2);ctx.fill();
+        tile([[32,21],[36,32],[32,43],[28,32]],"#12061c");
+        ctx.fillStyle="#fff5ff";ctx.beginPath();ctx.arc(27,26,3.2,0,Math.PI*2);ctx.fill();
+      } else if(id==="corrupted_ingot"){
+        glowDisc(32,32,27,"#c964ff99","#c964ff00");
+        tile([[10,38],[22,20],[52,18],[54,32],[42,47],[12,48]],"#3e1b5c");
+        tile([[14,36],[24,22],[49,21],[40,34]],"#6a3299");
+        line([[19,34],[32,29],[45,26]],"#f594ff",3.5);
+        tile([[32,26],[36,30],[32,34],[28,30]],"#ffe2a6");
+        line([[32,27],[32,33]],"#14071f",2);
+      } else if(id==="corrupted_shard"){
+        glowDisc(32,32,27,"#d968ffaa","#d968ff00");
+        tile([[32,7],[46,24],[41,54],[24,56],[17,27]],"#6e28a8");
+        tile([[32,10],[41,25],[36,48],[26,30]],"#ec86ff");
+        line([[32,12],[32,47]],"#fff0ff",2.2);
       } else if(artifact){
-        if(artifact.shape==="book"){
+        if(artifact.shape==="book"||artifact.shape==="corruptedBook"||artifact.shape==="summonBook"){
+          if(artifact.corrupted)glowDisc(32,32,29,"#d962ff99","#d962ff00");
           tile([[8,15],[30,19],[54,12],[58,45],[33,53],[9,47]],artifact.color);
-          tile([[11,11],[30,16],[52,9],[54,40],[31,47],[12,41]],"#e8d8ad");
+          tile([[11,11],[30,16],[52,9],[54,40],[31,47],[12,41]],artifact.corrupted?"#d7c2de":"#e8d8ad");
           line([[30,17],[31,47]],artifact.trim,3);
-          for(const y of [20,26,32,38]){line([[15,y],[26,y+3]],"#775d64",1.4);line([[35,y+1],[49,y-3]],"#775d64",1.4);}
+          for(const y of [20,26,32,38]){line([[15,y],[26,y+3]],artifact.corrupted?"#9f3be0":"#775d64",1.4);line([[35,y+1],[49,y-3]],artifact.corrupted?"#9f3be0":"#775d64",1.4);}
+          if(artifact.corrupted){
+            ctx.fillStyle="#ffcb94";ctx.beginPath();ctx.arc(31,31,6.5,0,Math.PI*2);ctx.fill();
+            line([[31,26],[31,36]],"#12061c",2.4);
+          }
         }else{
           line([[21,53],[44,53]],"#87634e",6);
           tile([[17,26],[24,15],[36,10],[47,18],[52,30],[43,42],[31,48],[20,41]],artifact.color);
           tile([[22,25],[33,16],[42,20],[36,35],[26,38]],artifact.trim);
           line([[15,35],[25,26],[45,20],[56,23],[48,33],[28,42],[17,41]],"#dbb78a",2.6);
         }
+      } else if(guard?.shape==="sacred"){
+        glowDisc(32,30,31,"#ffc649af","#ffb94c00");
+        const crest=[[32,4],[38,10],[49,15],[48,30],[44,45],[39,53],[32,61],[24,54],[19,46],[15,31],[15,15],[25,10]];
+        tile(crest,"#efb74b");
+        tile(crest.map(([x,y])=>[32+(x-32)*.83,31+(y-31)*.86]),"#583b29");
+        tile(crest.map(([x,y])=>[32+(x-32)*.69,31+(y-31)*.76]),"#414b59");
+        for(const side of [-1,1]){
+          for(let i=0;i<5;i++){
+            const p=(x,y)=>[32+x*side,y];
+            tile([p(6,30+i*2),p(17+i,21+i*3),p(20+i,11+i*5),
+              p(18+i,27+i*3),p(9,33+i*2)],i%2?"#b8a88b":"#ffecbf");
+          }
+        }
+        glowDisc(32,29,12,"#fff9cee8","#ffa73c00");
+        ctx.beginPath();ctx.arc(32,29,8.6,0,Math.PI*2);ctx.strokeStyle="#f6ba43";ctx.lineWidth=2;ctx.stroke();
+        line([[35,45],[31,26]],"#332923",5);
+        line([[35,45],[31,26]],"#ffda81",2.6);
+        tile([[31,22],[42,21],[43,27],[32,28]],"#513527");
+        tile([[32,23],[41,22],[41,26],[33,27]],"#fff1bd");
+        tile([[27,29],[33,28],[36,33],[33,37],[27,35]],"#6d5032");
+        for(const y of [29,31.5,34])line([[28,y],[33,y-.48]],"#fff1c6",1.55);
+        for(const y of [13,52])tile([[32,y-3],[35,y],[32,y+3],[29,y]],"#ffebae");
+      } else if(id==="shield"){
+        const crest=[[32,59],[22,53],[15,45],[11,33],[11,14],[15,10],[22,8],[32,9],
+          [42,8],[49,10],[53,14],[53,33],[49,45],[42,53]];
+        const inset=scale=>crest.map(([x,y])=>[32+(x-32)*scale,31+(y-31)*scale]);
+        const shine=ctx.createLinearGradient(14,12,46,56);
+        shine.addColorStop(0,"#f2bf7f");shine.addColorStop(.24,"#b57040");
+        shine.addColorStop(.49,"#e4a769");shine.addColorStop(.62,"#a85d33");shine.addColorStop(1,"#6f3b27");
+        tile(crest,shine);tile(inset(.92),"#70412b");tile(inset(.84),shine);
+        glowDisc(31,30,10,"#824324","#5b2c20");
+        glowDisc(29,28,6.7,"#f6c988","#a2582e");
+        for(const [x,y] of [[18,15],[46,15],[15,25],[49,25],[17,39],[47,39],[24,49],[40,49],[32,54]])
+          glowDisc(x,y,1.8,"#ffdb9b","#aa693c");
       } else if(guard){
+        const glowCol=guard.shape==="corrupted"?"#dc64ff99":guard.shape==="dragon"?"#4ffce288":guard.shape==="mirror"?"#a6fbff99":guard.shape==="tower"?"#62dcff77":guard.shape==="heater"?"#66d6ff77":"#ffca6677";
+        glowDisc(32,32,30,glowCol,glowCol.slice(0,7)+"00");
         const outline=guard.shape==="oval"||guard.shape==="mirror"?[[19,11],[32,5],[45,11],[51,23],[49,41],[41,54],[32,59],[23,54],[15,41],[13,23]]:
           guard.shape==="tower"?[[15,8],[49,8],[54,14],[54,51],[48,57],[16,57],[10,51],[10,14]]:
+          guard.shape==="heater"?[[13,11],[32,8],[51,11],[52,33],[44,49],[32,58],[20,49],[12,33]]:
           [[16,10],[22,6],[32,11],[42,6],[48,10],[54,24],[48,44],[32,60],[16,44],[10,24]];
         tile(outline,guard.trim);
-        tile(outline.map(([x,y])=>[32+(x-32)*.83,32+(y-32)*.86]),guard.color);
-        if(guard.shape==="dragon"){
+        tile(outline.map(([x,y])=>[32+(x-32)*.89,32+(y-32)*.91]),"#17222b");
+        tile(outline.map(([x,y])=>[32+(x-32)*.82,32+(y-32)*.85]),guard.color);
+        if(guard.shape==="corrupted"){
+          ctx.fillStyle="#ffcf96";ctx.beginPath();ctx.ellipse(32,31,11,13,0,0,Math.PI*2);ctx.fill();
+          ctx.fillStyle="#df54d8";ctx.beginPath();ctx.ellipse(32,31,7,9,0,0,Math.PI*2);ctx.fill();
+          tile([[32,22],[35,31],[32,40],[29,31]],"#12051c");
+        }else if(guard.shape==="dragon"){
           tile([[32,16],[39,19],[44,29],[41,40],[37,44],[36,51],[32,54],[28,51],[27,44],[23,40],
-            [20,29],[25,19]],"#ad7948");
+            [20,29],[25,19]],"#b8824b");
           for(const side of [-1,1]){
             const reflect=points=>points.map(([x,y])=>[32+(x-32)*side,y]);
             tile(reflect([[38,23],[41,15],[48,9],[46,20],[43,30]]),guard.trim);
             tile(reflect([[35,30],[43,26],[42,34],[38,39],[35,35]]),guard.trim);
-            line(reflect([[36,33],[41,30]]),"#83efdb",2.7);
-            tile(reflect([[36,43],[40,42],[37,48]]),"#f9e3ba");
+            line(reflect([[36,33],[41,30]]),"#68ffea",3);
+            tile(reflect([[36,43],[40,42],[37,48]]),"#fff0c8");
           }
-          tile([[27,37],[32,33],[37,37],[36,46],[32,49],[28,46]],"#e0b276");
-          line([[29,42],[30,42]],"#493448",2);
-          line([[34,42],[35,42]],"#493448",2);
+          tile([[27,37],[32,33],[37,37],[36,46],[32,49],[28,46]],"#e8bc7c");
+          tile([[32,18],[35,23],[32,27],[29,23]],"#ffb24a");
+          line([[29,42],[30,42]],"#382638",2);
+          line([[34,42],[35,42]],"#382638",2);
         }else if(guard.shape==="mirror"){
-          tile([[16,33],[38,11],[45,16],[17,45]],"#eefcfe");
-          line([[23,47],[46,24]],"#d6f0f4",2.4);
-        }else tile([[32,22],[42,30],[32,41],[22,30]],guard.trim);
-        if(guard.shape==="tower")line([[32,14],[32,52]],guard.trim,3);
+          tile([[16,33],[38,11],[45,16],[17,45]],"#f2ffff");
+          line([[23,47],[46,24]],"#d2f7ff",2.8);
+          tile([[32,9],[35,13],[32,17],[29,13]],"#8cf7ff");
+          tile([[32,47],[35,51],[32,55],[29,51]],"#8cf7ff");
+        }else if(guard.shape==="tower"){
+          line([[32,14],[32,52]],guard.trim,4);
+          line([[32,17],[32,49]],"#6be4ff",2);
+          line([[22,20],[42,20]],"#9ff2ff",3.5);
+        }else if(guard.shape==="heater"){
+          line([[32,14],[32,52]],guard.trim,3);
+          line([[18,28],[46,28]],guard.trim,3);
+          tile([[32,21],[38,28],[32,35],[26,28]],"#6fe0ff");
+        }else{
+          tile([[32,21],[43,31],[32,42],[21,31]],guard.trim);
+          tile([[32,25],[38,31],[32,37],[26,31]],"#ffd36e");
+        }
       } else if(id==="dragon_hide"){
         tile([[15,12],[32,9],[48,14],[54,30],[49,52],[35,56],[16,52],[11,35]],"#60414c");
         for(let y=20;y<=44;y+=8)for(let x=22;x<=44;x+=8){
@@ -1235,6 +2477,7 @@ globalThis.QuimiCraftModels = (() => {
           tile([[dx-4,y],[dx,y-2],[dx+4,y],[dx,y+5]],(x+y)%3===0?"#c68d7d":"#915e66");
         }
       } else if(gear){
+        if(gear.finish==="corrupted")glowDisc(32,32,29,"#d962ff88","#d962ff00");
         if(gear.shape==="quiver"){
           for(const x of [26,32,38])line([[x,29],[x+2,9]],gear.trim,4);
           tile([[24,24],[43,20],[39,52],[28,56]],gear.color);
@@ -1276,6 +2519,7 @@ globalThis.QuimiCraftModels = (() => {
           tile([[12,28],[16,15],[30,7],[43,11],[51,24],[49,49],[39,55],[23,53],[15,46]],gear.color);
           tile([[19,29],[31,22],[46,28],[43,41],[35,45],[31,37],[25,43],[21,41]],"#1e2930");
           line([[20,28],[31,22],[46,28]],gear.trim,4);
+          if(gear.finish==="corrupted"){ctx.fillStyle="#ffcf96";ctx.beginPath();ctx.arc(32,18,4.8,0,Math.PI*2);ctx.fill();line([[32,14],[32,22]],"#12051c",1.9);}
         }else if(gear.shape==="tunic"||gear.shape==="arcaneRobe"||gear.finish==="dragon"){
           const hem=gear.shape==="arcaneRobe"?58:53;
           tile([[13,16],[26,9],[32,14],[39,9],[51,16],[49,30],[42,29],[47,hem],[35,hem],[32,hem-5],
@@ -1290,6 +2534,7 @@ globalThis.QuimiCraftModels = (() => {
           line([[13,17],[26,12],[32,18],[39,12],[52,17]],gear.trim,4);
           line([[21,48],[43,48]],gear.trim,3);
           tile([[32,23],[39,32],[32,40],[25,32]],gear.trim);
+          if(gear.finish==="corrupted"){ctx.fillStyle="#ffcf96";ctx.beginPath();ctx.arc(32,32,5.4,0,Math.PI*2);ctx.fill();line([[32,27],[32,37]],"#12051c",2);}
         }
       } else if(id==="crossbow"){
         line([[32,51],[32,15]],"#624334",10);
@@ -1302,10 +2547,12 @@ globalThis.QuimiCraftModels = (() => {
         tile([[41,19],[55,10],[49,25],[41,28]],"#bccfd8");
         tile([[13,39],[24,36],[24,46],[14,54]],"#866744");
       } else if(weapon?.family==="gauntlet"){
+        if(weapon.corrupted)glowDisc(32,32,27,"#d962ff99","#d962ff00");
         tile([[8,30],[13,17],[24,16],[27,12],[47,15],[54,23],[51,42],[42,51],[13,48]],weapon.color);
         tile([[10,34],[27,35],[28,46],[13,47]],"#28262f");
         tile([[27,17],[42,16],[51,23],[49,30],[28,27]],weapon.trim);
         tile([[28,31],[51,32],[47,40],[39,44],[29,41]],weapon.color);
+        if(weapon.corrupted){ctx.fillStyle="#ffcf96";ctx.beginPath();ctx.arc(24,27,5,0,Math.PI*2);ctx.fill();line([[24,23],[24,31]],"#12051c",2);}
       } else if(weapon?.family==="mace"){
         line([[12,52],[36,29]],"#584235",8);
         tile([[27,16],[42,8],[55,17],[56,28],[46,41],[33,40],[26,30]],weapon.color);
@@ -1317,6 +2564,7 @@ globalThis.QuimiCraftModels = (() => {
         tile([[44,8],[53,9],[56,17],[47,22],[42,17]],weapon.trim);
         for(const [x,y] of [[34,16],[50,29],[60,7]])line([[x-2,y],[x+2,y]],"#d6a88a",1.5);
       } else if(weapon&&forgedBlades[weapon.style]){
+        if(weapon.corrupted)glowDisc(34,30,28,"#d962ff99","#d962ff00");
         const blade=forgedBlades[weapon.style],top=Math.max(...blade.path.map(([,y])=>y)),scale=36/top;
         const originX=26,originY=40;
         const project=([x,y])=>[originX+(y*.86+x*.51)*scale,originY+(-y*.51+x*.86)*scale];
@@ -1324,8 +2572,10 @@ globalThis.QuimiCraftModels = (() => {
         line([[21,32],[34,45]],weapon.trim,5);
         tile(blade.path.map(project),weapon.color);
         line(blade.fuller.map(project),weapon.trim,2);
+        if(weapon.corrupted){ctx.fillStyle="#ffcf96";ctx.beginPath();ctx.arc(28,38,4.6,0,Math.PI*2);ctx.fill();line([[28,34],[28,42]],"#12051c",1.9);}
       } else if(weapon?.style){
         const {color,trim,family}=weapon;
+        if(weapon.corrupted)glowDisc(36,28,28,"#d962ff99","#d962ff00");
         if(family==="sword"){
           line([[12,54],[27,39]],"#775541",7);
           const tip=weapon.style==="bronze"?[55,11]:[56,8];
@@ -1338,11 +2588,13 @@ globalThis.QuimiCraftModels = (() => {
           line([path[0],path.at(-1)],"#e0ded2",2);
           line(path,"#252a31",8);line(path,color,5);
           line(path.slice(2,4),trim,4);
+          if(weapon.corrupted){ctx.fillStyle="#ffcf96";ctx.beginPath();ctx.arc(44,31,4.5,0,Math.PI*2);ctx.fill();line([[44,27],[44,35]],"#12051c",1.8);}
         }else{
           line([[12,55],[39,22]],"#283039",9);line([[12,55],[39,22]],trim,3);
           tile([[46,6],[56,19],[42,33],[34,20]],color);
           line([[34,19],[38,8],[46,6],[53,11],[57,20]],trim,2.3);
           line([[42,28],[53,18]],trim,2);
+          if(weapon.corrupted){ctx.fillStyle="#ffcf96";ctx.beginPath();ctx.arc(45,19,5.5,0,Math.PI*2);ctx.fill();line([[45,14],[45,24]],"#12051c",2);}
         }
       } else if (id==="iron_sword") {
         line([[13,53],[29,37]],"#a87a54",7);
@@ -1506,6 +2758,7 @@ globalThis.QuimiCraftModels = (() => {
       const root = new THREE.Group();
       root.name = "Explorador do QuimiCraft";
       const torso = new THREE.Group();
+      const hipHeight=.838;
       torso.position.y = 1.14;
       root.add(torso);
       bevel(torso,coat,[0,0,0],[.55,.66,.33]);
@@ -1739,7 +2992,7 @@ globalThis.QuimiCraftModels = (() => {
       function leg(side) {
         const hip = new THREE.Group();
         const knee = new THREE.Group();
-        hip.position.set(side*.148,.838,0);
+        hip.position.set(side*.148,hipHeight,0);
         root.add(hip);
         bevel(hip,pants,[0,-.183,0],[.257,.426,.264]);
         bevel(hip,coatShade,[side*.097,-.136,.022],[.066,.171,.158]);
@@ -1883,7 +3136,8 @@ globalThis.QuimiCraftModels = (() => {
         const bob = (moving ? Math.sin(now*(sprint?.015:.01))*.026 : Math.sin(now*.0025)*.005)*motion;
         const gait = Math.sin(now*(sprint?.0128:crouch?.0065:.009));
         const swing = moving ? gait*(sprint?.68:crouch?.26:.43)*motion : 0;
-        const mounted=activity?.kind==="ride",pedal=mounted&&activity.pedaling;
+        const mounted=activity?.kind==="ride",driver=mounted&&activity.vehicle,pedal=mounted&&activity.pedaling;
+        const steer=driver?(activity.steer||0):0;
         const breath = Math.sin(now*.0023)*.012*motion;
         const hems=chestFit.children[0]?.userData.hems;
         hems?.forEach((hem,i)=>{
@@ -1938,7 +3192,7 @@ globalThis.QuimiCraftModels = (() => {
         hands[1].fingers.flex(holding?(isBlock?.43:.94):action*.52,dt);
         hands[0].fingers.flex((twoHanded||boxing)?.90:fishing||work||offhand?.64:.12,dt);
         torso.rotation.x = mix(torso.rotation.x,mounted?.18:swim?.36:crouch?.23:sprint?.14:0,ease);
-        torso.rotation.z = mix(torso.rotation.z,-swing*.07,ease);
+        torso.rotation.z = mix(torso.rotation.z,driver?steer*.07:-swing*.07,ease);
         head.rotation.x = mix(head.rotation.x,Math.max(-.31,Math.min(.31,pitch*.42)),ease);
         const blink = (now/1000)%4.7;
         for (const eye of eyes) eye.scale.y = blink>4.52?Math.max(.09,Math.abs(blink-4.61)*10):1;
@@ -1947,28 +3201,53 @@ globalThis.QuimiCraftModels = (() => {
           const guarding=side===-1?shieldLift:0,kick=side===-1?shieldRecoil:0,armEase=guarding>.05?blocking:ease;
           const effect=side===1?lift:(work||fishing?envelope*.41:0)+offhandAction*.81;
           const strike=boxing?(punchHand===side?action:0):side===1?action:twoHanded?action*.88+.18:0;
-          const shoulderRest=mounted?-.69:boxing?-.66-strike*.68:swing*side+(swim?-.65:0)-strike*1.16-effect*.79;
-          const elbowRest=mounted?-.65:boxing?-.98+strike*.91:-.14-Math.abs(swing)*.29-strike*.68-effect*(taste?1.22:.72);
-          shoulder.rotation.x=mix(shoulder.rotation.x,mix(shoulderRest,.78,guarding)-kick*.23,armEase);
-          elbow.rotation.x=mix(elbow.rotation.x,mix(elbowRest,1.18,guarding)+kick*.28,armEase);
-          shoulder.rotation.y=mix(shoulder.rotation.y,-.31*guarding+kick*.15,armEase);
+          const shoulderRest=mounted?(driver?.69:-.69):boxing?-.66-strike*.68:swing*side+(swim?-.65:0)-strike*1.16-effect*.79;
+          const elbowRest=mounted?(driver?.65:-.65):boxing?-.98+strike*.91:-.14-Math.abs(swing)*.29-strike*.68-effect*(taste?1.22:.72);
+          shoulder.rotation.x=mix(shoulder.rotation.x,mix(shoulderRest+steer*side*.19,.78,guarding)-kick*.23,armEase);
+          elbow.rotation.x=mix(elbow.rotation.x,mix(elbowRest-steer*side*.14,1.18,guarding)+kick*.28,armEase);
+          shoulder.rotation.y=mix(shoulder.rotation.y,steer*.11-.31*guarding+kick*.15,armEase);
           fingers.flex(mounted?.64:side===1?(holding?(isBlock?.43:.94):action*.51):(twoHanded||boxing)?.92:fishing||work||offhand?.64:.12,dt);
           shoulder.rotation.z = twoHanded&&side===-1?.34+action*.16:side*(.07+Math.abs(swing)*.075+breath)+guarding*.24;
         });
         legs.forEach(({hip,knee},index)=>{
           const step = swing*(index===0?1:-1);
-          const stroke=pedal?Math.sin(now*.008+index*Math.PI)*.23:0;
-          hip.rotation.x = mix(hip.rotation.x,mounted?-1.19+stroke:step+(crouch?-.32:airborne?(index===0?.29:-.36):0),ease);
-          knee.rotation.x = mix(knee.rotation.x,mounted?1.28-stroke:Math.max(0,-step)*.59+(crouch?.36:airborne?.36:0),ease);
+          const stroke=pedal?Math.sin((activity.cadence??now*.008)+index*Math.PI)*.18:0;
+          hip.rotation.x = mix(hip.rotation.x,driver?2.06-stroke:mounted?-1.19:step+(crouch?-.32:airborne?(index===0?.29:-.36):0),ease);
+          knee.rotation.x = mix(knee.rotation.x,driver?-1.43+stroke:mounted?1.28:Math.max(0,-step)*.59+(crouch?.36:airborne?.36:0),ease);
         });
       }
 
       setAppearance({});
       setEquipment();
-      return {root,first,heldFirst,heldOffFirst,heldThird,leftWrist,headGear,gear,chestFit,backFit,hairStyles,animate,setEquipment,setAppearance};
+      return {root,first,heldFirst,heldOffFirst,heldThird,leftWrist,headGear,gear,chestFit,backFit,hairStyles,hipHeight,animate,setEquipment,setAppearance};
     }
 
-    return {item,icon,animateItem,avatar,alchemistAttire,classApparel};
+    function helmetCandle(parent, headId) {
+      const mount = new THREE.Group();
+      mount.name = "Vela de elmo";
+      const isCirclet = headId === "mage_circlet";
+      mount.position.set(0, isCirclet ? .27 : .315, isCirclet ? -.17 : -.06);
+      const wax = tint("helm-wax", 0xf8efd8);
+      const drip = tint("helm-drip", 0xe5d6af);
+      const outerFlame = glowGemMat("helm-flame-o", 0xffa62e, 0xff7814, 1.75, .94);
+      const innerFlame = glowGemMat("helm-flame-i", 0xfff7c2, 0xffe670, 2.0, .98);
+      mesh(mount, cyl, brass, [0, .018, 0], [.18, .036, .18]);
+      mesh(mount, cyl, wax, [0, .115, 0], [.095, .19, .095]);
+      mesh(mount, cyl, drip, [.045, .145, -.02], [.026, .08, .026]);
+      mesh(mount, cyl, drip, [-.04, .125, .028], [.024, .10, .024]);
+      bar(mount, dark, [0, .205, 0], [0, .24, 0], .012);
+      const flame = new THREE.Group();
+      flame.position.set(0, .275, 0);
+      mesh(flame, globe, outerFlame, [0, 0, 0], [.044, .088, .044]);
+      mesh(flame, globe, innerFlame, [0, -.01, 0], [.022, .050, .022]);
+      glowHalo(flame, flame, 0xffb84d, [0, .01, 0], .42, .46);
+      mount.add(flame);
+      mount.userData.flame = flame;
+      parent.add(mount);
+      return mount;
+    }
+
+    return {item,icon,animateItem,avatar,alchemistAttire,classApparel,helmetCandle};
   }
 
   return {create};

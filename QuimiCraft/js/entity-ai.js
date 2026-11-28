@@ -164,7 +164,7 @@ globalThis.QuimiCraftAI = (() => {
     a.think = 0;
   }
 
-  function tick(e, dt, sense, canFight = validTarget, random = Math.random) {
+  function tick(e, dt, sense, canFight = validTarget, random = Math.random, navigation = {}) {
     const a = e.ai, p = e.profile;
     a.cooldown = Math.max(0, a.cooldown - dt);
     a.fear = Math.max(0, a.fear - dt);
@@ -196,9 +196,11 @@ globalThis.QuimiCraftAI = (() => {
     const visible = !!target && perceived.enemy?.actor === target && perceived.enemy.visible;
     const aimedStrike = p.strike?.kind === "shot" || p.strike?.kind === "gaze";
     const distance = target ? range(e, target) : Infinity;
+    const canReach = !!target && !!p.strike && (navigation.canStrike ? navigation.canStrike(e,target,p.strike) :
+      distance <= p.strike.range && (aimedStrike || Math.abs(target.y-e.y) <= (p.strike.vertical??1.5)));
     if (a.swing) {
       if ((a.swing.remaining -= dt) > 0) {
-        const stepIn = !aimedStrike && target && distance > p.strike.range * .55;
+        const stepIn = !aimedStrike && p.strike.kind!=="wind" && canReach && distance > p.strike.range * .68;
         return {mode: "windup", goal: stepIn ? point(target) : null, aim: target, speed: stepIn ? chaseSpeed(p) * .45 : 0};
       }
       a.swing = null;
@@ -214,7 +216,7 @@ globalThis.QuimiCraftAI = (() => {
       }
       return {mode: "flee", goal, speed: p.run};
     }
-    if (p.strike && visible && distance <= p.strike.range && (aimedStrike || Math.abs(target.y - e.y) <= 1.5)) {
+    if (p.strike && visible && canReach) {
       if (p.strike.kind === "shot" && distance < 2.7 && a.cooldown > .2) {
         const angle = heading(target, e);
         return {mode: "kite", goal: {x: e.x + Math.sin(angle) * 3, y: e.y, z: e.z + Math.cos(angle) * 3},
@@ -222,18 +224,18 @@ globalThis.QuimiCraftAI = (() => {
       }
       if (a.cooldown <= 0) {
         a.swing = {target, remaining: p.strike.windup};
-        const stepIn = !aimedStrike && distance > p.strike.range * .55;
+        const stepIn = !aimedStrike && p.strike.kind!=="wind" && distance > p.strike.range * .68;
         return {mode: "windup", goal: stepIn ? point(target) : null, aim: target, speed: stepIn ? chaseSpeed(p) * .45 : 0};
       }
-      if (a.aim > 0 || distance < p.strike.range * .52 || aimedStrike) {
-        return {mode: "recover", goal: null, aim: target, speed: 0};
-      }
+      return {mode: "recover", goal: null, aim: target, speed: 0};
     }
     if (combat) {
       const last = combat.lastSeen;
       if (!visible && range(e, last) < .75 && Math.abs(e.y - last.y) < 1) combat.searching = true;
-      const goal = visible || combat.searching ? point(target) : last;
-      const nearGoal = range(e, goal) < .32 && Math.abs(e.y - goal.y) < .8;
+      const tracking = visible || combat.searching;
+      const goal = tracking ? (navigation.goal ? navigation.goal(e,target) : point(target)) : last;
+      if (!goal) return {mode:"watch",goal:null,aim:visible?target:null,speed:0};
+      const nearGoal = range(e, goal) < .44 && (e.flying || Math.abs(e.y - goal.y) < .85);
       return {mode: visible ? "chase" : "search", goal: nearGoal ? null : goal, aim: nearGoal ? target : null,
         speed: nearGoal ? 0 : chaseSpeed(p)};
     }
@@ -248,7 +250,7 @@ globalThis.QuimiCraftAI = (() => {
     }
     if (perceived.greet && e.persistent) return {mode: "greet", goal: null, aim: perceived.greet, speed: 0};
     if (e.persistent && range(e, a.home) > p.roam + .7) return {mode: "return", goal: a.home, speed: p.walk};
-    if (a.goal && range(e, a.goal) < .7) {
+    if (a.goal && range(e, a.goal) < .92) {
       a.goal = null;
       a.wait = .85 + random() * 2.3;
     }
@@ -262,13 +264,13 @@ globalThis.QuimiCraftAI = (() => {
     return {mode: e.persistent ? "patrol" : "wander", goal: a.goal, speed: p.walk};
   }
 
-  function findPath(start, destination, inspect, maxVisits = 66, matchHeight = false) {
+  function findPath(start, destination, inspect, maxVisits = 66, matchHeight = false, maxRange = 9) {
     const sx = Math.floor(start.x);
     const sz = Math.floor(start.z);
     const length = range(start, destination);
-    const goalY=matchHeight&&length<=9&&Math.abs(destination.y-start.y)>.78?Math.round(destination.y):null;
+    const goalY=matchHeight&&length<=maxRange&&Math.abs(destination.y-start.y)>.78?Math.round(destination.y):null;
     if (length < .6 && goalY===null) return [];
-    const scale = length>9?9/length:1;
+    const scale = length>maxRange?maxRange/length:1;
     const gx = Math.floor(start.x + (destination.x - start.x) * scale);
     const gz = Math.floor(start.z + (destination.z - start.z) * scale);
     const estimate = (x,y,z) => Math.hypot(gx-x,gz-z)+(goalY===null?0:Math.abs(goalY-y)*.85);
@@ -277,10 +279,12 @@ globalThis.QuimiCraftAI = (() => {
     const keyOf=(x,y,z)=>x+","+y+","+z;
     const cost = new Map([[keyOf(sx,start.y,sz), 0]]);
     const steps = [[1,0],[-1,0],[0,1],[0,-1]];
+    const envelope=maxRange===9?10:Math.min(maxRange+1,Math.ceil(length)+12);
+    const bias=maxRange>9?1.30:1;
     let best = origin;
 
     for (let visits = 0; open.length && visits < maxVisits; visits++) {
-      open.sort((a, b) => a.g + a.h - b.g - b.h || a.h - b.h);
+      open.sort((a, b) => a.g - b.g + (a.h - b.h)*bias || a.h - b.h);
       const node = open.shift();
       if(node.g!==cost.get(keyOf(node.x,node.y,node.z)))continue;
       if (node.h < best.h) best = node;
@@ -288,7 +292,7 @@ globalThis.QuimiCraftAI = (() => {
       for (const [dx, dz] of steps) {
         const x = node.x + dx;
         const z = node.z + dz;
-        if (Math.abs(x - sx) > 10 || Math.abs(z - sz) > 10) continue;
+        if (Math.abs(x - sx) > envelope || Math.abs(z - sz) > envelope) continue;
         const from = node.from?{x:node.x+.5,y:node.y,z:node.z+.5}:start;
         const y = inspect(x + .5, z + .5, node.y, from);
         if (!Number.isFinite(y)) continue;

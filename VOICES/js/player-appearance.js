@@ -1,113 +1,543 @@
 /* Registered module: player-appearance */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("player-appearance", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function(){
-'use strict';
-const V=window.V,D=V.SalonArtData,X=V.SalonCultureData,esc=V.escape,copy=x=>JSON.parse(JSON.stringify(x));
-const outfits=[['casual','Camiseta'],['jacket','Jaqueta'],['overalls','Jardineira'],['dress','Vestido']],hairs=[['none','Raspado'],['afro','Afro'],['short','Curto cacheado'],['braids','Tranças'],['locs','Locs'],['bun','Coque']],accessories=[['band','Faixa de cabelo'],['glasses','Óculos redondos'],['scarf','Lenço']],palette=[['#31313f','Grafite'],['#f2e6ce','Creme'],['#b94c68','Rosa'],['#406d69','Verde'],['#448eb0','Azul'],['#9a6abb','Lilás'],['#d6a541','Dourado'],['#bd704b','Terracota']],skins={nia:'#a66d48',leo:'#bf8855',taina:'#935b3d',sol:'#8c553e'};
-outfits.push(...X.outfits.map(o=>[o.id,o.name]));hairs.push(...X.hairs.map(o=>[o.id,o.name]));accessories.push(...X.accessories.map(o=>[o.id,o.name]));hairs.find(h=>h[0]==='braids')[1]='Box braids';
-const headwear=[['none','Sem turbante ou gorro'],...X.headwear.map(o=>[o.id,o.name])],paints=[['none','Sem pintura'],...X.paints.map(o=>[o.id,o.name])];
-const A=V.Appearance={images:new Map(),tints:new Map(),sheets:new Map(),faces:new Map(),pieces:new Map(),scope:0,npcScope:0,editor:null,outfits,hairs,accessories,palette,headwear,paints,originalSprite:V.Assets.sprite.bind(V.Assets),originalAnimation:V.Animations.draw.bind(V.Animations),
-defaults(id=V.state?.character||'nia'){const colors={nia:['#9b73c5','#474258'],leo:['#dfae45','#3c576a'],taina:['#3e9bb2','#3c4c60'],sol:['#c65e7e','#40465b']}[id]||['#9b73c5','#474258'];return{version:2,enabled:false,headwear:'none',facepaint:'none',outfit:'casual',hair:({nia:'afro',leo:'short',taina:'locs',sol:'short'})[id]||'afro',colors:{top:colors[0],bottom:colors[1],hair:'#3b2932',band:'#c76789',glasses:'#343142',scarf:'#d4ac55',headwear:'#80609e',paint:'#f2e6ce',paintAccent:'#e2b52f',pano:'#c99b53',earrings:'#d6a541',necklace:'#bd704b',bracelets:'#d6a541'},accessories:{band:id==='sol',glasses:id==='leo',scarf:false,pano:false,earrings:false,necklace:false,bracelets:false}};},
-normalise(value,id=V.state?.character){const d=this.defaults(id);if(!value||typeof value!=='object'||Array.isArray(value))return d;const hex=(v,f)=>typeof v==='string'&&/^#[a-f0-9]{6}$/i.test(v)?v.toLowerCase():f;d.enabled=value.enabled===true&&!V.NewPlayableCharacters.includes(id);d.outfit=outfits.some(x=>x[0]===value.outfit)?value.outfit:d.outfit;d.hair=hairs.some(x=>x[0]===value.hair)?value.hair:d.hair;d.headwear=headwear.some(x=>x[0]===value.headwear)?value.headwear:'none';d.facepaint=paints.some(x=>x[0]===value.facepaint)?value.facepaint:'none';for(const k of Object.keys(d.colors))d.colors[k]=hex(value.colors?.[k],d.colors[k]);for(const[k]of accessories)d.accessories[k]=value.accessories?.[k]===true;return d;},
-look(){return this.normalise(V.state?.appearance,V.state?.character);},
-load(){return Promise.all(D.files.map(f=>new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{this.images.set(f.id,img);resolve();};img.onerror=()=>{V.Assets.errors.push(f.file);resolve();};img.src=f.file+'?v='+(f.cacheVersion||'20261029-fit1');V.AssetLoader.register(img,resolve);})));},
-remember(map,key,value,limit=96){if(map.has(key))map.delete(key);map.set(key,value);if(map.size>limit)map.delete(map.keys().next().value);return value;},
-tint(id,color){const key=id+color;if(this.tints.has(key))return this.tints.get(key);const img=this.images.get(id);if(!img)return null;const canvas=document.createElement('canvas');canvas.width=img.width;canvas.height=img.height;const c=canvas.getContext('2d');c.drawImage(img,0,0);c.globalCompositeOperation='multiply';c.fillStyle=color;c.fillRect(0,0,canvas.width,canvas.height);c.globalCompositeOperation='destination-in';c.drawImage(img,0,0);return this.remember(this.tints,key,canvas);},
-sheet(look,id){const key=[id,look.outfit,look.colors.top,look.colors.bottom].join(':');if(this.sheets.has(key))return this.sheets.get(key);const base=this.images.get('avatar-'+look.outfit+'-base');if(!base)return null;const canvas=document.createElement('canvas');canvas.width=256;canvas.height=384;const c=canvas.getContext('2d');c.drawImage(base,0,0);for(const[k,color]of [['skin',skins[id]||skins.nia],['top',look.colors.top],['bottom',look.colors.bottom]]){const layer=this.tint('avatar-'+look.outfit+'-'+k,color);if(layer)c.drawImage(layer,0,0);}const clean=document.createElement('canvas');clean.width=256;clean.height=384;const cc=clean.getContext('2d');cc.imageSmoothingEnabled=false;D.rigs[look.outfit].cells.forEach(([sx,sy,w,h,dy],i)=>{const x=i%4*64,y=Math.floor(i/4)*64;cc.drawImage(canvas,x+sx,y+sy,w,h,x+sx,y+sy+dy,w,h);});return this.remember(this.sheets,key,clean,48);},
-overlay(c,id,color,dir,x,y,width,height=null){const meta=D.hair[id]||D.accessories[id]||D.headwear?.[id]||D.paints?.[id],img=this.tint(id,color);if(!meta||!img)return;const b=meta.rects[dir];if(!b)return;height??=width*b[3]/b[2];c.drawImage(img,...b,x-width/2,y,width,height);},
-piece(c,key,color,dir,head){
-const meta=D.hair[key]||D.headwear[key],b=meta?.rects[dir];if(!b)return;const hw=head[2]-head[0],hh=head[3]-head[1],cx=(head[0]+head[2])/2-32,top=head[1]-60;
-const fits={
-'hair-afro':[[1.55,.43],[1.38,.24],[1.38,.24],[1.42,.97]],
-'hair-short':[[1.27,.42],[1.2,.22],[1.2,.22],[1.18,.96]],
-'hair-braids':[[1.54,.23],[1.42,.14],[1.42,.14],[1.23,.94]],
-'hair-locs':[[1.56,.25],[1.43,.15],[1.43,.15],[1.26,.94]],
-'hair-bun':[[1.27,.60],[1.25,.54],[1.25,.54],[1.08,.97]],
-'hair-nago':[[1.16,.49],[1.17,.32],[1.17,.32],[1.07,.97]],
-'hair-twists':[[1.40,.30],[1.31,.22],[1.31,.22],[1.19,.94]],
-'headwear-front-knot':[[1.25,.46],[1.22,.27],[1.22,.27],[1.14,.96]],
-'headwear-side-fold':[[1.24,.38],[1.22,.24],[1.22,.24],[1.14,.97]],
-'headwear-high-fold':[[1.23,.64],[1.22,.44],[1.22,.44],[1.12,.97]],
-'headwear-tied-back':[[1.22,.36],[1.19,.25],[1.19,.25],[1.14,.97]],
-'headwear-embroidered-cap':[[1.13,.62],[1.12,.47],[1.12,.47],[1.08,.97]]
-};
-const fit=fits[key]?.[dir];if(!fit)return;const width=hw*fit[0],height=width*b[3]/b[2];let y=top+hh*(key.startsWith('headwear-')?.23:.26)-height*fit[1];if(dir===3)y=top+hh*(key==='hair-braids'||key==='hair-locs'||key==='hair-twists'?1.35:1.02)-height;
-if(dir!==0)y=Math.min(y,top-3);
-this.overlay(c,key,color,dir,cx+(dir===1?hw*.035:dir===2?-hw*.035:0),y,width,height);
-},
-headLayer(c,key,color,dir,head,outfit,row,frame,front=true){
-if(!front)return this.piece(c,key,color,dir,head);const cache=[key,color,dir,outfit,row,frame].join(':');let canvas=this.pieces.get(cache);if(!canvas){canvas=document.createElement('canvas');canvas.width=96;canvas.height=128;const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.save();ctx.translate(48,92);this.piece(ctx,key,color,dir,head);ctx.restore();if(dir!==3){const mask=this.images.get('face-protect-'+outfit);if(mask){ctx.globalCompositeOperation='destination-out';ctx.drawImage(mask,frame*64,row*64,64,64,16,32,64,64);ctx.globalCompositeOperation='source-over';}}this.remember(this.pieces,cache,canvas,256);}c.drawImage(canvas,-48,-92);
-},
-face(c,id,look,row,frame,dir,head){
-if(dir===3||look.facepaint==='none')return;const key=[look.outfit,look.facepaint,look.colors.paint,look.colors.paintAccent,row,frame,dir].join(':');let canvas=this.faces.get(key);
-if(!canvas){canvas=document.createElement('canvas');canvas.width=64;canvas.height=64;const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;const hw=head[2]-head[0],hh=head[3]-head[1],eyes=D.rigs[look.outfit].eyes[row*4+frame],cx=dir===0?(head[0]+head[2])/2:(eyes[0]?.[0]??head[0]+hw*(dir===1?.24:.76));for(const[part,color]of [['primary',look.colors.paint],['accent',look.colors.paintAccent]])this.overlay(ctx,'paint-'+look.facepaint+'-'+part,color,dir,cx,head[1]+hh*.14,hw*(dir===0?.82:.40),hh*.76);ctx.globalCompositeOperation='destination-in';const mask=this.images.get('face-mask-'+look.outfit);if(mask)ctx.drawImage(mask,frame*64,row*64,64,64,0,0,64,64);else ctx.clearRect(0,0,64,64);ctx.globalCompositeOperation='source-over';this.remember(this.faces,key,canvas,128);}
-c.drawImage(canvas,-32,-60);
-},
-draw(c,id,look,x,y,size=64,row=0,frame=0,opts={}){
-look=this.normalise(look,id);if(!look.enabled){if(opts.stock==='sprite')this.originalSprite(c,id,x,y,row,frame,size);else this.originalAnimation(c,id,'idle',x,y,size,opts.time||0,opts.flip||false,true);return;}
-const sheet=this.sheet(look,id);if(!sheet)return this.originalSprite(c,id,x,y,row,frame,size);row=V.clamp(Math.floor(row),0,5);frame=((Math.floor(frame)%4)+4)%4;const rig=D.rigs[look.outfit],head=rig.heads[row*4+frame],dir=V.clamp(Math.floor(opts.direction??(row<4?row:0)),0,3),hw=head[2]-head[0],hh=head[3]-head[1],cx=(head[0]+head[2])/2-32,top=head[1]-60,neck=head[3]-60,eyes=rig.eyes[row*4+frame];
-c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x),Math.round(y));c.scale(size/64,size/64);if(opts.action==='sleep')c.rotate(-Math.PI/2);if(opts.action==='dance'){c.translate(0,V.settings.reducedMotion?0:Math.sin((opts.time||0)*7)*1.4);c.rotate(V.settings.reducedMotion?0:Math.sin((opts.time||0)*5)*.045);}if(opts.crop){c.beginPath();c.rect(-48,-90,96,90-opts.crop);c.clip();}const pieceKey=look.headwear!=='none'?'headwear-'+look.headwear:look.hair!=='none'?'hair-'+look.hair:null,pieceColor=look.headwear!=='none'?look.colors.headwear:look.colors.hair;if(pieceKey)this.headLayer(c,pieceKey,pieceColor,dir,head,look.outfit,row,frame,false);c.drawImage(sheet,frame*64,row*64,64,64,-32,-60,64,64);
-if(look.accessories.pano)this.overlay(c,'accessory-pano',look.colors.pano,dir,cx,neck-1,hw*(dir===1||dir===2?.72:.94),hh*1.04);
-if(look.accessories.necklace)this.overlay(c,'accessory-necklace',look.colors.necklace,dir,cx,neck+.4,hw*(dir===1||dir===2?.60:.76),hh*.38);
-if(look.accessories.scarf)this.overlay(c,'accessory-scarf',look.colors.scarf,dir,cx,neck-.4,hw*.88,hh*.59);
-this.face(c,id,look,row,frame,dir,head);
-if(pieceKey)this.headLayer(c,pieceKey,pieceColor,dir,head,look.outfit,row,frame);
-if(look.accessories.earrings&&dir!==3){if(dir===0)this.overlay(c,'accessory-earrings',look.colors.earrings,dir,cx,top+hh*.64,hw*1.04,hh*.25);else this.overlay(c,'accessory-earrings',look.colors.earrings,dir,head[0]-32+hw*(dir===1?.76:.24),top+hh*.67,hh*.25*26/58,hh*.25);}
-if(look.accessories.band&&look.headwear==='none')this.overlay(c,'accessory-band',look.colors.band,dir,cx,top+hh*(dir===3?.05:.03),hw*1.08,hh*(dir===0||dir===3?.32:.44));
-if(look.accessories.glasses&&dir!==3){const eyeY=eyes.length?eyes.reduce((n,p)=>n+p[1],0)/eyes.length:head[1]+hh*.60;this.overlay(c,'accessory-glasses',look.colors.glasses,dir,cx+(dir===1?-hw*.07:dir===2?hw*.07:0),eyeY-60-hh*.17,hw*.88,hh*.36);}
-if(look.accessories.bracelets)for(const wrist of rig.wrists?.[row*4+frame]||[])this.overlay(c,'accessory-bracelets',look.colors.bracelets,dir,wrist[0]-32,wrist[1]-60-1,Math.min(4.5,hw*.19),3.4);
-c.restore();},
-animation(c,id,action,x,y,size,time,flip,fit){const look=this.look();if(this.npcScope||!look.enabled||id!==V.state?.character)return this.originalAnimation(c,id,action,x,y,size,time,flip,fit);let dir=this.scope&&V.Player.data?V.Player.data.dir:flip?1:0,row=0,frame=0;const moving=['walk','walkBack','dance','spin'].includes(action),gesture=!['idle','ready','walk','walkBack','dance','spin','sit','sleep','think'].includes(action);if(action==='walkBack')dir=3;if(action==='spin')dir=V.settings.reducedMotion?0:[0,2,3,1][Math.floor(time*7)%4];if(moving){row=dir;frame=V.settings.reducedMotion?0:Math.floor(time*8)%4;}else if(action==='heal'){row=5;frame=V.settings.reducedMotion?0:Math.floor(time*6)%4;}else if(gesture){row=4;frame=V.settings.reducedMotion?0:Math.floor(time*6)%4;dir=0;}else row=dir;this.draw(c,id,look,x,y,size,row,frame,{direction:dir,action,time,crop:action==='swim'?23:action==='sit'?15:0});return true;},
-describe(look=this.look()){return look.enabled?[outfits.find(x=>x[0]===look.outfit)?.[1],(look.headwear==='none'?hairs:headwear).find(x=>x[0]===(look.headwear==='none'?look.hair:look.headwear))?.[1],...accessories.filter(([key])=>look.accessories[key]).map(x=>x[1]),look.facepaint==='none'?null:'Pintura: '+paints.find(x=>x[0]===look.facepaint)?.[1]].filter(Boolean).join(' · '):'Visual original do personagem';},
-open(tab='hair',options={}){
-if(!V.state||V.Game.mode!=='explore')return;if(!V.World.current?.salon)return V.Salon?.overview();
-if(V.NewPlayableCharacters.includes(V.state.character))return this.emblem(()=>V.Salon.overview());
-const initial=this.look(),draft=this.normalise(options.draft||initial);
-V.UI.modal('Provador do Salão Íris','ROUPAS · CABELOS · ACESSÓRIOS · PINTURAS',`<div class="salon-editor"><aside class="salon-mirror"><small>SUA PRÉVIA</small><div class="salon-preview-frame"><canvas id="salon-avatar-preview" width="320" height="300" aria-label="Prévia do seu personagem"></canvas></div><strong>${esc(V.state.name)}</strong><p id="salon-look-description"></p><div class="salon-turn"><button id="salon-turn-left" class="secondary" aria-label="Girar prévia para a esquerda">↶</button><span id="salon-preview-direction">Frente</span><button id="salon-turn-right" class="secondary" aria-label="Girar prévia para a direita">↷</button></div><label class="toggle"><input type="checkbox" id="salon-preview-walk">Ver caminhando</label><label class="toggle salon-zoom"><input type="checkbox" id="salon-preview-closeup" ${tab==='paint'?'checked':''}>Ver rosto de perto</label><p class="salon-preview-note">Experimente à vontade. Seu visual muda ao aplicar.</p><button id="salon-reset-original" class="secondary">Usar visual original</button></aside><div class="salon-options"><nav class="salon-tabs" aria-label="Personalização">${[['hair','Cabelos'],['outfit','Roupas'],['accessories','Acessórios'],['paint','Pinturas']].map(([key,label])=>`<button data-salon-tab="${key}" aria-pressed="${tab===key}">${label}</button>`).join('')}</nav><div id="salon-options-body"></div></div></div>`,`<p id="salon-look-status" role="status">Trocas gratuitas · visual salvo neste perfil</p><button id="salon-look-cancel" class="secondary">Cancelar</button><button id="salon-look-apply" class="primary">Aplicar visual</button>`,true);
-V.$('.modal').classList.add('salon-modal','salon-editor-modal');const session={draft,initial,tab:['hair','outfit','accessories','paint'].includes(tab)?tab:'hair',direction:0,walk:false,closeup:tab==='paint',filter:'',start:performance.now(),raf:0};this.editor=session;
-V.UI.onClose=()=>{cancelAnimationFrame(session.raf);if(this.editor===session)this.editor=null;};const turn=d=>{session.direction=(session.direction+d+4)%4;this.sync();};V.$('#salon-turn-left').onclick=()=>turn(-1);V.$('#salon-turn-right').onclick=()=>turn(1);V.$('#salon-preview-walk').onchange=e=>session.walk=e.target.checked;V.$('#salon-preview-closeup').onchange=e=>session.closeup=e.target.checked;
-V.$('#salon-reset-original').onclick=()=>{session.draft=this.defaults(V.state.character);this.controls();this.sync();};V.$$('[data-salon-tab]').forEach(b=>b.onclick=()=>{session.tab=b.dataset.salonTab;session.filter='';if(session.tab==='paint'){session.closeup=true;V.$('#salon-preview-closeup').checked=true;}this.controls();});
-V.$('#salon-look-cancel').onclick=()=>V.UI.close();V.$('#salon-look-apply').onclick=()=>{V.state.appearance=this.normalise(session.draft);V.Save.save();V.UI.close();if(V.Player.data){V.Player.data.celebrateTime=1.2;V.Engine.burst(V.Player.data.x,V.Player.data.y-28,V.state.appearance.colors.top,12);}V.Audio.sfx('collect');V.UI.toast('Visual aplicado! Você pode voltar ao salão quando quiser.');};this.controls();this.sync();const tick=()=>{if(this.editor!==session)return;this.preview();session.raf=requestAnimationFrame(tick);};tick();
-},
-change(fn){const e=this.editor;if(!e)return;e.draft.enabled=true;fn(e.draft);this.controls();this.sync();},
-colorControl(key,title){const value=this.editor.draft.colors[key];return `<fieldset class="salon-color-group"><legend>${title}</legend><div class="salon-palette">${palette.map(([hex,name])=>`<button data-salon-color-key="${key}" data-salon-color="${hex}" aria-label="${title}: ${name}" aria-pressed="${value===hex}" style="--swatch:${hex}">${value===hex?'✓':''}</button>`).join('')}<label class="salon-custom-color" title="Escolher outra cor"><input type="color" data-salon-custom="${key}" value="${value}" aria-label="Outra cor para ${title.toLowerCase()}"><span>+</span></label></div></fieldset>`;},
-choices(kind,list){const e=this.editor;return `<div class="salon-choice-grid">${list.map(([id,name])=>`<button data-salon-choice="${id}" data-salon-kind="${kind}" aria-pressed="${e.draft[kind]===id}"><canvas width="80" height="90" data-salon-thumb="${id}" data-salon-thumb-kind="${kind}"></canvas><span>${esc(name)}</span></button>`).join('')}</div>`;},
-context(kind,id){const catalog=this.catalog(kind,id),g=V.Culture.gallery.find(g=>g.id===catalog);if(!g)return '';return `<details class="salon-piece-context"><summary>No caderno · ${esc(g.title)}</summary><p>${esc(g.description)}</p><button class="secondary" data-salon-inspect="${esc(g.id)}">Abrir ficha no caderno</button></details>`;},
-catalog(kind,id){return({outfit:()=>X.outfits.find(o=>o.id===id)?.catalog||({overalls:'clothes-overalls'})[id],hair:()=>X.hairs.find(h=>h.id===id)?.catalog||({braids:'hair-box-braids',locs:'hair-locs',afro:'hair-afro'})[id],headwear:()=>X.headwear.find(h=>h.id===id)?.catalog,facepaint:()=>X.paints.find(p=>p.id===id)?.catalog,accessory:()=>id==='pano'?'cloth-pano-da-costa':id==='band'?'wrap-band':null})[kind]?.();},
-inspect(id){const e=this.editor;if(!e)return;const draft=copy(e.draft),tab=e.tab;V.Culture.detail(id,()=>this.open(tab,{draft}));},
-controls(){
-const e=this.editor;if(!e)return;V.$$('[data-salon-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.salonTab===e.tab)));let html='';
-if(e.tab==='outfit'||e.tab==='hair'){
- const kind=e.tab==='outfit'?'outfit':'hair',list=kind==='outfit'?outfits:hairs;
- html=`<h3>${kind==='outfit'?'Escolha a roupa':'Escolha o penteado'}</h3>${this.context(kind,e.draft[kind])}`+(kind==='outfit'?`<label class="salon-search">Encontrar roupa<input type="search" id="salon-outfit-search" autocomplete="off" placeholder="Vestido, túnica, cardigã…" value="${esc(e.filter)}"></label>`:'')+this.choices(kind,list)+(kind==='outfit'?this.colorControl('top','Cor principal')+this.colorControl('bottom','Segunda cor / parte inferior'):this.colorControl('hair','Cor do cabelo'));
- if(kind==='hair'&&e.draft.headwear!=='none')html+='<p class="salon-options-intro">Escolha um penteado para vê-lo sem o turbante. O turbante continua disponível em Acessórios.</p>';
-}else if(e.tab==='paint'){
- html='<h3>Pinturas faciais</h3><p class="salon-options-intro">Combine os quatro desenhos do caderno com seu visual. Use a prévia de perto para observar os detalhes.</p>'+this.context('facepaint',e.draft.facepaint)+this.choices('facepaint',paints)+this.colorControl('paint','Cor da pintura')+this.colorControl('paintAccent','Cor dos detalhes');
-}else{
- html='<h3>Turbantes e gorros</h3><p class="salon-options-intro">Escolha uma amarração ou use seu cabelo à mostra. Cada turbante pode ganhar outra cor.</p>'+this.context('headwear',e.draft.headwear)+this.choices('headwear',headwear)+this.colorControl('headwear','Cor do turbante ou gorro')+'<h3>Combine seus acessórios</h3><div class="salon-accessory-options">'+accessories.map(([id,name])=>`<article><button data-salon-accessory="${id}" aria-pressed="${e.draft.accessories[id]}"><canvas width="80" height="90" data-salon-thumb="${id}" data-salon-thumb-kind="accessory"></canvas><span>${esc(name)}</span><b>${e.draft.accessories[id]?'✓ Usando':'+ Adicionar'}</b></button>${this.colorControl(id,'Cor · '+name.toLowerCase())}${this.context('accessory',id)}</article>`).join('')+'</div>';
-}
-V.$('#salon-options-body').innerHTML=html;
-V.$$('[data-salon-choice]').forEach(b=>b.onclick=()=>this.change(d=>{const kind=b.dataset.salonKind;d[kind]=b.dataset.salonChoice;if(kind==='hair'){d.headwear='none';d.accessories.band=false;}if(kind==='headwear'&&d.headwear!=='none')d.accessories.band=false;}));
-V.$$('[data-salon-accessory]').forEach(b=>b.onclick=()=>this.change(d=>{const key=b.dataset.salonAccessory;d.accessories[key]=!d.accessories[key];if(key==='band'&&d.accessories.band)d.headwear='none';}));
-V.$$('[data-salon-color]').forEach(b=>b.onclick=()=>this.change(d=>d.colors[b.dataset.salonColorKey]=b.dataset.salonColor));V.$$('[data-salon-custom]').forEach(input=>input.oninput=()=>{e.draft.enabled=true;e.draft.colors[input.dataset.salonCustom]=input.value;for(const b of V.$$('[data-salon-color-key]'))if(b.dataset.salonColorKey===input.dataset.salonCustom){const selected=b.dataset.salonColor===input.value;b.setAttribute('aria-pressed',String(selected));b.textContent=selected?'✓':'';}this.thumbs();this.sync();});
-V.$$('[data-salon-inspect]').forEach(b=>b.onclick=()=>this.inspect(b.dataset.salonInspect));const search=V.$('#salon-outfit-search');if(search){const filter=()=>{e.filter=search.value;for(const b of V.$$('[data-salon-choice]'))b.hidden=!V.Interface.normalize(b.textContent).includes(V.Interface.normalize(e.filter));};search.oninput=filter;filter();}this.thumbs();
-},
-thumbs(){const e=this.editor;V.$$('[data-salon-thumb]').forEach(canvas=>{const look=copy(e.draft),key=canvas.dataset.salonThumb,kind=canvas.dataset.salonThumbKind;look.enabled=true;if(kind==='accessory'){look.hair='short';look.facepaint='none';for(const[id]of accessories)look.accessories[id]=id===key;look.headwear='none';}else{look[kind]=key;if(kind==='hair'){look.headwear='none';look.accessories.band=false;look.accessories.glasses=false;}if(kind==='headwear'){look.accessories.band=false;look.hair='none';}if(kind==='facepaint'){look.hair='none';look.headwear='none';look.accessories.glasses=false;look.accessories.band=false;}}const c=canvas.getContext('2d');c.clearRect(0,0,80,90);this.draw(c,V.state.character,look,40,kind==='facepaint'?132:86,kind==='facepaint'?160:78,0,0,{stock:'sprite'});});},
-sync(){const e=this.editor;if(!e)return;V.$('#salon-look-description').textContent=this.describe(e.draft);V.$('#salon-preview-direction').textContent=['Frente','Lado esquerdo','Lado direito','Costas'][e.direction];V.$('#salon-look-status').textContent=JSON.stringify(e.draft)===JSON.stringify(e.initial)?'Trocas gratuitas · visual salvo neste perfil':'Visual em prévia · toque em Aplicar visual para salvar';},
-preview(){const e=this.editor,canvas=V.$('#salon-avatar-preview');if(!e||!canvas)return;const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.fillStyle='#e5e7d9';c.fillRect(0,0,320,300);c.fillStyle='#faf6e766';c.beginPath();c.moveTo(20,10);c.lineTo(100,10);c.lineTo(300,270);c.lineTo(220,270);c.fill();if(!e.closeup){c.fillStyle='#c7b696';c.fillRect(0,250,320,50);V.SceneShadows.contact(c,160,263,49,10,.17);}const time=(performance.now()-e.start)/1000,frame=e.walk&&!V.settings.reducedMotion?Math.floor(time*7)%4:0;this.draw(c,V.state.character,e.draft,160,e.closeup?356:266,e.closeup?286:240,e.direction,frame,{time,stock:'sprite'});}
-};
-const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(){await Promise.all([load(),A.load()]);return this.errors;};
-V.Assets.sprite=function(c,id,x,y,row=0,frame=0,size=48){const look=A.look();if(!A.npcScope&&id===V.state?.character&&look.enabled)return A.draw(c,id,look,x,y+7,size,row,frame,{stock:'sprite'});return A.originalSprite(c,id,x,y,row,frame,size);};
-const part=V.Assets.spritePart.bind(V.Assets);V.Assets.spritePart=function(c,id,frame,row,height,x,y,width,drawHeight){const look=A.look();if(A.npcScope||id!==V.state?.character||!look.enabled)return part(c,id,frame,row,height,x,y,width,drawHeight);c.save();c.beginPath();c.rect(x-width*.22,y-width*.25,width*1.44,drawHeight+width*.25);c.clip();A.draw(c,id,look,x+width/2,y+width,width,row,frame);c.restore();};
-V.Animations.draw=function(c,id,action,x,y,size=96,time=V.Engine.time,flip=false,fit=false){return A.animation(c,id,action,x,y,size,time,flip,fit);};
-const render=V.Player.render.bind(V.Player);V.Player.render=function(c){A.scope++;try{return render(c);}finally{A.scope--;}};
-const npcDraw=V.Cozy.drawObject.bind(V.Cozy);V.Cozy.drawObject=function(c,o,...args){const npc=V.Cozy.person(o);if(npc)A.npcScope++;try{return npcDraw(c,o,...args);}finally{if(npc)A.npcScope--;}};
-const character=V.Progress.character.bind(V.Progress);V.Progress.character=function(...args){character(...args);const profile=V.$('.adv-profile');if(profile){const button=document.createElement('button');button.id='player-appearance';button.className='secondary';button.textContent='Visual e acessórios';button.onclick=()=>V.Salon.overview();profile.after(button);}};
-const customize=V.Game.customize.bind(V.Game);V.Game.customize=function(back=null){return V.Salon?.overview(back);};A.emblem=customize;
-})();
-
+})(function() {
+  (function() {
+    "use strict";
+    const V = window.V, artData = () => V.SalonArtData, X = V.SalonCultureData, esc = V.escape, copy = (x) => JSON.parse(JSON.stringify(x));
+    const outfits = [["casual", "Camiseta"], ["jacket", "Jaqueta"], ["overalls", "Jardineira"], ["dress", "Vestido"]], hairs = [["none", "Raspado"], ["afro", "Afro"], ["short", "Curto cacheado"], ["braids", "Tran\xE7as"], ["locs", "Locs"], ["bun", "Coque"]], accessories = [["band", "Faixa de cabelo"], ["glasses", "\xD3culos redondos"], ["scarf", "Len\xE7o"]], palette = [["#31313f", "Grafite"], ["#f2e6ce", "Creme"], ["#b94c68", "Rosa"], ["#406d69", "Verde"], ["#448eb0", "Azul"], ["#9a6abb", "Lil\xE1s"], ["#d6a541", "Dourado"], ["#bd704b", "Terracota"]], skins = { nia: "#a66d48", leo: "#bf8855", taina: "#935b3d", sol: "#8c553e" };
+    outfits.push(...X.outfits.map((o) => [o.id, o.name]));
+    hairs.push(...X.hairs.map((o) => [o.id, o.name]));
+    accessories.push(...X.accessories.map((o) => [o.id, o.name]));
+    hairs.find((h) => h[0] === "braids")[1] = "Box braids";
+    const headwear = [["none", "Sem turbante ou gorro"], ...X.headwear.map((o) => [o.id, o.name])], paints = [["none", "Sem pintura"], ...X.paints.map((o) => [o.id, o.name])];
+    const A = V.Appearance = {
+      images: new Map(),
+      tints: new Map(),
+      sheets: new Map(),
+      faces: new Map(),
+      pieces: new Map(),
+      scope: 0,
+      npcScope: 0,
+      editor: null,
+      outfits,
+      hairs,
+      accessories,
+      palette,
+      headwear,
+      paints,
+      originalSprite: V.Assets.sprite.bind(V.Assets),
+      originalAnimation: V.Animations.draw.bind(V.Animations),
+      defaults(id = V.state?.character || "nia") {
+        const colors = { nia: ["#9b73c5", "#474258"], leo: ["#dfae45", "#3c576a"], taina: ["#3e9bb2", "#3c4c60"], sol: ["#c65e7e", "#40465b"] }[id] || ["#9b73c5", "#474258"];
+        return { version: 2, enabled: false, headwear: "none", facepaint: "none", outfit: "casual", hair: { nia: "afro", leo: "short", taina: "locs", sol: "short" }[id] || "afro", colors: { top: colors[0], bottom: colors[1], hair: "#3b2932", band: "#c76789", glasses: "#343142", scarf: "#d4ac55", headwear: "#80609e", paint: "#f2e6ce", paintAccent: "#e2b52f", pano: "#c99b53", earrings: "#d6a541", necklace: "#bd704b", bracelets: "#d6a541" }, accessories: { band: id === "sol", glasses: id === "leo", scarf: false, pano: false, earrings: false, necklace: false, bracelets: false } };
+      },
+      normalise(value, id = V.state?.character) {
+        const d = this.defaults(id);
+        if (!value || typeof value !== "object" || Array.isArray(value)) return d;
+        const hex = (v, f) => typeof v === "string" && /^#[a-f0-9]{6}$/i.test(v) ? v.toLowerCase() : f;
+        d.enabled = value.enabled === true && !V.NewPlayableCharacters.includes(id);
+        d.outfit = outfits.some((x) => x[0] === value.outfit) ? value.outfit : d.outfit;
+        d.hair = hairs.some((x) => x[0] === value.hair) ? value.hair : d.hair;
+        d.headwear = headwear.some((x) => x[0] === value.headwear) ? value.headwear : "none";
+        d.facepaint = paints.some((x) => x[0] === value.facepaint) ? value.facepaint : "none";
+        for (const k of Object.keys(d.colors)) d.colors[k] = hex(value.colors?.[k], d.colors[k]);
+        for (const [k] of accessories) d.accessories[k] = value.accessories?.[k] === true;
+        return d;
+      },
+      look() {
+        return this.normalise(V.state?.appearance, V.state?.character);
+      },
+      load() {
+        const list = artData()?.files || [{ id: "salon-facade", file: "assets/salon/salon-facade.png" }];
+        return Promise.all(list.map((f) => {
+          if (this.images.has(f.id)) return Promise.resolve();
+          return new Promise((resolve) => {
+            const img = V.Assets.image();
+            img.onload = () => {
+              this.images.set(f.id, img);
+              resolve();
+            };
+            img.onerror = () => {
+              V.Assets.errors.push(f.file);
+              resolve();
+            };
+            img.src = f.file + "?v=" + (f.cacheVersion || "20261029-fit1");
+            V.AssetLoader.register(img, resolve);
+          });
+        }));
+      },
+      remember(map, key, value, limit = 96) {
+        if (map.has(key)) map.delete(key);
+        map.set(key, value);
+        if (map.size > limit) map.delete(map.keys().next().value);
+        return value;
+      },
+      tint(id, color) {
+        const key = id + color;
+        if (this.tints.has(key)) return this.tints.get(key);
+        const img = this.images.get(id);
+        if (!img) return null;
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const c = canvas.getContext("2d");
+        c.drawImage(img, 0, 0);
+        c.globalCompositeOperation = "multiply";
+        c.fillStyle = color;
+        c.fillRect(0, 0, canvas.width, canvas.height);
+        c.globalCompositeOperation = "destination-in";
+        c.drawImage(img, 0, 0);
+        return this.remember(this.tints, key, canvas);
+      },
+      sheet(look, id) {
+        const D = artData();
+        if (!D) return null;
+        const key = [id, look.outfit, look.colors.top, look.colors.bottom].join(":");
+        if (this.sheets.has(key)) return this.sheets.get(key);
+        const base = this.images.get("avatar-" + look.outfit + "-base");
+        if (!base) return null;
+        const canvas = document.createElement("canvas");
+        canvas.width = 256;
+        canvas.height = 384;
+        const c = canvas.getContext("2d");
+        c.drawImage(base, 0, 0);
+        for (const [k, color] of [["skin", skins[id] || skins.nia], ["top", look.colors.top], ["bottom", look.colors.bottom]]) {
+          const layer = this.tint("avatar-" + look.outfit + "-" + k, color);
+          if (layer) c.drawImage(layer, 0, 0);
+        }
+        const clean = document.createElement("canvas");
+        clean.width = 256;
+        clean.height = 384;
+        const cc = clean.getContext("2d");
+        cc.imageSmoothingEnabled = false;
+        D.rigs[look.outfit].cells.forEach(([sx, sy, w, h, dy], i) => {
+          const x = i % 4 * 64, y = Math.floor(i / 4) * 64;
+          cc.drawImage(canvas, x + sx, y + sy, w, h, x + sx, y + sy + dy, w, h);
+        });
+        return this.remember(this.sheets, key, clean, 48);
+      },
+      overlay(c, id, color, dir, x, y, width, height = null) {
+        const D = artData();
+        if (!D) return;
+        const meta = D.hair[id] || D.accessories[id] || D.headwear?.[id] || D.paints?.[id], img = this.tint(id, color);
+        if (!meta || !img) return;
+        const b = meta.rects[dir];
+        if (!b) return;
+        height ??= width * b[3] / b[2];
+        c.drawImage(img, ...b, x - width / 2, y, width, height);
+      },
+      piece(c, key, color, dir, head) {
+        const D = artData();
+        if (!D) return;
+        const meta = D.hair[key] || D.headwear[key], b = meta?.rects[dir];
+        if (!b) return;
+        const hw = head[2] - head[0], hh = head[3] - head[1], cx = (head[0] + head[2]) / 2 - 32, top = head[1] - 60;
+        const fits = {
+          "hair-afro": [[1.55, 0.43], [1.38, 0.24], [1.38, 0.24], [1.42, 0.97]],
+          "hair-short": [[1.27, 0.42], [1.2, 0.22], [1.2, 0.22], [1.18, 0.96]],
+          "hair-braids": [[1.54, 0.23], [1.42, 0.14], [1.42, 0.14], [1.23, 0.94]],
+          "hair-locs": [[1.56, 0.25], [1.43, 0.15], [1.43, 0.15], [1.26, 0.94]],
+          "hair-bun": [[1.27, 0.6], [1.25, 0.54], [1.25, 0.54], [1.08, 0.97]],
+          "hair-nago": [[1.16, 0.49], [1.17, 0.32], [1.17, 0.32], [1.07, 0.97]],
+          "hair-twists": [[1.4, 0.3], [1.31, 0.22], [1.31, 0.22], [1.19, 0.94]],
+          "headwear-front-knot": [[1.25, 0.46], [1.22, 0.27], [1.22, 0.27], [1.14, 0.96]],
+          "headwear-side-fold": [[1.24, 0.38], [1.22, 0.24], [1.22, 0.24], [1.14, 0.97]],
+          "headwear-high-fold": [[1.23, 0.64], [1.22, 0.44], [1.22, 0.44], [1.12, 0.97]],
+          "headwear-tied-back": [[1.22, 0.36], [1.19, 0.25], [1.19, 0.25], [1.14, 0.97]],
+          "headwear-embroidered-cap": [[1.13, 0.62], [1.12, 0.47], [1.12, 0.47], [1.08, 0.97]]
+        };
+        const fit = fits[key]?.[dir];
+        if (!fit) return;
+        const width = hw * fit[0], height = width * b[3] / b[2];
+        let y = top + hh * (key.startsWith("headwear-") ? 0.23 : 0.26) - height * fit[1];
+        if (dir === 3) y = top + hh * (key === "hair-braids" || key === "hair-locs" || key === "hair-twists" ? 1.35 : 1.02) - height;
+        if (dir !== 0) y = Math.min(y, top - 3);
+        this.overlay(c, key, color, dir, cx + (dir === 1 ? hw * 0.035 : dir === 2 ? -hw * 0.035 : 0), y, width, height);
+      },
+      headLayer(c, key, color, dir, head, outfit, row, frame, front = true) {
+        if (!front) return this.piece(c, key, color, dir, head);
+        const cache = [key, color, dir, outfit, row, frame].join(":");
+        let canvas = this.pieces.get(cache);
+        if (!canvas) {
+          canvas = document.createElement("canvas");
+          canvas.width = 96;
+          canvas.height = 128;
+          const ctx = canvas.getContext("2d");
+          ctx.imageSmoothingEnabled = false;
+          ctx.save();
+          ctx.translate(48, 92);
+          this.piece(ctx, key, color, dir, head);
+          ctx.restore();
+          if (dir !== 3) {
+            const mask = this.images.get("face-protect-" + outfit);
+            if (mask) {
+              ctx.globalCompositeOperation = "destination-out";
+              ctx.drawImage(mask, frame * 64, row * 64, 64, 64, 16, 32, 64, 64);
+              ctx.globalCompositeOperation = "source-over";
+            }
+          }
+          this.remember(this.pieces, cache, canvas, 256);
+        }
+        c.drawImage(canvas, -48, -92);
+      },
+      face(c, id, look, row, frame, dir, head) {
+        const D = artData();
+        if (!D || dir === 3 || look.facepaint === "none") return;
+        const key = [look.outfit, look.facepaint, look.colors.paint, look.colors.paintAccent, row, frame, dir].join(":");
+        let canvas = this.faces.get(key);
+        if (!canvas) {
+          canvas = document.createElement("canvas");
+          canvas.width = 64;
+          canvas.height = 64;
+          const ctx = canvas.getContext("2d");
+          ctx.imageSmoothingEnabled = false;
+          const hw = head[2] - head[0], hh = head[3] - head[1], eyes = D.rigs[look.outfit].eyes[row * 4 + frame], cx = dir === 0 ? (head[0] + head[2]) / 2 : eyes[0]?.[0] ?? head[0] + hw * (dir === 1 ? 0.24 : 0.76);
+          for (const [part2, color] of [["primary", look.colors.paint], ["accent", look.colors.paintAccent]]) this.overlay(ctx, "paint-" + look.facepaint + "-" + part2, color, dir, cx, head[1] + hh * 0.14, hw * (dir === 0 ? 0.82 : 0.4), hh * 0.76);
+          ctx.globalCompositeOperation = "destination-in";
+          const mask = this.images.get("face-mask-" + look.outfit);
+          if (mask) ctx.drawImage(mask, frame * 64, row * 64, 64, 64, 0, 0, 64, 64);
+          else ctx.clearRect(0, 0, 64, 64);
+          ctx.globalCompositeOperation = "source-over";
+          this.remember(this.faces, key, canvas, 128);
+        }
+        c.drawImage(canvas, -32, -60);
+      },
+      draw(c, id, look, x, y, size = 64, row = 0, frame = 0, opts = {}) {
+        look = this.normalise(look, id);
+        if (!look.enabled) {
+          if (opts.stock === "sprite") this.originalSprite(c, id, x, y, row, frame, size);
+          else this.originalAnimation(c, id, "idle", x, y, size, opts.time || 0, opts.flip || false, true);
+          return;
+        }
+        const D = artData(), sheet = D && this.sheet(look, id);
+        if (!sheet) return this.originalSprite(c, id, x, y, row, frame, size);
+        row = V.clamp(Math.floor(row), 0, 5);
+        frame = (Math.floor(frame) % 4 + 4) % 4;
+        const rig = D.rigs[look.outfit], head = rig.heads[row * 4 + frame], dir = V.clamp(Math.floor(opts.direction ?? (row < 4 ? row : 0)), 0, 3), hw = head[2] - head[0], hh = head[3] - head[1], cx = (head[0] + head[2]) / 2 - 32, top = head[1] - 60, neck = head[3] - 60, eyes = rig.eyes[row * 4 + frame];
+        c.save();
+        c.imageSmoothingEnabled = false;
+        c.translate(Math.round(x), Math.round(y));
+        c.scale(size / 64, size / 64);
+        if (opts.action === "sleep") c.rotate(-Math.PI / 2);
+        if (opts.action === "dance") {
+          c.translate(0, V.settings.reducedMotion ? 0 : Math.sin((opts.time || 0) * 7) * 1.4);
+          c.rotate(V.settings.reducedMotion ? 0 : Math.sin((opts.time || 0) * 5) * 0.045);
+        }
+        if (opts.crop) {
+          c.beginPath();
+          c.rect(-48, -90, 96, 90 - opts.crop);
+          c.clip();
+        }
+        const pieceKey = look.headwear !== "none" ? "headwear-" + look.headwear : look.hair !== "none" ? "hair-" + look.hair : null, pieceColor = look.headwear !== "none" ? look.colors.headwear : look.colors.hair;
+        if (pieceKey) this.headLayer(c, pieceKey, pieceColor, dir, head, look.outfit, row, frame, false);
+        c.drawImage(sheet, frame * 64, row * 64, 64, 64, -32, -60, 64, 64);
+        if (look.accessories.pano) this.overlay(c, "accessory-pano", look.colors.pano, dir, cx, neck - 1, hw * (dir === 1 || dir === 2 ? 0.72 : 0.94), hh * 1.04);
+        if (look.accessories.necklace) this.overlay(c, "accessory-necklace", look.colors.necklace, dir, cx, neck + 0.4, hw * (dir === 1 || dir === 2 ? 0.6 : 0.76), hh * 0.38);
+        if (look.accessories.scarf) this.overlay(c, "accessory-scarf", look.colors.scarf, dir, cx, neck - 0.4, hw * 0.88, hh * 0.59);
+        this.face(c, id, look, row, frame, dir, head);
+        if (pieceKey) this.headLayer(c, pieceKey, pieceColor, dir, head, look.outfit, row, frame);
+        if (look.accessories.earrings && dir !== 3) {
+          if (dir === 0) this.overlay(c, "accessory-earrings", look.colors.earrings, dir, cx, top + hh * 0.64, hw * 1.04, hh * 0.25);
+          else this.overlay(c, "accessory-earrings", look.colors.earrings, dir, head[0] - 32 + hw * (dir === 1 ? 0.76 : 0.24), top + hh * 0.67, hh * 0.25 * 26 / 58, hh * 0.25);
+        }
+        if (look.accessories.band && look.headwear === "none") this.overlay(c, "accessory-band", look.colors.band, dir, cx, top + hh * (dir === 3 ? 0.05 : 0.03), hw * 1.08, hh * (dir === 0 || dir === 3 ? 0.32 : 0.44));
+        if (look.accessories.glasses && dir !== 3) {
+          const eyeY = eyes.length ? eyes.reduce((n, p) => n + p[1], 0) / eyes.length : head[1] + hh * 0.6;
+          this.overlay(c, "accessory-glasses", look.colors.glasses, dir, cx + (dir === 1 ? -hw * 0.07 : dir === 2 ? hw * 0.07 : 0), eyeY - 60 - hh * 0.17, hw * 0.88, hh * 0.36);
+        }
+        if (look.accessories.bracelets) for (const wrist of rig.wrists?.[row * 4 + frame] || []) this.overlay(c, "accessory-bracelets", look.colors.bracelets, dir, wrist[0] - 32, wrist[1] - 60 - 1, Math.min(4.5, hw * 0.19), 3.4);
+        c.restore();
+      },
+      animation(c, id, action, x, y, size, time, flip, fit) {
+        const look = this.look();
+        if (this.npcScope || !look.enabled || id !== V.state?.character) return this.originalAnimation(c, id, action, x, y, size, time, flip, fit);
+        let dir = this.scope && V.Player.data ? V.Player.data.dir : flip ? 1 : 0, row = 0, frame = 0;
+        const moving = ["walk", "walkBack", "dance", "spin"].includes(action), gesture = !["idle", "ready", "walk", "walkBack", "dance", "spin", "sit", "sleep", "think"].includes(action);
+        if (action === "walkBack") dir = 3;
+        if (action === "spin") dir = V.settings.reducedMotion ? 0 : [0, 2, 3, 1][Math.floor(time * 7) % 4];
+        if (moving) {
+          row = dir;
+          frame = V.settings.reducedMotion ? 0 : Math.floor(time * 8) % 4;
+        } else if (action === "heal") {
+          row = 5;
+          frame = V.settings.reducedMotion ? 0 : Math.floor(time * 6) % 4;
+        } else if (gesture) {
+          row = 4;
+          frame = V.settings.reducedMotion ? 0 : Math.floor(time * 6) % 4;
+          dir = 0;
+        } else row = dir;
+        this.draw(c, id, look, x, y, size, row, frame, { direction: dir, action, time, crop: action === "swim" ? 23 : action === "sit" ? 15 : 0 });
+        return true;
+      },
+      describe(look = this.look()) {
+        return look.enabled ? [outfits.find((x) => x[0] === look.outfit)?.[1], (look.headwear === "none" ? hairs : headwear).find((x) => x[0] === (look.headwear === "none" ? look.hair : look.headwear))?.[1], ...accessories.filter(([key]) => look.accessories[key]).map((x) => x[1]), look.facepaint === "none" ? null : "Pintura: " + paints.find((x) => x[0] === look.facepaint)?.[1]].filter(Boolean).join(" \xB7 ") : "Visual original do personagem";
+      },
+      open(tab = "hair", options = {}) {
+        if (!V.state || V.Game.mode !== "explore") return;
+        if (window.VoicesApp && !window.VoicesApp.featureReady("salon")) return window.VoicesApp.withFeature("salon", () => {
+          this.load();
+          return this.open(tab, options);
+        });
+        if (!V.World.current?.salon) return V.Salon?.overview();
+        if (V.NewPlayableCharacters.includes(V.state.character)) return this.emblem(() => V.Salon.overview());
+        const initial = this.look(), draft = this.normalise(options.draft || initial);
+        V.UI.modal("Provador do Sal\xE3o \xCDris", "ROUPAS \xB7 CABELOS \xB7 ACESS\xD3RIOS \xB7 PINTURAS", `<div class="salon-editor"><aside class="salon-mirror"><small>SUA PR\xC9VIA</small><div class="salon-preview-frame"><canvas id="salon-avatar-preview" width="320" height="300" aria-label="Pr\xE9via do seu personagem"></canvas></div><strong>${esc(V.state.name)}</strong><p id="salon-look-description"></p><div class="salon-turn"><button id="salon-turn-left" class="secondary" aria-label="Girar pr\xE9via para a esquerda">\u21B6</button><span id="salon-preview-direction">Frente</span><button id="salon-turn-right" class="secondary" aria-label="Girar pr\xE9via para a direita">\u21B7</button></div><label class="toggle"><input type="checkbox" id="salon-preview-walk">Ver caminhando</label><label class="toggle salon-zoom"><input type="checkbox" id="salon-preview-closeup" ${tab === "paint" ? "checked" : ""}>Ver rosto de perto</label><p class="salon-preview-note">Experimente \xE0 vontade. Seu visual muda ao aplicar.</p><button id="salon-reset-original" class="secondary">Usar visual original</button></aside><div class="salon-options"><nav class="salon-tabs" aria-label="Personaliza\xE7\xE3o">${[["hair", "Cabelos"], ["outfit", "Roupas"], ["accessories", "Acess\xF3rios"], ["paint", "Pinturas"]].map(([key, label]) => `<button data-salon-tab="${key}" aria-pressed="${tab === key}">${label}</button>`).join("")}</nav><div id="salon-options-body"></div></div></div>`, `<p id="salon-look-status" role="status">Trocas gratuitas \xB7 visual salvo neste perfil</p><button id="salon-look-cancel" class="secondary">Cancelar</button><button id="salon-look-apply" class="primary">Aplicar visual</button>`, true);
+        V.$(".modal").classList.add("salon-modal", "salon-editor-modal");
+        const session = { draft, initial, tab: ["hair", "outfit", "accessories", "paint"].includes(tab) ? tab : "hair", direction: 0, walk: false, closeup: tab === "paint", filter: "", start: performance.now(), raf: 0 };
+        this.editor = session;
+        V.UI.onClose = () => {
+          cancelAnimationFrame(session.raf);
+          if (this.editor === session) this.editor = null;
+        };
+        const turn = (d) => {
+          session.direction = (session.direction + d + 4) % 4;
+          this.sync();
+        };
+        V.$("#salon-turn-left").onclick = () => turn(-1);
+        V.$("#salon-turn-right").onclick = () => turn(1);
+        V.$("#salon-preview-walk").onchange = (e) => session.walk = e.target.checked;
+        V.$("#salon-preview-closeup").onchange = (e) => session.closeup = e.target.checked;
+        V.$("#salon-reset-original").onclick = () => {
+          session.draft = this.defaults(V.state.character);
+          this.controls();
+          this.sync();
+        };
+        V.$$("[data-salon-tab]").forEach((b) => b.onclick = () => {
+          session.tab = b.dataset.salonTab;
+          session.filter = "";
+          if (session.tab === "paint") {
+            session.closeup = true;
+            V.$("#salon-preview-closeup").checked = true;
+          }
+          this.controls();
+        });
+        V.$("#salon-look-cancel").onclick = () => V.UI.close();
+        V.$("#salon-look-apply").onclick = () => {
+          V.state.appearance = this.normalise(session.draft);
+          V.Save.save();
+          V.UI.close();
+          if (V.Player.data) {
+            V.Player.data.celebrateTime = 1.2;
+            V.Engine.burst(V.Player.data.x, V.Player.data.y - 28, V.state.appearance.colors.top, 12);
+          }
+          V.Audio.sfx("collect");
+          V.UI.toast("Visual aplicado! Voc\xEA pode voltar ao sal\xE3o quando quiser.");
+        };
+        this.controls();
+        this.sync();
+        const tick = () => {
+          if (this.editor !== session) return;
+          this.preview();
+          session.raf = requestAnimationFrame(tick);
+        };
+        tick();
+      },
+      change(fn) {
+        const e = this.editor;
+        if (!e) return;
+        e.draft.enabled = true;
+        fn(e.draft);
+        this.controls();
+        this.sync();
+      },
+      colorControl(key, title) {
+        const value = this.editor.draft.colors[key];
+        return `<fieldset class="salon-color-group"><legend>${title}</legend><div class="salon-palette">${palette.map(([hex, name]) => `<button data-salon-color-key="${key}" data-salon-color="${hex}" aria-label="${title}: ${name}" aria-pressed="${value === hex}" style="--swatch:${hex}">${value === hex ? "\u2713" : ""}</button>`).join("")}<label class="salon-custom-color" title="Escolher outra cor"><input type="color" data-salon-custom="${key}" value="${value}" aria-label="Outra cor para ${title.toLowerCase()}"><span>+</span></label></div></fieldset>`;
+      },
+      choices(kind, list) {
+        const e = this.editor;
+        return `<div class="salon-choice-grid">${list.map(([id, name]) => `<button data-salon-choice="${id}" data-salon-kind="${kind}" aria-pressed="${e.draft[kind] === id}"><canvas width="80" height="90" data-salon-thumb="${id}" data-salon-thumb-kind="${kind}"></canvas><span>${esc(name)}</span></button>`).join("")}</div>`;
+      },
+      context(kind, id) {
+        const catalog = this.catalog(kind, id), g = V.Culture.gallery.find((g2) => g2.id === catalog);
+        if (!g) return "";
+        return `<details class="salon-piece-context"><summary>No caderno \xB7 ${esc(g.title)}</summary><p>${esc(g.description)}</p><button class="secondary" data-salon-inspect="${esc(g.id)}">Abrir ficha no caderno</button></details>`;
+      },
+      catalog(kind, id) {
+        return { outfit: () => X.outfits.find((o) => o.id === id)?.catalog || { overalls: "clothes-overalls" }[id], hair: () => X.hairs.find((h) => h.id === id)?.catalog || { braids: "hair-box-braids", locs: "hair-locs", afro: "hair-afro" }[id], headwear: () => X.headwear.find((h) => h.id === id)?.catalog, facepaint: () => X.paints.find((p) => p.id === id)?.catalog, accessory: () => id === "pano" ? "cloth-pano-da-costa" : id === "band" ? "wrap-band" : null }[kind]?.();
+      },
+      inspect(id) {
+        const e = this.editor;
+        if (!e) return;
+        const draft = copy(e.draft), tab = e.tab;
+        V.Culture.detail(id, () => this.open(tab, { draft }));
+      },
+      controls() {
+        const e = this.editor;
+        if (!e) return;
+        V.$$("[data-salon-tab]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.salonTab === e.tab)));
+        let html = "";
+        if (e.tab === "outfit" || e.tab === "hair") {
+          const kind = e.tab === "outfit" ? "outfit" : "hair", list = kind === "outfit" ? outfits : hairs;
+          html = `<h3>${kind === "outfit" ? "Escolha a roupa" : "Escolha o penteado"}</h3>${this.context(kind, e.draft[kind])}` + (kind === "outfit" ? `<label class="salon-search">Encontrar roupa<input type="search" id="salon-outfit-search" autocomplete="off" placeholder="Vestido, t\xFAnica, cardig\xE3\u2026" value="${esc(e.filter)}"></label>` : "") + this.choices(kind, list) + (kind === "outfit" ? this.colorControl("top", "Cor principal") + this.colorControl("bottom", "Segunda cor / parte inferior") : this.colorControl("hair", "Cor do cabelo"));
+          if (kind === "hair" && e.draft.headwear !== "none") html += '<p class="salon-options-intro">Escolha um penteado para v\xEA-lo sem o turbante. O turbante continua dispon\xEDvel em Acess\xF3rios.</p>';
+        } else if (e.tab === "paint") {
+          html = '<h3>Pinturas faciais</h3><p class="salon-options-intro">Combine os quatro desenhos do caderno com seu visual. Use a pr\xE9via de perto para observar os detalhes.</p>' + this.context("facepaint", e.draft.facepaint) + this.choices("facepaint", paints) + this.colorControl("paint", "Cor da pintura") + this.colorControl("paintAccent", "Cor dos detalhes");
+        } else {
+          html = '<h3>Turbantes e gorros</h3><p class="salon-options-intro">Escolha uma amarra\xE7\xE3o ou use seu cabelo \xE0 mostra. Cada turbante pode ganhar outra cor.</p>' + this.context("headwear", e.draft.headwear) + this.choices("headwear", headwear) + this.colorControl("headwear", "Cor do turbante ou gorro") + '<h3>Combine seus acess\xF3rios</h3><div class="salon-accessory-options">' + accessories.map(([id, name]) => `<article><button data-salon-accessory="${id}" aria-pressed="${e.draft.accessories[id]}"><canvas width="80" height="90" data-salon-thumb="${id}" data-salon-thumb-kind="accessory"></canvas><span>${esc(name)}</span><b>${e.draft.accessories[id] ? "\u2713 Usando" : "+ Adicionar"}</b></button>${this.colorControl(id, "Cor \xB7 " + name.toLowerCase())}${this.context("accessory", id)}</article>`).join("") + "</div>";
+        }
+        V.$("#salon-options-body").innerHTML = html;
+        V.$$("[data-salon-choice]").forEach((b) => b.onclick = () => this.change((d) => {
+          const kind = b.dataset.salonKind;
+          d[kind] = b.dataset.salonChoice;
+          if (kind === "hair") {
+            d.headwear = "none";
+            d.accessories.band = false;
+          }
+          if (kind === "headwear" && d.headwear !== "none") d.accessories.band = false;
+        }));
+        V.$$("[data-salon-accessory]").forEach((b) => b.onclick = () => this.change((d) => {
+          const key = b.dataset.salonAccessory;
+          d.accessories[key] = !d.accessories[key];
+          if (key === "band" && d.accessories.band) d.headwear = "none";
+        }));
+        V.$$("[data-salon-color]").forEach((b) => b.onclick = () => this.change((d) => d.colors[b.dataset.salonColorKey] = b.dataset.salonColor));
+        V.$$("[data-salon-custom]").forEach((input) => input.oninput = () => {
+          e.draft.enabled = true;
+          e.draft.colors[input.dataset.salonCustom] = input.value;
+          for (const b of V.$$("[data-salon-color-key]")) if (b.dataset.salonColorKey === input.dataset.salonCustom) {
+            const selected = b.dataset.salonColor === input.value;
+            b.setAttribute("aria-pressed", String(selected));
+            b.textContent = selected ? "\u2713" : "";
+          }
+          this.thumbs();
+          this.sync();
+        });
+        V.$$("[data-salon-inspect]").forEach((b) => b.onclick = () => this.inspect(b.dataset.salonInspect));
+        const search = V.$("#salon-outfit-search");
+        if (search) {
+          const filter = () => {
+            e.filter = search.value;
+            for (const b of V.$$("[data-salon-choice]")) b.hidden = !V.Interface.normalize(b.textContent).includes(V.Interface.normalize(e.filter));
+          };
+          search.oninput = filter;
+          filter();
+        }
+        this.thumbs();
+      },
+      thumbs() {
+        const e = this.editor;
+        V.$$("[data-salon-thumb]").forEach((canvas) => {
+          const look = copy(e.draft), key = canvas.dataset.salonThumb, kind = canvas.dataset.salonThumbKind;
+          look.enabled = true;
+          if (kind === "accessory") {
+            look.hair = "short";
+            look.facepaint = "none";
+            for (const [id] of accessories) look.accessories[id] = id === key;
+            look.headwear = "none";
+          } else {
+            look[kind] = key;
+            if (kind === "hair") {
+              look.headwear = "none";
+              look.accessories.band = false;
+              look.accessories.glasses = false;
+            }
+            if (kind === "headwear") {
+              look.accessories.band = false;
+              look.hair = "none";
+            }
+            if (kind === "facepaint") {
+              look.hair = "none";
+              look.headwear = "none";
+              look.accessories.glasses = false;
+              look.accessories.band = false;
+            }
+          }
+          const c = canvas.getContext("2d");
+          c.clearRect(0, 0, 80, 90);
+          this.draw(c, V.state.character, look, 40, kind === "facepaint" ? 132 : 86, kind === "facepaint" ? 160 : 78, 0, 0, { stock: "sprite" });
+        });
+      },
+      sync() {
+        const e = this.editor;
+        if (!e) return;
+        V.$("#salon-look-description").textContent = this.describe(e.draft);
+        V.$("#salon-preview-direction").textContent = ["Frente", "Lado esquerdo", "Lado direito", "Costas"][e.direction];
+        V.$("#salon-look-status").textContent = JSON.stringify(e.draft) === JSON.stringify(e.initial) ? "Trocas gratuitas \xB7 visual salvo neste perfil" : "Visual em pr\xE9via \xB7 toque em Aplicar visual para salvar";
+      },
+      preview() {
+        const e = this.editor, canvas = V.$("#salon-avatar-preview");
+        if (!e || !canvas) return;
+        const c = canvas.getContext("2d");
+        c.imageSmoothingEnabled = false;
+        c.fillStyle = "#e5e7d9";
+        c.fillRect(0, 0, 320, 300);
+        c.fillStyle = "#faf6e766";
+        c.beginPath();
+        c.moveTo(20, 10);
+        c.lineTo(100, 10);
+        c.lineTo(300, 270);
+        c.lineTo(220, 270);
+        c.fill();
+        if (!e.closeup) {
+          c.fillStyle = "#c7b696";
+          c.fillRect(0, 250, 320, 50);
+          V.SceneShadows.contact(c, 160, 263, 49, 10, 0.17);
+        }
+        const time = (performance.now() - e.start) / 1e3, frame = e.walk && !V.settings.reducedMotion ? Math.floor(time * 7) % 4 : 0;
+        this.draw(c, V.state.character, e.draft, 160, e.closeup ? 356 : 266, e.closeup ? 286 : 240, e.direction, frame, { time, stock: "sprite" });
+      }
+    };
+    V.Assets.addLoader("player-appearance:load:1", function() {
+      return A.load();
+    });
+    V.Assets.sprite = function(c, id, x, y, row = 0, frame = 0, size = 48) {
+      const look = A.look();
+      if (!A.npcScope && id === V.state?.character && look.enabled) return A.draw(c, id, look, x, y + 7, size, row, frame, { stock: "sprite" });
+      return A.originalSprite(c, id, x, y, row, frame, size);
+    };
+    const part = V.Assets.spritePart.bind(V.Assets);
+    V.Assets.spritePart = function(c, id, frame, row, height, x, y, width, drawHeight) {
+      const look = A.look();
+      if (A.npcScope || id !== V.state?.character || !look.enabled) return part(c, id, frame, row, height, x, y, width, drawHeight);
+      c.save();
+      c.beginPath();
+      c.rect(x - width * 0.22, y - width * 0.25, width * 1.44, drawHeight + width * 0.25);
+      c.clip();
+      A.draw(c, id, look, x + width / 2, y + width, width, row, frame);
+      c.restore();
+    };
+    V.Animations.draw = function(c, id, action, x, y, size = 96, time = V.Engine.time, flip = false, fit = false) {
+      return A.animation(c, id, action, x, y, size, time, flip, fit);
+    };
+    const render = V.Player.render.bind(V.Player);
+    V.Player.render = function(c) {
+      A.scope++;
+      try {
+        return render(c);
+      } finally {
+        A.scope--;
+      }
+    };
+    V.Hooks.around(V.Cozy, "drawObject", "player-appearance:drawObject:1", (npcDraw) => function(c, o, ...args) {
+      const npc = V.Cozy.person(o);
+      if (npc) A.npcScope++;
+      try {
+        return npcDraw(c, o, ...args);
+      } finally {
+        if (npc) A.npcScope--;
+      }
+    });
+    const character = V.Progress.character.bind(V.Progress);
+    V.Progress.character = function(...args) {
+      character(...args);
+      const profile = V.$(".adv-profile");
+      if (profile) {
+        const button = document.createElement("button");
+        button.id = "player-appearance";
+        button.className = "secondary";
+        button.textContent = "Visual e acess\xF3rios";
+        button.onclick = () => V.Salon.overview();
+        profile.after(button);
+      }
+    };
+    const customize = V.Game.customize.bind(V.Game);
+    V.Game.customize = function(back = null) {
+      return V.Salon?.overview(back);
+    };
+    A.emblem = customize;
+  })();
 });

@@ -1,63 +1,409 @@
 /* Registered module: protest-world */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("protest-world", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function(){'use strict';
-const V=window.V,C=V.Cozy,L=V.Living,W=V.World,D=V.SceneDesign,E=V.SceneEditor,T=48,copy=x=>JSON.parse(JSON.stringify(x)),esc=V.escape,data=V.protestContent,learning=V.protestLearning;
-const prior={districts:L.newDistricts.bind(L),residents:L.residents.bind(L),assets:V.Assets.load.bind(V.Assets),compose:C.compose.bind(C),chat:C.setupChat.bind(C),prepare:C.preparePerson.bind(C),draw:C.drawObject.bind(C),interact:C.interact.bind(C),update:C.update.bind(C),load:C.onLoad.bind(C),ensure:C.ensure.bind(C),document:D.document.bind(D),normalise:D.normalise.bind(D),landmark:V.Atlas.landmark.bind(V.Atlas),workshop:L.workshop.bind(L),reconcile:L.reconcile.bind(L)};
-const slots=[0,12,2,14,4,5,13,6,7,8,9,15,16,10,11,18,19,17,1,3,20,21,22,23],homes={},layout=C.layouts['chapter-5'];
-const personal=copy(learning.personal);personal[10]=['We practised the rhythm together and wrote the parts in the rehearsal notebook.','Ensaiamos o ritmo juntos e escrevemos as partes no caderno de ensaio.'];personal[2]=['I help people take turns speaking. Then I will listen.','Ajudo as pessoas a respeitar a vez de falar. Depois vou escutar.'];personal[3]=['I help organise the listening circle. Everyone can take a pause.','Ajudo a organizar a roda de escuta. Todas as pessoas podem fazer uma pausa.'];personal[18]=['I brought water for our rest corner.','Trouxe água para nosso canto de descanso.'];personal[19]=['I came to listen. I can ask a question when I need to.','Vim para escutar. Posso fazer uma pergunta quando precisar.'];personal[21]=['I keep the path clear for visitors. We can take a break here.','Mantenho o caminho livre para visitantes. Podemos fazer uma pausa aqui.'];personal[22]=['I ask permission before taking a photograph. I write down the date and place.','Peço permissão antes de tirar uma fotografia. Anoto a data e o lugar.'];
-const sceneDialogue={"protest-livia":{"intro":["I am organising the speaking turns. The history panel is beside the reading table if you want to follow the dates.","Estou organizando as vezes de falar. O painel de história fica ao lado da mesa de leitura se você quiser acompanhar as datas."],"answer":null},"protest-samuel":{"intro":["I am checking the sound before the next speaker begins. Can you hear the words clearly from here?","Estou conferindo o som antes de a próxima pessoa começar a falar. Você consegue ouvir as palavras com clareza daqui?"],"answer":null},"protest-juliete":{"intro":["I brought my history notes. A photograph and a date help us connect a protest record to its place.","Trouxe minhas anotações de história. Uma fotografia e uma data nos ajudam a ligar um registro de manifestação ao seu lugar."],"answer":null},"protest-ezequiel":{"intro":["I am keeping the reading table in order. We can compare the museum records after this speaking turn.","Estou organizando a mesa de leitura. Podemos comparar os registros do museu depois desta fala."],"answer":null},"protest-priscila":{"intro":["The rest corner has water and seats. Tell us if you need room to pass or a quieter place to listen.","O espaço de descanso tem água e assentos. Avise se precisar de espaço para passar ou de um lugar mais tranquilo para escutar."],"answer":null},"protest-wellington":{"intro":["I designed the information panel. I kept the names and dates large enough to read from the path.","Desenhei o painel de informações. Deixei os nomes e as datas grandes o bastante para ler do caminho."],"answer":["A poster should let people find the source, not just remember a slogan. The reading panel explains the references behind our message.","Um cartaz deve permitir que as pessoas encontrem a fonte, além de lembrar um slogan. O painel de leitura explica as referências por trás da nossa mensagem."]},"protest-debora":{"intro":["I am watching the group before starting the next rhythm. A pause gives the speaker room to be heard.","Estou observando o grupo antes de começar o próximo ritmo. Uma pausa dá espaço para a pessoa que fala ser ouvida."],"answer":["Each musician has a different part. We wrote their names in the programme instead of crediting only the person at the microphone.","Cada musicista tem uma parte diferente. Escrevemos seus nomes no programa em vez de dar crédito apenas a quem está no microfone."]},"protest-moises":{"intro":["My percussion students are practising a short answer to the first phrase. We listen before we play.","Meus estudantes de percussão estão ensaiando uma resposta curta à primeira frase. Escutamos antes de tocar."],"answer":["The music room has an instrument notebook. It compares how sounds are produced and identifies each instrument separately.","A sala de música tem um caderno de instrumentos. Ele compara como os sons são produzidos e identifica cada instrumento separadamente."]},"protest-cassio":{"intro":["I brought my guitar from school. Paulo helped me slow down the difficult part of the rehearsal.","Trouxe minha guitarra da escola. Paulo me ajudou a tocar mais devagar a parte difícil do ensaio."],"answer":["The library has readings about Nina Simone, Tim Maia and Sister Rosetta Tharpe. I am comparing the different musical paths in those records.","A biblioteca tem leituras sobre Nina Simone, Tim Maia e Sister Rosetta Tharpe. Estou comparando os caminhos musicais diferentes nesses registros."]},"protest-soraia":{"intro":["Our workshop is trying two different endings for the same melody. I want the group to hear both before choosing.","Nossa oficina está experimentando dois finais diferentes para a mesma melodia. Quero que o grupo ouça os dois antes de escolher."],"answer":["An arrangement can change who answers each phrase. We are trying it with the people who will perform, not deciding for them.","Um arranjo pode mudar quem responde a cada frase. Estamos experimentando com as pessoas que vão se apresentar, sem decidir por elas."]},"protest-silas":{"intro":["I checked the lights and moved the cable away from the entrance. Now I can join the percussion group.","Conferi as luzes e afastei o cabo da entrada. Agora posso me juntar ao grupo de percussão."],"answer":["The information table keeps history notes beside the programme. Visitors can learn about the movement as well as hear the music.","A mesa de informações mantém notas de história ao lado do programa. Os visitantes podem conhecer o movimento e também ouvir a música."]},"protest-tais":{"intro":["I wrote the rehearsal order in my notebook. There is a break after the second musical phrase.","Anotei a ordem do ensaio no meu caderno. Há uma pausa depois da segunda frase musical."],"answer":["I want to keep learning after today’s meeting. Mila suggested listening to a phrase, writing a question and finding a reading about it.","Quero continuar aprendendo depois da reunião de hoje. Mila sugeriu ouvir uma frase, escrever uma pergunta e procurar uma leitura sobre ela."]},"protest-ariane":{"intro":["I checked the space between the sign and the path. People need to see the message and still have room to move.","Conferi o espaço entre o cartaz e o caminho. As pessoas precisam ver a mensagem e continuar tendo espaço para circular."],"answer":["The route to the reading table must stay open. A useful meeting space considers people who need wider paths or a seat nearby.","O trajeto até a mesa de leitura precisa ficar aberto. Um espaço de reunião útil considera quem precisa de caminhos mais largos ou de um assento próximo."]},"protest-jeferson":{"intro":["I finished work in the kitchen and came to the meeting. Rosa is keeping the food cards at the market.","Terminei o trabalho na cozinha e vim para a reunião. Rosa está guardando as fichas dos alimentos na feira."],"answer":["The food cards name who prepared each recipe. People’s work should remain visible in a festival programme and on a market stall.","As fichas dos alimentos indicam quem preparou cada receita. O trabalho das pessoas deve continuar visível no programa de um festival e na banca de uma feira."]},"protest-clarissa":{"intro":["I painted two drafts of this sign. The group chose the one whose letters were easier to read.","Pintei dois rascunhos deste cartaz. O grupo escolheu aquele cujas letras eram mais fáceis de ler."],"answer":["I kept the earlier sketch beside the finished sign. We can explain why the group changed the message and which source it consulted.","Guardei o esboço anterior ao lado do cartaz pronto. Podemos explicar por que o grupo mudou a mensagem e qual fonte consultou."]},"protest-dario":{"intro":["I came from the library with a book about Black writers. Marlene can help you find the reading table.","Vim da biblioteca com um livro sobre escritores negros. Marlene pode ajudar você a encontrar a mesa de leitura."],"answer":["The book about Carolina Maria de Jesus includes more than one kind of writing. I noted the titles so I can ask Davi for another reading.","O livro sobre Carolina Maria de Jesus inclui mais de um tipo de escrita. Anotei os títulos para pedir outra leitura a Davi."]},"protest-avelina":{"intro":["I repaired the cloth edge of this banner. Its message was chosen at the neighbourhood meeting.","Consertei a borda de tecido desta faixa. Sua mensagem foi escolhida na reunião do bairro."],"answer":["Amara’s notebook shows different hair techniques, and Viviane’s cards explain clothing choices. We should read the descriptions before making assumptions.","O caderno de Amara mostra técnicas de cabelo diferentes, e as fichas de Viviane explicam escolhas de roupas. Devemos ler as descrições antes de fazer suposições."]},"protest-edivaldo":{"intro":["I helped make the wooden support for this sign. I checked the edges before bringing it to the square.","Ajudei a fazer o suporte de madeira deste cartaz. Conferi as bordas antes de trazê-lo à praça."],"answer":["I marked the back of the support with the workshop’s name. That way the group can find who made it and return it after the meeting.","Marquei a parte de trás do suporte com o nome da oficina. Assim o grupo pode encontrar quem o fez e devolvê-lo depois da reunião."]},"protest-raissa":{"intro":["I am helping at the water point. The bottles stay here, and the empty cups go in that basket.","Estou ajudando no ponto de água. As garrafas ficam aqui, e os copos vazios vão naquela cesta."],"answer":["People can help in different ways. I joined the water team; someone else organised books, sound and speaking turns.","As pessoas podem ajudar de maneiras diferentes. Entrei para a equipe de água; outras pessoas organizaram livros, som e as vezes de falar."]},"protest-aldo":{"intro":["I brought a copy of the source list. You can read the local notes here and check the websites later.","Trouxe uma cópia da lista de fontes. Você pode ler as notas locais aqui e conferir os sites depois."],"answer":["The archive keeps the original record beside its correction. A screenshot without a date can hide information we need to check a claim.","O arquivo mantém o registro original ao lado de sua correção. Uma captura de tela sem data pode esconder informações necessárias para verificar uma afirmação."]},"protest-marlene":{"intro":["I selected books about literature, music and the civil rights movement. Which subject would you like to start with?","Selecionei livros sobre literatura, música e o movimento pelos direitos civis. Por qual assunto você gostaria de começar?"],"answer":["A biography can connect a person to several kinds of work. I chose books that show Black authors, scientists and musicians beyond a single event.","Uma biografia pode ligar uma pessoa a vários tipos de trabalho. Escolhi livros que mostram autores, cientistas e músicos negros para além de um único acontecimento."]},"protest-josias":{"intro":["I found a place where the children and I can listen without blocking the entrance. We can rest on that bench.","Encontrei um lugar onde as crianças e eu podemos escutar sem bloquear a entrada. Podemos descansar naquele banco."],"answer":["The children asked why the signs have different messages. We can compare them and look at the historical records on the panel together.","As crianças perguntaram por que os cartazes têm mensagens diferentes. Podemos compará-los e olhar juntos os registros históricos no painel."]},"protest-fabiola":{"intro":["I am photographing the information panel after checking permission. My caption will name the place and the date.","Estou fotografando o painel de informações depois de conferir a permissão. Minha legenda vai indicar o lugar e a data."],"answer":["Permission to take a picture and permission to publish it are different questions. I ask about both before adding a photograph to the public archive.","Permissão para tirar uma foto e permissão para publicá-la são perguntas diferentes. Pergunto sobre as duas antes de acrescentar uma fotografia ao arquivo público."]},"protest-sebastiao":{"intro":["I used to pass this square on my way to work. Today I am helping visitors find the books and the listening circle.","Eu passava por esta praça a caminho do trabalho. Hoje estou ajudando os visitantes a encontrar os livros e a roda de conversa."],"answer":["Celina suggested keeping more than one account of a meeting. My memory may help, but it will not include everything other people experienced.","Celina sugeriu guardar mais de um relato de uma reunião. Minha memória pode ajudar, mas não incluirá tudo o que outras pessoas viveram."]}};
-const residents=data.people.map((p,i)=>{const topic=learning.topics[i%learning.topics.length],r={...p,map:'chapter-5',role:p.occupation,topicId:topic.id,sourceIds:topic.sourceIds,lines:[{speaker:p.character,en:sceneDialogue[p.id].intro[0],pt:sceneDialogue[p.id].intro[1]},{speaker:p.character,en:sceneDialogue[p.id].answer?.[0]||topic.en,pt:sceneDialogue[p.id].answer?.[1]||topic.pt},{speaker:p.character,en:p.statement?.en||personal[i][0],pt:p.statement?.pt||personal[i][1]}]};return r;});
-data.residents=residents;V.cozyContent.residents.push(...residents);V.cozyContent.readings.push(learning.reading);V.cozyContent.questions.push(...learning.questions);V.cozyContent.sources.push(...learning.sources);Object.assign(V.content.characters,data.characters);
-for(const r of residents)for(const line of r.lines)V.Translation.pairs.set(V.Translation.key(line.en),line.pt);V.Translation.pairs.set(V.Translation.key(learning.reading.en),learning.reading.pt);
-layout.positions??={};layout.anchors??=[];layout.routines??={};
-for(let slot=0;slot<24;slot++){const p=residents[slots[slot]],col=slot%6,row=Math.floor(slot/6),x=19+(col-2.5)*1.5,y=8.6-4.5+row*1.5,id='resident-'+p.id;homes[p.id]=[x,y];layout.positions[id]=[x,y];const key=p.id+'-activity';layout.anchors.push([key,x,y,p.instrument?'playing':p.group==='volunteer'?'working':p.action==='reading'?'reading':'listening',24+p.index%9,0]);layout.routines[id]=[key];}
-layout.positions['bonus-5']=[24,8];layout.positions[learning.reading.id]=[18.5,10.6];layout.positions['work-protest-records']=[23,9.8];
-L.missions.push({id:'protest-records',protest:true,title:'Quem conta esta história?',owner:'jamila',map:'chapter-5',brief:'Jamila propõe comparar três momentos e suas fontes. Consulte o livro, organize as datas e registre o que cada fonte documenta.',reward:'Painel com datas, fontes e autoria revisadas',steps:[{kind:'read',targets:[learning.reading.id],label:'Leia Black Lives Matter · datas, pessoas e registros.'},{kind:'puzzle',targets:['protest-records'],label:'Compare os registros na mesa da manifestação.'}]});
-V.Protest={enabled:true,clock:0,nextSound:9,nextChant:12,nextExchange:38,exchange:null,chantTurn:0,active:null,
- ensure(){if(!V.state)return;const s=V.state.protest&&typeof V.state.protest==='object'&&!Array.isArray(V.state.protest)?V.state.protest:{};s.talked=[...new Set((Array.isArray(s.talked)?s.talked:[]).filter(id=>residents.some(r=>r.id===id)))];s.timelineComplete=s.timelineComplete===true;V.state.protest=s;return s;},
- actors(){return W.current?.objects.filter(o=>o.protestActor)||[];},
- stop(o){if(!o)return;o.resumeAction=o.action;o.responding=4;o.route=[];o.walking=false;o.chatSpeaking=false;o.bubble='';o.bubbleRemark=null;o.remarkTime=0;o.iconTime=0;const p=V.Player.data;if(p)o.dir=Math.abs(p.x-o.x)>Math.abs(p.y-o.y)?p.x<o.x?1:2:p.y<o.y?3:0;this.active=o;},
- resume(){if(this.active){this.active.responding=1.2;this.active.action=this.active.resumeAction||'listening';this.active.taskTime=10;this.active=null;}},
- dialogue(o,mode='record'){this.stop(o);V.UI.close();const r=o.resident,topic=learning.topics.find(t=>t.id===r.topicId),lines=mode==='role'?[r.lines[0],r.lines[2]]:mode==='origin'?[r.lines[0],{speaker:r.character,en:learning.topics[0].en,pt:learning.topics[0].pt}]:r.lines;V.Dialogue.start(lines,()=>{const s=this.ensure();if(!s.talked.includes(r.id))s.talked.push(r.id);if(!V.state.residentTalks.includes(r.id))V.state.residentTalks.push(r.id);L.event('talk',r.id);V.Save.save();this.panel(o,topic);});},
- panel(o,topic=null){this.stop(o);const r=o.resident;topic=topic||learning.topics.find(t=>t.id===r.topicId);V.UI.modal(r.name,'MORADOR FICTÍCIO · '+r.role,`<div class="protest-person-header"><img src="assets/characters/${r.character}-portrait.png" alt="Retrato de ${esc(r.name)}"><div><h3>${esc(topic.title)}</h3><p>${esc(r.appearance)}</p><small>${r.signText?'Cartaz: '+esc(r.signText):r.instrument?'Instrumento: '+esc(r.instrumentName):'Participa sem cartaz'}</small></div></div><p>${esc(topic.pt)}</p><p>${esc(r.lines[2].pt)}</p><div class="reader-origin">${topic.sourceIds.map(id=>learning.sources.find(s=>s.id===id)).map(s=>`<a href="${s.url}" target="_blank" rel="noopener noreferrer">${esc(s.name)} ↗</a>`).join('')}</div><div class="stack"><button data-protest-mode="record" class="secondary">Conversar sobre seu registro</button><button data-protest-mode="origin" class="secondary">Como começou o movimento?</button><button data-protest-mode="role" class="secondary">O que você faz no encontro?</button>${r.instrument?'<button id="protest-instrument" class="secondary">Ouvir um exercício original</button>':''}<button id="protest-person-read" class="secondary">Consultar o livro e as fontes</button></div>`,`<button id="protest-person-close" class="primary">Voltar à praça</button><button id="protest-roster" class="secondary">Conhecer outras pessoas</button>`);V.$$('[data-protest-mode]').forEach(b=>b.onclick=()=>this.dialogue(o,b.dataset.protestMode));V.$('#protest-person-close').onclick=()=>{V.UI.close();this.resume();};V.$('#protest-roster').onclick=()=>{this.resume();this.panelGroup();};V.$('#protest-person-read').onclick=()=>L.read(learning.reading.id,0,()=>this.panel(o));if(r.instrument)V.$('#protest-instrument').onclick=async()=>{await V.Audio.unlock();this.music(o,true);V.$('#protest-instrument').textContent='Exercício sintético original · '+r.instrumentName;};},
- panelGroup(){const s=this.ensure(),actors=this.actors();V.UI.modal('Black Lives Matter','MANIFESTAÇÃO DO BAIRRO · CENA FICCIONAL',`<div class="community-protest-card"><strong>BLACK LIVES MATTER</strong><p>Vidas negras importam.</p></div><p>Um encontro de ${actors.length} moradores: pessoas com e sem cartaz, músicos, quem organiza, cuida e escuta. A cena e as falas são ficcionais. No mapa, aproxime-se de cada pessoa e pressione E.</p><p>${esc(learning.topics[0].pt)}</p><p>${s.talked.length} conversas registradas no caderno. Você pode revisitar qualquer relato.</p>${s.timelineComplete?'<p>✓ Painel com datas e fontes conferidas.</p>':''}<div class="protest-roster">${actors.map(o=>`<button class="protest-person-card" data-protest-person="${o.resident.id}"><span class="protest-mini-portrait" style="background-image:url('assets/characters/${o.character}-portrait.png')" aria-hidden="true"></span><strong>${esc(o.resident.name)}</strong><small>${esc(o.resident.role)}</small><span>${s.talked.includes(o.resident.id)?'✓ Conversa registrada':'Conversar'}</span></button>`).join('')}</div>`,`<button id="protest-talk" class="primary">Conversar com os moradores</button><button id="protest-book" class="secondary">Livro e fontes</button><button id="protest-timeline" class="secondary">Comparar datas</button><button id="protest-listen" class="secondary">Ouvir exercício musical</button>`);V.$$('[data-protest-person]').forEach(b=>b.onclick=()=>this.dialogue(actors.find(o=>o.resident.id===b.dataset.protestPerson)));V.$('#protest-talk').onclick=()=>{const o=actors.find(o=>!s.talked.includes(o.resident.id))||actors[0];if(o)this.dialogue(o);};V.$('#protest-book').onclick=()=>L.read(learning.reading.id,0,()=>this.panelGroup());V.$('#protest-timeline').onclick=()=>this.timeline();V.$('#protest-listen').onclick=async()=>{await V.Audio.unlock();const o=actors.find(o=>o.resident.instrument);if(o)this.music(o,true);V.$('#protest-listen').textContent='Frase sintética original · não é gravação histórica';};},
- timeline(){L.ensure();const dates=['2013','2014','2020'],records=[['Criação do projeto',learning.sources[0]],['Mobilização em Ferguson',learning.sources[1]],['Novas manifestações e registros em museu',learning.sources[2]]];V.UI.modal('Três registros, muitas vozes','COMPARAR · DATAS E FONTES',`<p>Consulte o livro antes de associar cada registro à sua data. Esses três momentos não resumem toda a história do movimento.</p><div class="stack">${records.map(([label,source],i)=>`<label class="field">${label}<small>${esc(source.name)}</small><select data-protest-date="${i}"><option value="">Escolha uma data</option>${dates.map(d=>`<option value="${d}">${d}</option>`).join('')}</select></label>`).join('')}</div><div id="protest-date-feedback" aria-live="polite"></div>`,`<button id="protest-date-book" class="secondary">Consultar leitura</button><button id="protest-date-check" class="primary">Conferir registros</button>`);V.$('#protest-date-book').onclick=()=>L.read(learning.reading.id,0,()=>this.timeline());V.$('#protest-date-check').onclick=()=>{const ok=V.$$('[data-protest-date]').every((b,i)=>b.value===dates[i]);V.$('#protest-date-feedback').innerHTML=`<div class="feedback ${ok?'':'error'}"><strong>${ok?'✓ Datas e fontes conferidas.':'Compare novamente o livro.'}</strong><p>2013 identifica a criação; 2014, a atuação coletiva em Ferguson; 2020, novas manifestações e registros. Uma data sem contexto não explica o que aconteceu.</p></div>`;if(ok){this.ensure().timelineComplete=true;L.event('puzzle','protest-records');V.Save.save();V.$('#protest-date-check').textContent='✓ Painel atualizado';V.$('#protest-date-check').onclick=()=>{V.UI.close();this.resume();};}};},
- music(o,explicit=false){const A=V.Audio;if(!A.ctx||!A.unlocked||V.settings.muted||document.hidden||(!explicit&&V.settings.npcChats===false))return false;const instrument=o.resident.instrument;if(!instrument)return false;const n=instrument==='guitar'?60:instrument==='agogo'?76:instrument==='shaker'?88:instrument==='hand-drum'?40:65;[0,3,7].forEach((step,i)=>A.note(n+step,.12,instrument==='guitar'?'triangle':'sine',explicit?.12:.025,'sfx',i*.18));return true;},
- tick(dt){if(W.current?.id!=='chapter-5')return;this.clock+=dt;const actors=this.actors();if(this.active&&!V.modal&&!V.Dialogue.active)this.resume();for(const o of actors){if(o.responding||V.Dialogue.active&&this.active===o)continue;const phase=(this.clock+o.resident.index*2.73)%31,r=o.resident;o.action=r.instrument?phase<11?'playing':phase<18?'working':'listening':r.action==='reading'?'reading':r.group==='volunteer'?'working':phase<4?'greeting':'listening';o.frame=V.settings.npcMovement===false||V.settings.reducedMotion?0:Math.floor((this.clock+r.index*.6)*1.5)%4;o.dir=o.visualRotation?({90:1,180:3,270:2})[o.visualRotation]||0:o.dir||0;if(o.protestUntil&&this.clock>=o.protestUntil){o.chatSpeaking=false;o.bubble='';o.protestUntil=0;}}
-  if(V.settings.npcChats===false||V.settings.subtitles===false||V.Dialogue.active||V.modal||E.active){for(const o of actors){o.chatSpeaking=false;o.bubble='';o.protestUntil=0;}this.exchange=null;return;}
-  const cam=W.camera,visible=o=>o.x-cam.x>20&&o.x-cam.x<(V.Engine.canvas?.width||960)-20&&o.y-cam.y>110&&o.y-cam.y<(V.Engine.canvas?.height||540)-20;
-  const pair=['protest-raissa','protest-aldo'].map(id=>actors.find(o=>o.resident.id===id));
-  if(this.exchange){const turn=Math.floor((this.clock-this.exchange)/3.8);if(turn>=3||pair.some(o=>!o||o.responding)){for(const o of pair.filter(Boolean)){o.chatSpeaking=false;o.bubble='';}this.exchange=null;this.nextExchange=this.clock+43;}else if(!W.current.objects.some(o=>!pair.includes(o)&&o.chatSpeaking)){pair.forEach((o,i)=>{o.dir=i?1:2;o.action='conversing';o.chatSpeaking=turn%2===i;o.bubble=o.chatSpeaking?['Trouxe água. Quer uma pausa?','Quero, obrigado!','Combinado. Deixei os copos na mesa.'][turn]:'';o.bubbleKind=turn===0?'question':turn===1?'reply':'practical';});}}
-  else if(this.clock>=this.nextExchange&&pair.every(o=>o&&!o.responding&&visible(o))&&!W.current.objects.some(o=>o.chatSpeaking||o.iconTime>0)){this.exchange=this.clock;}
-  if(!this.exchange&&this.clock>=this.nextChant&&!W.current.objects.some(o=>o.chatSpeaking||o.bubbleRemark||o.iconTime>0)){this.nextChant=this.clock+18+this.chantTurn%7;const voices=actors.filter(o=>o.resident.action==='chant'&&!o.responding&&visible(o));if(voices.length){const o=voices[this.chantTurn%voices.length];o.chatSpeaking=true;o.bubble=['Vidas negras importam!','Respeito e igualdade!','Vamos escutar também!'][this.chantTurn++%3];o.bubbleKind='shout';o.protestUntil=this.clock+2.8;}}
-  if(this.clock>=this.nextSound){this.nextSound=this.clock+9;const musicians=actors.filter(o=>o.resident.instrument&&o.action==='playing'&&V.dist(o,V.Player.data)<230);if(musicians.length)this.music(musicians[Math.floor(this.clock/9)%musicians.length]);}
- },
- draw(ctx,o,cam){const r=o.resident,z=o.visualScale||1,x=o.x-cam.x,y=o.y-cam.y;if(x<-100||x>ctx.canvas.width+100||y<-120||y>ctx.canvas.height+100)return;ctx.save();ctx.translate(x,y);ctx.scale(z,z);ctx.fillStyle='#17332c45';ctx.fillRect(-13,4,26,4);const row=o.responding||o.visualRotation?o.dir||0:o.chatSpeaking&&o.bubbleKind==='shout'?5:r.instrument&&['playing','working'].includes(o.action)||r.signText?4:o.action==='greeting'?5:o.dir||0,frame=V.settings.reducedMotion?0:o.frame||0;V.Assets.sprite(ctx,o.character,0,0,row,frame,56);
-  if(r.signText&&!o.responding){const g=r.signGeometry,slot=slots.indexOf(r.index),col=slot%6,top=slot<6,bx=top?0:col===0?-62:62,by=top?-83:-70-(row===4&&frame%2?1.75:0),width=64,height=40,handX=-28+g.handCenter.x*1.75;ctx.strokeStyle='#735b3c';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(handX,-13);ctx.lineTo(handX,by+height/2+8);ctx.lineTo(bx,by+height/2);ctx.stroke();ctx.fillStyle='#293d36';ctx.fillRect(bx-width/2-2,by-height/2-2,width+4,height+4);ctx.fillStyle=g.color;ctx.fillRect(bx-width/2,by-height/2,width,height);ctx.font='bold 9px "VOICES Sans", sans-serif';const lines=V.Balloons.wrap(ctx,r.signText,width-6);ctx.fillStyle='#263d33';ctx.textAlign='center';for(let i=0;i<lines.length;i++)ctx.fillText(lines[i],bx,by-(lines.length-1)*5+i*10+3);}
-  ctx.restore();if(W.nearest?.id===o.id)L.marker(ctx,x,y,'E','#ead19c');},
- drawBoard(ctx,o,cam){const x=o.x-cam.x,y=o.y-cam.y,z=o.scene.size||1;C.prop(ctx,'scene',21,x-22*z,y-37*z,44*z);if(V.state?.protest?.timelineComplete){ctx.fillStyle='#a8d2a8';ctx.fillRect(x+14*z,y-19*z,7*z,7*z);}if(W.nearest?.id===o.id)L.marker(ctx,x,y,'E','#e4cb8e');}
-};
-const P=V.Protest;D.defaults=copy(C.layouts);
-L.newDistricts=function(){prior.districts();for(const r of residents)W.object(W.maps[r.map],'resident','resident-'+r.id,...homes[r.id],'Conversar com '+r.name,{character:r.character,resident:r,homeMap:r.map,protestActor:true});};
-L.residents=function(){const all=V.learning.residents;V.learning.residents=all.filter(r=>!r.id.startsWith('protest-'));try{return prior.residents();}finally{V.learning.residents=all;}};
-C.setupChat=function(m){const all=m.objects;m.objects=all.filter(o=>!o.protestActor);try{prior.chat(m);}finally{m.objects=[...all,...m.objects.filter(o=>!all.includes(o))];}};
-C.preparePerson=function(m,o){prior.prepare(m,o);if(o.protestActor){o.stationary=true;o.nextIcon=Infinity;o.iconTime=0;}};
-C.compose=function(m){prior.compose(m);if(m.id!=='chapter-5')return;const scene=m.objects.find(o=>o.scene?.communityProtest);m.solids=m.solids.filter(s=>s.owner!=='cozy-chapter-5-community-protest');if(!scene){m.objects=m.objects.filter(o=>!o.protestActor);for(const[id]of m.anchors)if(id.includes('protest-'))m.anchors.delete(id);}for(const o of m.objects.filter(o=>o.protestActor)){o.nextIcon=Infinity;o.stationary=true;o.chatSpeaking=false;o.protestUntil=0;o.taskTime=30;}};
-C.ensure=function(){prior.ensure();P.ensure();};C.interact=function(o){if(o?.protestActor){P.dialogue(o);return true;}return prior.interact(o);};
-C.drawObject=function(ctx,o,cam,t){if(o.protestActor)return P.draw(ctx,o,cam);return prior.draw(ctx,o,cam,t);};
-C.update=function(dt){prior.update(dt);P.tick(V.clamp(dt,0,.08));};C.onLoad=function(){for(const o of P.currentMap?.objects||[])if(o.protestActor){o.chatSpeaking=false;o.bubble='';o.protestUntil=0;}P.currentMap=W.current;P.resume();P.clock=0;P.nextChant=12;P.nextSound=9;P.nextExchange=38;P.exchange=null;prior.load();for(const o of P.actors()){o.chatSpeaking=false;o.bubble='';o.protestUntil=0;}};
-V.Neighborhood.draw=(ctx,o,cam)=>P.drawBoard(ctx,o,cam);V.Neighborhood.panel=()=>P.panelGroup();V.Neighborhood.participants=scene=>slots.map((index,slot)=>({id:'resident-'+residents[index].id,index,x:(slot%6-2.5)*72,y:-216+Math.floor(slot/6)*72,scale:scene.size||1}));
-V.Neighborhood.audio=()=>{const o=P.actors().find(o=>o.resident.instrument);return o?P.music(o):false;};
-L.workshop=function(id){if(id==='protest-records')return P.timeline();return prior.workshop(id);};
-L.reconcile=function(id){prior.reconcile(id);if(id==='protest-records'&&V.state?.protest?.timelineComplete)L.event('puzzle',id);};
-V.Atlas.landmark=function(ctx,o,m){if(o.protestActor)return P.draw(ctx,o,{x:0,y:0,noBubbles:true});return prior.landmark(ctx,o,m);};
-D.document=function(maps){return{...prior.document(maps),revision:7};};
-D.normalise=function(doc){const clean=prior.normalise(doc);if((doc.revision||0)<7&&clean['chapter-5']){const d=clean['chapter-5'];for(const r of residents){const id='resident-'+r.id;d.positions[id]??=copy(D.defaults['chapter-5'].positions[id]);d.routines[id]??=copy(D.defaults['chapter-5'].routines[id]);for(const a of D.defaults['chapter-5'].anchors.filter(a=>a[0].startsWith(r.id)))if(!d.anchors.some(b=>b[0]===a[0]))d.anchors.push(copy(a));}d.positions[learning.reading.id]??=copy(layout.positions[learning.reading.id]);d.positions['work-protest-records']??=copy(layout.positions['work-protest-records']);}return clean;};
-V.Assets.load=async function(){await Promise.all([prior.assets(),this.loadEntries(residents.flatMap(r=>[[r.character,'assets/characters/'+r.character+'.png'],[r.character+'-portrait','assets/characters/'+r.character+'-portrait.png']]))]);return this.errors;};
-})();
-
+})(function() {
+  (function() {
+    "use strict";
+    const V = window.V, C = V.Cozy, L = V.Living, W = V.World, D = V.SceneDesign, E = V.SceneEditor, T = 48, copy = (x) => JSON.parse(JSON.stringify(x)), esc = V.escape, data = V.protestContent, learning = V.protestLearning;
+    const prior = { districts: L.newDistricts.bind(L), residents: L.residents.bind(L), assets: V.Assets.load.bind(V.Assets), compose: C.compose.bind(C), chat: C.setupChat.bind(C), prepare: C.preparePerson.bind(C), draw: C.drawObject.bind(C), interact: C.interact.bind(C), update: C.update.bind(C), load: C.onLoad.bind(C), ensure: C.ensure.bind(C), document: D.document.bind(D), normalise: D.normalise.bind(D), landmark: V.Atlas.landmark.bind(V.Atlas), workshop: L.workshop.bind(L), reconcile: L.reconcile.bind(L) };
+    const slots = [0, 12, 2, 14, 4, 5, 13, 6, 7, 8, 9, 15, 16, 10, 11, 18, 19, 17, 1, 3, 20, 21, 22, 23], homes = {}, layout = C.layouts["chapter-5"];
+    const personal = copy(learning.personal);
+    personal[10] = ["We practised the rhythm together and wrote the parts in the rehearsal notebook.", "Ensaiamos o ritmo juntos e escrevemos as partes no caderno de ensaio."];
+    personal[2] = ["I help people take turns speaking. Then I will listen.", "Ajudo as pessoas a respeitar a vez de falar. Depois vou escutar."];
+    personal[3] = ["I help organise the listening circle. Everyone can take a pause.", "Ajudo a organizar a roda de escuta. Todas as pessoas podem fazer uma pausa."];
+    personal[18] = ["I brought water for our rest corner.", "Trouxe \xE1gua para nosso canto de descanso."];
+    personal[19] = ["I came to listen. I can ask a question when I need to.", "Vim para escutar. Posso fazer uma pergunta quando precisar."];
+    personal[21] = ["I keep the path clear for visitors. We can take a break here.", "Mantenho o caminho livre para visitantes. Podemos fazer uma pausa aqui."];
+    personal[22] = ["I ask permission before taking a photograph. I write down the date and place.", "Pe\xE7o permiss\xE3o antes de tirar uma fotografia. Anoto a data e o lugar."];
+    const sceneDialogue = { "protest-livia": { "intro": ["I am organising the speaking turns. The history panel is beside the reading table if you want to follow the dates.", "Estou organizando as vezes de falar. O painel de hist\xF3ria fica ao lado da mesa de leitura se voc\xEA quiser acompanhar as datas."], "answer": null }, "protest-samuel": { "intro": ["I am checking the sound before the next speaker begins. Can you hear the words clearly from here?", "Estou conferindo o som antes de a pr\xF3xima pessoa come\xE7ar a falar. Voc\xEA consegue ouvir as palavras com clareza daqui?"], "answer": null }, "protest-juliete": { "intro": ["I brought my history notes. A photograph and a date help us connect a protest record to its place.", "Trouxe minhas anota\xE7\xF5es de hist\xF3ria. Uma fotografia e uma data nos ajudam a ligar um registro de manifesta\xE7\xE3o ao seu lugar."], "answer": null }, "protest-ezequiel": { "intro": ["I am keeping the reading table in order. We can compare the museum records after this speaking turn.", "Estou organizando a mesa de leitura. Podemos comparar os registros do museu depois desta fala."], "answer": null }, "protest-priscila": { "intro": ["The rest corner has water and seats. Tell us if you need room to pass or a quieter place to listen.", "O espa\xE7o de descanso tem \xE1gua e assentos. Avise se precisar de espa\xE7o para passar ou de um lugar mais tranquilo para escutar."], "answer": null }, "protest-wellington": { "intro": ["I designed the information panel. I kept the names and dates large enough to read from the path.", "Desenhei o painel de informa\xE7\xF5es. Deixei os nomes e as datas grandes o bastante para ler do caminho."], "answer": ["A poster should let people find the source, not just remember a slogan. The reading panel explains the references behind our message.", "Um cartaz deve permitir que as pessoas encontrem a fonte, al\xE9m de lembrar um slogan. O painel de leitura explica as refer\xEAncias por tr\xE1s da nossa mensagem."] }, "protest-debora": { "intro": ["I am watching the group before starting the next rhythm. A pause gives the speaker room to be heard.", "Estou observando o grupo antes de come\xE7ar o pr\xF3ximo ritmo. Uma pausa d\xE1 espa\xE7o para a pessoa que fala ser ouvida."], "answer": ["Each musician has a different part. We wrote their names in the programme instead of crediting only the person at the microphone.", "Cada musicista tem uma parte diferente. Escrevemos seus nomes no programa em vez de dar cr\xE9dito apenas a quem est\xE1 no microfone."] }, "protest-moises": { "intro": ["My percussion students are practising a short answer to the first phrase. We listen before we play.", "Meus estudantes de percuss\xE3o est\xE3o ensaiando uma resposta curta \xE0 primeira frase. Escutamos antes de tocar."], "answer": ["The music room has an instrument notebook. It compares how sounds are produced and identifies each instrument separately.", "A sala de m\xFAsica tem um caderno de instrumentos. Ele compara como os sons s\xE3o produzidos e identifica cada instrumento separadamente."] }, "protest-cassio": { "intro": ["I brought my guitar from school. Paulo helped me slow down the difficult part of the rehearsal.", "Trouxe minha guitarra da escola. Paulo me ajudou a tocar mais devagar a parte dif\xEDcil do ensaio."], "answer": ["The library has readings about Nina Simone, Tim Maia and Sister Rosetta Tharpe. I am comparing the different musical paths in those records.", "A biblioteca tem leituras sobre Nina Simone, Tim Maia e Sister Rosetta Tharpe. Estou comparando os caminhos musicais diferentes nesses registros."] }, "protest-soraia": { "intro": ["Our workshop is trying two different endings for the same melody. I want the group to hear both before choosing.", "Nossa oficina est\xE1 experimentando dois finais diferentes para a mesma melodia. Quero que o grupo ou\xE7a os dois antes de escolher."], "answer": ["An arrangement can change who answers each phrase. We are trying it with the people who will perform, not deciding for them.", "Um arranjo pode mudar quem responde a cada frase. Estamos experimentando com as pessoas que v\xE3o se apresentar, sem decidir por elas."] }, "protest-silas": { "intro": ["I checked the lights and moved the cable away from the entrance. Now I can join the percussion group.", "Conferi as luzes e afastei o cabo da entrada. Agora posso me juntar ao grupo de percuss\xE3o."], "answer": ["The information table keeps history notes beside the programme. Visitors can learn about the movement as well as hear the music.", "A mesa de informa\xE7\xF5es mant\xE9m notas de hist\xF3ria ao lado do programa. Os visitantes podem conhecer o movimento e tamb\xE9m ouvir a m\xFAsica."] }, "protest-tais": { "intro": ["I wrote the rehearsal order in my notebook. There is a break after the second musical phrase.", "Anotei a ordem do ensaio no meu caderno. H\xE1 uma pausa depois da segunda frase musical."], "answer": ["I want to keep learning after today\u2019s meeting. Mila suggested listening to a phrase, writing a question and finding a reading about it.", "Quero continuar aprendendo depois da reuni\xE3o de hoje. Mila sugeriu ouvir uma frase, escrever uma pergunta e procurar uma leitura sobre ela."] }, "protest-ariane": { "intro": ["I checked the space between the sign and the path. People need to see the message and still have room to move.", "Conferi o espa\xE7o entre o cartaz e o caminho. As pessoas precisam ver a mensagem e continuar tendo espa\xE7o para circular."], "answer": ["The route to the reading table must stay open. A useful meeting space considers people who need wider paths or a seat nearby.", "O trajeto at\xE9 a mesa de leitura precisa ficar aberto. Um espa\xE7o de reuni\xE3o \xFAtil considera quem precisa de caminhos mais largos ou de um assento pr\xF3ximo."] }, "protest-jeferson": { "intro": ["I finished work in the kitchen and came to the meeting. Rosa is keeping the food cards at the market.", "Terminei o trabalho na cozinha e vim para a reuni\xE3o. Rosa est\xE1 guardando as fichas dos alimentos na feira."], "answer": ["The food cards name who prepared each recipe. People\u2019s work should remain visible in a festival programme and on a market stall.", "As fichas dos alimentos indicam quem preparou cada receita. O trabalho das pessoas deve continuar vis\xEDvel no programa de um festival e na banca de uma feira."] }, "protest-clarissa": { "intro": ["I painted two drafts of this sign. The group chose the one whose letters were easier to read.", "Pintei dois rascunhos deste cartaz. O grupo escolheu aquele cujas letras eram mais f\xE1ceis de ler."], "answer": ["I kept the earlier sketch beside the finished sign. We can explain why the group changed the message and which source it consulted.", "Guardei o esbo\xE7o anterior ao lado do cartaz pronto. Podemos explicar por que o grupo mudou a mensagem e qual fonte consultou."] }, "protest-dario": { "intro": ["I came from the library with a book about Black writers. Marlene can help you find the reading table.", "Vim da biblioteca com um livro sobre escritores negros. Marlene pode ajudar voc\xEA a encontrar a mesa de leitura."], "answer": ["The book about Carolina Maria de Jesus includes more than one kind of writing. I noted the titles so I can ask Davi for another reading.", "O livro sobre Carolina Maria de Jesus inclui mais de um tipo de escrita. Anotei os t\xEDtulos para pedir outra leitura a Davi."] }, "protest-avelina": { "intro": ["I repaired the cloth edge of this banner. Its message was chosen at the neighbourhood meeting.", "Consertei a borda de tecido desta faixa. Sua mensagem foi escolhida na reuni\xE3o do bairro."], "answer": ["Amara\u2019s notebook shows different hair techniques, and Viviane\u2019s cards explain clothing choices. We should read the descriptions before making assumptions.", "O caderno de Amara mostra t\xE9cnicas de cabelo diferentes, e as fichas de Viviane explicam escolhas de roupas. Devemos ler as descri\xE7\xF5es antes de fazer suposi\xE7\xF5es."] }, "protest-edivaldo": { "intro": ["I helped make the wooden support for this sign. I checked the edges before bringing it to the square.", "Ajudei a fazer o suporte de madeira deste cartaz. Conferi as bordas antes de traz\xEA-lo \xE0 pra\xE7a."], "answer": ["I marked the back of the support with the workshop\u2019s name. That way the group can find who made it and return it after the meeting.", "Marquei a parte de tr\xE1s do suporte com o nome da oficina. Assim o grupo pode encontrar quem o fez e devolv\xEA-lo depois da reuni\xE3o."] }, "protest-raissa": { "intro": ["I am helping at the water point. The bottles stay here, and the empty cups go in that basket.", "Estou ajudando no ponto de \xE1gua. As garrafas ficam aqui, e os copos vazios v\xE3o naquela cesta."], "answer": ["People can help in different ways. I joined the water team; someone else organised books, sound and speaking turns.", "As pessoas podem ajudar de maneiras diferentes. Entrei para a equipe de \xE1gua; outras pessoas organizaram livros, som e as vezes de falar."] }, "protest-aldo": { "intro": ["I brought a copy of the source list. You can read the local notes here and check the websites later.", "Trouxe uma c\xF3pia da lista de fontes. Voc\xEA pode ler as notas locais aqui e conferir os sites depois."], "answer": ["The archive keeps the original record beside its correction. A screenshot without a date can hide information we need to check a claim.", "O arquivo mant\xE9m o registro original ao lado de sua corre\xE7\xE3o. Uma captura de tela sem data pode esconder informa\xE7\xF5es necess\xE1rias para verificar uma afirma\xE7\xE3o."] }, "protest-marlene": { "intro": ["I selected books about literature, music and the civil rights movement. Which subject would you like to start with?", "Selecionei livros sobre literatura, m\xFAsica e o movimento pelos direitos civis. Por qual assunto voc\xEA gostaria de come\xE7ar?"], "answer": ["A biography can connect a person to several kinds of work. I chose books that show Black authors, scientists and musicians beyond a single event.", "Uma biografia pode ligar uma pessoa a v\xE1rios tipos de trabalho. Escolhi livros que mostram autores, cientistas e m\xFAsicos negros para al\xE9m de um \xFAnico acontecimento."] }, "protest-josias": { "intro": ["I found a place where the children and I can listen without blocking the entrance. We can rest on that bench.", "Encontrei um lugar onde as crian\xE7as e eu podemos escutar sem bloquear a entrada. Podemos descansar naquele banco."], "answer": ["The children asked why the signs have different messages. We can compare them and look at the historical records on the panel together.", "As crian\xE7as perguntaram por que os cartazes t\xEAm mensagens diferentes. Podemos compar\xE1-los e olhar juntos os registros hist\xF3ricos no painel."] }, "protest-fabiola": { "intro": ["I am photographing the information panel after checking permission. My caption will name the place and the date.", "Estou fotografando o painel de informa\xE7\xF5es depois de conferir a permiss\xE3o. Minha legenda vai indicar o lugar e a data."], "answer": ["Permission to take a picture and permission to publish it are different questions. I ask about both before adding a photograph to the public archive.", "Permiss\xE3o para tirar uma foto e permiss\xE3o para public\xE1-la s\xE3o perguntas diferentes. Pergunto sobre as duas antes de acrescentar uma fotografia ao arquivo p\xFAblico."] }, "protest-sebastiao": { "intro": ["I used to pass this square on my way to work. Today I am helping visitors find the books and the listening circle.", "Eu passava por esta pra\xE7a a caminho do trabalho. Hoje estou ajudando os visitantes a encontrar os livros e a roda de conversa."], "answer": ["Celina suggested keeping more than one account of a meeting. My memory may help, but it will not include everything other people experienced.", "Celina sugeriu guardar mais de um relato de uma reuni\xE3o. Minha mem\xF3ria pode ajudar, mas n\xE3o incluir\xE1 tudo o que outras pessoas viveram."] } };
+    const residents = data.people.map((p, i) => {
+      const topic = learning.topics[i % learning.topics.length], r = { ...p, map: "chapter-5", role: p.occupation, topicId: topic.id, sourceIds: topic.sourceIds, lines: [{ speaker: p.character, en: sceneDialogue[p.id].intro[0], pt: sceneDialogue[p.id].intro[1] }, { speaker: p.character, en: sceneDialogue[p.id].answer?.[0] || topic.en, pt: sceneDialogue[p.id].answer?.[1] || topic.pt }, { speaker: p.character, en: p.statement?.en || personal[i][0], pt: p.statement?.pt || personal[i][1] }] };
+      return r;
+    });
+    data.residents = residents;
+    V.cozyContent.residents.push(...residents);
+    V.cozyContent.readings.push(learning.reading);
+    V.cozyContent.questions.push(...learning.questions);
+    V.cozyContent.sources.push(...learning.sources);
+    Object.assign(V.content.characters, data.characters);
+    for (const r of residents) for (const line of r.lines) V.Translation.pairs.set(V.Translation.key(line.en), line.pt);
+    V.Translation.pairs.set(V.Translation.key(learning.reading.en), learning.reading.pt);
+    layout.positions ??= {};
+    layout.anchors ??= [];
+    layout.routines ??= {};
+    for (let slot = 0; slot < 24; slot++) {
+      const p = residents[slots[slot]], col = slot % 6, row = Math.floor(slot / 6), x = 19 + (col - 2.5) * 1.5, y = 8.6 - 4.5 + row * 1.5, id = "resident-" + p.id;
+      homes[p.id] = [x, y];
+      layout.positions[id] = [x, y];
+      const key = p.id + "-activity";
+      layout.anchors.push([key, x, y, p.instrument ? "playing" : p.group === "volunteer" ? "working" : p.action === "reading" ? "reading" : "listening", 24 + p.index % 9, 0]);
+      layout.routines[id] = [key];
+    }
+    layout.positions["bonus-5"] = [24, 8];
+    layout.positions[learning.reading.id] = [18.5, 10.6];
+    layout.positions["work-protest-records"] = [23, 9.8];
+    L.missions.push({ id: "protest-records", protest: true, title: "Quem conta esta hist\xF3ria?", owner: "jamila", map: "chapter-5", brief: "Jamila prop\xF5e comparar tr\xEAs momentos e suas fontes. Consulte o livro, organize as datas e registre o que cada fonte documenta.", reward: "Painel com datas, fontes e autoria revisadas", steps: [{ kind: "read", targets: [learning.reading.id], label: "Leia Black Lives Matter \xB7 datas, pessoas e registros." }, { kind: "puzzle", targets: ["protest-records"], label: "Compare os registros na mesa da manifesta\xE7\xE3o." }] });
+    V.Protest = {
+      enabled: true,
+      clock: 0,
+      nextSound: 9,
+      nextChant: 12,
+      nextExchange: 38,
+      exchange: null,
+      chantTurn: 0,
+      active: null,
+      ensure() {
+        if (!V.state) return;
+        const s = V.state.protest && typeof V.state.protest === "object" && !Array.isArray(V.state.protest) ? V.state.protest : {};
+        s.talked = [...new Set((Array.isArray(s.talked) ? s.talked : []).filter((id) => residents.some((r) => r.id === id)))];
+        s.timelineComplete = s.timelineComplete === true;
+        V.state.protest = s;
+        return s;
+      },
+      actors() {
+        return W.current?.objects.filter((o) => o.protestActor) || [];
+      },
+      stop(o) {
+        if (!o) return;
+        o.resumeAction = o.action;
+        o.responding = 4;
+        o.route = [];
+        o.walking = false;
+        o.chatSpeaking = false;
+        o.bubble = "";
+        o.bubbleRemark = null;
+        o.remarkTime = 0;
+        o.iconTime = 0;
+        const p = V.Player.data;
+        if (p) o.dir = Math.abs(p.x - o.x) > Math.abs(p.y - o.y) ? p.x < o.x ? 1 : 2 : p.y < o.y ? 3 : 0;
+        this.active = o;
+      },
+      resume() {
+        if (this.active) {
+          this.active.responding = 1.2;
+          this.active.action = this.active.resumeAction || "listening";
+          this.active.taskTime = 10;
+          this.active = null;
+        }
+      },
+      dialogue(o, mode = "record") {
+        this.stop(o);
+        V.UI.close();
+        const r = o.resident, topic = learning.topics.find((t) => t.id === r.topicId), lines = mode === "role" ? [r.lines[0], r.lines[2]] : mode === "origin" ? [r.lines[0], { speaker: r.character, en: learning.topics[0].en, pt: learning.topics[0].pt }] : r.lines;
+        V.Dialogue.start(lines, () => {
+          const s = this.ensure();
+          if (!s.talked.includes(r.id)) s.talked.push(r.id);
+          if (!V.state.residentTalks.includes(r.id)) V.state.residentTalks.push(r.id);
+          L.event("talk", r.id);
+          V.Save.save();
+          this.panel(o, topic);
+        });
+      },
+      panel(o, topic = null) {
+        this.stop(o);
+        const r = o.resident;
+        topic = topic || learning.topics.find((t) => t.id === r.topicId);
+        V.UI.modal(r.name, "MORADOR FICT\xCDCIO \xB7 " + r.role, `<div class="protest-person-header"><img src="assets/characters/${r.character}-portrait.png" alt="Retrato de ${esc(r.name)}"><div><h3>${esc(topic.title)}</h3><p>${esc(r.appearance)}</p><small>${r.signText ? "Cartaz: " + esc(r.signText) : r.instrument ? "Instrumento: " + esc(r.instrumentName) : "Participa sem cartaz"}</small></div></div><p>${esc(topic.pt)}</p><p>${esc(r.lines[2].pt)}</p><div class="reader-origin">${topic.sourceIds.map((id) => learning.sources.find((s) => s.id === id)).map((s) => `<a href="${s.url}" target="_blank" rel="noopener noreferrer">${esc(s.name)} \u2197</a>`).join("")}</div><div class="stack"><button data-protest-mode="record" class="secondary">Conversar sobre seu registro</button><button data-protest-mode="origin" class="secondary">Como come\xE7ou o movimento?</button><button data-protest-mode="role" class="secondary">O que voc\xEA faz no encontro?</button>${r.instrument ? '<button id="protest-instrument" class="secondary">Ouvir um exerc\xEDcio original</button>' : ""}<button id="protest-person-read" class="secondary">Consultar o livro e as fontes</button></div>`, `<button id="protest-person-close" class="primary">Voltar \xE0 pra\xE7a</button><button id="protest-roster" class="secondary">Conhecer outras pessoas</button>`);
+        V.$$("[data-protest-mode]").forEach((b) => b.onclick = () => this.dialogue(o, b.dataset.protestMode));
+        V.$("#protest-person-close").onclick = () => {
+          V.UI.close();
+          this.resume();
+        };
+        V.$("#protest-roster").onclick = () => {
+          this.resume();
+          this.panelGroup();
+        };
+        V.$("#protest-person-read").onclick = () => L.read(learning.reading.id, 0, () => this.panel(o));
+        if (r.instrument) V.$("#protest-instrument").onclick = async () => {
+          await V.Audio.unlock();
+          this.music(o, true);
+          V.$("#protest-instrument").textContent = "Exerc\xEDcio sint\xE9tico original \xB7 " + r.instrumentName;
+        };
+      },
+      panelGroup() {
+        const s = this.ensure(), actors = this.actors();
+        V.UI.modal("Black Lives Matter", "MANIFESTA\xC7\xC3O DO BAIRRO \xB7 CENA FICCIONAL", `<div class="community-protest-card"><strong>BLACK LIVES MATTER</strong><p>Vidas negras importam.</p></div><p>Um encontro de ${actors.length} moradores: pessoas com e sem cartaz, m\xFAsicos, quem organiza, cuida e escuta. A cena e as falas s\xE3o ficcionais. No mapa, aproxime-se de cada pessoa e pressione E.</p><p>${esc(learning.topics[0].pt)}</p><p>${s.talked.length} conversas registradas no caderno. Voc\xEA pode revisitar qualquer relato.</p>${s.timelineComplete ? "<p>\u2713 Painel com datas e fontes conferidas.</p>" : ""}<div class="protest-roster">${actors.map((o) => `<button class="protest-person-card" data-protest-person="${o.resident.id}"><span class="protest-mini-portrait" style="background-image:url('assets/characters/${o.character}-portrait.png')" aria-hidden="true"></span><strong>${esc(o.resident.name)}</strong><small>${esc(o.resident.role)}</small><span>${s.talked.includes(o.resident.id) ? "\u2713 Conversa registrada" : "Conversar"}</span></button>`).join("")}</div>`, `<button id="protest-talk" class="primary">Conversar com os moradores</button><button id="protest-book" class="secondary">Livro e fontes</button><button id="protest-timeline" class="secondary">Comparar datas</button><button id="protest-listen" class="secondary">Ouvir exerc\xEDcio musical</button>`);
+        V.$$("[data-protest-person]").forEach((b) => b.onclick = () => this.dialogue(actors.find((o) => o.resident.id === b.dataset.protestPerson)));
+        V.$("#protest-talk").onclick = () => {
+          const o = actors.find((o2) => !s.talked.includes(o2.resident.id)) || actors[0];
+          if (o) this.dialogue(o);
+        };
+        V.$("#protest-book").onclick = () => L.read(learning.reading.id, 0, () => this.panelGroup());
+        V.$("#protest-timeline").onclick = () => this.timeline();
+        V.$("#protest-listen").onclick = async () => {
+          await V.Audio.unlock();
+          const o = actors.find((o2) => o2.resident.instrument);
+          if (o) this.music(o, true);
+          V.$("#protest-listen").textContent = "Frase sint\xE9tica original \xB7 n\xE3o \xE9 grava\xE7\xE3o hist\xF3rica";
+        };
+      },
+      timeline() {
+        L.ensure();
+        const dates = ["2013", "2014", "2020"], records = [["Cria\xE7\xE3o do projeto", learning.sources[0]], ["Mobiliza\xE7\xE3o em Ferguson", learning.sources[1]], ["Novas manifesta\xE7\xF5es e registros em museu", learning.sources[2]]];
+        V.UI.modal("Tr\xEAs registros, muitas vozes", "COMPARAR \xB7 DATAS E FONTES", `<p>Consulte o livro antes de associar cada registro \xE0 sua data. Esses tr\xEAs momentos n\xE3o resumem toda a hist\xF3ria do movimento.</p><div class="stack">${records.map(([label, source], i) => `<label class="field">${label}<small>${esc(source.name)}</small><select data-protest-date="${i}"><option value="">Escolha uma data</option>${dates.map((d) => `<option value="${d}">${d}</option>`).join("")}</select></label>`).join("")}</div><div id="protest-date-feedback" aria-live="polite"></div>`, `<button id="protest-date-book" class="secondary">Consultar leitura</button><button id="protest-date-check" class="primary">Conferir registros</button>`);
+        V.$("#protest-date-book").onclick = () => L.read(learning.reading.id, 0, () => this.timeline());
+        V.$("#protest-date-check").onclick = () => {
+          const ok = V.$$("[data-protest-date]").every((b, i) => b.value === dates[i]);
+          V.$("#protest-date-feedback").innerHTML = `<div class="feedback ${ok ? "" : "error"}"><strong>${ok ? "\u2713 Datas e fontes conferidas." : "Compare novamente o livro."}</strong><p>2013 identifica a cria\xE7\xE3o; 2014, a atua\xE7\xE3o coletiva em Ferguson; 2020, novas manifesta\xE7\xF5es e registros. Uma data sem contexto n\xE3o explica o que aconteceu.</p></div>`;
+          if (ok) {
+            this.ensure().timelineComplete = true;
+            L.event("puzzle", "protest-records");
+            V.Save.save();
+            V.$("#protest-date-check").textContent = "\u2713 Painel atualizado";
+            V.$("#protest-date-check").onclick = () => {
+              V.UI.close();
+              this.resume();
+            };
+          }
+        };
+      },
+      music(o, explicit = false) {
+        const A = V.Audio;
+        if (!A.ctx || !A.unlocked || V.settings.muted || document.hidden || !explicit && V.settings.npcChats === false) return false;
+        const instrument = o.resident.instrument;
+        if (!instrument) return false;
+        const n = instrument === "guitar" ? 60 : instrument === "agogo" ? 76 : instrument === "shaker" ? 88 : instrument === "hand-drum" ? 40 : 65;
+        [0, 3, 7].forEach((step, i) => A.note(n + step, 0.12, instrument === "guitar" ? "triangle" : "sine", explicit ? 0.12 : 0.025, "sfx", i * 0.18));
+        return true;
+      },
+      tick(dt) {
+        if (W.current?.id !== "chapter-5") return;
+        this.clock += dt;
+        const actors = this.actors();
+        if (this.active && !V.modal && !V.Dialogue.active) this.resume();
+        for (const o of actors) {
+          if (o.responding || V.Dialogue.active && this.active === o) continue;
+          const phase = (this.clock + o.resident.index * 2.73) % 31, r = o.resident;
+          o.action = r.instrument ? phase < 11 ? "playing" : phase < 18 ? "working" : "listening" : r.action === "reading" ? "reading" : r.group === "volunteer" ? "working" : phase < 4 ? "greeting" : "listening";
+          o.frame = V.settings.npcMovement === false || V.settings.reducedMotion ? 0 : Math.floor((this.clock + r.index * 0.6) * 1.5) % 4;
+          o.dir = o.visualRotation ? { 90: 1, 180: 3, 270: 2 }[o.visualRotation] || 0 : o.dir || 0;
+          if (o.protestUntil && this.clock >= o.protestUntil) {
+            o.chatSpeaking = false;
+            o.bubble = "";
+            o.protestUntil = 0;
+          }
+        }
+        if (V.settings.npcChats === false || V.settings.subtitles === false || V.Dialogue.active || V.modal || E.active) {
+          for (const o of actors) {
+            o.chatSpeaking = false;
+            o.bubble = "";
+            o.protestUntil = 0;
+          }
+          this.exchange = null;
+          return;
+        }
+        const cam = W.camera, visible = (o) => o.x - cam.x > 20 && o.x - cam.x < (V.Engine.canvas?.width || 960) - 20 && o.y - cam.y > 110 && o.y - cam.y < (V.Engine.canvas?.height || 540) - 20;
+        const pair = ["protest-raissa", "protest-aldo"].map((id) => actors.find((o) => o.resident.id === id));
+        if (this.exchange) {
+          const turn = Math.floor((this.clock - this.exchange) / 3.8);
+          if (turn >= 3 || pair.some((o) => !o || o.responding)) {
+            for (const o of pair.filter(Boolean)) {
+              o.chatSpeaking = false;
+              o.bubble = "";
+            }
+            this.exchange = null;
+            this.nextExchange = this.clock + 43;
+          } else if (!W.current.objects.some((o) => !pair.includes(o) && o.chatSpeaking)) {
+            pair.forEach((o, i) => {
+              o.dir = i ? 1 : 2;
+              o.action = "conversing";
+              o.chatSpeaking = turn % 2 === i;
+              o.bubble = o.chatSpeaking ? ["Trouxe \xE1gua. Quer uma pausa?", "Quero, obrigado!", "Combinado. Deixei os copos na mesa."][turn] : "";
+              o.bubbleKind = turn === 0 ? "question" : turn === 1 ? "reply" : "practical";
+            });
+          }
+        } else if (this.clock >= this.nextExchange && pair.every((o) => o && !o.responding && visible(o)) && !W.current.objects.some((o) => o.chatSpeaking || o.iconTime > 0)) {
+          this.exchange = this.clock;
+        }
+        if (!this.exchange && this.clock >= this.nextChant && !W.current.objects.some((o) => o.chatSpeaking || o.bubbleRemark || o.iconTime > 0)) {
+          this.nextChant = this.clock + 18 + this.chantTurn % 7;
+          const voices = actors.filter((o) => o.resident.action === "chant" && !o.responding && visible(o));
+          if (voices.length) {
+            const o = voices[this.chantTurn % voices.length];
+            o.chatSpeaking = true;
+            o.bubble = ["Vidas negras importam!", "Respeito e igualdade!", "Vamos escutar tamb\xE9m!"][this.chantTurn++ % 3];
+            o.bubbleKind = "shout";
+            o.protestUntil = this.clock + 2.8;
+          }
+        }
+        if (this.clock >= this.nextSound) {
+          this.nextSound = this.clock + 9;
+          const musicians = actors.filter((o) => o.resident.instrument && o.action === "playing" && V.dist(o, V.Player.data) < 230);
+          if (musicians.length) this.music(musicians[Math.floor(this.clock / 9) % musicians.length]);
+        }
+      },
+      draw(ctx, o, cam) {
+        const r = o.resident, z = o.visualScale || 1, x = o.x - cam.x, y = o.y - cam.y;
+        if (x < -100 || x > ctx.canvas.width + 100 || y < -120 || y > ctx.canvas.height + 100) return;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(z, z);
+        ctx.fillStyle = "#17332c45";
+        ctx.fillRect(-13, 4, 26, 4);
+        const row = o.responding || o.visualRotation ? o.dir || 0 : o.chatSpeaking && o.bubbleKind === "shout" ? 5 : r.instrument && ["playing", "working"].includes(o.action) || r.signText ? 4 : o.action === "greeting" ? 5 : o.dir || 0, frame = V.settings.reducedMotion ? 0 : o.frame || 0;
+        V.Assets.sprite(ctx, o.character, 0, 0, row, frame, 56);
+        if (r.signText && !o.responding) {
+          const g = r.signGeometry, slot = slots.indexOf(r.index), col = slot % 6, top = slot < 6, bx = top ? 0 : col === 0 ? -62 : 62, by = top ? -83 : -70 - (row === 4 && frame % 2 ? 1.75 : 0), width = 64, height = 40, handX = -28 + g.handCenter.x * 1.75;
+          ctx.strokeStyle = "#735b3c";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(handX, -13);
+          ctx.lineTo(handX, by + height / 2 + 8);
+          ctx.lineTo(bx, by + height / 2);
+          ctx.stroke();
+          ctx.fillStyle = "#293d36";
+          ctx.fillRect(bx - width / 2 - 2, by - height / 2 - 2, width + 4, height + 4);
+          ctx.fillStyle = g.color;
+          ctx.fillRect(bx - width / 2, by - height / 2, width, height);
+          ctx.font = 'bold 9px "VOICES Sans", sans-serif';
+          const lines = V.Balloons.wrap(ctx, r.signText, width - 6);
+          ctx.fillStyle = "#263d33";
+          ctx.textAlign = "center";
+          for (let i = 0; i < lines.length; i++) ctx.fillText(lines[i], bx, by - (lines.length - 1) * 5 + i * 10 + 3);
+        }
+        ctx.restore();
+        if (W.nearest?.id === o.id) L.marker(ctx, x, y, "E", "#ead19c");
+      },
+      drawBoard(ctx, o, cam) {
+        const x = o.x - cam.x, y = o.y - cam.y, z = o.scene.size || 1;
+        C.prop(ctx, "scene", 21, x - 22 * z, y - 37 * z, 44 * z);
+        if (V.state?.protest?.timelineComplete) {
+          ctx.fillStyle = "#a8d2a8";
+          ctx.fillRect(x + 14 * z, y - 19 * z, 7 * z, 7 * z);
+        }
+        if (W.nearest?.id === o.id) L.marker(ctx, x, y, "E", "#e4cb8e");
+      }
+    };
+    const P = V.Protest;
+    D.defaults = copy(C.layouts);
+    L.newDistricts = function() {
+      prior.districts();
+      for (const r of residents) W.object(W.maps[r.map], "resident", "resident-" + r.id, ...homes[r.id], "Conversar com " + r.name, { character: r.character, resident: r, homeMap: r.map, protestActor: true });
+    };
+    L.residents = function() {
+      const all = V.learning.residents;
+      V.learning.residents = all.filter((r) => !r.id.startsWith("protest-"));
+      try {
+        return prior.residents();
+      } finally {
+        V.learning.residents = all;
+      }
+    };
+    C.setupChat = function(m) {
+      const all = m.objects;
+      m.objects = all.filter((o) => !o.protestActor);
+      try {
+        prior.chat(m);
+      } finally {
+        m.objects = [...all, ...m.objects.filter((o) => !all.includes(o))];
+      }
+    };
+    C.preparePerson = function(m, o) {
+      prior.prepare(m, o);
+      if (o.protestActor) {
+        o.stationary = true;
+        o.nextIcon = Infinity;
+        o.iconTime = 0;
+      }
+    };
+    C.compose = function(m) {
+      prior.compose(m);
+      if (m.id !== "chapter-5") return;
+      const scene = m.objects.find((o) => o.scene?.communityProtest);
+      m.solids = m.solids.filter((s) => s.owner !== "cozy-chapter-5-community-protest");
+      if (!scene) {
+        m.objects = m.objects.filter((o) => !o.protestActor);
+        for (const [id] of m.anchors) if (id.includes("protest-")) m.anchors.delete(id);
+      }
+      for (const o of m.objects.filter((o2) => o2.protestActor)) {
+        o.nextIcon = Infinity;
+        o.stationary = true;
+        o.chatSpeaking = false;
+        o.protestUntil = 0;
+        o.taskTime = 30;
+      }
+    };
+    C.ensure = function() {
+      prior.ensure();
+      P.ensure();
+    };
+    C.interact = function(o) {
+      if (o?.protestActor) {
+        P.dialogue(o);
+        return true;
+      }
+      return prior.interact(o);
+    };
+    V.Hooks.around(V.Cozy, "drawObject", "protest-world:drawObject:1", () => function(ctx, o, cam, t) {
+      if (o.protestActor) return P.draw(ctx, o, cam);
+      return prior.draw(ctx, o, cam, t);
+    });
+    C.update = function(dt) {
+      prior.update(dt);
+      P.tick(V.clamp(dt, 0, 0.08));
+    };
+    C.onLoad = function() {
+      for (const o of P.currentMap?.objects || []) if (o.protestActor) {
+        o.chatSpeaking = false;
+        o.bubble = "";
+        o.protestUntil = 0;
+      }
+      P.currentMap = W.current;
+      P.resume();
+      P.clock = 0;
+      P.nextChant = 12;
+      P.nextSound = 9;
+      P.nextExchange = 38;
+      P.exchange = null;
+      prior.load();
+      for (const o of P.actors()) {
+        o.chatSpeaking = false;
+        o.bubble = "";
+        o.protestUntil = 0;
+      }
+    };
+    V.Neighborhood.draw = (ctx, o, cam) => P.drawBoard(ctx, o, cam);
+    V.Neighborhood.panel = () => P.panelGroup();
+    V.Neighborhood.participants = (scene) => slots.map((index, slot) => ({ id: "resident-" + residents[index].id, index, x: (slot % 6 - 2.5) * 72, y: -216 + Math.floor(slot / 6) * 72, scale: scene.size || 1 }));
+    V.Neighborhood.audio = () => {
+      const o = P.actors().find((o2) => o2.resident.instrument);
+      return o ? P.music(o) : false;
+    };
+    L.workshop = function(id) {
+      if (id === "protest-records") return P.timeline();
+      return prior.workshop(id);
+    };
+    L.reconcile = function(id) {
+      prior.reconcile(id);
+      if (id === "protest-records" && V.state?.protest?.timelineComplete) L.event("puzzle", id);
+    };
+    V.Hooks.around(V.Atlas, "landmark", "protest-world:landmark:1", () => function(ctx, o, m) {
+      if (o.protestActor) return P.draw(ctx, o, { x: 0, y: 0, noBubbles: true });
+      return prior.landmark(ctx, o, m);
+    });
+    D.document = function(maps) {
+      return { ...prior.document(maps), revision: 7 };
+    };
+    D.normalise = function(doc) {
+      const clean = prior.normalise(doc);
+      if ((doc.revision || 0) < 7 && clean["chapter-5"]) {
+        const d = clean["chapter-5"];
+        for (const r of residents) {
+          const id = "resident-" + r.id;
+          d.positions[id] ??= copy(D.defaults["chapter-5"].positions[id]);
+          d.routines[id] ??= copy(D.defaults["chapter-5"].routines[id]);
+          for (const a of D.defaults["chapter-5"].anchors.filter((a2) => a2[0].startsWith(r.id))) if (!d.anchors.some((b) => b[0] === a[0])) d.anchors.push(copy(a));
+        }
+        d.positions[learning.reading.id] ??= copy(layout.positions[learning.reading.id]);
+        d.positions["work-protest-records"] ??= copy(layout.positions["work-protest-records"]);
+      }
+      return clean;
+    };
+    V.Hooks.around(V.Assets, "load", "protest-world:load:1", () => async function() {
+      await Promise.all([prior.assets(), this.loadEntries(residents.flatMap((r) => [[r.character, "assets/characters/" + r.character + ".png"], [r.character + "-portrait", "assets/characters/" + r.character + "-portrait.png"]]))]);
+      return this.errors;
+    });
+  })();
 });

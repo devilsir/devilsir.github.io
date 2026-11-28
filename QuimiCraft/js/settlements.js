@@ -2,7 +2,7 @@
 "use strict";
 
 globalThis.QuimiCraftSettlements=(()=>{
-  const CELL=920,shops=["food","armor","solid","liquid","trinket"];
+  const CELL=1320,shops=["food","armor","solid","liquid","trinket"];
   const roles=["farmer","miner","botanist","glazier","ceramist","teacher","baker","fisher","geologist","weaver","cook","smith","gardener"];
   const first=["Alba","Bento","Cora","Dália","Érico","Gael","Iara","Jaci","Lina","Mara","Nara","Noé","Ravi","Téo","Zuri"];
   const youngNames=["Nina","Luan","Bia","Caíque","Yasmin","Tainá","Davi","Nalu","Joana","Rael"];
@@ -163,6 +163,18 @@ globalThis.QuimiCraftSettlements=(()=>{
       return descriptor&&contains(descriptor,x,z,pad)?build(descriptor):null;
     }
     function main(){return hub.version===3?build(center):null}
+    function destination(x,z,indices){
+      const gx=Math.floor(x/CELL),gz=Math.floor(z/CELL);
+      const cells=indices?[indices]:Array.from({length:49},(_,i)=>[gx+i%7-3,gz+Math.floor(i/7)-3]);
+      let chosen=null,distance=Infinity;
+      for(const [ix,iz] of cells){
+        const site=describe(ix,iz);
+        if(!site)continue;
+        const gap=Math.hypot(site.x-x,site.z-z);
+        if(gap<distance){chosen=site;distance=gap}
+      }
+      return chosen?build(chosen):null;
+    }
     function line(a,b,stroke){
       const dx=b.x-a.x,dz=b.z-a.z,steps=Math.max(Math.abs(dx),Math.abs(dz),1);
       for(let i=0;i<=steps;i++)stroke(Math.round(a.x+dx*i/steps),Math.round(a.z+dz*i/steps),Math.round(a.y+(b.y-a.y)*i/steps));
@@ -331,7 +343,7 @@ globalThis.QuimiCraftSettlements=(()=>{
       }
       return false;
     }
-    return {main,near:getSite,contains,blockAt,doorAt,surface,occupied};
+    return {main,near:getSite,destination,contains,blockAt,doorAt,surface,occupied};
   }
   return {create};
 })();

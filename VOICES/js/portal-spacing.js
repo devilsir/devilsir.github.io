@@ -82,7 +82,7 @@ const S=V.PortalSpacing={gap:216,
  },
  all(){let changed=0;for(const m of Object.values(W.maps))changed+=this.arrange(m);return changed;}
 };
-const init=W.init.bind(W);W.init=function(...args){const result=init(...args);S.all();return result;};
+V.Hooks.around(V.World, "init", "portal-spacing:init:1", init => function(...args){const result=init(...args);S.all();return result;});
 const load=W.load.bind(W);W.load=function(id,...args){const m=this.maps[id];if(S.arrange(m))V.BuildingSigns?.install(m);return load(id,...args);};
 if(Object.keys(W.maps).length)S.all();
 })();

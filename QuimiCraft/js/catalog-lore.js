@@ -50,6 +50,66 @@ globalThis.QuimiCraftCatalogLore=(()=>{
       "Antes mesmo de aparecer entre os rochedos, o Dragão Negro anuncia sua chegada com tremores surdos no subsolo. Sua carapaça espessa de pedra resiste a impactos que derrubariam muros inteiros.",
       "Apesar das asas curtas e pesadas, usa a cauda em forma de martelo como contrapeso para voos rasantes. Os minerais de sua saliva lembram silicatos usados para consolidar solos."
     ],
+    time_lost_protodrake:[
+      "Batedores das cordilheiras geladas passam estações inteiras vigiando desfiladeiros onde um clarão ciano corta a neblina. O Protodraco Perdido no Tempo aparece sem aviso, cruzando correntes de ar como uma relíquia viva de eras esquecidas.",
+      "Diferente dos dragões quadrúpedes, os protodracos sustentam o corpo sobre duas pernas traseiras musculosas e asas blindadas. O brilho ciano no interior da mandíbula lembra reações quimiluminescentes frias de alta energia."
+    ],
+    elemental_lizard_fire:[
+      "Nascido nas fendas mais fundas dos vulcões ativos, o Lagarto Elemental do Fogo arrasta um rastro de fumaça escura por onde corre. Quando ergue as asas laterais em brasa, o ar ao redor tremula como uma fornalha aberta.",
+      "Suas placas dorsais rachadas deixam escapar calor radiante para evitar superaquecimento interno, um efeito semelhante ao resfriamento de crostas de lava basáltica."
+    ],
+    elemental_lizard_ice:[
+      "Nos fiordes onde até as ondas congelam na maré baixa, o Lagarto Elemental do Gelo caça entre blocos de gelo azul. Espinhos translúcidos crescem continuamente ao longo de sua espinha e de suas asas cristalinas.",
+      "A luz atravessa seus cristais dorsais por refração e espalhamento seletivo, criando o tom azul-ciano típico de geleiras compactadas com poucas bolhas de ar."
+    ],
+    elemental_lizard_earth:[
+      "Quem confunde sua silhueta encurvada com um paredão de arenito só percebe o erro quando descargas douradas unem os rochedos de sua cauda. O Lagarto Elemental da Terra levita segmentos inteiros de pedra em combate.",
+      "As faíscas âmbar que mantêm sua cauda suspensa evocam a piezoeletricidade — o fenômeno real em que certos cristais minerais, como o quartzo, geram tensão elétrica sob grande pressão mecânica."
+    ],
+    elemental_lizard_storm:[
+      "Antes mesmo do primeiro trovão, galhadas elétricas desenham faíscas prateadas no alto dos picos alpinos. O Lagarto Elemental da Tempestade cavalga ventos cortantes envolto em névoa e arcos voltaicos.",
+      "Suas galhadas ramificadas atuam como para-raios biológicos, concentrando cargas elétricas atmosféricas do mesmo modo que descargas corona se formam em pontas metálicas durante tempestades."
+    ],
+    emerald_drake:[
+      "Nas copas mais antigas das florestas de sequoias, o Draco Esmeralda desliza silenciosamente com suas asas dourado-alaranjadas. Pacífico e curioso, observa viajantes de longe e costuma aceitar mel e frutas silvestres.",
+      "Sua cauda termina em uma clava espinhosa usada para afastar predadores sem recorrer a fogo ou veneno; a coloração verde-esmeralda camufla o corpo entre folhas filtradas pela luz solar."
+    ],
+    ruby_drake:[
+      "Vigia dos platôs rubros e das encostas vulcânicas, o Draco Rubi abre suas grandes asas de pergaminho claro para aproveitar correntes térmicas ascendentes e patrulhar o território do alto.",
+      "A crista laranja alinhada ao longo do pescoço funciona como um radiador térmico natural, e os espinhos na aba interna das asas ajudam a estabilizar curvas fechadas em mergulho."
+    ],
+    azure_drake:[
+      "Habituado aos céus límpidos das auroras e dos fiordes, o Draco Lazúli irradia feixes arcanos azulados quando concentra sua rajada. Suas asas de marfim refletem o brilho frio das estrelas boreais.",
+      "Sua tonalidade turquesa intensa lembra pigmentos de sais de cobre e azul-egípcio (silicato de cálcio e cobre), um dos primeiros pigmentos sintéticos produzidos pela humanidade."
+    ],
+    obsidian_drake:[
+      "Forjado nas caldeiras mais escuras, o Draco Obsidiana combina escamas cor de carvão com membranas alaranjadas que brilham como ferro recém-saído da forja. É territorial e responde rapidamente a invasões.",
+      "A obsidiana natural é um vidro vulcânico formado quando lava rica em sílica esfria tão depressa que não há tempo para crescerem cristais — resultando em bordas extremamente afiadas."
+    ],
+    bronze_drake:[
+      "Sobre as dunas e salinas douradas, o Draco de Bronze plana por longas distâncias quase sem bater as asas. Suas escamas metálicas com crista esverdeada lembram monumentos antigos expostos ao tempo.",
+      "O contraste entre o bronze dourado do corpo e o tom esverdeado na crista reproduz a pátina natural (azinhavre), camada de carbonato básico de cobre que protege o bronze contra corrosão profunda."
+    ],
+    aspect_time:[
+      "Cronistas antigos falam do Aspecto do Tempo como o guardião silencioso das eras. Sua barba dourada, ombreiras de bronze e olhos ciano brilham sob um halo rúnico que gira sem jamais atrasar um segundo.",
+      "Relógios de alta precisão na ciência moderna dependem de oscilações regulares — desde pêndulos de bronze até cristais de quartzo e transições atômicas de césio."
+    ],
+    aspect_dream:[
+      "Sob a copa de árvores centenárias, o Aspecto do Sonho repousa adornado por um diadema prateado e crina violeta. Sua presença acalma criaturas agitadas e faz brotar flores raras ao redor do pouso.",
+      "Seu temperamento sereno permite aproximação pacífica com oferendas de mel e frutas; a harmonia de verdes esmeralda e violetas lembra pigmentos naturais como clorofilas e antocianinas."
+    ],
+    aspect_life:[
+      "Coroado por chifres dourados e um colar real que sustenta o orbe vital violeta sob a garganta, o Aspecto da Vida irradia calor restaurador e fúria protetora sobre os biomas que guarda.",
+      "O orbe translúcido em seu peito pulsa em compasso com a respiração do dragão, simbolizando a energia química que sustenta ciclos vitais de combustão controlada e renovação."
+    ],
+    aspect_magic:[
+      "Envolto por cristais translúcidos que emolduram o rosto e o queixo como gelo encantado, o Aspecto da Magia domina correntes arcanas nos picos de aurora e nos bosques de cristal.",
+      "As placas cristalinas de seu corpo refratam a luz em feixes azul-violeta, recordando fenômenos ópticos reais como birrefringência e fluorescência em minerais puros."
+    ],
+    aspect_cataclysm:[
+      "Nenhuma criatura provoca tremores tão profundos quanto o Aspecto do Cataclismo. Placas de ferro escuro rebitadas seguram sua mandíbula titânica enquanto fissuras incandescentes de magma rasgam seu peito e suas asas.",
+      "Sua armadura metálica fundida à rocha evoca ligas refratárias de ferro e titânio usadas para conter temperaturas extremas, enquanto o brilho laranja interno remete à radiação térmica de corpo negro acima de 1.000 °C."
+    ],
 
     // === ÁRVORES VIVAS ===
     living_tree:[
@@ -370,6 +430,18 @@ globalThis.QuimiCraftCatalogLore=(()=>{
       "Com a cauda anelada sempre erguida como bandeira, os quatis vasculham o chão e os galhos das florestas em bandos barulhentos atrás de frutas, insetos, ovos e pequenos répteis.",
       "Quatis conseguem girar as articulações dos tornozelos em até 180°, o que lhes permite descer troncos de árvores de cabeça para baixo com total segurança."
     ],
+    lumen_deer:[
+      "O Cervo Bioluminescente percorre florestas e bosques místicos ao cair da noite; suas galhadas cristalinas e manchas luminosas guiam viajantes perdidos na penumbra.",
+      "Na natureza, a bioluminescência nasce da reação entre luciferina e a enzima luciferase — uma emissão de 'luz fria' que quase não desperdiça energia em calor."
+    ],
+    lumen_fox:[
+      "Ágil e silenciosa sob as estrelas, a Raposa Bioluminescente deixa rastros tênues de luz azul-violeta na cauda enquanto fareja vagalumes e plantas brilhantes.",
+      "Muitos mamíferos noturnos possuem uma camada refletora atrás da retina chamada tapetum lucidum, que amplia a visão no escuro e faz seus olhos brilharem à noite."
+    ],
+    lumen_frog:[
+      "O Sapo Bioluminescente habita margens de pântanos, manguezais e bosques úmidos, inflando seu saco vocal luminoso em coros que iluminam o brejo à noite.",
+      "Em 2017, cientistas descobriram na América do Sul a primeira rã naturalmente fluorescente conhecida (Boana punctata), que absorve luz fraca e reemite um brilho verde-azulado."
+    ],
     grass_snake:[
       "A Serpente da Mata desliza silenciosamente entre a vegetação baixa de florestas, campos floridos e manguezais, emboscando pequenos roedores e aves com botes rápidos.",
       "Serpentes não têm pálpebras móveis nem orelhas externas: sentem vibrações do chão através do maxilar inferior e 'cheiram' o ar usando a língua bifurcada ligada ao órgão de Jacobson."
@@ -467,6 +539,62 @@ globalThis.QuimiCraftCatalogLore=(()=>{
     cobalt_elemental:[
       "Nascido nas caldeiras vítreas e bosques de cristais, o Elemental de Escória Azul brilha em chamas azuladas intensas, combinando calor extremo e sais metálicos.",
       "Sais de cobalto são usados há milênios para produzir o célebre azul-cobalto em vidros e porcelanas; em chamas, diferentes metais produzem cores características (teste de chama)."
+    ],
+    fire_elemental:[
+      "Entre fendas vulcânicas, brasas se juntam em torno de um núcleo incandescente. Quando o núcleo se contrai, prepare-se para uma descarga de fogo.",
+      "Em rochas vulcânicas reais, a incandescência laranja-brilhante indica temperaturas acima de 900 °C — calor suficiente para fundir cobre e alumínio."
+    ],
+    wind_elemental:[
+      "Nas cristas mais expostas, fitas de ar rodopiam até sustentar um par de braços. O vórtice fica mais estreito enquanto concentra sua rajada.",
+      "Quanto menor o raio de um redemoinho de ar, maior fica sua velocidade de rotação devido à conservação do momento angular."
+    ],
+    water_elemental:[
+      "A espuma das encostas e estuários dá forma a uma coluna viva de água. Ao erguer os braços, ela comprime a corrente e dispara um projétil frio.",
+      "A água é quase incompressível e possui altíssimo calor específico, conseguindo transferir enorme energia cinética em jatos de alta pressão."
+    ],
+    earth_elemental:[
+      "Pedras de vários estratos giram em torno de um corpo de minério. Seu golpe começa com os punhos erguidos e termina num impacto sísmico.",
+      "Ondas sísmicas propagam-se muito mais rápido através de rochas densas e cristalinas do que pelo solo solto da superfície."
+    ],
+    fire_lord:[
+      "Auvrasa emerge das caldeiras com asas de chama e uma couraça de obsidiana. A ponta da lança fica incandescente quando ele concentra uma descarga de fogo.",
+      "A obsidiana de sua couraça é vidro vulcânico formado quando lava rica em sílica esfria depressa demais para organizar cristais."
+    ],
+    wind_lord:[
+      "Cisalva cruza os prados alpinos sobre um funil de vento. Relâmpagos correm pelas ombreiras de metal e pela lâmina que ele carrega.",
+      "Correntes ascendentes intensas em tempestades eletrizam partículas de gelo e poeira, gerando descargas elétricas milionárias em volts."
+    ],
+    water_lord:[
+      "Refluor toma forma onde a água do continente encontra o mar. A espuma sobe pelo redemoinho na base do corpo e se acumula nos punhos antes de cada disparo.",
+      "Nos estuários, o encontro entre água doce menos densa e água salgada cria correntes em camadas chamadas cunhas salinas."
+    ],
+    earth_lord:[
+      "Estratão ergue fragmentos antigos do fundo dos cânions. Os cristais violetas da coroa e dos ombros vibram quando seus punhos de pedra se erguem para o impacto.",
+      "A cor violeta da ametista em sua coroa vem de traços de ferro irradiados naturalmente dentro da estrutura cristalina do quartzo."
+    ],
+    forge_lord:[
+      "Vulcrisol guarda as caldeiras mais quentes com um malho de pedra vitrificada. O metal avermelha enquanto ele ergue a arma e a escória salta quando ela atinge o chão.",
+      "Na metalurgia, a escória fundida flutua sobre o metal líquido, arrastando impurezas de silicato para fora do ferro puro."
+    ],
+    current_lord:[
+      "Talassar reúne as correntes de água fria dos fiordes em torno do peito. Sua crista se ergue ao lançar uma corrente que retarda quem ela atinge.",
+      "Águas geladas e salinas dos fiordes são mais densas e afundam profundamente, impulsionando grandes correntes oceânicas."
+    ],
+    geode_matriarch:[
+      "Basalta carrega geodas violetas encaixadas entre camadas de rocha. Quando ergue os punhos, os cristais vibram antes que o chão trema.",
+      "Geodas reais crescem lentamente quando águas ricas em minerais filtram bolhas presas em basalto vulcânico ao longo de milhões de anos."
+    ],
+    storm_lord:[
+      "Os anéis de Siroco giram em sentidos contrários no centro da tormenta. Quando se alinham, o vento comprimido cruza o campo numa rajada capaz de arremessar o explorador.",
+      "Rotações opostas de correntes atmosféricas criam zonas de cisalhamento intenso capazes de acelerar ventos a velocidades de furacão."
+    ],
+    arcane_wisp:[
+      "A Centelha é um prisma vivo, mantido suspenso por dois anéis de energia. Os fragmentos se afastam do núcleo enquanto ele acumula carga.",
+      "Prismas ópticos separam a luz branca em todo o espectro visível porque cada comprimento de onda sofre refração em um ângulo ligeiramente diferente."
+    ],
+    arcane_sentinel:[
+      "A Sentinela dos bosques de cristais reúne placas facetadas em torno de um núcleo violeta. Quando o núcleo brilha, seus punhos conduzem a descarga.",
+      "Certos cristais como o quartzo exibem piezoeletricidade: geram pulsos elétricos mensuráveis sempre que suas faces são comprimidas."
     ],
     salt_crab:[
       "O Caranguejo de Sal caminha de lado sobre as crostas das salinas e deltas, camuflando a carapaça branca entre os cristais até investir com pinças afiadas.",
@@ -1441,12 +1569,40 @@ globalThis.QuimiCraftCatalogLore=(()=>{
       "A luz vermelha é absorvida já nos primeiros metros de profundidade na água do mar; comprimentos de onda azul-esverdeados são os que viajam mais longe debaixo d'água."
     ],
     "block:EXPEDITION_CHEST":[
-      "Encontrado em covis dracônicos, templos, laboratórios soterrados e aldeias das copas, o baú de expedição guarda suprimentos raros e minerais valiosos.",
+      "Encontrado em covis dracônicos, templos, laboratórios soterrados e aldeias das copas, o baú de expedição guarda suprimentos raros e minerais valiosos em seus 27 slots.",
       "Fechos metálicos reforçados nas quinas protegem os cantos mais vulneráveis de um baú de madeira contra umidade e impactos no transporte."
     ],
     "block:EXPEDITION_CHEST_OPEN":[
-      "Depois que seu tesouro é recolhido, o baú aberto permanece como marco silencioso de que aquela expedição já foi desbravada.",
+      "Depois que seu tesouro é recolhido, o baú aberto continua funcional para guardar itens e permanece como marco silencioso de que aquela expedição já foi desbravada.",
       "Na arqueologia real, o próprio recipiente vazio — sua madeira, pregos e resíduos internos — costuma revelar tanto sobre uma época quanto o conteúdo guardado nele."
+    ],
+    "block:CHEST":[
+      "Construído com tábuas resistentes e ferragens de latão, o Baú de Madeira oferece 100 slots seguros para armazenar blocos, ferramentas, poções e tesouros em sua base (empilhando até 9999 unidades por slot).",
+      "Armazenar materiais em recipientes fechados reduz a exposição à umidade e facilita a organização de amostras e reagentes em expedições longas."
+    ],
+    "block:SIGN":[
+      "Placa de madeira cravada no solo que permite escrever até 4 linhas visíveis diretamente no mundo — ideal para sinalizar bases, cavernas, armazéns e rotas.",
+      "Na sinalização histórica, placas de madeira entalhada em encruzilhadas serviam como primeiros mapas públicos para viajantes e caravanas."
+    ],
+    "item:light_halo_crown":[
+      "Forjada sob bênção da Primeira Luz, a Coroa Radiante reduz fortemente a perda de sanidade causada por sussurros dos Deuses Antigos e dissipa visões.",
+      "Sua aura dourada também ilumina a região ao redor do explorador em cavernas profundas e durante a noite."
+    ],
+    "item:light_aegis_plate":[
+      "Armadura consagrada do Exército Dourado que protege tanto o corpo quanto a mente contra a influência corrompida das profundezas.",
+      "Equipamentos de Luz trabalham em conjunto para restaurar gradualmente a sanidade e impedir alucinações."
+    ],
+    "item:light_dawn_mantle":[
+      "Manto tecido com fios dourados abençoados pelos Naaru, oferecendo resistência psíquica contra sussurros antigos e recuperação constante de mana e lucidez.",
+      "Viajantes que descem às câmaras abissais combinam mantos da Luz com relíquias de Naaru para manter a mente intacta."
+    ],
+    "item:naaru_relic":[
+      "Relíquia cristalina sintonizada com o canto harmônico dos Naaru. Equipada na mão secundária, bloqueia 80% da perda de sanidade e com X libera um pulso purificador que restaura lucidez e dissolve todas as ilusões.",
+      "Seu brilho dourado-ciano acompanha o portador como uma lanterna sagrada."
+    ],
+    "item:shield_light":[
+      "Égide da Primeira Luz que bloqueia golpes físicos e protege a sanidade do portador contra os sussurros abissais.",
+      "Mesmo ao empunhar armas corrompidas, uma peça de Luz Sagrada ajuda a conter a escalada da insanidade."
     ],
     "block:CIVIC_STONE":[
       "O piso de mosaico reveste o coração das praças cívicas dos povoados, unindo pedras claras e escuras em desenhos ordenados.",
@@ -1739,6 +1895,22 @@ globalThis.QuimiCraftCatalogLore=(()=>{
     "block:GLOW_FUNGUS":[
       "Símbolo do Bosque Lúmen, o cogumelo-lúmen emite luz própria esverdeada durante toda a noite, servindo de ponto de referência e alimento para a Mariposa Lúmen.",
       "Em fungos bioluminescentes reais (como Neonothopanus gardneri, o 'flor-de-coco' brasileiro), a luz verde atrai insetos noturnos que ajudam a dispersar seus esporos."
+    ],
+    "block:LUMEN_FLOWER":[
+      "O Lótus Bioluminescente desabrocha à noite em florestas, bosques lilases e pântanos, banhando o entorno com um brilho ciano suave que atrai vagalumes.",
+      "Flores noturnas costumam usar tons claros ou brilho suave para atrair polinizadores ativos após o pôr do sol, economizando néctar durante o dia."
+    ],
+    "block:GLOW_FERN":[
+      "A Samambaia Fosforescente acumula pigmentos luminosos nas pontas de suas frondes, formando trilhas verde-esmeralda sob o dossel das matas fechadas.",
+      "Samambaias estão entre as plantas vasculares mais antigas da Terra — surgiram centenas de milhões de anos antes das primeiras plantas com flores."
+    ],
+    "block:STAR_SHROOM":[
+      "O Cogumelo-Estrela cresce em agrupamentos violeta e turquesa em bosques místicos e cavernas úmidas, pulsando como pequenas constelações no chão.",
+      "Algumas espécies de fungos emitem luz contínua durante dias inteiros, alimentada diretamente pelo metabolismo celular enquanto houver oxigênio e umidade."
+    ],
+    "item:candle":[
+      "Vela artesanal de cera com chama estável. Pode ser segurada na mão para iluminar ou acoplada a elmos e equipamentos de cabeça compatíveis (exceto chapéu pontudo de mago, óculos e máscaras).",
+      "A chama de uma vela é uma reação de combustão controlada: o calor derrete a cera, que sobe pelo pavio por capilaridade e vaporiza antes de queimar."
     ],
     "block:LICHEN":[
       "O líquen dourado adere diretamente a rochas nuas e troncos frios onde nenhuma raiz consegue penetrar, iniciando lentamente a formação de solo novo.",
@@ -2229,7 +2401,7 @@ globalThis.QuimiCraftCatalogLore=(()=>{
       "Cascos planadores erguem a proa acima da água em alta velocidade para diminuir a área de contato e reduzir drasticamente o arrasto hidrodinâmico."
     ],
     dinghy_tractor:[
-      "O Bote adaptado com grandes rodas de trator dispensa o cais: sai da água sozinho e sobe margens e desníveis de até três blocos levando sua carga.",
+      "O Bote adaptado com grandes rodas de trator dispensa o cais: sai da água sozinho e sobe margens e desníveis de até seis blocos levando sua carga.",
       "Veículos anfíbios combinam flutuabilidade de casco estanque com tração de rodas largas de baixa pressão para vencer areia fofa e barrancos."
     ],
     boat_tractor:[
@@ -2931,7 +3103,62 @@ globalThis.QuimiCraftCatalogLore=(()=>{
     "vulcânico:central:villager:0":[
       "Salomé da Caldeira coordena a manutenção das paredes de reboco vinho e das rotas seguras ao redor das fendas quentes da região vulcânica.",
       "Regiões geotérmicas reais como a Islândia aproveitam o calor natural do subsolo vulcânico para aquecer casas, estufas e gerar eletricidade limpa."
-    ]
+    ],
+    "explorer_backpack":[
+      "Mochila reforçada de couro, fivelas de latão e rolo de viagem equipada nas costas do explorador. Abre 28 slots extras imediatos no inventário e pode ser expandida até 34 slots com Bolsos de Expansão.",
+      "Seus itens permanecem armazenados com segurança dentro da mochila mesmo quando você a desequipa e volta a vestir."
+    ],
+    "backpack_pouch":[
+      "Bolso lateral costurado de couro e lã projetado para expandir a capacidade da Mochila do Explorador em +2 slots por melhoria, até o limite máximo de 34 slots extras.",
+      "Clique no botão '+2 Slots' dentro do inventário com a mochila equipada para costurar cada novo bolso."
+    ],
+    "summon_grimoire":[
+      "Grimório arcano de mão secundária cujos selos abrem brechas controladas para invocar elementais, infernais, cães da fenda, golens, seres de luz e entidades do caos como aliados.",
+      "Aperte K para escolher sua magia ativa e X para conjurar o aliado diretamente em batalha."
+    ],
+    "summon_staff":[
+      "Cajado rúnico talhado com núcleos elementais. Dispara orbes arcanos no clique esquerdo e invoca seu aliado selecionado no clique direito.",
+      "Aliados invocados acompanham você pelo mundo e defendem-no automaticamente contra criaturas hostis."
+    ],
+    "elemental_core":[
+      "Essência cristalizada obtida de fissuras elementais, comunidades druídicas ou Senhores Elementais. Serve de catalisador para o Grimório e o Cajado do Invocador.",
+      "Cada fissura elemental espalhada pelo mundo condensa energia de um elemento puro — e a Convergência reúne todos em um só santuário."
+    ],
+    "ice_elemental":[
+      "Espírito glacial formado em fissuras de gelo e fiordes congelados. Dispara estilhaços frios que desaceleram qualquer invasor.",
+      "Sua presença reduz a temperatura local e alimenta catedrais de gelo ao redor das fissuras glaciais."
+    ],
+    "ice_lord":[
+      "Glacírius, Senhor do Gelo, governa a Catedral da Fissura Glacial cercado por anéis de cristais e tempestades cortantes.",
+      "Pode ser encontrado na Fissura de Gelo e na grande Convergência de Todos os Elementais."
+    ],
+    "lightning_elemental":[
+      "Entidade de plasma elétrico nascida em torres tempestuosas. Move-se rapidamente e dispara arcos voltaicos de longo alcance.",
+      "A energia das Fissuras de Raio costuma ser estudada tanto por xamãs quanto por alquimistas de eletroquímica."
+    ],
+    "lightning_lord":[
+      "Voltaris, Senhor dos Raios, comanda a Torre da Fissura Tempestuosa entre bobinas de bronze e descargas incessantes.",
+      "Seus relâmpagos arqueados atravessam grandes distâncias com velocidade impressionante."
+    ],
+    "nature_elemental":[
+      "Manifestação viva de raízes, musgo e luz esmeralda que guarda os santuários da Fissura Viva e das comunidades druídicas.",
+      "Druidas e xamãs frequentemente conversam com elementais da natureza e assumem sua forma em defesa da floresta."
+    ],
+    "nature_lord":[
+      "Sylvaron, Senhor da Natureza, preside o Santuário da Fissura Viva e equilibra o crescimento das matas ao redor.",
+      "Sua aura esmeralda nutre plantas bioluminescentes e repele a propagação da corrupção abissal."
+    ],
+    "block:RIFT_FIRE":["Bloco de fissura ígnea pulsante encontrado na Forja da Fissura Ígnea e na Convergência Elemental.","Irradia luz intensa e pode ser refinado em Núcleos Elementais."],
+    "block:RIFT_WATER":["Bloco de fissura aquática luminosa presente no Santuário das Marés e na Convergência Elemental.","Seu brilho azul-ciano ilumina aquedutos e recifes artificiais."],
+    "block:RIFT_EARTH":["Bloco de fissura telúrica encontrado na Bastilha Telúrica e na Convergência Elemental.","Condensa energia sísmica e mineral em padrões dourados."],
+    "block:RIFT_WIND":["Bloco de fissura eólica encontrado no Pináculo dos Ventos e na Convergência Elemental.","Flutua entre colunas suspensas emitindo brilho turquesa."],
+    "block:RIFT_ARCANE":["Bloco de fissura arcana encontrado no Observatório Arcano e na Convergência Elemental.","Ressoa com cristais prismáticos e ametistas."],
+    "block:RIFT_ICE":["Bloco de fissura glacial encontrado na Catedral da Fissura Glacial e na Convergência Elemental.","Emite luminescência azul gélida sem derreter o gelo vizinho."],
+    "block:RIFT_LIGHTNING":["Bloco de fissura tempestuosa encontrado na Torre Tempestuosa e na Convergência Elemental.","Carrega faíscas douradas de alta tensão entre condutores de cobre."],
+    "block:RIFT_NATURE":["Bloco de fissura viva encontrado no Santuário da Fissura Viva e na Convergência Elemental.","Fomenta o florescimento da vegetação druídica ao redor."],
+    "block:RIFT_CONVERGENCE":["Núcleo prismático da Convergência de Todos os Elementais, onde os oito planos elementais se encontram.","É uma das fontes luminosas mais intensas de todo o QuimiCraft."],
+    "block:DRUID_RUNESTONE":["Pedra antiga entalhada com musgo e runas elementais que delimita os círculos das comunidades druidas xamânicas.","Usada para harmonizar o diálogo entre xamãs e os espíritos dos elementos."],
+    "block:DRUID_TOTEM":["Totem vivo irradiando luz esmeralda no centro das comunidades druídicas xamânicas.","Sinaliza terreno sagrado do Círculo Druídico Xamânico e ilumina a floresta à noite."]
   });
 
   // === FILHOTES: textos e curiosidades específicos por espécie ===
@@ -2957,7 +3184,7 @@ globalThis.QuimiCraftCatalogLore=(()=>{
     iron_armadillo:["filhote de tatu de hematita","Explora a entrada da toca ainda com a carapaça macia enquanto aprende a farejar larvas.","Tatus nascem com carapaça mole e flexível que só mineraliza e endurece por completo semanas após o nascimento."],
     rime_fox:["filhote de raposa do gelo","Brinca na entrada da toca glacial aprimorando saltos de caça sob o olhar dos pais.","Pais de raposas árticas trazem alimento incansavelmente para a toca durante o verão curto até os filhotes ficarem independentes."],
     fennec:["filhote de feneco","Permanece abrigado nas tocas frescas de areia durante o dia e ensaia saltos ágeis ao anoitecer.","Filhotes de feneco nascem com as orelhas dobradas e pequenas, que crescem rapidamente nas primeiras semanas."],
-    cat:["gatinho","Descobre o mundo perseguindo folhas ao vento e exercitando o equilíbrio em muros baixos da vila.","Gatinhos nascem com olhos azuis fechados que só se abrem após cerca de uma semana e mudam para a cor definitiva mais tarde."],
+    cat:["gatinho","Gatinhos da vila descobrem o mundo perseguindo folhas ao vento e exercitando o equilíbrio nos muros baixos.","Os olhos geralmente se abrem na segunda semana de vida. A cor que aparece na infância costuma mudar conforme a íris amadurece."],
     dog:["filhote de cachorro","Trota curioso perto das casas da vila abanando a cauda para qualquer explorador que ofereça alimento.","Filhotes de cães aprendem regras sociais e controle da mordida justamente durante as brincadeiras com irmãos da ninhada."],
     wolf:["lobinho","Cresce cuidado por toda a matilha — não só pelos pais, mas também por tios e irmãos mais velhos.","Lobinhos nascem cegos e surdos dentro da toca e treinam o primeiro uivo ainda bem jovens para manter contato com a matilha."],
     jaguar:["filhote de onça","Acompanha a mãe por quase dois anos pela selva aprendendo a emboscar presas e nadar em rios.","Onças filhotes nascem com manchas mais densas que vão se abrindo em rosetas largas à medida que o corpo cresce."],
@@ -2988,11 +3215,8 @@ globalThis.QuimiCraftCatalogLore=(()=>{
     const adultName=lookup.get(base)?.name||entry.name.replace(/^Filhote\s*·\s*/,"");
     const info=babyFacts[base];
     if(info){
-      const [label,storyPart,curiosity]=info;
-      return [
-        `O ${label} de ${adultName} cresce gradualmente ao lado dos adultos da espécie. ${storyPart}`,
-        curiosity
-      ];
+      const [,story,curiosity]=info;
+      return [story,curiosity];
     }
     return [
       `Filhote jovem de ${adultName} ainda em desenvolvimento sob proteção dos adultos de seu habitat.`,
@@ -3004,7 +3228,8 @@ globalThis.QuimiCraftCatalogLore=(()=>{
     const base=entry.key.slice(0,-6);
     const target=lookup.get(base);
     const baseName=target?.name||entry.name.replace(/\s*·.*$/,"");
-    const baseRec=notes[base];
+    const baseRec=Object.hasOwn(notes,base)?notes[base]:null;
+    const baseFact=Array.isArray(baseRec)&&typeof baseRec[1]==="string"&&baseRec[1].length?baseRec[1]:"";
     const aquatic=entry.category==="aquatic";
     const silver=base==="werewolf";
     const story=aquatic?
@@ -3012,23 +3237,25 @@ globalThis.QuimiCraftCatalogLore=(()=>{
       `Forma espectral de ${baseName} avistada em rondas noturnas e regiões sombreadas, cercada por névoa luminosa azul-esverdeada. Repete os movimentos da criatura original, mas ignora qualquer aço comum.`;
     const extra=silver?" Por unir maldição lunar e natureza espectral, só pode ser ferido com armas fantasmagóricas que carreguem prata.":
       " Apenas armas fantasmagóricas impregnadas de ectoplasma causam dano a esta aparição, e somente armaduras fantasmagóricas reduzem seus ataques.";
-    const hint=baseRec?` Na forma viva, ${baseName.toLocaleLowerCase("pt-BR")} destaca-se por um fato curioso: ${baseRec[1][0].toLocaleLowerCase("pt-BR")+baseRec[1].slice(1)}`:"";
+    const hint=baseFact?` Na forma viva, ${baseName.toLocaleLowerCase("pt-BR")} destaca-se por um fato curioso: ${baseFact[0].toLocaleLowerCase("pt-BR")+baseFact.slice(1)}`:"";
     return [story,`${extra.trim()}${hint}`];
   }
 
   function describe(entry,lookup=new Map()){
-    const {key,name}=entry;
-    let pair=entry.loreData?.food?describeCrop(entry):Object.hasOwn(notes,key)?notes[key]:null;
+    const {key}=entry;
+    const guide=globalThis.QuimiCraftCatalogFieldGuide;
+    const sourceKey=key.startsWith("summon:")?key.slice(7):key.endsWith(":baby")?key.slice(0,-5):null;
+    const base=sourceKey?lookup.get(sourceKey):null;
+    const field=guide?.describe(entry,base)||{};
+    const baseField=key.endsWith(":baby")&&base?guide?.describe(base):null;
+    let pair=entry.loreData?.food?describeCrop(entry):notes[key]??notes["item:"+key];
     if(!pair&&key.endsWith(":baby"))pair=describeBaby(entry,lookup);
     if(!pair&&key.endsWith(":ghost"))pair=describeGhost(entry,lookup);
-    if(!pair){
-      pair=[
-        `${name} faz parte dos registros levantados pelos exploradores e cientistas do QuimiCraft.`,
-        `Observe ${name} no visualizador 3D interativo para examinar seus detalhes estruturais de todos os ângulos.`
-      ];
-    }
-    const [story,curiosity]=pair;
-    return {story,curiosity,clue:curiosity,links:[]};
+    const hasRevision=field.revision||key.startsWith("summon:");
+    const story=(hasRevision&&field.story)||pair?.[0]||field.story||entry.detail||entry.name;
+    const curiosity=(hasRevision&&field.curiosity)||pair?.[1]||field.curiosity||"";
+    return {story,curiosity,insight:field.insight||baseField?.insight||null,
+      links:field.links?.length?field.links:baseField?.links||[]};
   }
   return {describe,extend:extra=>Object.assign(notes,extra)};
 })();

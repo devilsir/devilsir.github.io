@@ -147,11 +147,11 @@ globalThis.QuimiCraftAlchemyPlay = (() => {
         wrist.add(vial);
         const supplies=progress.state.keepers[site.key]||{heal:1,mist:1,readyAt:0};
         npc.alchemy={site,action:null,vial,supplies,stop:0,rest:4,work:0};
-        const staff=[site.assistant,site.apprentice].filter(Boolean).map(spawnKeeper);
+        const staff=[site.assistant,site.apprentice,...site.villagers].filter(Boolean).map(spawnKeeper);
         keepers.set(site.key,{npc,staff});
       }
       locator.hidden=!nearby||distance<9;
-      if(!locator.hidden)locator.textContent=nearby.config.title+" · "+Math.round(distance)+" m · X "+nearby.x+" Z "+nearby.z;
+      if(!locator.hidden)locator.textContent=(nearby.buildings.length>1?"Vila Alquimista · ":"")+nearby.config.title+" · "+Math.round(distance)+" m · X "+nearby.x+" Z "+nearby.z;
       for(const [key,{npc,staff}] of keepers){
         const site=npc.alchemy.site;
         if(Math.hypot(site.x-x,site.z-z)>64){

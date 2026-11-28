@@ -1,40 +1,222 @@
 /* Registered module: guided-overlay */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("guided-overlay", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function guidedOverlay(){
-'use strict';const V=window.V;
-const O=V.GuideOverlay={owner:null,frame:0,lastTarget:null,
- mount(){let root=V.$('#guided-overlay');if(root)return root;root=document.createElement('div');root.id='guided-overlay';root.hidden=true;root.innerHTML=`<div class="guided-shade" data-side="top"></div><div class="guided-shade" data-side="left"></div><div class="guided-shade" data-side="right"></div><div class="guided-shade" data-side="bottom"></div><div class="guided-spot" aria-hidden="true"></div><div class="guided-pointer" aria-hidden="true">➜</div><aside class="guided-card" aria-label="Orientação do tutorial"><header><img src="assets/characters/pix-portrait.png" width="56" height="56" alt="PIX"><div><small id="guided-counter"></small><strong id="guided-title"></strong></div><button id="guided-fold" class="quiet" aria-label="Recolher orientação" aria-expanded="true">−</button><button id="guided-close" class="quiet" aria-label="Pular tutorial">×</button></header><div id="guided-content"><progress id="guided-progress" max="1" value="0" aria-label="Progresso do tutorial"></progress><p id="guided-text"></p><div id="guided-instruction" role="status" aria-live="polite"></div><div class="guided-actions"><button id="guide-action" class="primary" hidden></button><button id="guided-next" class="primary"></button><button id="guided-recover" class="secondary" hidden>Mostrar etapa</button></div><footer><button id="guided-skip-step" class="quiet">Pular etapa</button><button id="guided-skip" class="quiet">Pular tutorial</button></footer></div></aside>`;document.body.appendChild(root);V.$('#guided-fold').onclick=()=>{const content=V.$('#guided-content');content.hidden=!content.hidden;V.$('#guided-fold').textContent=content.hidden?'+':'−';V.$('#guided-fold').setAttribute('aria-expanded',String(!content.hidden));this.position();};return root;},
- visible(el){if(!el||el.hidden||el.closest('[hidden]'))return false;const r=el.getBoundingClientRect();return r.width>0&&r.height>0;},
- target(){const d=this.model;if(!d)return null;const nodes=d.target?[...document.querySelectorAll(d.target)]:[];return nodes.find(el=>this.visible(el)&&!el.disabled)||nodes.find(el=>this.visible(el));},
- show(owner,d){const root=this.mount(),changed=this.owner!==owner||this.model?.key!==d.key;this.owner=owner;this.model=d;root.hidden=false;root.dataset.state=d.ack?'done':'waiting';root.classList.toggle('guided-center',!!d.center);document.body.classList.add('guided-visible');if(changed){V.$('#guided-content').hidden=false;V.$('#guided-fold').textContent='−';V.$('#guided-fold').setAttribute('aria-expanded','true');}
- V.$('#guided-counter').textContent=d.counter;V.$('#guided-title').textContent=d.title;V.$('#guided-progress').max=d.total||1;V.$('#guided-progress').value=d.index||0;V.$('#guided-text').textContent=d.text;V.$('#guided-instruction').textContent=d.ack?'✓ '+(d.after||'Ação concluída. Observe o resultado e continue.'):d.instruction;
- const next=V.$('#guided-next');next.hidden=(!!d.action||!!d.event)&&!d.ack;next.disabled=!!d.event&&!d.ack;next.textContent=d.finish?'Concluir tutorial':d.event&&!d.ack?'Faça a ação destacada':'Continuar →';next.onclick=d.next;
- const action=V.$('#guide-action');action.hidden=!d.action||d.ack;action.textContent=d.actionLabel||'Experimentar';action.onclick=d.action;
- V.$('#guided-skip').textContent=d.skipLabel||'Pular tutorial';V.$('#guided-skip').onclick=d.skip;V.$('#guided-close').onclick=d.skip;V.$('#guided-close').setAttribute('aria-label',d.skipLabel||'Pular tutorial');V.$('#guided-close').title=d.skipLabel||'Pular tutorial';V.$('#guided-skip-step').hidden=!d.skipStep;V.$('#guided-skip-step').onclick=d.skipStep;V.$('#guided-recover').onclick=()=>{d.recover?.();this.position(true);};
- if(changed)this.position(true);else this.position();if(!this.frame){const tick=()=>{if(!this.owner){this.frame=0;return;}this.position();this.frame=requestAnimationFrame(tick);};this.frame=requestAnimationFrame(tick);}},
- point(){return this.model?.point?.();},
- elementRect(el){const q=el.getBoundingClientRect(),clip={left:0,top:0,right:window.innerWidth,bottom:window.innerHeight};for(let parent=el.parentElement;parent&&parent!==document.body;parent=parent.parentElement){const style=getComputedStyle(parent),box=parent.getBoundingClientRect(),sx=parent.offsetWidth?box.width/parent.offsetWidth:1,sy=parent.offsetHeight?box.height/parent.offsetHeight:1;if(/hidden|clip|auto|scroll/.test(style.overflowX||style.overflow)){clip.left=Math.max(clip.left,box.left+parent.clientLeft*sx);clip.right=Math.min(clip.right,box.left+(parent.clientLeft+(parent.clientWidth||box.width))*sx);}if(/hidden|clip|auto|scroll/.test(style.overflowY||style.overflow)){clip.top=Math.max(clip.top,box.top+parent.clientTop*sy);clip.bottom=Math.min(clip.bottom,box.top+(parent.clientTop+(parent.clientHeight||box.height))*sy);}}return{x:q.left,y:q.top,w:q.width,h:q.height,clip};},
- bounds(rect,padding=4){if(!rect)return null;const clip=rect.clip||{},left=Math.max(0,clip.left??0,rect.x-padding),top=Math.max(0,clip.top??0,rect.y-padding),right=Math.min(window.innerWidth,clip.right??window.innerWidth,rect.x+rect.w+padding),bottom=Math.min(window.innerHeight,clip.bottom??window.innerHeight,rect.y+rect.h+padding);if(right<=left||bottom<=top)return null;return{x:left,y:top,w:right-left,h:bottom-top};},
- position(scroll=false){const root=V.$('#guided-overlay');if(!root||root.hidden)return;const d=this.model,el=this.target(),card=root.querySelector('.guided-card'),vw=window.innerWidth,vh=window.innerHeight,pad=12;let r=this.point();const pointLabel=r?.label||'',clip=r?.clip;
- if(el&&(scroll||this.lastTarget!==el)&&el.id!=='world-canvas'&&!el.closest('#guided-overlay'))el.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});
- const elementTarget=!r&&el&&!el.closest('#guided-overlay');if(elementTarget)r=this.elementRect(el);
- if(this.lastTarget!==el){this.lastTarget?.classList.remove('guided-current');this.lastTarget=el;el?.classList.add('guided-current');}
- r=this.bounds(r,elementTarget?4:7);
- const recover=V.$('#guided-recover');recover.hidden=!!r||!d.recover||!d.event||d.ack||!!d.action;
- let slot=this.owner==='playground'?V.$('#pg-guide-slot'):null;if(this.owner==='lesson'){const modal=V.$('.modal.workshop-modal');if(modal){slot=modal.querySelector('#workshop-guide-slot');if(!slot){slot=document.createElement('aside');slot.id='workshop-guide-slot';modal.appendChild(slot);}modal.classList.add('workshop-guided');}}const docked=!!slot;root.classList.toggle('guided-docked',docked);if(slot){slot.hidden=false;const q=slot.getBoundingClientRect();card.style.left=q.left+'px';card.style.top=q.top+'px';card.style.width=q.width+'px';card.style.maxHeight=q.height+'px';}else{card.style.width='';card.style.maxHeight='';}
- const size=card.getBoundingClientRect(),cw=size.width||340,ch=Math.min(size.height||300,vh-24);let left=(vw-cw)/2,top=(vh-ch)/2;
- if(!d.center){const options=[[pad,pad],[vw-cw-pad,pad],[pad,vh-ch-pad],[vw-cw-pad,vh-ch-pad]];const overlap=([x,y])=>r?Math.max(0,Math.min(x+cw,r.x+r.w)-Math.max(x,r.x))*Math.max(0,Math.min(y+ch,r.y+r.h)-Math.max(y,r.y)):0;options.sort((a,b)=>overlap(a)-overlap(b));[left,top]=options[0];}
- if(!docked){card.style.left=Math.round(Math.max(pad,left))+'px';card.style.top=Math.round(Math.max(pad,top))+'px';}
- const spot=root.querySelector('.guided-spot'),pointer=root.querySelector('.guided-pointer');pointer.textContent=pointLabel||'➜';pointer.classList.toggle('guided-world-pointer',!!pointLabel);spot.hidden=pointer.hidden=!r;
- const shades=[...root.querySelectorAll('.guided-shade')];if(!r){shades.forEach((s,i)=>{s.hidden=i>0;s.style.cssText='left:0;top:0;width:100vw;height:100vh';});return;}
- spot.style.cssText=`left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px`;if(elementTarget){const radius=getComputedStyle(el).borderRadius;spot.style.borderRadius=radius.includes('%')?radius:(parseFloat(radius)||5)+4+'px';}const boxes=[[0,0,vw,r.y],[0,r.y,r.x,r.h],[r.x+r.w,r.y,Math.max(0,vw-r.x-r.w),r.h],[0,r.y+r.h,vw,Math.max(0,vh-r.y-r.h)]];shades.forEach((s,i)=>{s.hidden=false;const[x,y,w,h]=boxes[i];s.style.cssText=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`;});pointer.style.left=Math.max(8,Math.min(vw-(pointLabel?120:34),r.x-(pointLabel?0:31)))+'px';pointer.style.top=Math.max(8,Math.min(vh-40,pointLabel?r.y:r.y+r.h/2-17))+'px';
- },
- hide(owner){if(owner&&this.owner!==owner)return;if(this.owner==='lesson'){V.$('#workshop-guide-slot')?.remove();V.$('.modal.workshop-guided')?.classList.remove('workshop-guided');}if(this.owner==='playground'){const slot=V.$('#pg-guide-slot');if(slot)slot.hidden=true;}this.owner=null;this.model=null;this.lastTarget?.classList.remove('guided-current');this.lastTarget=null;const root=V.$('#guided-overlay');if(root)root.hidden=true;document.body.classList.remove('guided-visible');if(this.frame)cancelAnimationFrame(this.frame);this.frame=0;}
-};
-})();
-
+})(function() {
+  (function guidedOverlay() {
+    "use strict";
+    const V = window.V;
+    const O = V.GuideOverlay = {
+      owner: null,
+      frame: 0,
+      lastTarget: null,
+      mount() {
+        let root = V.$("#guided-overlay");
+        if (root) return root;
+        root = document.createElement("div");
+        root.id = "guided-overlay";
+        root.hidden = true;
+        root.innerHTML = `<div class="guided-shade" data-side="top"></div><div class="guided-shade" data-side="left"></div><div class="guided-shade" data-side="right"></div><div class="guided-shade" data-side="bottom"></div><div class="guided-spot" aria-hidden="true"></div><div class="guided-pointer" aria-hidden="true">\u279C</div><aside class="guided-card" aria-label="Orienta\xE7\xE3o do tutorial"><header><img src="assets/characters/pix-portrait.png" width="56" height="56" alt="PIX"><div><small id="guided-counter"></small><strong id="guided-title"></strong></div><button id="guided-fold" class="quiet" aria-label="Recolher orienta\xE7\xE3o" aria-expanded="true">\u2212</button><button id="guided-close" class="quiet" aria-label="Pular tutorial">\xD7</button></header><div id="guided-content"><progress id="guided-progress" max="1" value="0" aria-label="Progresso do tutorial"></progress><p id="guided-text"></p><div id="guided-instruction" role="status" aria-live="polite"></div><div class="guided-actions"><button id="guide-action" class="primary" hidden></button><button id="guided-next" class="primary"></button><button id="guided-recover" class="secondary" hidden>Mostrar etapa</button></div><footer><button id="guided-skip-step" class="quiet">Pular etapa</button><button id="guided-skip" class="quiet">Pular tutorial</button></footer></div></aside>`;
+        document.body.appendChild(root);
+        V.$("#guided-fold").onclick = () => {
+          const content = V.$("#guided-content");
+          content.hidden = !content.hidden;
+          V.$("#guided-fold").textContent = content.hidden ? "+" : "\u2212";
+          V.$("#guided-fold").setAttribute("aria-expanded", String(!content.hidden));
+          this.position();
+        };
+        return root;
+      },
+      visible(el) {
+        if (!el || el.hidden || el.closest("[hidden]")) return false;
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      },
+      target() {
+        const d = this.model;
+        if (!d) return null;
+        const nodes = d.target ? [...document.querySelectorAll(d.target)] : [];
+        return nodes.find((el) => this.visible(el) && !el.disabled) || nodes.find((el) => this.visible(el));
+      },
+      show(owner, d) {
+        const root = this.mount(), changed = this.owner !== owner || this.model?.key !== d.key;
+        this.owner = owner;
+        this.model = d;
+        root.hidden = false;
+        root.dataset.state = d.ack ? "done" : "waiting";
+        root.classList.toggle("guided-center", !!d.center);
+        document.body.classList.add("guided-visible");
+        if (changed) {
+          V.$("#guided-content").hidden = false;
+          V.$("#guided-fold").textContent = "\u2212";
+          V.$("#guided-fold").setAttribute("aria-expanded", "true");
+        }
+        V.$("#guided-counter").textContent = d.counter;
+        V.$("#guided-title").textContent = d.title;
+        V.$("#guided-progress").max = d.total || 1;
+        V.$("#guided-progress").value = d.index || 0;
+        V.$("#guided-text").textContent = d.text;
+        V.$("#guided-instruction").textContent = d.ack ? "\u2713 " + (d.after || "A\xE7\xE3o conclu\xEDda. Observe o resultado e continue.") : d.instruction;
+        const next = V.$("#guided-next");
+        next.hidden = (!!d.action || !!d.event) && !d.ack;
+        next.disabled = !!d.event && !d.ack;
+        next.textContent = d.finish ? "Concluir tutorial" : d.event && !d.ack ? "Fa\xE7a a a\xE7\xE3o destacada" : "Continuar \u2192";
+        next.onclick = d.next;
+        const action = V.$("#guide-action");
+        action.hidden = !d.action || d.ack;
+        action.textContent = d.actionLabel || "Experimentar";
+        action.onclick = d.action;
+        V.$("#guided-skip").textContent = d.skipLabel || "Pular tutorial";
+        V.$("#guided-skip").onclick = d.skip;
+        V.$("#guided-close").onclick = d.skip;
+        V.$("#guided-close").setAttribute("aria-label", d.skipLabel || "Pular tutorial");
+        V.$("#guided-close").title = d.skipLabel || "Pular tutorial";
+        V.$("#guided-skip-step").hidden = !d.skipStep;
+        V.$("#guided-skip-step").onclick = d.skipStep;
+        V.$("#guided-recover").onclick = () => {
+          d.recover?.();
+          this.position(true);
+        };
+        if (changed) this.position(true);
+        else this.position();
+        if (!this.frame) {
+          const tick = () => {
+            if (!this.owner) {
+              this.frame = 0;
+              return;
+            }
+            this.position();
+            this.frame = requestAnimationFrame(tick);
+          };
+          this.frame = requestAnimationFrame(tick);
+        }
+      },
+      point() {
+        return this.model?.point?.();
+      },
+      elementRect(el) {
+        const q = el.getBoundingClientRect(), clip = { left: 0, top: 0, right: window.innerWidth, bottom: window.innerHeight };
+        for (let parent = el.parentElement; parent && parent !== document.body; parent = parent.parentElement) {
+          const style = getComputedStyle(parent), box = parent.getBoundingClientRect(), sx = parent.offsetWidth ? box.width / parent.offsetWidth : 1, sy = parent.offsetHeight ? box.height / parent.offsetHeight : 1;
+          if (/hidden|clip|auto|scroll/.test(style.overflowX || style.overflow)) {
+            clip.left = Math.max(clip.left, box.left + parent.clientLeft * sx);
+            clip.right = Math.min(clip.right, box.left + (parent.clientLeft + (parent.clientWidth || box.width)) * sx);
+          }
+          if (/hidden|clip|auto|scroll/.test(style.overflowY || style.overflow)) {
+            clip.top = Math.max(clip.top, box.top + parent.clientTop * sy);
+            clip.bottom = Math.min(clip.bottom, box.top + (parent.clientTop + (parent.clientHeight || box.height)) * sy);
+          }
+        }
+        return { x: q.left, y: q.top, w: q.width, h: q.height, clip };
+      },
+      bounds(rect, padding = 4) {
+        if (!rect) return null;
+        const clip = rect.clip || {}, left = Math.max(0, clip.left ?? 0, rect.x - padding), top = Math.max(0, clip.top ?? 0, rect.y - padding), right = Math.min(window.innerWidth, clip.right ?? window.innerWidth, rect.x + rect.w + padding), bottom = Math.min(window.innerHeight, clip.bottom ?? window.innerHeight, rect.y + rect.h + padding);
+        if (right <= left || bottom <= top) return null;
+        return { x: left, y: top, w: right - left, h: bottom - top };
+      },
+      position(scroll = false) {
+        const root = V.$("#guided-overlay");
+        if (!root || root.hidden) return;
+        const d = this.model, el = this.target(), card = root.querySelector(".guided-card"), vw = window.innerWidth, vh = window.innerHeight, pad = 12;
+        let r = this.point();
+        const pointLabel = r?.label || "", clip = r?.clip;
+        if (el && (scroll || this.lastTarget !== el) && el.id !== "world-canvas" && !el.closest("#guided-overlay")) el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
+        const elementTarget = !r && el && !el.closest("#guided-overlay");
+        if (elementTarget) r = this.elementRect(el);
+        if (this.lastTarget !== el) {
+          this.lastTarget?.classList.remove("guided-current");
+          this.lastTarget = el;
+          el?.classList.add("guided-current");
+        }
+        r = this.bounds(r, elementTarget ? 4 : 7);
+        const recover = V.$("#guided-recover");
+        recover.hidden = !!r || !d.recover || !d.event || d.ack || !!d.action;
+        let slot = this.owner === "playground" ? V.$("#pg-guide-slot") : null;
+        if (this.owner === "lesson") {
+          const modal = V.$(".modal.workshop-modal");
+          if (modal) {
+            slot = modal.querySelector("#workshop-guide-slot");
+            if (!slot) {
+              slot = document.createElement("aside");
+              slot.id = "workshop-guide-slot";
+              modal.appendChild(slot);
+            }
+            modal.classList.add("workshop-guided");
+          }
+        }
+        const docked = !!slot;
+        root.classList.toggle("guided-docked", docked);
+        if (slot) {
+          slot.hidden = false;
+          const q = slot.getBoundingClientRect();
+          card.style.left = q.left + "px";
+          card.style.top = q.top + "px";
+          card.style.width = q.width + "px";
+          card.style.maxHeight = q.height + "px";
+        } else {
+          card.style.width = "";
+          card.style.maxHeight = "";
+        }
+        const size = card.getBoundingClientRect(), cw = size.width || 340, ch = Math.min(size.height || 300, vh - 24);
+        let left = (vw - cw) / 2, top = (vh - ch) / 2;
+        if (!d.center) {
+          const options = [[pad, pad], [vw - cw - pad, pad], [pad, vh - ch - pad], [vw - cw - pad, vh - ch - pad]];
+          const overlap = ([x, y]) => r ? Math.max(0, Math.min(x + cw, r.x + r.w) - Math.max(x, r.x)) * Math.max(0, Math.min(y + ch, r.y + r.h) - Math.max(y, r.y)) : 0;
+          options.sort((a, b) => overlap(a) - overlap(b));
+          [left, top] = options[0];
+        }
+        if (!docked) {
+          card.style.left = Math.round(Math.max(pad, left)) + "px";
+          card.style.top = Math.round(Math.max(pad, top)) + "px";
+        }
+        const spot = root.querySelector(".guided-spot"), pointer = root.querySelector(".guided-pointer");
+        pointer.textContent = pointLabel || "\u279C";
+        pointer.classList.toggle("guided-world-pointer", !!pointLabel);
+        spot.hidden = pointer.hidden = !r;
+        const shades = [...root.querySelectorAll(".guided-shade")];
+        if (!r) {
+          shades.forEach((s, i) => {
+            s.hidden = i > 0;
+            s.style.cssText = "left:0;top:0;width:100vw;height:100vh";
+          });
+          return;
+        }
+        spot.style.cssText = `left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px`;
+        if (elementTarget) {
+          const radius = getComputedStyle(el).borderRadius;
+          spot.style.borderRadius = radius.includes("%") ? radius : (parseFloat(radius) || 5) + 4 + "px";
+        }
+        const boxes = [[0, 0, vw, r.y], [0, r.y, r.x, r.h], [r.x + r.w, r.y, Math.max(0, vw - r.x - r.w), r.h], [0, r.y + r.h, vw, Math.max(0, vh - r.y - r.h)]];
+        shades.forEach((s, i) => {
+          s.hidden = false;
+          const [x, y, w, h] = boxes[i];
+          s.style.cssText = `left:${x}px;top:${y}px;width:${w}px;height:${h}px`;
+        });
+        pointer.style.left = Math.max(8, Math.min(vw - (pointLabel ? 120 : 34), r.x - (pointLabel ? 0 : 31))) + "px";
+        pointer.style.top = Math.max(8, Math.min(vh - 40, pointLabel ? r.y : r.y + r.h / 2 - 17)) + "px";
+      },
+      hide(owner) {
+        if (owner && this.owner !== owner) return;
+        if (this.owner === "lesson") {
+          V.$("#workshop-guide-slot")?.remove();
+          V.$(".modal.workshop-guided")?.classList.remove("workshop-guided");
+        }
+        if (this.owner === "playground") {
+          const slot = V.$("#pg-guide-slot");
+          if (slot) slot.hidden = true;
+        }
+        this.owner = null;
+        this.model = null;
+        this.lastTarget?.classList.remove("guided-current");
+        this.lastTarget = null;
+        const root = V.$("#guided-overlay");
+        if (root) root.hidden = true;
+        document.body.classList.remove("guided-visible");
+        if (this.frame) cancelAnimationFrame(this.frame);
+        this.frame = 0;
+      }
+    };
+  })();
 });

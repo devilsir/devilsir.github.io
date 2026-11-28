@@ -1,7 +1,7 @@
 "use strict";
 
 globalThis.QuimiCraftSpectral=(()=>{
-  const chance=.05;
+  const chance=.01;
   const native=new Set(["wisp","cave_shade","bog_revenant","salt_specter"]);
   const names={wolf:"Lobo Fantasma",opossum:"Saruê Fantasma",anteater:"Tamanduá Fantasma",jaguar:"Onça Fantasma"};
   const isNative=id=>native.has(id);

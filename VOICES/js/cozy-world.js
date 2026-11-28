@@ -1,282 +1,1419 @@
 /* Registered module: cozy-world */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("cozy-world", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-/* VOICES v1.2: authored scene composition and finite, contextual routines. */
-(function(){'use strict';
-const V=window.V,T=48,L=V.Living,W=V.World;
-const initial={build:L.build.bind(L),content:L.initContent.bind(L),ensure:L.ensure.bind(L),interact:L.interact.bind(L),draw:L.drawObject.bind(L),resident:L.resident.bind(L),journal:L.journal.bind(L),nav:L.nav.bind(L),load:W.load.bind(W),assets:V.Assets.load.bind(V.Assets),playerUpdate:V.Player.update.bind(V.Player),playerRender:V.Player.render.bind(V.Player)};
-const serviceInfo={cora:['Cora','Técnica de som'],bento:['Bento','Auxiliar de curadoria'],ines:['Inês','Pesquisadora da oficina'],celso:['Celso','Editor do jornal'],luzia:['Luzia','Facilitadora da assembleia'],denis:['Denis','Técnico de catalogação'],maite:['Maitê','Moradora da horta']};
-const hash=s=>Array.from(s).reduce((n,c)=>(n*31+c.charCodeAt(0))>>>0,7);
-const esc=V.escape;
-V.Cozy={ready:false,clock:0,seated:null,layouts:V.cozyLayouts,
- ensure(){initial.ensure();if(!V.state)return;const old=V.state.cozy;if(!old||typeof old!=='object'||Array.isArray(old))V.state.cozy={};const s=V.state.cozy;['activities','sketches','seedLabels','visited'].forEach(k=>{if(!Array.isArray(s[k]))s[k]=[];s[k]=[...new Set(s[k].filter(x=>k==='seedLabels'?Number.isInteger(x)&&x>=0&&x<3:typeof x==='string'&&x.length<100))].slice(0,100);});if(!s.music||typeof s.music!=='object'||Array.isArray(s.music))s.music={};if(s.proposal)s.proposal=Array.isArray(s.proposal)?s.proposal.filter(x=>Number.isInteger(x)&&x>=0&&x<3).slice(0,3):[];},
- initContent(){initial.content();if(this.ready)return;this.ready=true;const data=V.cozyContent||{};
-  (data.sources||[]).forEach(s=>{if(!V.content.sources.some(r=>r.id===s.id))V.content.sources.push(s);});
-  (data.readings||[]).forEach(r=>{if(!V.learning.readings.some(x=>x.id===r.id))V.learning.readings.push(r);});
-  (data.questions||[]).forEach(q=>{if(!V.learning.questions.some(x=>x.id===q.id))V.learning.questions.push(q);if(!V.content.questions.some(x=>x.id===q.id))V.content.questions.push(q);});
-  (data.residents||[]).forEach(r=>{if(!V.learning.residents.some(x=>x.id===r.id))V.learning.residents.push(r);V.content.characters[r.character]={name:r.name,role:r.role,quote:r.lines?.[0]?.pt||'',accent:'#dab989'};});
-  Object.entries(serviceInfo).forEach(([id,[name,role]])=>{V.content.characters[id]={name,role,quote:({cora:'A partitura e o programa precisam mostrar quem fez cada parte.',bento:'Uma data precisa de registro antes de entrar na legenda.',ines:'Tentativa, condição e resultado ficam juntos no caderno.',celso:'A correção explica a mudança e preserva a versão anterior.',luzia:'Uma proposta escrita também participa da reunião.',denis:'A cópia deve continuar ligada à origem do documento.',maite:'A etiqueta ajuda a próxima pessoa a continuar o cuidado.'})[id],accent:'#c5d6ab'};});
- },
- build(){initial.build();for(const m of Object.values(W.maps))this.compose(m);},
- safe(m,x,y,avoid=null){const ox=x,oy=y;for(let r=0;r<14;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){
-  if(r&&Math.max(Math.abs(dx),Math.abs(dy))!==r)continue;const p={x:Math.round(ox+dx),y:Math.round(oy+dy)};if(!L.blocked(m,p.x*T+24,p.y*T+24,10)&&(!avoid||avoid.every(o=>Math.hypot(o.x-p.x*T-24,o.y-p.y*T-24)>15+16*(o.visualScale||1))))return p;
- }return{x:Math.floor(m.width/2),y:m.height-4};},
- compose(m){const d=this.layouts[m.id];if(!d)return;m.design=d;m.cache=null;m.ambientTime=hash(m.id)%9;m.decor=[];m.zones=[];m.chats=[];m.anchors=new Map();m.reservations=new Map();m.bubbleBudget=0;this.remodelBuildings(m);
-  m.objects=m.objects.filter(o=>o.type!=='ambient');
-  m.solids=m.theme==='room'?[{x:0,y:0,w:m.width*T,h:T*2},{x:0,y:0,w:T,h:m.height*T},{x:(m.width-1)*T,y:0,w:T,h:m.height*T}]:m.buildings.map(b=>({x:b.x,y:b.y,w:b.w,h:b.h}));
-  if(m.id==='hub')m.solids.push({x:14*T,y:9*T,w:4*T,h:3*T});
-  if(d.pond){m.pond=d.pond;m.solids.push({x:d.pond.x*T,y:d.pond.y*T,w:d.pond.w*T,h:d.pond.h*T});}
-  (d.decor||[]).forEach((row,index)=>{if(V.SceneDesign){V.SceneDesign.addDecor(m,row,index);return;}const [family,prop,x,y,size=1,solid=false]=row;m.decor.push({family,prop,x:x*T,y:y*T,size:T*size});const furniture=family==='cozy'&&[0,1,3,4,7,8,12,16,20,23,24,27,29,30,31,32,35,45,46].includes(prop);if(solid||furniture)m.solids.push({x:x*T+10,y:y*T+size*T*.45,w:size*T-20,h:size*T*.5-3});});
-  const service=m.objects.find(o=>o.library);
-  if(service&&d.service&&d.service!=='librarian'){service.type='service';service.character=d.service;service.label='Conversar com '+serviceInfo[d.service][0];service.service=true;}
-  const places={amara:['library',4,12],tomas:['room-3',6,11],elisa:['park',9,7],andre:['room-1',6,8],viviane:['market',6,14],rui:['room-2',6,11],jamila:['chapter-5',7,13],otavio:['room-4',6,11]};
-  // New residents were initially created by the compatible expansion builder.
-  m.objects=m.objects.filter(o=>!(o.resident&&places[o.resident.id]&&places[o.resident.id][0]!==m.id));
-  Object.entries(places).filter(([,a])=>a[0]===m.id).forEach(([id,[,x,y]])=>{if(!m.objects.some(o=>o.resident?.id===id)){const r=V.learning.residents.find(r=>r.id===id);if(r)W.object(m,'resident','resident-'+id,x,y,'Conversar com '+r.name,{character:r.character,resident:r,homeMap:m.id});}});
-  if(m.id==='garden'){const [name,role]=serviceInfo.maite;const r={id:'maite',character:'maite',name,role,lines:[{speaker:'maite',en:"I organised the seeds. Would you like to check their labels with me?",pt:'Organizei as sementes. Quer conferir as etiquetas comigo?'},{speaker:'maite',en:"Aisha looks after the watering, and I prepare the next shift.",pt:'Aisha cuida da rega, e eu preparo o próximo turno.'}],repeat:{speaker:'maite',en:"After putting away the tools, we can rest.",pt:'Depois de guardar as ferramentas, a gente pode descansar.'}};W.object(m,'resident','resident-maite',19,15,'Conversar com Maitê',{character:'maite',resident:r});}
-  let reading=0,note=0,other=0;
-  for(const o of m.objects){let pos=d.positions?.[o.id];
-   if(!pos&&o.type==='reading'){
-    if(m.id==='library'){const n=reading++,xs=[3,5,7,9,15,17,19,21];pos=[xs[n%8],5+Math.floor(n/8)*4];}
-    else if(m.theme==='room'){pos=[[8,6],[19,6],[8,12],[19,13],[4,13],[16,13]][reading++%6];}
-    else pos=[[7,11],[21,11],[9,17],[22,15]][note++%4];
-   }
-   if(!pos&&m.theme==='room'){if(o.type==='exit')pos=[12,15.5];else if(o.library||o.type==='service')pos=[13,5];else if(o.type==='terminal')pos=[3,6];else if(o.type==='sign')pos=[20,6];else if(o.type==='side')pos=[8,14];else if(o.type==='bonus')pos=[19,14];else if(o.type==='history')pos=[20,13];}
-   if(!pos&&o.type==='workbench')pos=[19+(other++%2),15];
-   if(pos){o.x=pos[0]*T+24;o.y=pos[1]*T+24;}
-  }
-  for(const s of d.scenes||[])this.addScene(m,s);
-  const allPeople=m.objects.filter(o=>this.person(o));
-  for(const o of allPeople){const p=this.safe(m,o.x/T-.5,o.y/T-.5,allPeople.filter(x=>x!==o));o.x=p.x*T+24;o.y=p.y*T+24;}
-  for(const [id,x,y,state,duration,dir]of d.anchors||[])this.addAnchor(m,id,x*T+24,y*T+24,state,duration,dir);
-  for(const o of m.objects){if(o.type==='animal')this.prepareAnimal(m,o);else if(this.person(o))this.preparePerson(m,o);}
-  this.addNeighbors(m);this.setupChat(m);this.addActivities(m);
-  // Stable approachable positions for portable quest and reading objects.
-  for(const o of m.objects.filter(o=>!this.person(o)&&o.type!=='animal'&&o.type!=='cozy')){if(L.blocked(m,o.x,o.y,8)&&!['door','fountain'].includes(o.type)){const p=this.safe(m,o.x/T-.5,o.y/T-.5);o.x=p.x*T+24;o.y=p.y*T+24;}}
- },
- person(o){return['npc','resident','service','ambient'].includes(o.type);},
- addAnchor(m,id,x,y,state='observing',duration=12,dir=0,object=null){const p=this.safe(m,x/T-.5,y/T-.5),clear=!L.blocked(m,x,y,10);const a={id,x:clear?x:p.x*T+24,y:clear?y:p.y*T+24,state,duration,dir,object};m.anchors.set(id,a);return a;},
- addScene(m,s){const o={type:'cozy',id:'cozy-'+m.id+'-'+s.id,x:s.x*T+24,y:s.y*T+24,label:s.title,scene:s};m.objects.push(o);
-  const builtInSolid=['seat','shelf','catalog','food','instrument','test','sketch','editorial','backup','proposal','labels'].includes(s.kind)||
-   s.kind==='exhibit'&&(s.family==='expanded'||s.family==='neighborhood'&&V.SceneDesign?.asset(s.family,s.prop)?.solidFootprint);
-  if(!V.SceneDesign?.hostDecor(m.design,s)&&(s.solid??(!s.hostDecor&&builtInSolid))){const z=T*(s.size||1);if(V.SceneDesign)V.SceneDesign.footprints(s.family,s.prop,o.x-z/2,o.y-z*.79,z,true,o.id).forEach(f=>m.solids.push(s.rotation||s.flip?V.SceneDesign.rotateBox(f,o.x,o.y-z*.29,s.rotation||0,s.flip):f));else m.solids.push({x:o.x-16,y:o.y-22,w:32,h:25});}
-  const states={seat:'sitting',shelf:'reading',notice:'observing',instrument:'playing',listening:'listening',food:'working',plant:'working',test:'working',sketch:'drawing',editorial:'writing',exhibit:'observing',proposal:'writing',backup:'working',catalog:'writing',labels:'working'};
-  this.addAnchor(m,s.id,o.x,o.y+(s.kind==='seat'?26:T),states[s.kind]||'observing',s.kind==='seat'?18:12,s.kind==='seat'?s.dir:3,o);
- },
- preparePerson(m,o){const n=hash(o.id);o.home={x:o.x,y:o.y};o.dir=0;o.frame=0;o.walking=false;o.walkClock=0;o.speed=23+n%9;o.route=[];o.wait=2+n%7;o.taskTime=3+n%10;o.action='waiting';o.taskIndex=n%3;o.nextIcon=5+n%18;o.icon=null;o.iconTime=0;o.greeting=0;o.blockedTime=0;
-  if(o.id==='resident-gardener')o.taskIndex=1;
-  const ids=m.design.routines?.[o.id];o.tasks=(ids||[...m.anchors.keys()].slice(0,3)).filter(id=>m.anchors.has(id));
-  if(o.character==='pix'){o.tasks=['observe-water'];o.stationary=true;}
-  if(['aline','elder','scientist','vitor'].includes(o.character)){o.settled=true;o.settledTask=o.tasks[0];}
-  // Every person has a stationary home fallback; no arbitrary patrol rectangle.
-  const home=this.addAnchor(m,'home-'+o.id,o.x,o.y,o.character==='pix'?'observing':'waiting',14,o.dir);o.tasks.push(home.id);o.waypoints=o.tasks.map(id=>m.anchors.get(id));
- },
- prepareAnimal(m,o){const n=hash(o.id),p=m.pond;o.speed=o.species===5?25:o.species===4?12:17;o.dir=0;o.animalFacing=2;o.frame=0;o.route=[];o.walkClock=0;o.walking=false;o.wait=2+n%10;o.taskTime=9+n%11;o.taskIndex=0;o.action=o.species===1?'sleeping':'observing';o.iconTime=0;o.nextIcon=15;
-  const spots=m.id==='park'?o.species===0?[[8,18],[9,16],[7,18]]:o.species===2?[[10,11],[11,13],[8,12]]:o.species===3?[[7,7],[9,7],[8,10]]:o.species===5?[[22,17],[21,15],[24,14]]:[[18,6],[21,6],[21,8],[18,8]]:m.id==='library'?[[5,13],[7,13]]:m.id==='garden'?[[8,5],[9,8],[18,12]]:m.id==='market'?[[10,16],[11,14],[10,12]]:[[10,15],[11,16],[12,16]];
-  o.waypoints=spots.map(([x,y],i)=>{if(o.species===4&&p)return{x:x*T+24,y:y*T+24,state:'swimming',duration:3,dir:0,id:'animal-'+i};const avoid=m.objects.filter(n=>n!==o&&(n.type==='animal'||this.person(n))),s=this.safe(m,x,y,i===0?avoid:null);return{x:s.x*T+24,y:s.y*T+24,state:o.species===1?'sleeping':o.species===3?'perching':o.species===5?'observing':'resting',duration:o.species===1?24:8,id:'animal-'+i};});
-  o.x=o.waypoints[0].x;o.y=o.waypoints[0].y;o.home={x:o.x,y:o.y};if(o.species===4){o.behavior='nada no lago entre pequenas pausas';o.interactionRange=126;}if(o.species===1)o.behavior='descansa em um canto tranquilo';if(o.species===0)o.behavior='fareja o caminho perto de quem cuida dele';
- },
- setupChat(m){const actors=m.objects.filter(o=>this.person(o)&&o.character!=='pix');if(actors.length<2)return;
-  const residents=actors.filter(o=>o.type==='resident'),members=residents.length>=2?residents.slice(0,2):residents.length?[residents[0],actors.find(o=>o!==residents[0])]:actors.slice(0,2);
-  const source=(V.cozyContent?.conversations||[]).find(g=>g.map===m.id);const supplied={hub:['Guardei um lugar perto da fonte.','Depois podemos passar na biblioteca.','Combinado. Vou terminar essa anotação.'],library:['Esse livro voltou hoje.','Então vou deixar uma indicação no caderno.','Me conta qual parte chamou sua atenção.'],park:['Olha o passarinho ali!','Vou anotar onde ele pousou.','Boa. Depois a gente compara as observações.'],market:['Deixei as etiquetas perto do tabuleiro.','Assim cada comida mantém seu nome e contexto.','Obrigada! Já dá para receber o próximo grupo.'],garden:['Esse canteiro já recebeu água.','Eu organizo as sementes para o próximo turno.','Depois a gente descansa ali.']};
-  const useSource=source&&!['hub','garden','library'].includes(m.id);const lines=useSource?source.lines:supplied[m.id]||['Vamos conferir este registro juntos?','Sim. Também anotei uma pergunta.','Depois a gente compara com a fonte.'];
-  const enLines=useSource?source.enLines:['Let’s look together.','I have a question too.','We can compare our notes.'];
-  const a=members[0].waypoints.find(a=>a.object?.scene?.kind==='seat')||members[0].waypoints[0];
-  const [mx,my]=m.design.meeting||[a.x/T-.5,a.y/T-.5],otherPeople=actors.filter(o=>!members.includes(o));const meeting=this.safe(m,mx,my,otherPeople);const spots=[meeting,this.safe(m,meeting.x+1,meeting.y,otherPeople.concat([{x:meeting.x*T+24,y:meeting.y*T+24}]))];
-  const g={id:'conversation-'+m.id,members,lines,enLines,clock:0,wait:14+hash(m.id)%14,phase:'rest',line:-1,talking:false};
-  members.forEach((o,i)=>{o.chat={...g,speakers:members.map(x=>x.character)};o.group=g.id;o.member=i;g['anchor'+i]=this.addAnchor(m,'meeting-'+i,spots[i].x*T+24,spots[i].y*T+24,'conversing',20,i?1:2);});m.chats.push(g);
- },
- addNeighbors(m){const neighborDialogue={"aline":[["This book came back today. Would you like a story about music or a writer’s life?","Este livro voltou hoje. Você prefere uma história sobre música ou sobre a vida de uma escritora?"],["I keep a note of the title and author. It helps me find the book again when someone asks about it.","Anoto o título e a autoria. Isso me ajuda a encontrar o livro de novo quando alguém pergunta sobre ele."],["I saved the recommendation in my notebook. The reading shelves are just inside the library.","Guardei a indicação no meu caderno. As estantes de leitura ficam logo dentro da biblioteca."]],"paulo":[["I am practising the guitar part for the festival. Can we try this passage more slowly?","Estou ensaiando a parte de guitarra para o festival. Podemos tentar este trecho mais devagar?"],["Sol is checking the programme credits. I wrote down who arranged each part before we start the rehearsal.","Sol está conferindo os créditos do programa. Anotei quem fez o arranjo de cada parte antes de começarmos o ensaio."],["The next rehearsal is in the Rhythm District. There are instruments to explore there while I finish this passage.","O próximo ensaio é no Distrito do Ritmo. Há instrumentos para explorar por lá enquanto termino este trecho."]],"nara":[["A little bird landed beside the lake. I am writing down where it went before I try to identify it.","Um passarinho pousou ao lado do lago. Estou anotando aonde ele foi antes de tentar identificá-lo."],["My field notebook has two columns: what I saw and what I still need to find out.","Meu caderno de campo tem duas colunas: o que vi e o que ainda preciso descobrir."],["I added the bird’s location to my notes. Celina has an observation task if you want to explore the park.","Acrescentei a localização do pássaro às anotações. Celina tem uma tarefa de observação se você quiser explorar o parque."]],"dora":[["I saved you a place at the meeting. Jo is collecting proposals for access to the archive.","Guardei um lugar para você na reunião. Jo está reunindo propostas para o acesso ao arquivo."],["An evening meeting helps me; Luan asked for access after school. We recorded both requests.","Uma reunião à noite me ajuda; Luan pediu acesso depois da aula. Registramos os dois pedidos."],["The proposals are on the assembly table. Check who each project reaches before choosing the budget.","As propostas estão na mesa da assembleia. Confira quem cada projeto atende antes de escolher o orçamento."]],"vitor":[["I am writing a proposal for the entrance. Could we move this chair so everyone can pass?","Estou escrevendo uma proposta para a entrada. Podemos mover esta cadeira para que todos passem?"],["I checked the route from the square to this room. The entrance and the path need to work together.","Conferi o trajeto da praça até esta sala. A entrada e o caminho precisam funcionar juntos."],["My route notes are ready for the meeting. Jo can show you how the community is comparing the projects.","Minhas anotações do trajeto estão prontas para a reunião. Jo pode mostrar como a comunidade está comparando os projetos."]],"luan":[["I brought the students’ suggestions to the meeting. Some want to consult the archive after school.","Trouxe as sugestões dos estudantes para a reunião. Alguns querem consultar o arquivo depois da aula."],["We asked for opening hours beside the entrance. That would save a trip when the archive is closed.","Pedimos horários de funcionamento ao lado da entrada. Isso evitaria uma viagem quando o arquivo está fechado."],["The students’ proposals are in the meeting notes. Compare them with the other requests on the table.","As propostas dos estudantes estão na ata. Compare-as com os outros pedidos sobre a mesa."]],"selma":[["This record already has a source and a date. The next one is missing the name of its editor.","Este registro já tem uma fonte e uma data. No próximo está faltando o nome de quem o editou."],["I keep the earlier copy beside the revision. We need to see which words changed, not just the latest title.","Guardo a cópia anterior ao lado da revisão. Precisamos ver quais palavras mudaram, além do título mais recente."],["The catalogue is ready for another comparison. Nia is checking the alteration history in the Central Archive.","O catálogo está pronto para outra comparação. Nia está conferindo o histórico de alterações no Arquivo Central."]],"enzo":[["I am looking for Rosa’s stall. I need fruit and a notebook before going back to the square.","Estou procurando a banca de Rosa. Preciso de frutas e de um caderno antes de voltar à praça."],["Bia is organising deliveries near the market. Ask which parcel belongs to the library before picking one up.","Bia está organizando entregas perto da feira. Pergunte qual encomenda é da biblioteca antes de pegar uma."],["I wrote down my shopping list. Rosa can tell you what is on today’s food cards.","Anotei minha lista de compras. Rosa pode contar o que está nas fichas dos alimentos de hoje."]]};const definitions={aline:['library',19,12,'Aline','Leitora',['reading-right','library-recommend']],paulo:['hub',23,14,'Paulo','Músico do bairro',['square-guitar','square-water-right']],nara:['park',20,12,'Nara','Estudante observadora',['park-field','park-lake']],dora:['room-5',9,12,'Dora','Moradora',['assembly-listen','assembly-note']],vitor:['room-5',15,12,'Vitor','Morador',['assembly-note','assembly-quiet']],luan:['room-5',6,12,'Luan','Estudante',['assembly-listen','assembly-turn']],selma:['room-6',6,12,'Selma','Arquivista',['control-catalog','control-backup']],enzo:['market',10,14,'Enzo','Visitante',['market-paper','market-rest']]};
-  for(const[id,[map,x,y,name,role,tasks]]of Object.entries(definitions)){if(map!==m.id)continue;V.content.characters[id]={name,role,accent:'#b6d0ad'};const p=this.safe(m,x,y,m.objects.filter(o=>this.person(o)));const pairs=neighborDialogue[id];const resident={id,character:id,name,role,lines:pairs.slice(0,2).map(([en,pt])=>({speaker:id,en,pt})),repeat:{speaker:id,en:pairs[2][0],pt:pairs[2][1]}};
-   const o={type:'resident',id:'neighbor-'+id,x:p.x*T+24,y:p.y*T+24,label:'Conversar com '+name,character:id,resident};m.objects.push(o);this.preparePerson(m,o);o.tasks=tasks.filter(id=>m.anchors.has(id)).concat('home-'+o.id);o.waypoints=o.tasks.map(id=>m.anchors.get(id));if(o.settled)o.settledTask=o.tasks[0];if(id==='vitor')o.speed=23;
-  }
- },
- remodelBuildings(m){if(!m.chapter||m.theme==='room')return;const plans={1:[[2,2,8,3],[22,3,8,3]],2:[[2,2,10,4],[24,2,6,4]],3:[[2,3,7,3],[22,2,8,4]],4:[[2,2,6,4],[22,2,8,3]],5:[[2,2,8,4],[24,3,6,3]],6:[[2,2,9,4],[24,2,6,4]]};const doors=m.objects.filter(o=>o.type==='door');m.buildings.forEach((b,i)=>{const[x,y,w,h]=plans[m.chapter][i];Object.assign(b,{x:x*T,y:y*T,w:w*T,h:h*T});if(doors[i]){doors[i].id='door-room-'+m.chapter+'-'+i;doors[i].x=(x+w/2)*T;doors[i].y=(y+h+.6)*T;}});},
- drawBuilding(ctx,b,cam){const x=b.x-cam.x,y=b.y-cam.y,w=b.w,h=b.h,m=W.current;const styles={hub:['#685348','#b5a47f'],rhythm:['#665061','#c49a86'],museum:['#80715a','#d2c39c'],lab:['#526e66','#b6c9b7'],network:['#596858','#c1c7a7'],community:['#63735c','#d3c69a'],final:['#58685d','#c1c8ad']};const[wall,trim]=styles[m.theme]||styles.hub;
-  ctx.fillStyle='#172b2855';ctx.fillRect(x+8,y+12,w,h+8);ctx.fillStyle=wall;ctx.fillRect(x,y,w,h);ctx.fillStyle='#ffffff0a';for(let yy=y+30;yy<y+h-12;yy+=24)ctx.fillRect(x+8,yy,w-16,2);
-  ctx.fillStyle='#30473d';ctx.fillRect(x-5,y-8,w+10,17);ctx.fillStyle=b.color;ctx.fillRect(x-5,y-8,w+10,7);
-  if(m.theme==='museum'){ctx.fillStyle=trim;for(const xx of[x+12,x+w-24]){ctx.fillRect(xx,y+47,12,h-54);ctx.fillRect(xx-4,y+46,20,5);}}
-  const count=Math.max(2,Math.floor(w/80));for(let i=0;i<count;i++){const xx=x+22+i*(w-44)/count;if(Math.abs(xx+20-(x+w/2))<31)continue;ctx.fillStyle='#2d4842';ctx.fillRect(xx,y+56,38,46);ctx.fillStyle='#dacba0';ctx.fillRect(xx+4,y+60,30,37);ctx.fillStyle='#607768';ctx.fillRect(xx+17,y+60,3,37);ctx.fillRect(xx+4,y+78,30,3);ctx.fillStyle=trim;ctx.fillRect(xx-3,y+102,44,5);}
-  ctx.fillStyle='#273f36';ctx.fillRect(x+w/2-23,y+h-58,46,58);ctx.fillStyle='#aaac87';ctx.fillRect(x+w/2-18,y+h-52,36,49);ctx.fillStyle='#4c6857';ctx.fillRect(x+w/2-13,y+h-47,26,23);ctx.fillStyle='#edcf84';ctx.fillRect(x+w/2+10,y+h-23,3,4);ctx.fillStyle=trim;ctx.fillRect(x+w/2-31,y+h,62,7);
-  if(m.theme==='lab'&&b.label==='OBSERVATÓRIO'){this.pixelOval(ctx,x+w/2,y-7,46,25,'#b4c9b5');ctx.fillStyle='#557768';ctx.fillRect(x+w/2-3,y-29,6,25);}
- },
- addActivities(m){(V.cozyContent?.activities||[]).filter(a=>a.map===m.id).forEach((a,i)=>{const pos=m.theme==='room'?[10,10+i*2]:m.id==='market'?[9,13]:[19,14];const p=this.safe(m,pos[0],pos[1]);m.objects.push({type:'cozy',id:'cozy-activity-'+a.id,x:p.x*T+24,y:p.y*T+24,label:a.title,scene:{id:a.id,kind:'activity',family:'cozy',prop:m.id==='market'?32:m.chapter===3?20:m.chapter===1?15:21,title:a.title,text:a.context,activity:a.id}});});},
- release(m,o){if(o.reserved&&m.reservations.get(o.reserved)===o.id)m.reservations.delete(o.reserved);o.reserved=null;},
- reserve(m,o,a){for(const[id,owner]of m.reservations){const spot=m.anchors.get(id);if(owner!==o.id&&spot&&V.dist(spot,a)<32)return false;}this.release(m,o);m.reservations.set(a.id,o.id);o.reserved=a.id;return true;},
- path(m,o,a){if(V.Homestead?.commuting)return V.Homestead.navigation(m,o,a);const others=m.objects.filter(n=>n!==o&&n.waypoints&&(n.type==='animal'||this.person(n))&&![3,4,5].includes(n.species)),player=V.Player.data;
-  const clear=(x,y)=>!L.blocked(m,x,y,9*(o.visualScale||1))&&others.every(n=>Math.hypot(n.x-x,n.y-y)>=12*((n.visualScale||1)+(o.visualScale||1)))&&(!player||Math.hypot(player.x-x,player.y-y)>=13+12*(o.visualScale||1));
-  const segment=(from,to)=>{const distance=V.dist(from,to),steps=Math.max(1,Math.ceil(distance/8));for(let i=1;i<=steps;i++)if(!clear(from.x+(to.x-from.x)*i/steps,from.y+(to.y-from.y)*i/steps))return false;return true;};
-  const ox=Math.floor(o.x/T),oy=Math.floor(o.y/T),goal={x:Math.floor(a.x/T),y:Math.floor(a.y/T)};const candidates=[];
-  for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const x=ox+dx,y=oy+dy,p={x:x*T+24,y:y*T+24};if(clear(p.x,p.y)&&segment(o,p))candidates.push({x,y,p,d:V.dist(o,p)});}candidates.sort((x,y)=>x.d-y.d);
-  if(!candidates.length)return[];const start=candidates[0],key=p=>p.x+','+p.y,queue=[start],parents=new Map([[key(start),null]]);let found=null;
-  for(let i=0;i<queue.length;i++){const p=queue[i];if(p.x===goal.x&&p.y===goal.y){found=p;break;}for(const[dx,dy]of[[1,0],[0,1],[-1,0],[0,-1]]){const n={x:p.x+dx,y:p.y+dy},k=key(n);if(!parents.has(k)&&clear(n.x*T+24,n.y*T+24)&&segment({x:p.x*T+24,y:p.y*T+24},{x:n.x*T+24,y:n.y*T+24})){parents.set(k,p);queue.push(n);}}}
-  if(!found)return[];const route=[];while(parents.get(key(found))){route.unshift({x:found.x*T+24,y:found.y*T+24});found=parents.get(key(found));}if(V.dist(o,start.p)>.6)route.unshift(start.p);
-  const end=route[route.length-1]||o;if(V.dist(end,a)>.6){if(!segment(end,a))return[];route.push({x:a.x,y:a.y});}return route;
- },
- chooseTask(m,o,forced=null){const list=o.type==='animal'?o.waypoints:o.tasks.map(id=>m.anchors.get(id));
-  for(let i=0;i<list.length;i++){const a=forced||list[o.taskIndex++%list.length];if(!a)continue;if(o.type!=='animal'&&!this.reserve(m,o,a)){if(forced)return false;continue;}
-   o.destination=a;o.action='walking';o.route=o.species===4?[{x:a.x,y:a.y}]:this.path(m,o,a);if(!o.route.length&&V.dist(o,a)>1){this.release(m,o);o.destination=null;if(forced){o.action='waiting';o.taskTime=2;return false;}continue;}o.blockedTime=0;if(!o.route.length){this.arrive(m,o);}
-   return true;
-  }o.action='waiting';o.taskTime=2;return false;
- },
- arrive(m,o){const a=o.destination;o.action=a?.state||'waiting';o.taskTime=(a?.duration||10)+(hash(o.id)%5);o.dir=a?.dir??o.dir;o.walking=false;o.frame=0;
-  if(['amara','aline'].includes(o.character)&&a?.object?.scene?.kind==='seat')o.action='reading';
-  if(o.type==='animal'){
-   const row=L.localAnimalRow(o);
-   if(row===1||row===4||row===5)o.action='sleeping';
-   else if(row===8||row===9||o.species===4)o.action='swimming';
-   else if(row===7||o.species===3)o.action='perching';
-   else o.action='resting';
-  }
-  this.expression(m,o);
- },
- blocked(m,o,x,y){if(o.type==='animal'&&o.species===4&&m.pond){const p=m.pond;return x<(p.x+.6)*T||x>(p.x+p.w-.6)*T||y<(p.y+.6)*T||y>(p.y+p.h-.6)*T;}return L.blocked(m,x,y,9*(o.visualScale||1));},
- expression(m,o,force=null){if(this.clock<o.nextIcon&&force===null)return;const icons={reading:4,writing:4,drawing:4,working:m.id==='garden'?6:4,watering:6,playing:2,listening:1,observing:o.character==='pix'?7:m.id==='park'?0:m.id==='garden'?6:4,sitting:5,conversing:3,perching:0,sleeping:3};const icon=force??icons[o.action];if(icon===undefined)return;
-  const cam=W.camera,visible=x=>x.x>cam.x+20&&x.x<cam.x+(V.Engine.canvas?.width||960)-20&&x.y>cam.y+70&&x.y<cam.y+(V.Engine.canvas?.height||540)+20;
-  if(visible(o)&&m.objects.filter(x=>visible(x)&&(x.iconTime>0||x.chatSpeaking)).length<2){o.icon=icon;o.iconTime=2.2;o.nextIcon=this.clock+20+hash(o.id)%17;}
- },
- updateChats(m,dt){for(const g of m.chats){g.clock+=dt;g.members.forEach(o=>{o.chatSpeaking=false;o.bubble='';});
-   if(g.phase==='rest'){g.wait-=dt;if(g.wait<=0&&g.members.every(o=>o.chatReady&&!o.responding&&!o.greeting)){g.phase='approach';g.clock=0;g.retry=0;g.members.forEach(o=>{o.chatReady=false;this.release(m,o);});g.members.forEach((o,i)=>{o.route=[];this.chooseTask(m,o,g['anchor'+i]);});}}
-   else if(g.phase==='approach'){if(g.members.every((o,i)=>V.dist(o,g['anchor'+i])<9)){g.phase='talk';g.clock=0;g.talking=true;g.members.forEach(o=>{o.action='conversing';o.taskTime=25;});}else{g.retry-=dt;if(g.retry<=0){g.retry=1.5;g.members.forEach((o,i)=>{if(!o.route.length&&V.dist(o,g['anchor'+i])>=9)this.chooseTask(m,o,g['anchor'+i]);});}if(g.clock>(g.approachLimit||45))this.endChat(m,g);}}
-   else if(g.phase==='talk'){const turn=Math.floor(g.clock/4.5);if(turn>=g.lines.length){this.endChat(m,g);continue;}const speaker=g.members[turn%2];speaker.chatSpeaking=true;speaker.bubble=g.lines[turn];g.members.forEach((o,i)=>{o.dir=i?1:2;o.walking=false;});}
-  }},
- endChat(m,g){g.phase='rest';g.talking=false;g.wait=27+hash(g.id)%13;g.clock=0;for(const o of g.members){o.chatReady=false;o.chatSpeaking=false;o.bubble='';this.release(m,o);o.action='waiting';o.taskTime=2+o.member*2;o.destination=null;o.route=[];}},
- update(dt){if(!W.current||!V.state)return;this.ensure();dt=V.clamp(dt,0,.08);this.clock+=dt;const m=W.current;m.ambientTime+=dt;L.walkingTime+=dt;V.Audio.footsteps(dt);
-  const p=V.Player.data,actors=m.objects.filter(o=>o.waypoints&&(o.type==='animal'||this.person(o)));this.updateChats(m,dt);
-  for(const o of actors){
-   if(o.type==='animal'&&o.coastAnimal===undefined&&o.neighborAnimal===undefined&&(o.species===2||o.species===3)){
-    const fly=o.walking&&(o.species===3||o.taskIndex%3===0)&&o.destination&&V.dist(o,o.destination)>19;
-    o.townFlight=V.clamp((o.townFlight||0)+(fly?2.4:-3.6)*dt,0,1);
-   }
-   o.walking=false;o.walkClock+=dt;o.iconTime=Math.max(0,o.iconTime-dt);o.greeting=Math.max(0,o.greeting-dt);o.responding=Math.max(0,(o.responding||0)-dt);
-   if(V.settings.npcMovement===false||V.settings.reducedMotion){o.frame=0;continue;}
-   const group=o.group&&m.chats.find(g=>g.id===o.group);if(group?.phase==='talk'){o.frame=Math.floor(o.walkClock*1.4)%4;continue;}
-   if(o.responding){o.dir=Math.abs(p.x-o.x)>Math.abs(p.y-o.y)?p.x<o.x?1:2:p.y<o.y?3:0;o.frame=0;continue;}
-   if(this.person(o)&&V.dist(p,o)<67&&o.greeting===0&&group?.phase!=='approach'){o.responding=1.1;o.greeting=13;this.expression(m,o,7);continue;}
-   if(o.action!=='walking'){o.taskTime-=dt;if(o.action==='playing'&&!o.protestActor&&Math.floor(o.taskTime*2)%8===0&&this.clock>(o.lastNote||0)+4){o.lastNote=this.clock;if(V.dist(p,o)<210)V.Audio.note(60+(hash(o.id)%5)*2,.15,'triangle',.045);}
-    if(o.taskTime<=0&&group?.phase==='rest'&&group.wait<=0){o.chatReady=true;o.action='waiting';o.taskTime=2;continue;}
-    if(o.taskTime<=0&&!o.stationary&&group?.phase!=='approach'){this.release(m,o);if(o.settled&&o.destination?.id===o.settledTask){o.taskTime=24;this.reserve(m,o,o.destination);}else this.chooseTask(m,o,o.settled?m.anchors.get(o.settledTask):null);}else{o.frame=V.settings.reducedMotion?0:['working','watering','playing','writing','drawing','reading'].includes(o.action)?Math.floor(o.walkClock*1.6)%4:0;this.expression(m,o);continue;}
-   }
-   if(!o.route?.length){if(o.destination)this.arrive(m,o);continue;}
-   const goal=o.route[0],dx=goal.x-o.x,dy=goal.y-o.y,len=Math.hypot(dx,dy),amount=Math.min(len,o.speed*dt),nx=len?o.x+dx/len*amount:o.x,ny=len?o.y+dy/len*amount:o.y;
-   const occupied=!V.Homestead?.commuting&&(actors.some(other=>other!==o&&![3,4,5].includes(other.species)&&![3,4,5].includes(o.species)&&Math.hypot(other.x-nx,other.y-ny)<11.5*((other.visualScale||1)+(o.visualScale||1)))||(![3,4,5].includes(o.species)&&Math.hypot(p.x-nx,p.y-ny)<12+12*(o.visualScale||1)));
-   if(this.blocked(m,o,nx,ny)||occupied){o.blockedTime+=dt;if(o.blockedTime>.7&&this.clock>(o.repathTime||0)&&o.destination){o.repathTime=this.clock+1.3;const route=this.path(m,o,o.destination);if(route.length){o.route=route;o.blockedTime=0;}}if(o.blockedTime>2.5&&group?.phase!=='approach'){this.release(m,o);o.route=[];o.destination=null;o.action='waiting';o.taskTime=2+hash(o.id)%3;o.blockedTime=0;}continue;}
-   if(o.type==='animal'&&Math.abs(nx-o.x)>.001)o.animalFacing=nx<o.x?1:2;o.x=nx;o.y=ny;o.walking=amount>.001;o.blockedTime=0;o.dir=Math.abs(dx)>Math.abs(dy)?dx<0?1:2:dy<0?3:0;o.frame=Math.floor(o.walkClock*5)%4;
-   if(len<=amount+.4){o.x=goal.x;o.y=goal.y;o.route.shift();if(!o.route.length)this.arrive(m,o);}
-  }L.updateHUD();
- },
- pixelOval(ctx,x,y,rx,ry,color){ctx.fillStyle=color;for(let yy=-ry;yy<=ry;yy+=3){const half=Math.floor(Math.sqrt(Math.max(0,1-yy*yy/(ry*ry)))*rx/3)*3;ctx.fillRect(Math.round(x-half),Math.round(y+yy),half*2,3);}},
- fountain(ctx,cam){const x=16*T-cam.x,y=10.8*T-cam.y,time=V.settings.reducedMotion?0:V.Engine.time;
-  this.pixelOval(ctx,x+5,y+39,116,45,'#17332b70');this.pixelOval(ctx,x,y+30,113,44,'#626f68');this.pixelOval(ctx,x,y+22,113,40,'#aaa790');this.pixelOval(ctx,x,y+20,101,31,'#3f727e');this.pixelOval(ctx,x,y+18,93,25,'#6b9c9b');
-  ctx.fillStyle='#8ab4ae';for(let i=0;i<7;i++){const xx=x-76+i*24,yy=y+14+Math.sin(time*.8+i)*6;ctx.fillRect(Math.round(xx),Math.round(yy),12,3);}
-  ctx.fillStyle='#697c73';ctx.fillRect(x-16,y-36,32,65);ctx.fillStyle='#b6b398';ctx.fillRect(x-17,y-37,9,61);this.pixelOval(ctx,x,y-33,44,15,'#747f72');this.pixelOval(ctx,x,y-40,44,12,'#bfc3a6');this.pixelOval(ctx,x,y-42,35,7,'#75aaa6');
-  ctx.fillStyle='#c2e2d6';ctx.fillRect(x-3,y-70,6,28);ctx.fillRect(x-9,y-67,6,3);ctx.fillRect(x+3,y-67,6,3);
-  for(const side of[-1,1]){ctx.fillStyle='#9dcfc4';ctx.fillRect(x+side*34-3,y-37,6,61);ctx.fillStyle='#d3ede0';for(let i=0;i<3;i++){const yy=y-33+(i*19+time*19)%52;ctx.fillRect(x+side*34,Math.round(yy),3,7);}this.pixelOval(ctx,x+side*36,y+25,15+Math.sin(time*1.2)*3,4,'#b3d9cd');}
-  ctx.fillStyle='#d6caaa';ctx.fillRect(x-64,y+53,33,3);ctx.fillRect(x+28,y+53,35,3);ctx.fillStyle='#7c8675';ctx.fillRect(x-20,y+58,40,6);
- },
- pond(ctx,m,cam){const p=m.pond;if(!p)return;const x=p.x*T-cam.x,y=p.y*T-cam.y,w=p.w*T,h=p.h*T;
-  const outline=[[54,0],[w-66,0],[w-66,6],[w-36,6],[w-36,18],[w-18,18],[w-18,42],[w,42],[w,h-48],[w-12,h-48],[w-12,h-24],[w-42,h-24],[w-42,h-6],[w-78,h-6],[w-78,h],[48,h],[48,h-12],[24,h-12],[24,h-30],[6,h-30],[6,h-66],[0,h-66],[0,54],[18,54],[18,24],[36,24],[36,6],[54,6]];
-  const shape=(inset,color)=>{ctx.fillStyle=color;ctx.beginPath();outline.forEach(([px,py],i)=>{const xx=x+inset+px*(w-inset*2)/w,yy=y+inset+py*(h-inset*2)/h;i?ctx.lineTo(Math.round(xx/3)*3,Math.round(yy/3)*3):ctx.moveTo(Math.round(xx/3)*3,Math.round(yy/3)*3);});ctx.closePath();ctx.fill();};shape(-6,'#89947a');shape(0,'#315f65');shape(9,'#3d7274');
-  const t=V.settings.reducedMotion?0:V.Engine.time;ctx.fillStyle='#a4c8b566';for(let i=0;i<12;i++){const xx=x+27+(i*41)%(w-60),yy=y+25+(i*67)%(h-55)+Math.sin(t*.6+i)*3;ctx.fillRect(Math.round(xx),Math.round(yy),i%3===0?21:12,3);}
-  ctx.fillStyle='#294e4955';ctx.fillRect(x+27,y+63,6,h-120);ctx.fillRect(x+66,y+18,w-150,6);
- },
- bench(ctx,x,y,dir){ctx.fillStyle='#20382c50';ctx.fillRect(x-30,y+9,63,6);ctx.fillStyle='#423f35';ctx.fillRect(x-25,y-11,6,27);ctx.fillRect(x+20,y-11,6,27);ctx.fillStyle='#b29669';ctx.fillRect(x-32,y-8,66,9);ctx.fillStyle='#876e4e';ctx.fillRect(x-30,y-24,62,6);ctx.fillRect(x-30,y-16,62,6);ctx.fillStyle='#536354';ctx.fillRect(x-26,y-27,4,21);ctx.fillRect(x+23,y-27,4,21);if(dir===1||dir===2){ctx.fillStyle='#ccb080';ctx.fillRect(x+(dir===1?24:-31),y-29,7,23);}},
- gardenBed(ctx,o,cam){const x=o.x-cam.x,y=o.y-cam.y,size=o.size;const beds=[[5,5],[17,5],[5,11],[17,11]],index=o.meta?.bed??beds.findIndex(([bx,by])=>o.x===bx*T&&o.y===by*T),cared=V.state.watered.includes('bed-'+(index+1)),stage=cared||o.meta?.nursery||index===3?2:index===1?1:0;
-  ctx.fillStyle='#243d2c50';ctx.fillRect(x+9,y+size*.7,size-9,9);ctx.fillStyle='#aa8357';ctx.fillRect(x+6,y+size*.24,size-12,size*.52);ctx.fillStyle=cared?'#604631':'#806347';ctx.fillRect(x+12,y+size*.29,size-24,size*.38);ctx.fillStyle='#c29c6b';ctx.fillRect(x+6,y+size*.66,size-12,9);ctx.fillStyle='#635440';ctx.fillRect(x+6,y+size*.75,9,9);ctx.fillRect(x+size-15,y+size*.75,9,9);
-  for(let row=0;row<2;row++)for(let col=0;col<3;col++){const px=x+23+col*22,py=y+size*.47+row*16;ctx.fillStyle='#476d3d';ctx.fillRect(px,py-(stage+1)*4,3,(stage+1)*6);ctx.fillStyle=cared?'#94bb68':'#79a25d';ctx.fillRect(px-4-stage*2,py-6-stage*4,7+stage*3,4);ctx.fillRect(px+2,py-10-stage*3,5+stage*2,4);if(cared){ctx.fillStyle='#9fc7ba';ctx.fillRect(px+10,py+3,3,2);}}
- },
- ground(m){const canvas=V.GroundCache.create(m, m.width*T, m.height*T);;;const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;const [grass,road,trim]=m.design.palette;ctx.fillStyle=grass;ctx.fillRect(0,0,V.GroundCache.width(canvas),V.GroundCache.height(canvas));
-  if(m.theme==='room'){ctx.fillStyle=road;ctx.fillRect(T,2*T,(m.width-2)*T,(m.height-3)*T);ctx.fillStyle='#ffffff07';if(m.design.floor==='wood'){for(let y=2*T;y<(m.height-1)*T;y+=12)ctx.fillRect(T,y,(m.width-2)*T,1);ctx.fillStyle='#30292335';for(let y=2*T;y<(m.height-1)*T;y+=48)for(let x=T+((y/48)%2)*96;x<(m.width-1)*T;x+=192)ctx.fillRect(x,y,1,48);}else{ctx.fillStyle='#ffffff05';for(let y=2*T;y<(m.height-1)*T;y+=96)ctx.fillRect(T,y,(m.width-2)*T,1);}
-   ctx.fillStyle='#303b35';ctx.fillRect(T,T,(m.width-2)*T,T);ctx.fillStyle=trim;ctx.fillRect(T,2*T-9,(m.width-2)*T,9);
-   for(const x of[3,8,16,21]){ctx.fillStyle='#c9c3a0';ctx.fillRect(x*T,T+12,36,20);ctx.fillStyle='#edf0c245';ctx.fillRect(x*T+7,2*T,22,34);}
-   V.Engine.text(ctx,m.name.toUpperCase(),m.width*T/2,83,'#f0e3c6',14,'center');
-  }else{ctx.fillStyle=road;for(const[x,y,w,h]of m.design.paths||[])ctx.fillRect(x*T,y*T,w*T,h*T);
-   ctx.fillStyle='#bacead12';for(let y=1;y<m.height-1;y++)for(let x=1;x<m.width-1;x++){const path=(m.design.paths||[]).some(([px,py,pw,ph])=>x>=px&&x<px+pw&&y>=py&&y<py+ph);if(!path){ctx.fillRect(x*T+12,y*T+22,6,3);ctx.fillRect(x*T+33,y*T+11,3,3);}}
-   ctx.fillStyle='#1f3c3240';ctx.fillRect(T,T,(m.width-2)*T,6);ctx.fillRect(T,(m.height-1)*T-6,(m.width-2)*T,6);
-  }if(m.id==='hub')V.PlazaArt?.ground(ctx,m);for(const[x,y,w,h,color]of m.design.rugs||[]){ctx.fillStyle=color;ctx.fillRect(x*T,y*T,w*T,h*T);ctx.fillStyle='#f0d4a029';ctx.fillRect(x*T+6,y*T+6,w*T-12,3);ctx.fillRect(x*T+6,(y+h)*T-9,w*T-12,3);ctx.fillRect(x*T+6,y*T+6,3,h*T-12);ctx.fillRect((x+w)*T-9,y*T+6,3,h*T-12);}
-  ctx.fillStyle='#243c35';ctx.fillRect(0,0,V.GroundCache.width(canvas),12);ctx.fillRect(0,V.GroundCache.height(canvas)-12,V.GroundCache.width(canvas),12);ctx.fillRect(0,0,12,V.GroundCache.height(canvas));ctx.fillRect(V.GroundCache.width(canvas)-12,0,12,V.GroundCache.height(canvas));m.cache=canvas;
- },
- prop(ctx,family,index,x,y,size=T){if(family==='world')L.richProp(ctx,index,x,y,size);else if(family==='cozy'){const img=V.Assets.images['cozy-props'];if(img)ctx.drawImage(img,index%8*32,Math.floor(index/8)*32,32,32,Math.round(x),Math.round(y),size,size);}else V.Assets.prop(ctx,index,x,y,size);},
- actionOverlay(ctx,o,x,y){const action=o.action;if(o.character&&!V.Assets.ready(V.Assets.images[o.character]))return;if(o.character==='vitor')return;if(action!=='sitting'&&o.character&&V.Assets.characterCell(o.character)>32)return;if(['reading','writing','drawing'].includes(action)){ctx.fillStyle='#e5d7ae';ctx.fillRect(x-10,y-25,20,10);ctx.fillStyle='#7d715a';ctx.fillRect(x,y-25,2,10);ctx.fillStyle='#b5a783';ctx.fillRect(x-7,y-21,5,1);if(action!=='reading'){ctx.fillStyle='#7cc6b3';ctx.fillRect(x+7+(o.frame%2)*2,y-28,3,10);}}
-  if(action==='watering'){ctx.fillStyle='#88b1a4';ctx.fillRect(x+5,y-24,13,10);ctx.fillRect(x+17,y-22,7,3);if(!V.settings.reducedMotion){ctx.fillStyle='#bbe0db';ctx.fillRect(x+25,y-13+o.frame*2,3,3);}}
-  if(action==='playing'){this.prop(ctx,o.character==='percussionist'?'base':'cozy',o.character==='percussionist'?25:12,x-14,y-38,31);}
-  if(action==='sitting'){ctx.fillStyle='#2d3c47';ctx.fillRect(x-12,y-10,24,5);ctx.fillRect(x-10,y-6,7,5);ctx.fillRect(x+3,y-6,7,5);}
- },
- drawObject(ctx,o,cam,t){const x=o.x-cam.x,y=o.y-cam.y,near=W.nearest?.id===o.id;if(!o.editorDrawing&&(x<-130||x>(V.Engine.canvas?.width||960)+130||y<-140||y>(V.Engine.canvas?.height||540)+130))return;
-  if(this.person(o)){
-   const active=['working','watering','writing','drawing','playing','reading','conversing'].includes(o.action);const seated=['sitting','reading'].includes(o.action)&&o.destination?.object?.scene?.kind==='seat';
-   ctx.fillStyle='#182e2845';ctx.fillRect(x-13,y+4,26,4);const greeting=!o.walking&&(o.action==='greeting'||o.greeting>0&&o.responding>0),row=o.walking?o.dir||0:greeting?5:active&&o.dir!==3?4:o.dir||0,phase=hash(o.character||o.id),rate=active?1.5+(phase%5)*.18:3.5,frame=V.settings.reducedMotion?0:o.walking?o.frame:greeting||active?Math.floor((this.clock+(phase%17)*.29)*rate)%4:0,img=V.Assets.images[o.character];if(!o.walking&&seated&&o.character!=='vitor'&&V.Assets.ready(img)){V.Assets.spritePart(ctx,o.character,frame,row,.75,x-28,y-51,56,42);this.actionOverlay(ctx,{action:'sitting'},x,y);}else V.Assets.sprite(ctx,o.character,x,y,row,frame,56);this.actionOverlay(ctx,o,x,y);
-   const needed=o.type==='npc'&&!o.library&&!o.hub&&!V.state.talked.includes(o.id);if(near||needed)L.marker(ctx,x,y,needed?'!':o.type==='resident'&&L.missions.some(q=>q.owner===o.resident?.id&&!V.state.sideQuests[q.id]?.done)?'◇':'…',t.accent);
-  }else if(o.type==='cozy'){if(o.scene.kind==='conversation'){if(near&&mGroup(o)?.talking)L.marker(ctx,x,y,'…','#dccba0');return;}if(o.scene.kind==='seat'&&W.current.theme!=='room')this.bench(ctx,x,y-12,o.scene.dir);else this.prop(ctx,o.scene.family,o.scene.prop,x-24,y-38);if(near){L.marker(ctx,x,y,o.scene.kind==='seat'?'↓':o.scene.kind==='activity'&&V.state.cozy.activities.includes(o.scene.activity)?'✓':'E','#dccba0');ctx.strokeStyle='#ddcba4';ctx.lineWidth=2;ctx.strokeRect(x-19,y-13,38,20);}}
-  else if(o.type==='reading'){V.Assets.prop(ctx,o.prop,x-18,y-27,36);if(near)L.marker(ctx,x,y,V.state.readings.includes(o.id)?'✓':o.reading.kind==='book'?'L':'N','#e2c997');}
-  else if(o.type==='water'){const cared=V.state.watered.includes(o.id);ctx.fillStyle=cared?'#a3c788':'#98c4c2';ctx.fillRect(x-3,y-19,6,6);ctx.fillRect(x,y-22,3,3);if(near)L.marker(ctx,x,y,cared?'✓':'~','#b8d3b1');}
-  else if(o.type==='animal'){L.drawTownAnimal(ctx,o,x,y);if(near)L.marker(ctx,x,y,'E','#d1c9a0');}
-  else initial.draw(ctx,o,cam,t);
- },
- bubble(ctx,o,cam){if(V.settings.npcChats===false)return;const x=V.clamp(o.x-cam.x,116,(V.Engine.canvas?.width||960)-116),y=Math.max(90,o.y-cam.y-78);
-  if(o.chatSpeaking&&o.bubble&&V.settings.subtitles){const text=o.bubble,words=text.split(' '),lines=[];let line='';for(const word of words){if((line+' '+word).length>33){lines.push(line);line=word;}else line+=(line?' ':'')+word;}if(line)lines.push(line);const shown=lines.slice(0,3),h=shown.length*17+18;
-   ctx.fillStyle='#fff0d4';ctx.fillRect(x-116,y-h,232,h);ctx.fillStyle='#d9c29b';ctx.fillRect(x-116,y-h,232,3);ctx.fillRect(x-3,y,6,5);shown.forEach((s,i)=>V.Engine.text(ctx,s,x-106,y-h+20+i*17,'#31453f',12));
-  }else if(o.iconTime>0&&o.icon!==null){ctx.save();ctx.globalAlpha=V.settings.reducedMotion?1:Math.min(1,o.iconTime/.35);ctx.fillStyle='#fff0d4';ctx.fillRect(x-20,y-37,40,34);ctx.fillRect(x-3,y-3,6,7);const img=V.Assets.images['cozy-icons'];if(img)ctx.drawImage(img,o.icon*32,0,32,32,x-12,y-32,24,24);else{ctx.fillStyle='#56947a';ctx.fillRect(x-6,y-25,12,12);}ctx.restore();}
- },
- render(ctx){const m=W.current;if(!m||!V.state)return;this.ensure();const cam=W.camera,t={accent:m.chapter?V.content.chapters[m.chapter-1].color:'#d1be93'};if(!m.cache)this.ground(m);ctx.imageSmoothingEnabled=false;ctx.fillStyle=m.design.palette[0];ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);V.GroundCache.draw(ctx, m.cache, Math.round(-cam.x), Math.round(-cam.y));m.buildings.forEach(b=>W.drawBuilding(ctx,b,cam));if(m.id==='hub')this.fountain(ctx,cam);this.pond(ctx,m,cam);
-  const draws=m.decor.filter(o=>o.x-cam.x>-o.size&&o.x-cam.x<ctx.canvas.width+70&&o.y-cam.y>-o.size&&o.y-cam.y<ctx.canvas.height+80).map(o=>({y:o.layer==='ground'?-10000:o.y+o.size*.9,kind:'decor',o})).concat(V.RenderView.objects(ctx,m,cam).map(o=>({y:o.y,kind:'object',o})),[{y:V.Player.data.y,kind:'player'}]).sort((a,b)=>a.y-b.y);
-  for(const d of draws){if(d.kind==='player')V.Player.render(ctx);else if(d.kind==='object')this.drawObject(ctx,d.o,cam,t);else{const o=d.o,x=o.x-cam.x,y=o.y-cam.y;if(x>-o.size&&x<ctx.canvas.width+70&&y>-o.size&&y<ctx.canvas.height+80){if(m.id==='garden'&&o.family==='world'&&o.prop===1)this.gardenBed(ctx,o,cam);else if(V.SceneDesign)V.SceneDesign.drawDecor(ctx,o,cam);else this.prop(ctx,o.family,o.prop,x,y,o.size);}}}
-  this.progressDetails(ctx,m,cam);const p=V.Player.data;if(V.PixPresence.following())V.PixPresence.draw(ctx,p,cam);
-  if(V.Game.scanTarget){const o=V.Game.scanTarget;ctx.strokeStyle='#dfc592';ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(p.x-cam.x,p.y-cam.y);ctx.lineTo(o.x-cam.x,o.y-cam.y);ctx.stroke();ctx.setLineDash([]);}V.Engine.drawParticles(ctx,cam);
-  const visible=m.objects.filter(o=>o.x-cam.x>-20&&o.x-cam.x<ctx.canvas.width+20&&o.y-cam.y>40&&o.y-cam.y<ctx.canvas.height+60);visible.filter(o=>o.chatSpeaking).slice(0,1).forEach(o=>this.bubble(ctx,o,cam));visible.filter(o=>!o.chatSpeaking&&o.iconTime>0).slice(0,visible.some(o=>o.chatSpeaking)||m.protestChantVisible?1:2).forEach(o=>this.bubble(ctx,o,cam));
-  if(W.transition>0){ctx.globalAlpha=W.transition;ctx.fillStyle='#23372f';ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.globalAlpha=1;}W.drawMiniMap();
- },
- progressDetails(ctx,m,cam){if(m.chapter&&V.state.completed.includes(m.chapter)){ctx.fillStyle='#d3dcb6';ctx.fillRect(14*T-cam.x,7*T-cam.y,5*T,20);V.Engine.text(ctx,'REGISTROS RESTAURADOS',16.5*T-cam.x,7*T+14-cam.y,'#29453b',10,'center');}
-  if(m.chapter===4&&V.state.sideQuests.newsroom?.done){ctx.fillStyle='#e6d6ad';ctx.fillRect(18*T-cam.x,11*T-cam.y,99,23);V.Engine.text(ctx,'EDIÇÃO REVISADA',18*T+49-cam.x,11*T+16-cam.y,'#355244',10,'center');}
-  if(m.id==='room-5'&&V.state.cozy.proposal?.length){const x=4*T-cam.x,y=5*T-cam.y;ctx.fillStyle='#ead7a9';ctx.fillRect(x,y,150,54);V.Engine.text(ctx,'PROPOSTA DA COMUNIDADE',x+75,y+16,'#395443',9,'center');V.state.cozy.proposal.forEach((n,i)=>V.Engine.text(ctx,['Sombra para a leitura','Livros e tradução','Passagem livre'][n],x+8,y+28+i*10,'#395443',9));}
-  if(m.chapter===5&&V.state.projects.length){ctx.fillStyle='#bfcea4';ctx.fillRect(20*T-cam.x,15*T-cam.y,88,20);V.Engine.text(ctx,V.state.projects.length+' PROJETOS',20*T+44-cam.x,15*T+14-cam.y,'#2f4a3f',10,'center');}
-  if(m.id==='room-6'){const x=14*T-cam.x,y=3*T-cam.y;ctx.fillStyle='#2c5147';ctx.fillRect(x,y,120,48);V.Engine.text(ctx,'ARQUIVO VIVO',x+60,y+17,'#d1d9bb',11,'center');V.Engine.text(ctx,V.state.evidence.length+' registros · '+V.state.readings.length+' leituras',x+60,y+35,'#a3cfb7',10,'center');}
- },
- playerStand(){if(!this.seated)return;const old=this.seated;const m=W.current;m?.reservations.delete(old.anchor);if(V.Player.data){V.Player.data.x=old.from.x;V.Player.data.y=old.from.y;V.Player.data.seated=false;}this.seated=null;},
- playerSit(o){const m=W.current,a=m.anchors.get(o.scene.id);if(this.seated){this.playerStand();V.UI.toast('Você levantou.');return;}const occupied=[...m.reservations].some(([id])=>m.anchors.has(id)&&V.dist(m.anchors.get(id),a)<32)||m.objects.some(n=>this.person(n)&&V.dist(n,a)<26);if(occupied){V.UI.toast('Este lugar está ocupado. Há outro banco por perto.');return;}m.reservations.set(a.id,'player');this.seated={anchor:a.id,from:{x:V.Player.data.x,y:V.Player.data.y}};V.Player.data.x=a.x;V.Player.data.y=a.y;V.Player.data.dir=a.dir;V.Player.data.seated=true;V.Player.data.moving=false;V.Audio.sfx('observe');V.UI.toast(o.scene.text+' Mova-se para levantar.');},
- resident(o){const r=o.resident;if(!V.state.residentTalks.includes(r.id)){initial.resident(o);return;}const candidates=(r.lines||[]).filter(l=>!l.requiresCompleted||V.state.completed.includes(l.requiresCompleted));if(r.repeat&&!candidates.some(l=>l.en===r.repeat.en&&l.pt===r.repeat.pt))candidates.push(r.repeat);const line=candidates[(o.visits=(o.visits||0)+1)%candidates.length];if(!line)return initial.resident(o);initial.resident({...o,resident:{...r,repeat:{...line,speaker:r.character}}});
- },
- service(o){const name=V.content.characters[o.character].name,lines={cora:['I set aside the rehearsal scores. The recorder is ready. Shall we check the music?','Separei as partituras do ensaio. O gravador está pronto. Vamos conferir a música?'],bento:["This label still has no date. Shall we check before completing it?",'Esta etiqueta ainda está sem data. Vamos conferir antes de completar?'],ines:['You can ask about the test. We record each trial and compare the conditions.','Você pode perguntar sobre o teste. Registramos cada tentativa e comparamos as condições.'],celso:['This draft has two sources. We still need to check the caption.','Esse rascunho já tem duas fontes. Ainda falta conferir a legenda.'],luzia:['You can speak at the meeting or leave your idea in writing.','Você pode falar na reunião ou deixar sua ideia por escrito.'],denis:["I’m checking the origin of the records. The catalogue is open for consultation.",'Estou conferindo a origem dos registros. O catálogo fica aberto para consulta.']};const[en,pt]=lines[o.character]||['Let’s check our notes together.','Vamos conferir nossas anotações juntos.'];V.Dialogue.start([{speaker:o.character,en:'Hi! I’m '+name+'. Welcome.',pt:'Oi! Sou '+name+'. Pode chegar.'},{speaker:o.character,en,pt}]);},
- interact(o){this.ensure();if(this.person(o)){o.resumeAction=o.action;o.responding=3;o.dir=Math.abs(V.Player.data.x-o.x)>Math.abs(V.Player.data.y-o.y)?V.Player.data.x<o.x?1:2:V.Player.data.y<o.y?3:0;const g=mGroup(o);if(g)this.endChat(W.current,g);if(o.type==='service'){this.service(o);return true;}}
-  if(o.type!=='cozy')return initial.interact(o);const s=o.scene;if(s.kind==='conversation'){const g=W.current.chats.find(g=>g.id===s.group);if(g)V.Dialogue.start(g.lines.map((pt,i)=>({speaker:g.members[i%2].character,en:g.enLines[i]||'Let’s listen to each other.',pt})));return true;}if(s.kind==='seat'){this.playerSit(o);return true;}if(s.kind==='activity'){this.activity(s.activity);return true;}if(s.kind==='instrument'||s.kind==='listening'){this.music(o);return true;}if(s.kind==='sketch'){this.sketch(o);return true;}if(s.kind==='plant'){this.seeds(o);return true;}if(s.kind==='proposal'){this.proposal(o);return true;}if(s.kind==='shelf'){this.shelf(o);return true;}if(s.kind==='catalog'){L.journal('readings');return true;}
-  this.showScene(o);return true;
- },
- sourceLinks(ids){return(ids||[]).map(id=>V.content.sources.find(s=>s.id===id)).filter(Boolean).map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.name)} ↗</a>`).join('');},
- showScene(o){const s=o.scene,done=V.state.cozy.activities.length;
-  let extra='';if(s.kind==='food')extra='<p>A história do ofício envolve saberes, pessoas e contextos. Viviane é uma moradora ficcional; as fontes sobre as baianas estão no arquivo.</p>';
-  if(s.kind==='editorial'&&(V.state.sideQuests.newsroom?.done||V.state.flags.networkSources))extra='<div class="feedback">✓ A edição foi revisada. A manchete registra o que foi confirmado e o que ainda depende de atualização.</div>';
-  if(s.kind==='backup')extra=`<div class="feedback">${V.state.evidence.length} registros · ${V.state.readings.length} leituras · ${done} atividades culturais no caderno.</div>`;
-  if(W.current.id==='garden')extra+=`<div class="feedback">${V.state.watered.length}/3 canteiros cuidados · ${V.state.cozy.seedLabels.length}/3 etiquetas conferidas.</div>`;
-  V.UI.modal(s.title,'UM LUGAR PARA EXPLORAR',`<article class="cozy-paper"><p>${esc(s.text)}</p>${extra}</article>`,`<button id="cozy-close" class="primary">Voltar ao mundo</button><button id="cozy-notebook" class="secondary">Abrir caderno</button>`);V.$('#cozy-close').onclick=()=>V.UI.close();V.$('#cozy-notebook').onclick=()=>this.journal();
- },
- shelf(o){const readings=V.learning.readings.filter(r=>W.current.id==='library'||r.chapter===W.current.chapter);V.UI.modal(o.scene.title,'INDICAÇÕES DE LEITURA',`<p>${esc(o.scene.text)}</p><div class="two-cols">${readings.map(r=>`<button class="book-card" data-cozy-read="${esc(r.id)}"><small>${esc(r.theme)}</small><strong>${esc(r.title)}</strong><span>${V.state.readings.includes(r.id)?'✓ No caderno':'Abrir leitura'}</span></button>`).join('')}</div>`);V.$$('[data-cozy-read]').forEach(b=>b.onclick=()=>L.read(b.dataset.cozyRead));},
- music(o){let timbre=V.state.cozy.music[o.id]?.timbre||'triangle';const notes=[60,64,67,64];const show=()=>{V.UI.modal(o.scene.title,'FRASE ORIGINAL DO JOGO',`<p>${esc(o.scene.text)}</p><div class="cozy-sequence">${notes.map((n,i)=>`<span>${i+1}<small>${['dó','mi','sol','mi'][i]}</small></span>`).join('')}</div><div class="row"><button class="secondary" data-timbre="triangle">Timbre suave</button><button class="secondary" data-timbre="sine">Timbre arredondado</button></div><p class="note">Compare os timbres com a mesma sequência. A frase não é uma gravação de Pixinguinha ou Dona Ivone Lara.</p><div id="cozy-music-feedback" aria-live="polite"></div>`,`<button id="cozy-play" class="primary">Ouvir frase</button><button id="cozy-music-save" class="secondary">Guardar arranjo</button>`);
-   V.$$('[data-timbre]').forEach(b=>b.onclick=()=>{timbre=b.dataset.timbre;V.$('#cozy-music-feedback').textContent='Timbre escolhido. Experimente ouvir a mesma frase.';});V.$('#cozy-play').onclick=()=>{V.Audio.unlock();notes.forEach((n,i)=>V.Audio.note(n,.24,timbre,.25,'sfx',i*.32));V.$('#cozy-music-feedback').textContent='1 dó → 2 mi → 3 sol → 4 mi. Você também pode comparar pela sequência escrita.';};V.$('#cozy-music-save').onclick=()=>{V.state.cozy.music[o.id]={timbre,notes};V.Save.save();V.UI.close();V.UI.toast('Seu arranjo ficou no caderno do bairro.');};};show();},
- sketch(o){const choices=['Duas pessoas conversando perto de um banco','Uma ave pousada ao lado do caminho','Uma pessoa lendo à sombra'];let selected=0;const show=()=>{V.UI.modal(o.scene.title,'UMA CENA ORIGINAL DO BAIRRO',`<p>${esc(o.scene.text)}</p><div class="cozy-sketch"><canvas id="cozy-sketch-preview" width="400" height="180" aria-label="${esc(choices[selected])}"></canvas><small>${esc(choices[selected])}</small></div><div class="stack">${choices.map((t,i)=>`<button class="choice-button ${selected===i?'selected':''}" data-sketch="${i}">${esc(t)}</button>`).join('')}</div><p class="note">Este desenho é uma criação do jogo. As leituras de Rosana Paulino e Maria Auxiliadora apresentam referências reais, com fontes.</p>`,`<button id="cozy-sketch-save" class="primary">Guardar observação</button>`);this.drawSketch(V.$('#cozy-sketch-preview').getContext('2d'),selected);V.$$('[data-sketch]').forEach(b=>b.onclick=()=>{selected=+b.dataset.sketch;show();});V.$('#cozy-sketch-save').onclick=()=>{const id=o.id+':'+selected;if(!V.state.cozy.sketches.includes(id))V.state.cozy.sketches.push(id);V.Save.save();V.UI.close();V.UI.toast('Cena registrada. Você pode voltar e escolher outra.');};};show();},
- seeds(o){const labels=['Canteiro 1','Canteiro 2','Canteiro 3'];V.UI.modal(o.scene.title,'CONFERIR E ORGANIZAR',`<p>${esc(o.scene.text)}</p><div class="stack">${labels.map((t,i)=>`<button class="choice-button" data-seed-label="${i}">${V.state.cozy.seedLabels.includes(i)?'✓ ':''}${t}: registrar nome e turno de cuidado</button>`).join('')}</div><p class="note">As etiquetas distinguem os canteiros. Aisha organiza a rega na missão da comunidade.</p>`,`<button id="cozy-seed-close" class="primary">Guardar etiquetas</button>`);V.$$('[data-seed-label]').forEach(b=>b.onclick=()=>{const n=+b.dataset.seedLabel;if(!V.state.cozy.seedLabels.includes(n))V.state.cozy.seedLabels.push(n);b.textContent='✓ '+labels[n]+': etiqueta conferida';V.Audio.sfx('collect');});V.$('#cozy-seed-close').onclick=()=>{V.Save.save();V.UI.close();};},
- proposal(o){let chosen=new Set(V.state.cozy.proposal||[]);V.UI.modal(o.scene.title,'PARTICIPAÇÃO POR ESCRITO',`<p>${esc(o.scene.text)}</p><div class="stack">${['Sombra para a roda de leitura','Livros e apoio de tradução','Passagem livre e acessível'].map((t,i)=>`<button class="choice-button ${chosen.has(i)?'selected':''}" aria-pressed="${chosen.has(i)}" data-proposal="${i}">${chosen.has(i)?'✓ ':''}${esc(t)}</button>`).join('')}</div><div id="cozy-proposal-feedback" aria-live="polite"></div>`,`<button id="cozy-proposal-save" class="primary">Registrar proposta</button>`);V.$$('[data-proposal]').forEach(b=>b.onclick=()=>{chosen.has(+b.dataset.proposal)?chosen.delete(+b.dataset.proposal):chosen.add(+b.dataset.proposal);b.classList.toggle('selected',chosen.has(+b.dataset.proposal));b.setAttribute('aria-pressed',String(chosen.has(+b.dataset.proposal)));b.textContent=(chosen.has(+b.dataset.proposal)?'✓ ':'')+['Sombra para a roda de leitura','Livros e apoio de tradução','Passagem livre e acessível'][+b.dataset.proposal];V.$('#cozy-proposal-feedback').textContent=[...chosen].map(i=>['A roda de leitura terá uma área de sombra.','A proposta inclui livros e apoio para tradução.','A circulação deve permanecer livre para todos.'][i]).join(' ');});V.$('#cozy-proposal-save').onclick=()=>{if(!chosen.size){V.$('#cozy-proposal-feedback').textContent='Escolha pelo menos uma contribuição para registrar.';return;}V.state.cozy.proposal=[...chosen];V.Save.save();V.UI.close();V.UI.toast('A proposta foi guardada para a conversa da comunidade.');};},
- activity(id){const a=V.cozyContent.activities.find(a=>a.id===id);if(!a)return;let correct=false;
-  V.UI.modal(a.title,'DESCOBERTA CULTURAL · SEM CRONÔMETRO',`<article class="cozy-paper"><p>${esc(a.context)}</p><h3>${esc(a.prompt)}</h3></article><div class="stack">${a.options.map((t,i)=>`<button class="choice-button" data-cozy-answer="${i}">${String.fromCharCode(65+i)}. ${esc(t)}</button>`).join('')}</div><div id="cozy-activity-feedback" aria-live="polite"></div><div class="reader-origin">${this.sourceLinks(a.sourceIds)}</div>`,`<button id="cozy-activity-reading" class="secondary">Consultar leitura</button><button id="cozy-activity-save" class="primary" disabled>Guardar descoberta</button>`);
-  V.$$('[data-cozy-answer]').forEach(b=>b.onclick=()=>{correct=+b.dataset.cozyAnswer===a.correct;V.$('#cozy-activity-feedback').innerHTML=`<div class="feedback ${correct?'':'error'}"><strong>${correct?'✓ Vamos registrar.':'Compare novamente com o contexto.'}</strong><p>${esc(a.explanation)}</p></div>`;V.$('#cozy-activity-save').disabled=!correct;V.Audio.sfx(correct?'correct':'wrong');});
-  V.$('#cozy-activity-reading').onclick=()=>{const r=V.learning.readings.find(r=>r.id===a.readingId);if(r)L.read(r.id,0,()=>this.activity(id));};V.$('#cozy-activity-save').onclick=()=>{if(!correct)return;if(!V.state.cozy.activities.includes(id))V.state.cozy.activities.push(id);V.Save.log('descoberta cultural',a.title);V.Save.save();V.UI.close();V.UI.toast('Descoberta guardada no caderno do bairro.');};
- },
- drawSketch(ctx,selected){ctx.imageSmoothingEnabled=false;ctx.fillStyle='#547b5b';ctx.fillRect(0,0,400,180);ctx.fillStyle='#baa278';ctx.fillRect(0,132,400,48);this.prop(ctx,'base',0,18,5,110);this.prop(ctx,'base',4,157,106,80);if(selected===0){V.Assets.sprite(ctx,'elisa',168,118,2,0,76);V.Assets.sprite(ctx,'nara',236,120,1,0,70);}else if(selected===1){const img=V.Assets.images.animals;if(img)ctx.drawImage(img,0,3*32,32,32,190,83,58,58);this.prop(ctx,'cozy',39,262,103,52);}else{V.Assets.sprite(ctx,'amara',198,120,0,0,78);this.actionOverlay(ctx,{action:'reading'},198,120);}},
- journal(){this.ensure();const s=V.state.cozy;V.UI.modal('Caderno do bairro','PESSOAS, LUGARES E DESCOBERTAS',this.nav('neighborhood')+`<div class="notebook-summary"><strong>${s.activities.length}/${V.cozyContent.activities.length} descobertas culturais</strong><span>${s.sketches.length} cenas · ${Object.keys(s.music).length} arranjos · ${s.seedLabels.length}/3 etiquetas</span></div><div class="two-cols">${V.cozyContent.activities.map(a=>`<article class="card"><small>${esc(L.location(a.map))}</small><h3>${s.activities.includes(a.id)?'✓ ':''}${esc(a.title)}</h3><p>${esc(a.en)}</p><small>${esc(a.pt)}</small><p>${s.activities.includes(a.id)?'Descoberta registrada.':'Encontre a atividade no ambiente indicado.'}</p></article>`).join('')}</div>${s.proposal?'<div class="feedback">Sua proposta escrita está registrada para a assembleia.</div>':''}`);L.bindNav();},
- nav(tab){return initial.nav(tab).replace('</nav>',`<button data-notebook-tab="neighborhood" class="${tab==='neighborhood'?'active':''}">Bairro vivo</button></nav>`);},
- onLoad(){this.seated=null;const m=W.current;if(!m)return;m.reservations.clear();for(const o of m.objects){o.bubble='';o.chatSpeaking=false;o.iconTime=0;o.responding=0;o.chatReady=false;o.route=[];o.reserved=null;if(['walking','conversing'].includes(o.action)){o.action='waiting';o.destination=null;o.taskTime=2+hash(o.id)%7;}else if(this.person(o)&&o.destination&&V.dist(o,o.destination)<9)this.reserve(m,o,o.destination);}for(const g of m.chats){g.phase='rest';g.talking=false;g.clock=0;g.wait=8+hash(g.id)%12;}if(V.state&&!V.state.cozy.visited.includes(m.id))V.state.cozy.visited.push(m.id);
-  const people=m.objects.filter(o=>this.person(o));if(W.collides(V.Player.data.x,V.Player.data.y,11)||people.some(o=>V.dist(o,V.Player.data)<12+12*(o.visualScale||1))){const p=this.safe(m,V.Player.data.x/T-.5,V.Player.data.y/T-.5,people);V.Player.data.x=p.x*T+24;V.Player.data.y=p.y*T+24;}
- }
-};
-function mGroup(o){return(o.group||o.scene?.group)&&W.current.chats.find(g=>g.id===(o.group||o.scene?.group));}
-L.initContent=()=>V.Cozy.initContent();L.ensure=()=>V.Cozy.ensure();L.build=()=>V.Cozy.build();L.update=dt=>V.Cozy.update(dt);L.ground=m=>V.Cozy.ground(m);L.render=ctx=>V.Cozy.render(ctx);L.drawObject=(...args)=>V.Cozy.drawObject(...args);L.interact=o=>V.Cozy.interact(o);L.resident=o=>V.Cozy.resident(o);L.nav=tab=>V.Cozy.nav(tab);L.journal=tab=>tab==='neighborhood'?V.Cozy.journal():initial.journal(tab);
-W.load=function(id,pos=null){V.Cozy.playerStand();initial.load(id,pos);V.Cozy.onLoad();};W.drawFountain=(ctx,cam)=>V.Cozy.fountain(ctx,cam);W.drawBuilding=(...args)=>V.Cozy.drawBuilding(...args);
-W.interactables=function(){return this.current.objects.filter(o=>o.scene?.kind!=='conversation'||mGroup(o)?.talking);};
-V.Player.nearest=function(){if(!this.data||!W.current)return null;let closest=null,distance=Infinity;for(const o of W.interactables()){const d=V.dist(this.data,o);if(d<(o.interactionRange||80)&&d<distance){closest=o;distance=d;}}return closest;};
-V.Player.update=function(dt){if(V.Cozy.seated){const axis=V.Input.axis();if(axis.x||axis.y)V.Cozy.playerStand();else{this.data.moving=false;this.data.frame=0;return;}}initial.playerUpdate(dt);};V.Player.render=function(ctx){if(this.data?.seated){const p=this.data,x=p.x-W.camera.x,y=p.y-W.camera.y,img=V.Assets.images[V.state.character];ctx.fillStyle='#182e2845';ctx.fillRect(x-13,y+4,26,4);if(img)V.Assets.spritePart(ctx,V.state.character,0,p.dir,.75,x-28,y-51,56,42);V.Cozy.actionOverlay(ctx,{action:'sitting'},x,y);}else initial.playerRender(ctx);};
-V.Assets.load=async function(){const ids=['amara','tomas','elisa','andre','viviane','rui','jamila','otavio','cora','bento','ines','celso','luzia','denis','maite','aline','paulo','nara','dora','vitor','luan','selma','enzo'];const entries=ids.flatMap(id=>[[id,'assets/characters/'+id+'.png'],[id+'-portrait','assets/characters/'+id+'-portrait.png']]).concat([['cozy-props','assets/tilesets/cozy-props.png'],['cozy-icons','assets/ui/cozy-icons.png']]);await Promise.all([initial.assets(),document.fonts?.load('16px "VOICES Sans"').catch(()=>{}),this.loadEntries(entries)]);return this.errors;};
-})();
-
+})(function() {
+  /* VOICES v1.2: authored scene composition and finite, contextual routines. */
+  (function() {
+    "use strict";
+    const V = window.V, T = 48, L = V.Living, W = V.World;
+    const initial = { build: L.build.bind(L), content: L.initContent.bind(L), ensure: L.ensure.bind(L), interact: L.interact.bind(L), draw: L.drawObject.bind(L), resident: L.resident.bind(L), journal: L.journal.bind(L), nav: L.nav.bind(L), load: W.load.bind(W), assets: V.Assets.load.bind(V.Assets), playerUpdate: V.Player.update.bind(V.Player), playerRender: V.Player.render.bind(V.Player) };
+    const serviceInfo = { cora: ["Cora", "T\xE9cnica de som"], bento: ["Bento", "Auxiliar de curadoria"], ines: ["In\xEAs", "Pesquisadora da oficina"], celso: ["Celso", "Editor do jornal"], luzia: ["Luzia", "Facilitadora da assembleia"], denis: ["Denis", "T\xE9cnico de cataloga\xE7\xE3o"], maite: ["Mait\xEA", "Moradora da horta"] };
+    const hash = (s) => Array.from(s).reduce((n, c) => n * 31 + c.charCodeAt(0) >>> 0, 7);
+    const esc = V.escape;
+    V.Cozy = {
+      ready: false,
+      clock: 0,
+      seated: null,
+      layouts: V.cozyLayouts,
+      ensure() {
+        initial.ensure();
+        if (!V.state) return;
+        const old = V.state.cozy;
+        if (!old || typeof old !== "object" || Array.isArray(old)) V.state.cozy = {};
+        const s = V.state.cozy;
+        ["activities", "sketches", "seedLabels", "visited"].forEach((k) => {
+          if (!Array.isArray(s[k])) s[k] = [];
+          s[k] = [...new Set(s[k].filter((x) => k === "seedLabels" ? Number.isInteger(x) && x >= 0 && x < 3 : typeof x === "string" && x.length < 100))].slice(0, 100);
+        });
+        if (!s.music || typeof s.music !== "object" || Array.isArray(s.music)) s.music = {};
+        if (s.proposal) s.proposal = Array.isArray(s.proposal) ? s.proposal.filter((x) => Number.isInteger(x) && x >= 0 && x < 3).slice(0, 3) : [];
+      },
+      initContent() {
+        initial.content();
+        if (this.ready) return;
+        this.ready = true;
+        const data = V.cozyContent || {};
+        (data.sources || []).forEach((s) => {
+          if (!V.content.sources.some((r) => r.id === s.id)) V.content.sources.push(s);
+        });
+        (data.readings || []).forEach((r) => {
+          if (!V.learning.readings.some((x) => x.id === r.id)) V.learning.readings.push(r);
+        });
+        (data.questions || []).forEach((q) => {
+          if (!V.learning.questions.some((x) => x.id === q.id)) V.learning.questions.push(q);
+          if (!V.content.questions.some((x) => x.id === q.id)) V.content.questions.push(q);
+        });
+        (data.residents || []).forEach((r) => {
+          if (!V.learning.residents.some((x) => x.id === r.id)) V.learning.residents.push(r);
+          V.content.characters[r.character] = { name: r.name, role: r.role, quote: r.lines?.[0]?.pt || "", accent: "#dab989" };
+        });
+        Object.entries(serviceInfo).forEach(([id, [name, role]]) => {
+          V.content.characters[id] = { name, role, quote: { cora: "A partitura e o programa precisam mostrar quem fez cada parte.", bento: "Uma data precisa de registro antes de entrar na legenda.", ines: "Tentativa, condi\xE7\xE3o e resultado ficam juntos no caderno.", celso: "A corre\xE7\xE3o explica a mudan\xE7a e preserva a vers\xE3o anterior.", luzia: "Uma proposta escrita tamb\xE9m participa da reuni\xE3o.", denis: "A c\xF3pia deve continuar ligada \xE0 origem do documento.", maite: "A etiqueta ajuda a pr\xF3xima pessoa a continuar o cuidado." }[id], accent: "#c5d6ab" };
+        });
+      },
+      build() {
+        initial.build();
+        for (const m of Object.values(W.maps)) this.compose(m);
+      },
+      safe(m, x, y, avoid = null) {
+        const ox = x, oy = y;
+        for (let r = 0; r < 14; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+          if (r && Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+          const p = { x: Math.round(ox + dx), y: Math.round(oy + dy) };
+          if (!L.blocked(m, p.x * T + 24, p.y * T + 24, 10) && (!avoid || avoid.every((o) => Math.hypot(o.x - p.x * T - 24, o.y - p.y * T - 24) > 15 + 16 * (o.visualScale || 1)))) return p;
+        }
+        return { x: Math.floor(m.width / 2), y: m.height - 4 };
+      },
+      compose(m) {
+        const d = this.layouts[m.id];
+        if (!d) return;
+        m.design = d;
+        m.cache = null;
+        m.ambientTime = hash(m.id) % 9;
+        m.decor = [];
+        m.zones = [];
+        m.chats = [];
+        m.anchors = new Map();
+        m.reservations = new Map();
+        m.bubbleBudget = 0;
+        this.remodelBuildings(m);
+        m.objects = m.objects.filter((o) => o.type !== "ambient");
+        m.solids = m.theme === "room" ? [{ x: 0, y: 0, w: m.width * T, h: T * 2 }, { x: 0, y: 0, w: T, h: m.height * T }, { x: (m.width - 1) * T, y: 0, w: T, h: m.height * T }] : m.buildings.map((b) => ({ x: b.x, y: b.y, w: b.w, h: b.h }));
+        if (m.id === "hub") m.solids.push({ x: 14 * T, y: 9 * T, w: 4 * T, h: 3 * T });
+        if (d.pond) {
+          m.pond = d.pond;
+          m.solids.push({ x: d.pond.x * T, y: d.pond.y * T, w: d.pond.w * T, h: d.pond.h * T });
+        }
+        (d.decor || []).forEach((row, index) => {
+          if (V.SceneDesign) {
+            V.SceneDesign.addDecor(m, row, index);
+            return;
+          }
+          const [family, prop, x, y, size = 1, solid = false] = row;
+          m.decor.push({ family, prop, x: x * T, y: y * T, size: T * size });
+          const furniture = family === "cozy" && [0, 1, 3, 4, 7, 8, 12, 16, 20, 23, 24, 27, 29, 30, 31, 32, 35, 45, 46].includes(prop);
+          if (solid || furniture) m.solids.push({ x: x * T + 10, y: y * T + size * T * 0.45, w: size * T - 20, h: size * T * 0.5 - 3 });
+        });
+        const service = m.objects.find((o) => o.library);
+        if (service && d.service && d.service !== "librarian") {
+          service.type = "service";
+          service.character = d.service;
+          service.label = "Conversar com " + serviceInfo[d.service][0];
+          service.service = true;
+        }
+        const places = { amara: ["library", 4, 12], tomas: ["room-3", 6, 11], elisa: ["park", 9, 7], andre: ["room-1", 6, 8], viviane: ["market", 6, 14], rui: ["room-2", 6, 11], jamila: ["chapter-5", 7, 13], otavio: ["room-4", 6, 11] };
+        // New residents were initially created by the compatible expansion builder.
+        m.objects = m.objects.filter((o) => !(o.resident && places[o.resident.id] && places[o.resident.id][0] !== m.id));
+        Object.entries(places).filter(([, a]) => a[0] === m.id).forEach(([id, [, x, y]]) => {
+          if (!m.objects.some((o) => o.resident?.id === id)) {
+            const r = V.learning.residents.find((r2) => r2.id === id);
+            if (r) W.object(m, "resident", "resident-" + id, x, y, "Conversar com " + r.name, { character: r.character, resident: r, homeMap: m.id });
+          }
+        });
+        if (m.id === "garden") {
+          const [name, role] = serviceInfo.maite;
+          const r = { id: "maite", character: "maite", name, role, lines: [{ speaker: "maite", en: "I organised the seeds. Would you like to check their labels with me?", pt: "Organizei as sementes. Quer conferir as etiquetas comigo?" }, { speaker: "maite", en: "Aisha looks after the watering, and I prepare the next shift.", pt: "Aisha cuida da rega, e eu preparo o pr\xF3ximo turno." }], repeat: { speaker: "maite", en: "After putting away the tools, we can rest.", pt: "Depois de guardar as ferramentas, a gente pode descansar." } };
+          W.object(m, "resident", "resident-maite", 19, 15, "Conversar com Mait\xEA", { character: "maite", resident: r });
+        }
+        let reading = 0, note = 0, other = 0;
+        for (const o of m.objects) {
+          let pos = d.positions?.[o.id];
+          if (!pos && o.type === "reading") {
+            if (m.id === "library") {
+              const n = reading++, xs = [3, 5, 7, 9, 15, 17, 19, 21];
+              pos = [xs[n % 8], 5 + Math.floor(n / 8) * 4];
+            } else if (m.theme === "room") {
+              pos = [[8, 6], [19, 6], [8, 12], [19, 13], [4, 13], [16, 13]][reading++ % 6];
+            } else pos = [[7, 11], [21, 11], [9, 17], [22, 15]][note++ % 4];
+          }
+          if (!pos && m.theme === "room") {
+            if (o.type === "exit") pos = [12, 15.5];
+            else if (o.library || o.type === "service") pos = [13, 5];
+            else if (o.type === "terminal") pos = [3, 6];
+            else if (o.type === "sign") pos = [20, 6];
+            else if (o.type === "side") pos = [8, 14];
+            else if (o.type === "bonus") pos = [19, 14];
+            else if (o.type === "history") pos = [20, 13];
+          }
+          if (!pos && o.type === "workbench") pos = [19 + other++ % 2, 15];
+          if (pos) {
+            o.x = pos[0] * T + 24;
+            o.y = pos[1] * T + 24;
+          }
+        }
+        for (const s of d.scenes || []) this.addScene(m, s);
+        const allPeople = m.objects.filter((o) => this.person(o));
+        for (const o of allPeople) {
+          const p = this.safe(m, o.x / T - 0.5, o.y / T - 0.5, allPeople.filter((x) => x !== o));
+          o.x = p.x * T + 24;
+          o.y = p.y * T + 24;
+        }
+        for (const [id, x, y, state, duration, dir] of d.anchors || []) this.addAnchor(m, id, x * T + 24, y * T + 24, state, duration, dir);
+        for (const o of m.objects) {
+          if (o.type === "animal") this.prepareAnimal(m, o);
+          else if (this.person(o)) this.preparePerson(m, o);
+        }
+        this.addNeighbors(m);
+        this.setupChat(m);
+        this.addActivities(m);
+        // Stable approachable positions for portable quest and reading objects.
+        for (const o of m.objects.filter((o2) => !this.person(o2) && o2.type !== "animal" && o2.type !== "cozy")) {
+          if (L.blocked(m, o.x, o.y, 8) && !["door", "fountain"].includes(o.type)) {
+            const p = this.safe(m, o.x / T - 0.5, o.y / T - 0.5);
+            o.x = p.x * T + 24;
+            o.y = p.y * T + 24;
+          }
+        }
+      },
+      person(o) {
+        return ["npc", "resident", "service", "ambient"].includes(o.type);
+      },
+      addAnchor(m, id, x, y, state = "observing", duration = 12, dir = 0, object = null) {
+        const p = this.safe(m, x / T - 0.5, y / T - 0.5), clear = !L.blocked(m, x, y, 10);
+        const a = { id, x: clear ? x : p.x * T + 24, y: clear ? y : p.y * T + 24, state, duration, dir, object };
+        m.anchors.set(id, a);
+        return a;
+      },
+      addScene(m, s) {
+        const o = { type: "cozy", id: "cozy-" + m.id + "-" + s.id, x: s.x * T + 24, y: s.y * T + 24, label: s.title, scene: s };
+        m.objects.push(o);
+        const builtInSolid = ["seat", "shelf", "catalog", "food", "instrument", "test", "sketch", "editorial", "backup", "proposal", "labels"].includes(s.kind) || s.kind === "exhibit" && (s.family === "expanded" || s.family === "neighborhood" && V.SceneDesign?.asset(s.family, s.prop)?.solidFootprint);
+        if (!V.SceneDesign?.hostDecor(m.design, s) && (s.solid ?? (!s.hostDecor && builtInSolid))) {
+          const z = T * (s.size || 1);
+          if (V.SceneDesign) V.SceneDesign.footprints(s.family, s.prop, o.x - z / 2, o.y - z * 0.79, z, true, o.id).forEach((f) => m.solids.push(s.rotation || s.flip ? V.SceneDesign.rotateBox(f, o.x, o.y - z * 0.29, s.rotation || 0, s.flip) : f));
+          else m.solids.push({ x: o.x - 16, y: o.y - 22, w: 32, h: 25 });
+        }
+        const states = { seat: "sitting", shelf: "reading", notice: "observing", instrument: "playing", listening: "listening", food: "working", plant: "working", test: "working", sketch: "drawing", editorial: "writing", exhibit: "observing", proposal: "writing", backup: "working", catalog: "writing", labels: "working" };
+        this.addAnchor(m, s.id, o.x, o.y + (s.kind === "seat" ? 26 : T), states[s.kind] || "observing", s.kind === "seat" ? 18 : 12, s.kind === "seat" ? s.dir : 3, o);
+      },
+      preparePerson(m, o) {
+        const n = hash(o.id);
+        o.home = { x: o.x, y: o.y };
+        o.dir = 0;
+        o.frame = 0;
+        o.walking = false;
+        o.walkClock = 0;
+        o.speed = 23 + n % 9;
+        o.route = [];
+        o.wait = 2 + n % 7;
+        o.taskTime = 3 + n % 10;
+        o.action = "waiting";
+        o.taskIndex = n % 3;
+        o.nextIcon = 5 + n % 18;
+        o.icon = null;
+        o.iconTime = 0;
+        o.greeting = 0;
+        o.blockedTime = 0;
+        if (o.id === "resident-gardener") o.taskIndex = 1;
+        const ids = m.design.routines?.[o.id];
+        o.tasks = (ids || [...m.anchors.keys()].slice(0, 3)).filter((id) => m.anchors.has(id));
+        if (o.character === "pix") {
+          o.tasks = ["observe-water"];
+          o.stationary = true;
+        }
+        if (["aline", "elder", "scientist", "vitor"].includes(o.character)) {
+          o.settled = true;
+          o.settledTask = o.tasks[0];
+        }
+        // Every person has a stationary home fallback; no arbitrary patrol rectangle.
+        const home = this.addAnchor(m, "home-" + o.id, o.x, o.y, o.character === "pix" ? "observing" : "waiting", 14, o.dir);
+        o.tasks.push(home.id);
+        o.waypoints = o.tasks.map((id) => m.anchors.get(id));
+      },
+      prepareAnimal(m, o) {
+        const n = hash(o.id), p = m.pond;
+        o.speed = o.species === 5 ? 25 : o.species === 4 ? 12 : 17;
+        o.dir = 0;
+        o.animalFacing = 2;
+        o.frame = 0;
+        o.route = [];
+        o.walkClock = 0;
+        o.walking = false;
+        o.wait = 2 + n % 10;
+        o.taskTime = 9 + n % 11;
+        o.taskIndex = 0;
+        o.action = o.species === 1 ? "sleeping" : "observing";
+        o.iconTime = 0;
+        o.nextIcon = 15;
+        const spots = m.id === "park" ? o.species === 0 ? [[8, 18], [9, 16], [7, 18]] : o.species === 2 ? [[10, 11], [11, 13], [8, 12]] : o.species === 3 ? [[7, 7], [9, 7], [8, 10]] : o.species === 5 ? [[22, 17], [21, 15], [24, 14]] : [[18, 6], [21, 6], [21, 8], [18, 8]] : m.id === "library" ? [[5, 13], [7, 13]] : m.id === "garden" ? [[8, 5], [9, 8], [18, 12]] : m.id === "market" ? [[10, 16], [11, 14], [10, 12]] : [[10, 15], [11, 16], [12, 16]];
+        o.waypoints = spots.map(([x, y], i) => {
+          if (o.species === 4 && p) return { x: x * T + 24, y: y * T + 24, state: "swimming", duration: 3, dir: 0, id: "animal-" + i };
+          const avoid = m.objects.filter((n2) => n2 !== o && (n2.type === "animal" || this.person(n2))), s = this.safe(m, x, y, i === 0 ? avoid : null);
+          return { x: s.x * T + 24, y: s.y * T + 24, state: o.species === 1 ? "sleeping" : o.species === 3 ? "perching" : o.species === 5 ? "observing" : "resting", duration: o.species === 1 ? 24 : 8, id: "animal-" + i };
+        });
+        o.x = o.waypoints[0].x;
+        o.y = o.waypoints[0].y;
+        o.home = { x: o.x, y: o.y };
+        if (o.species === 4) {
+          o.behavior = "nada no lago entre pequenas pausas";
+          o.interactionRange = 126;
+        }
+        if (o.species === 1) o.behavior = "descansa em um canto tranquilo";
+        if (o.species === 0) o.behavior = "fareja o caminho perto de quem cuida dele";
+      },
+      setupChat(m) {
+        const actors = m.objects.filter((o) => this.person(o) && o.character !== "pix");
+        if (actors.length < 2) return;
+        const residents = actors.filter((o) => o.type === "resident"), members = residents.length >= 2 ? residents.slice(0, 2) : residents.length ? [residents[0], actors.find((o) => o !== residents[0])] : actors.slice(0, 2);
+        const source = (V.cozyContent?.conversations || []).find((g2) => g2.map === m.id);
+        const supplied = { hub: ["Guardei um lugar perto da fonte.", "Depois podemos passar na biblioteca.", "Combinado. Vou terminar essa anota\xE7\xE3o."], library: ["Esse livro voltou hoje.", "Ent\xE3o vou deixar uma indica\xE7\xE3o no caderno.", "Me conta qual parte chamou sua aten\xE7\xE3o."], park: ["Olha o passarinho ali!", "Vou anotar onde ele pousou.", "Boa. Depois a gente compara as observa\xE7\xF5es."], market: ["Deixei as etiquetas perto do tabuleiro.", "Assim cada comida mant\xE9m seu nome e contexto.", "Obrigada! J\xE1 d\xE1 para receber o pr\xF3ximo grupo."], garden: ["Esse canteiro j\xE1 recebeu \xE1gua.", "Eu organizo as sementes para o pr\xF3ximo turno.", "Depois a gente descansa ali."] };
+        const useSource = source && !["hub", "garden", "library"].includes(m.id);
+        const lines = useSource ? source.lines : supplied[m.id] || ["Vamos conferir este registro juntos?", "Sim. Tamb\xE9m anotei uma pergunta.", "Depois a gente compara com a fonte."];
+        const enLines = useSource ? source.enLines : ["Let\u2019s look together.", "I have a question too.", "We can compare our notes."];
+        const a = members[0].waypoints.find((a2) => a2.object?.scene?.kind === "seat") || members[0].waypoints[0];
+        const [mx, my] = m.design.meeting || [a.x / T - 0.5, a.y / T - 0.5], otherPeople = actors.filter((o) => !members.includes(o));
+        const meeting = this.safe(m, mx, my, otherPeople);
+        const spots = [meeting, this.safe(m, meeting.x + 1, meeting.y, otherPeople.concat([{ x: meeting.x * T + 24, y: meeting.y * T + 24 }]))];
+        const g = { id: "conversation-" + m.id, members, lines, enLines, clock: 0, wait: 14 + hash(m.id) % 14, phase: "rest", line: -1, talking: false };
+        members.forEach((o, i) => {
+          o.chat = { ...g, speakers: members.map((x) => x.character) };
+          o.group = g.id;
+          o.member = i;
+          g["anchor" + i] = this.addAnchor(m, "meeting-" + i, spots[i].x * T + 24, spots[i].y * T + 24, "conversing", 20, i ? 1 : 2);
+        });
+        m.chats.push(g);
+      },
+      addNeighbors(m) {
+        const neighborDialogue = { "aline": [["This book came back today. Would you like a story about music or a writer\u2019s life?", "Este livro voltou hoje. Voc\xEA prefere uma hist\xF3ria sobre m\xFAsica ou sobre a vida de uma escritora?"], ["I keep a note of the title and author. It helps me find the book again when someone asks about it.", "Anoto o t\xEDtulo e a autoria. Isso me ajuda a encontrar o livro de novo quando algu\xE9m pergunta sobre ele."], ["I saved the recommendation in my notebook. The reading shelves are just inside the library.", "Guardei a indica\xE7\xE3o no meu caderno. As estantes de leitura ficam logo dentro da biblioteca."]], "paulo": [["I am practising the guitar part for the festival. Can we try this passage more slowly?", "Estou ensaiando a parte de guitarra para o festival. Podemos tentar este trecho mais devagar?"], ["Sol is checking the programme credits. I wrote down who arranged each part before we start the rehearsal.", "Sol est\xE1 conferindo os cr\xE9ditos do programa. Anotei quem fez o arranjo de cada parte antes de come\xE7armos o ensaio."], ["The next rehearsal is in the Rhythm District. There are instruments to explore there while I finish this passage.", "O pr\xF3ximo ensaio \xE9 no Distrito do Ritmo. H\xE1 instrumentos para explorar por l\xE1 enquanto termino este trecho."]], "nara": [["A little bird landed beside the lake. I am writing down where it went before I try to identify it.", "Um passarinho pousou ao lado do lago. Estou anotando aonde ele foi antes de tentar identific\xE1-lo."], ["My field notebook has two columns: what I saw and what I still need to find out.", "Meu caderno de campo tem duas colunas: o que vi e o que ainda preciso descobrir."], ["I added the bird\u2019s location to my notes. Celina has an observation task if you want to explore the park.", "Acrescentei a localiza\xE7\xE3o do p\xE1ssaro \xE0s anota\xE7\xF5es. Celina tem uma tarefa de observa\xE7\xE3o se voc\xEA quiser explorar o parque."]], "dora": [["I saved you a place at the meeting. Jo is collecting proposals for access to the archive.", "Guardei um lugar para voc\xEA na reuni\xE3o. Jo est\xE1 reunindo propostas para o acesso ao arquivo."], ["An evening meeting helps me; Luan asked for access after school. We recorded both requests.", "Uma reuni\xE3o \xE0 noite me ajuda; Luan pediu acesso depois da aula. Registramos os dois pedidos."], ["The proposals are on the assembly table. Check who each project reaches before choosing the budget.", "As propostas est\xE3o na mesa da assembleia. Confira quem cada projeto atende antes de escolher o or\xE7amento."]], "vitor": [["I am writing a proposal for the entrance. Could we move this chair so everyone can pass?", "Estou escrevendo uma proposta para a entrada. Podemos mover esta cadeira para que todos passem?"], ["I checked the route from the square to this room. The entrance and the path need to work together.", "Conferi o trajeto da pra\xE7a at\xE9 esta sala. A entrada e o caminho precisam funcionar juntos."], ["My route notes are ready for the meeting. Jo can show you how the community is comparing the projects.", "Minhas anota\xE7\xF5es do trajeto est\xE3o prontas para a reuni\xE3o. Jo pode mostrar como a comunidade est\xE1 comparando os projetos."]], "luan": [["I brought the students\u2019 suggestions to the meeting. Some want to consult the archive after school.", "Trouxe as sugest\xF5es dos estudantes para a reuni\xE3o. Alguns querem consultar o arquivo depois da aula."], ["We asked for opening hours beside the entrance. That would save a trip when the archive is closed.", "Pedimos hor\xE1rios de funcionamento ao lado da entrada. Isso evitaria uma viagem quando o arquivo est\xE1 fechado."], ["The students\u2019 proposals are in the meeting notes. Compare them with the other requests on the table.", "As propostas dos estudantes est\xE3o na ata. Compare-as com os outros pedidos sobre a mesa."]], "selma": [["This record already has a source and a date. The next one is missing the name of its editor.", "Este registro j\xE1 tem uma fonte e uma data. No pr\xF3ximo est\xE1 faltando o nome de quem o editou."], ["I keep the earlier copy beside the revision. We need to see which words changed, not just the latest title.", "Guardo a c\xF3pia anterior ao lado da revis\xE3o. Precisamos ver quais palavras mudaram, al\xE9m do t\xEDtulo mais recente."], ["The catalogue is ready for another comparison. Nia is checking the alteration history in the Central Archive.", "O cat\xE1logo est\xE1 pronto para outra compara\xE7\xE3o. Nia est\xE1 conferindo o hist\xF3rico de altera\xE7\xF5es no Arquivo Central."]], "enzo": [["I am looking for Rosa\u2019s stall. I need fruit and a notebook before going back to the square.", "Estou procurando a banca de Rosa. Preciso de frutas e de um caderno antes de voltar \xE0 pra\xE7a."], ["Bia is organising deliveries near the market. Ask which parcel belongs to the library before picking one up.", "Bia est\xE1 organizando entregas perto da feira. Pergunte qual encomenda \xE9 da biblioteca antes de pegar uma."], ["I wrote down my shopping list. Rosa can tell you what is on today\u2019s food cards.", "Anotei minha lista de compras. Rosa pode contar o que est\xE1 nas fichas dos alimentos de hoje."]] };
+        const definitions = { aline: ["library", 19, 12, "Aline", "Leitora", ["reading-right", "library-recommend"]], paulo: ["hub", 23, 14, "Paulo", "M\xFAsico do bairro", ["square-guitar", "square-water-right"]], nara: ["park", 20, 12, "Nara", "Estudante observadora", ["park-field", "park-lake"]], dora: ["room-5", 9, 12, "Dora", "Moradora", ["assembly-listen", "assembly-note"]], vitor: ["room-5", 15, 12, "Vitor", "Morador", ["assembly-note", "assembly-quiet"]], luan: ["room-5", 6, 12, "Luan", "Estudante", ["assembly-listen", "assembly-turn"]], selma: ["room-6", 6, 12, "Selma", "Arquivista", ["control-catalog", "control-backup"]], enzo: ["market", 10, 14, "Enzo", "Visitante", ["market-paper", "market-rest"]] };
+        for (const [id, [map, x, y, name, role, tasks]] of Object.entries(definitions)) {
+          if (map !== m.id) continue;
+          V.content.characters[id] = { name, role, accent: "#b6d0ad" };
+          const p = this.safe(m, x, y, m.objects.filter((o2) => this.person(o2)));
+          const pairs = neighborDialogue[id];
+          const resident = { id, character: id, name, role, lines: pairs.slice(0, 2).map(([en, pt]) => ({ speaker: id, en, pt })), repeat: { speaker: id, en: pairs[2][0], pt: pairs[2][1] } };
+          const o = { type: "resident", id: "neighbor-" + id, x: p.x * T + 24, y: p.y * T + 24, label: "Conversar com " + name, character: id, resident };
+          m.objects.push(o);
+          this.preparePerson(m, o);
+          o.tasks = tasks.filter((id2) => m.anchors.has(id2)).concat("home-" + o.id);
+          o.waypoints = o.tasks.map((id2) => m.anchors.get(id2));
+          if (o.settled) o.settledTask = o.tasks[0];
+          if (id === "vitor") o.speed = 23;
+        }
+      },
+      remodelBuildings(m) {
+        if (!m.chapter || m.theme === "room") return;
+        const plans = { 1: [[2, 2, 8, 3], [22, 3, 8, 3]], 2: [[2, 2, 10, 4], [24, 2, 6, 4]], 3: [[2, 3, 7, 3], [22, 2, 8, 4]], 4: [[2, 2, 6, 4], [22, 2, 8, 3]], 5: [[2, 2, 8, 4], [24, 3, 6, 3]], 6: [[2, 2, 9, 4], [24, 2, 6, 4]] };
+        const doors = m.objects.filter((o) => o.type === "door");
+        m.buildings.forEach((b, i) => {
+          const [x, y, w, h] = plans[m.chapter][i];
+          Object.assign(b, { x: x * T, y: y * T, w: w * T, h: h * T });
+          if (doors[i]) {
+            doors[i].id = "door-room-" + m.chapter + "-" + i;
+            doors[i].x = (x + w / 2) * T;
+            doors[i].y = (y + h + 0.6) * T;
+          }
+        });
+      },
+      drawBuilding(ctx, b, cam) {
+        const x = b.x - cam.x, y = b.y - cam.y, w = b.w, h = b.h, m = W.current;
+        const styles = { hub: ["#685348", "#b5a47f"], rhythm: ["#665061", "#c49a86"], museum: ["#80715a", "#d2c39c"], lab: ["#526e66", "#b6c9b7"], network: ["#596858", "#c1c7a7"], community: ["#63735c", "#d3c69a"], final: ["#58685d", "#c1c8ad"] };
+        const [wall, trim] = styles[m.theme] || styles.hub;
+        ctx.fillStyle = "#172b2855";
+        ctx.fillRect(x + 8, y + 12, w, h + 8);
+        ctx.fillStyle = wall;
+        ctx.fillRect(x, y, w, h);
+        ctx.fillStyle = "#ffffff0a";
+        for (let yy = y + 30; yy < y + h - 12; yy += 24) ctx.fillRect(x + 8, yy, w - 16, 2);
+        ctx.fillStyle = "#30473d";
+        ctx.fillRect(x - 5, y - 8, w + 10, 17);
+        ctx.fillStyle = b.color;
+        ctx.fillRect(x - 5, y - 8, w + 10, 7);
+        if (m.theme === "museum") {
+          ctx.fillStyle = trim;
+          for (const xx of [x + 12, x + w - 24]) {
+            ctx.fillRect(xx, y + 47, 12, h - 54);
+            ctx.fillRect(xx - 4, y + 46, 20, 5);
+          }
+        }
+        const count = Math.max(2, Math.floor(w / 80));
+        for (let i = 0; i < count; i++) {
+          const xx = x + 22 + i * (w - 44) / count;
+          if (Math.abs(xx + 20 - (x + w / 2)) < 31) continue;
+          ctx.fillStyle = "#2d4842";
+          ctx.fillRect(xx, y + 56, 38, 46);
+          ctx.fillStyle = "#dacba0";
+          ctx.fillRect(xx + 4, y + 60, 30, 37);
+          ctx.fillStyle = "#607768";
+          ctx.fillRect(xx + 17, y + 60, 3, 37);
+          ctx.fillRect(xx + 4, y + 78, 30, 3);
+          ctx.fillStyle = trim;
+          ctx.fillRect(xx - 3, y + 102, 44, 5);
+        }
+        ctx.fillStyle = "#273f36";
+        ctx.fillRect(x + w / 2 - 23, y + h - 58, 46, 58);
+        ctx.fillStyle = "#aaac87";
+        ctx.fillRect(x + w / 2 - 18, y + h - 52, 36, 49);
+        ctx.fillStyle = "#4c6857";
+        ctx.fillRect(x + w / 2 - 13, y + h - 47, 26, 23);
+        ctx.fillStyle = "#edcf84";
+        ctx.fillRect(x + w / 2 + 10, y + h - 23, 3, 4);
+        ctx.fillStyle = trim;
+        ctx.fillRect(x + w / 2 - 31, y + h, 62, 7);
+        if (m.theme === "lab" && b.label === "OBSERVAT\xD3RIO") {
+          this.pixelOval(ctx, x + w / 2, y - 7, 46, 25, "#b4c9b5");
+          ctx.fillStyle = "#557768";
+          ctx.fillRect(x + w / 2 - 3, y - 29, 6, 25);
+        }
+      },
+      addActivities(m) {
+        (V.cozyContent?.activities || []).filter((a) => a.map === m.id).forEach((a, i) => {
+          const pos = m.theme === "room" ? [10, 10 + i * 2] : m.id === "market" ? [9, 13] : [19, 14];
+          const p = this.safe(m, pos[0], pos[1]);
+          m.objects.push({ type: "cozy", id: "cozy-activity-" + a.id, x: p.x * T + 24, y: p.y * T + 24, label: a.title, scene: { id: a.id, kind: "activity", family: "cozy", prop: m.id === "market" ? 32 : m.chapter === 3 ? 20 : m.chapter === 1 ? 15 : 21, title: a.title, text: a.context, activity: a.id } });
+        });
+      },
+      release(m, o) {
+        if (o.reserved && m.reservations.get(o.reserved) === o.id) m.reservations.delete(o.reserved);
+        o.reserved = null;
+      },
+      reserve(m, o, a) {
+        for (const [id, owner] of m.reservations) {
+          const spot = m.anchors.get(id);
+          if (owner !== o.id && spot && V.dist(spot, a) < 32) return false;
+        }
+        this.release(m, o);
+        m.reservations.set(a.id, o.id);
+        o.reserved = a.id;
+        return true;
+      },
+      path(m, o, a) {
+        if (V.Homestead?.commuting) return V.Homestead.navigation(m, o, a);
+        const others = m.objects.filter((n) => n !== o && n.waypoints && (n.type === "animal" || this.person(n)) && ![3, 4, 5].includes(n.species)), player = V.Player.data;
+        const clear = (x, y) => !L.blocked(m, x, y, 9 * (o.visualScale || 1)) && others.every((n) => Math.hypot(n.x - x, n.y - y) >= 12 * ((n.visualScale || 1) + (o.visualScale || 1))) && (!player || Math.hypot(player.x - x, player.y - y) >= 13 + 12 * (o.visualScale || 1));
+        const segment = (from, to) => {
+          const distance = V.dist(from, to), steps = Math.max(1, Math.ceil(distance / 8));
+          for (let i = 1; i <= steps; i++) if (!clear(from.x + (to.x - from.x) * i / steps, from.y + (to.y - from.y) * i / steps)) return false;
+          return true;
+        };
+        const ox = Math.floor(o.x / T), oy = Math.floor(o.y / T), goal = { x: Math.floor(a.x / T), y: Math.floor(a.y / T) };
+        const candidates = [];
+        for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+          const x = ox + dx, y = oy + dy, p = { x: x * T + 24, y: y * T + 24 };
+          if (clear(p.x, p.y) && segment(o, p)) candidates.push({ x, y, p, d: V.dist(o, p) });
+        }
+        candidates.sort((x, y) => x.d - y.d);
+        if (!candidates.length) return [];
+        const start = candidates[0], key = (p) => p.x + "," + p.y, queue = [start], parents = new Map([[key(start), null]]);
+        let found = null;
+        for (let i = 0; i < queue.length; i++) {
+          const p = queue[i];
+          if (p.x === goal.x && p.y === goal.y) {
+            found = p;
+            break;
+          }
+          for (const [dx, dy] of [[1, 0], [0, 1], [-1, 0], [0, -1]]) {
+            const n = { x: p.x + dx, y: p.y + dy }, k = key(n);
+            if (!parents.has(k) && clear(n.x * T + 24, n.y * T + 24) && segment({ x: p.x * T + 24, y: p.y * T + 24 }, { x: n.x * T + 24, y: n.y * T + 24 })) {
+              parents.set(k, p);
+              queue.push(n);
+            }
+          }
+        }
+        if (!found) return [];
+        const route = [];
+        while (parents.get(key(found))) {
+          route.unshift({ x: found.x * T + 24, y: found.y * T + 24 });
+          found = parents.get(key(found));
+        }
+        if (V.dist(o, start.p) > 0.6) route.unshift(start.p);
+        const end = route[route.length - 1] || o;
+        if (V.dist(end, a) > 0.6) {
+          if (!segment(end, a)) return [];
+          route.push({ x: a.x, y: a.y });
+        }
+        return route;
+      },
+      chooseTask(m, o, forced = null) {
+        const list = o.type === "animal" ? o.waypoints : o.tasks.map((id) => m.anchors.get(id));
+        for (let i = 0; i < list.length; i++) {
+          const a = forced || list[o.taskIndex++ % list.length];
+          if (!a) continue;
+          if (o.type !== "animal" && !this.reserve(m, o, a)) {
+            if (forced) return false;
+            continue;
+          }
+          o.destination = a;
+          o.action = "walking";
+          o.route = o.species === 4 ? [{ x: a.x, y: a.y }] : this.path(m, o, a);
+          if (!o.route.length && V.dist(o, a) > 1) {
+            this.release(m, o);
+            o.destination = null;
+            if (forced) {
+              o.action = "waiting";
+              o.taskTime = 2;
+              return false;
+            }
+            continue;
+          }
+          o.blockedTime = 0;
+          if (!o.route.length) {
+            this.arrive(m, o);
+          }
+          return true;
+        }
+        o.action = "waiting";
+        o.taskTime = 2;
+        return false;
+      },
+      arrive(m, o) {
+        const a = o.destination;
+        o.action = a?.state || "waiting";
+        o.taskTime = (a?.duration || 10) + hash(o.id) % 5;
+        o.dir = a?.dir ?? o.dir;
+        o.walking = false;
+        o.frame = 0;
+        if (["amara", "aline"].includes(o.character) && a?.object?.scene?.kind === "seat") o.action = "reading";
+        if (o.type === "animal") {
+          const row = L.localAnimalRow(o);
+          if (row === 1 || row === 4 || row === 5) o.action = "sleeping";
+          else if (row === 8 || row === 9 || o.species === 4) o.action = "swimming";
+          else if (row === 7 || o.species === 3) o.action = "perching";
+          else o.action = "resting";
+        }
+        this.expression(m, o);
+      },
+      blocked(m, o, x, y) {
+        if (o.type === "animal" && o.species === 4 && m.pond) {
+          const p = m.pond;
+          return x < (p.x + 0.6) * T || x > (p.x + p.w - 0.6) * T || y < (p.y + 0.6) * T || y > (p.y + p.h - 0.6) * T;
+        }
+        return L.blocked(m, x, y, 9 * (o.visualScale || 1));
+      },
+      expression(m, o, force = null) {
+        if (this.clock < o.nextIcon && force === null) return;
+        const icons = { reading: 4, writing: 4, drawing: 4, working: m.id === "garden" ? 6 : 4, watering: 6, playing: 2, listening: 1, observing: o.character === "pix" ? 7 : m.id === "park" ? 0 : m.id === "garden" ? 6 : 4, sitting: 5, conversing: 3, perching: 0, sleeping: 3 };
+        const icon = force ?? icons[o.action];
+        if (icon === void 0) return;
+        const cam = W.camera, visible = (x) => x.x > cam.x + 20 && x.x < cam.x + (V.Engine.canvas?.width || 960) - 20 && x.y > cam.y + 70 && x.y < cam.y + (V.Engine.canvas?.height || 540) + 20;
+        if (visible(o) && m.objects.filter((x) => visible(x) && (x.iconTime > 0 || x.chatSpeaking)).length < 2) {
+          o.icon = icon;
+          o.iconTime = 2.2;
+          o.nextIcon = this.clock + 20 + hash(o.id) % 17;
+        }
+      },
+      updateChats(m, dt) {
+        for (const g of m.chats) {
+          g.clock += dt;
+          g.members.forEach((o) => {
+            o.chatSpeaking = false;
+            o.bubble = "";
+          });
+          if (g.phase === "rest") {
+            g.wait -= dt;
+            if (g.wait <= 0 && g.members.every((o) => o.chatReady && !o.responding && !o.greeting)) {
+              g.phase = "approach";
+              g.clock = 0;
+              g.retry = 0;
+              g.members.forEach((o) => {
+                o.chatReady = false;
+                this.release(m, o);
+              });
+              g.members.forEach((o, i) => {
+                o.route = [];
+                this.chooseTask(m, o, g["anchor" + i]);
+              });
+            }
+          } else if (g.phase === "approach") {
+            if (g.members.every((o, i) => V.dist(o, g["anchor" + i]) < 9)) {
+              g.phase = "talk";
+              g.clock = 0;
+              g.talking = true;
+              g.members.forEach((o) => {
+                o.action = "conversing";
+                o.taskTime = 25;
+              });
+            } else {
+              g.retry -= dt;
+              if (g.retry <= 0) {
+                g.retry = 1.5;
+                g.members.forEach((o, i) => {
+                  if (!o.route.length && V.dist(o, g["anchor" + i]) >= 9) this.chooseTask(m, o, g["anchor" + i]);
+                });
+              }
+              if (g.clock > (g.approachLimit || 45)) this.endChat(m, g);
+            }
+          } else if (g.phase === "talk") {
+            const turn = Math.floor(g.clock / 4.5);
+            if (turn >= g.lines.length) {
+              this.endChat(m, g);
+              continue;
+            }
+            const speaker = g.members[turn % 2];
+            speaker.chatSpeaking = true;
+            speaker.bubble = g.lines[turn];
+            g.members.forEach((o, i) => {
+              o.dir = i ? 1 : 2;
+              o.walking = false;
+            });
+          }
+        }
+      },
+      endChat(m, g) {
+        g.phase = "rest";
+        g.talking = false;
+        g.wait = 27 + hash(g.id) % 13;
+        g.clock = 0;
+        for (const o of g.members) {
+          o.chatReady = false;
+          o.chatSpeaking = false;
+          o.bubble = "";
+          this.release(m, o);
+          o.action = "waiting";
+          o.taskTime = 2 + o.member * 2;
+          o.destination = null;
+          o.route = [];
+        }
+      },
+      update(dt) {
+        if (!W.current || !V.state) return;
+        this.ensure();
+        dt = V.clamp(dt, 0, 0.08);
+        this.clock += dt;
+        const m = W.current;
+        m.ambientTime += dt;
+        L.walkingTime += dt;
+        V.Audio.footsteps(dt);
+        const p = V.Player.data, actors = m.objects.filter((o) => o.waypoints && (o.type === "animal" || this.person(o)));
+        this.updateChats(m, dt);
+        for (const o of actors) {
+          if (o.type === "animal" && o.coastAnimal === void 0 && o.neighborAnimal === void 0 && (o.species === 2 || o.species === 3)) {
+            const fly = o.walking && (o.species === 3 || o.taskIndex % 3 === 0) && o.destination && V.dist(o, o.destination) > 19;
+            o.townFlight = V.clamp((o.townFlight || 0) + (fly ? 2.4 : -3.6) * dt, 0, 1);
+          }
+          o.walking = false;
+          o.walkClock += dt;
+          o.iconTime = Math.max(0, o.iconTime - dt);
+          o.greeting = Math.max(0, o.greeting - dt);
+          o.responding = Math.max(0, (o.responding || 0) - dt);
+          if (V.settings.npcMovement === false || V.settings.reducedMotion) {
+            o.frame = 0;
+            continue;
+          }
+          const group = o.group && m.chats.find((g) => g.id === o.group);
+          if (group?.phase === "talk") {
+            o.frame = Math.floor(o.walkClock * 1.4) % 4;
+            continue;
+          }
+          if (o.responding) {
+            o.dir = Math.abs(p.x - o.x) > Math.abs(p.y - o.y) ? p.x < o.x ? 1 : 2 : p.y < o.y ? 3 : 0;
+            o.frame = 0;
+            continue;
+          }
+          if (this.person(o) && V.dist(p, o) < 67 && o.greeting === 0 && group?.phase !== "approach") {
+            o.responding = 1.1;
+            o.greeting = 13;
+            this.expression(m, o, 7);
+            continue;
+          }
+          if (o.action !== "walking") {
+            o.taskTime -= dt;
+            if (o.action === "playing" && !o.protestActor && Math.floor(o.taskTime * 2) % 8 === 0 && this.clock > (o.lastNote || 0) + 4) {
+              o.lastNote = this.clock;
+              if (V.dist(p, o) < 210) V.Audio.note(60 + hash(o.id) % 5 * 2, 0.15, "triangle", 0.045);
+            }
+            if (o.taskTime <= 0 && group?.phase === "rest" && group.wait <= 0) {
+              o.chatReady = true;
+              o.action = "waiting";
+              o.taskTime = 2;
+              continue;
+            }
+            if (o.taskTime <= 0 && !o.stationary && group?.phase !== "approach") {
+              this.release(m, o);
+              if (o.settled && o.destination?.id === o.settledTask) {
+                o.taskTime = 24;
+                this.reserve(m, o, o.destination);
+              } else this.chooseTask(m, o, o.settled ? m.anchors.get(o.settledTask) : null);
+            } else {
+              o.frame = V.settings.reducedMotion ? 0 : ["working", "watering", "playing", "writing", "drawing", "reading"].includes(o.action) ? Math.floor(o.walkClock * 1.6) % 4 : 0;
+              this.expression(m, o);
+              continue;
+            }
+          }
+          if (!o.route?.length) {
+            if (o.destination) this.arrive(m, o);
+            continue;
+          }
+          const goal = o.route[0], dx = goal.x - o.x, dy = goal.y - o.y, len = Math.hypot(dx, dy), amount = Math.min(len, o.speed * dt), nx = len ? o.x + dx / len * amount : o.x, ny = len ? o.y + dy / len * amount : o.y;
+          const occupied = !V.Homestead?.commuting && (actors.some((other) => other !== o && ![3, 4, 5].includes(other.species) && ![3, 4, 5].includes(o.species) && Math.hypot(other.x - nx, other.y - ny) < 11.5 * ((other.visualScale || 1) + (o.visualScale || 1))) || ![3, 4, 5].includes(o.species) && Math.hypot(p.x - nx, p.y - ny) < 12 + 12 * (o.visualScale || 1));
+          if (this.blocked(m, o, nx, ny) || occupied) {
+            o.blockedTime += dt;
+            if (o.blockedTime > 0.7 && this.clock > (o.repathTime || 0) && o.destination) {
+              o.repathTime = this.clock + 1.3;
+              const route = this.path(m, o, o.destination);
+              if (route.length) {
+                o.route = route;
+                o.blockedTime = 0;
+              }
+            }
+            if (o.blockedTime > 2.5 && group?.phase !== "approach") {
+              this.release(m, o);
+              o.route = [];
+              o.destination = null;
+              o.action = "waiting";
+              o.taskTime = 2 + hash(o.id) % 3;
+              o.blockedTime = 0;
+            }
+            continue;
+          }
+          if (o.type === "animal" && Math.abs(nx - o.x) > 1e-3) o.animalFacing = nx < o.x ? 1 : 2;
+          o.x = nx;
+          o.y = ny;
+          o.walking = amount > 1e-3;
+          o.blockedTime = 0;
+          o.dir = Math.abs(dx) > Math.abs(dy) ? dx < 0 ? 1 : 2 : dy < 0 ? 3 : 0;
+          o.frame = Math.floor(o.walkClock * 5) % 4;
+          if (len <= amount + 0.4) {
+            o.x = goal.x;
+            o.y = goal.y;
+            o.route.shift();
+            if (!o.route.length) this.arrive(m, o);
+          }
+        }
+        L.updateHUD();
+      },
+      pixelOval(ctx, x, y, rx, ry, color) {
+        ctx.fillStyle = color;
+        for (let yy = -ry; yy <= ry; yy += 3) {
+          const half = Math.floor(Math.sqrt(Math.max(0, 1 - yy * yy / (ry * ry))) * rx / 3) * 3;
+          ctx.fillRect(Math.round(x - half), Math.round(y + yy), half * 2, 3);
+        }
+      },
+      fountain(ctx, cam) {
+        const x = 16 * T - cam.x, y = 10.8 * T - cam.y, time = V.settings.reducedMotion ? 0 : V.Engine.time;
+        this.pixelOval(ctx, x + 5, y + 39, 116, 45, "#17332b70");
+        this.pixelOval(ctx, x, y + 30, 113, 44, "#626f68");
+        this.pixelOval(ctx, x, y + 22, 113, 40, "#aaa790");
+        this.pixelOval(ctx, x, y + 20, 101, 31, "#3f727e");
+        this.pixelOval(ctx, x, y + 18, 93, 25, "#6b9c9b");
+        ctx.fillStyle = "#8ab4ae";
+        for (let i = 0; i < 7; i++) {
+          const xx = x - 76 + i * 24, yy = y + 14 + Math.sin(time * 0.8 + i) * 6;
+          ctx.fillRect(Math.round(xx), Math.round(yy), 12, 3);
+        }
+        ctx.fillStyle = "#697c73";
+        ctx.fillRect(x - 16, y - 36, 32, 65);
+        ctx.fillStyle = "#b6b398";
+        ctx.fillRect(x - 17, y - 37, 9, 61);
+        this.pixelOval(ctx, x, y - 33, 44, 15, "#747f72");
+        this.pixelOval(ctx, x, y - 40, 44, 12, "#bfc3a6");
+        this.pixelOval(ctx, x, y - 42, 35, 7, "#75aaa6");
+        ctx.fillStyle = "#c2e2d6";
+        ctx.fillRect(x - 3, y - 70, 6, 28);
+        ctx.fillRect(x - 9, y - 67, 6, 3);
+        ctx.fillRect(x + 3, y - 67, 6, 3);
+        for (const side of [-1, 1]) {
+          ctx.fillStyle = "#9dcfc4";
+          ctx.fillRect(x + side * 34 - 3, y - 37, 6, 61);
+          ctx.fillStyle = "#d3ede0";
+          for (let i = 0; i < 3; i++) {
+            const yy = y - 33 + (i * 19 + time * 19) % 52;
+            ctx.fillRect(x + side * 34, Math.round(yy), 3, 7);
+          }
+          this.pixelOval(ctx, x + side * 36, y + 25, 15 + Math.sin(time * 1.2) * 3, 4, "#b3d9cd");
+        }
+        ctx.fillStyle = "#d6caaa";
+        ctx.fillRect(x - 64, y + 53, 33, 3);
+        ctx.fillRect(x + 28, y + 53, 35, 3);
+        ctx.fillStyle = "#7c8675";
+        ctx.fillRect(x - 20, y + 58, 40, 6);
+      },
+      pond(ctx, m, cam) {
+        const p = m.pond;
+        if (!p) return;
+        const x = p.x * T - cam.x, y = p.y * T - cam.y, w = p.w * T, h = p.h * T;
+        const outline = [[54, 0], [w - 66, 0], [w - 66, 6], [w - 36, 6], [w - 36, 18], [w - 18, 18], [w - 18, 42], [w, 42], [w, h - 48], [w - 12, h - 48], [w - 12, h - 24], [w - 42, h - 24], [w - 42, h - 6], [w - 78, h - 6], [w - 78, h], [48, h], [48, h - 12], [24, h - 12], [24, h - 30], [6, h - 30], [6, h - 66], [0, h - 66], [0, 54], [18, 54], [18, 24], [36, 24], [36, 6], [54, 6]];
+        const shape = (inset, color) => {
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          outline.forEach(([px, py], i) => {
+            const xx = x + inset + px * (w - inset * 2) / w, yy = y + inset + py * (h - inset * 2) / h;
+            i ? ctx.lineTo(Math.round(xx / 3) * 3, Math.round(yy / 3) * 3) : ctx.moveTo(Math.round(xx / 3) * 3, Math.round(yy / 3) * 3);
+          });
+          ctx.closePath();
+          ctx.fill();
+        };
+        shape(-6, "#89947a");
+        shape(0, "#315f65");
+        shape(9, "#3d7274");
+        const t = V.settings.reducedMotion ? 0 : V.Engine.time;
+        ctx.fillStyle = "#a4c8b566";
+        for (let i = 0; i < 12; i++) {
+          const xx = x + 27 + i * 41 % (w - 60), yy = y + 25 + i * 67 % (h - 55) + Math.sin(t * 0.6 + i) * 3;
+          ctx.fillRect(Math.round(xx), Math.round(yy), i % 3 === 0 ? 21 : 12, 3);
+        }
+        ctx.fillStyle = "#294e4955";
+        ctx.fillRect(x + 27, y + 63, 6, h - 120);
+        ctx.fillRect(x + 66, y + 18, w - 150, 6);
+      },
+      bench(ctx, x, y, dir) {
+        ctx.fillStyle = "#20382c50";
+        ctx.fillRect(x - 30, y + 9, 63, 6);
+        ctx.fillStyle = "#423f35";
+        ctx.fillRect(x - 25, y - 11, 6, 27);
+        ctx.fillRect(x + 20, y - 11, 6, 27);
+        ctx.fillStyle = "#b29669";
+        ctx.fillRect(x - 32, y - 8, 66, 9);
+        ctx.fillStyle = "#876e4e";
+        ctx.fillRect(x - 30, y - 24, 62, 6);
+        ctx.fillRect(x - 30, y - 16, 62, 6);
+        ctx.fillStyle = "#536354";
+        ctx.fillRect(x - 26, y - 27, 4, 21);
+        ctx.fillRect(x + 23, y - 27, 4, 21);
+        if (dir === 1 || dir === 2) {
+          ctx.fillStyle = "#ccb080";
+          ctx.fillRect(x + (dir === 1 ? 24 : -31), y - 29, 7, 23);
+        }
+      },
+      gardenBed(ctx, o, cam) {
+        const x = o.x - cam.x, y = o.y - cam.y, size = o.size;
+        const beds = [[5, 5], [17, 5], [5, 11], [17, 11]], index = o.meta?.bed ?? beds.findIndex(([bx, by]) => o.x === bx * T && o.y === by * T), cared = V.state.watered.includes("bed-" + (index + 1)), stage = cared || o.meta?.nursery || index === 3 ? 2 : index === 1 ? 1 : 0;
+        ctx.fillStyle = "#243d2c50";
+        ctx.fillRect(x + 9, y + size * 0.7, size - 9, 9);
+        ctx.fillStyle = "#aa8357";
+        ctx.fillRect(x + 6, y + size * 0.24, size - 12, size * 0.52);
+        ctx.fillStyle = cared ? "#604631" : "#806347";
+        ctx.fillRect(x + 12, y + size * 0.29, size - 24, size * 0.38);
+        ctx.fillStyle = "#c29c6b";
+        ctx.fillRect(x + 6, y + size * 0.66, size - 12, 9);
+        ctx.fillStyle = "#635440";
+        ctx.fillRect(x + 6, y + size * 0.75, 9, 9);
+        ctx.fillRect(x + size - 15, y + size * 0.75, 9, 9);
+        for (let row = 0; row < 2; row++) for (let col = 0; col < 3; col++) {
+          const px = x + 23 + col * 22, py = y + size * 0.47 + row * 16;
+          ctx.fillStyle = "#476d3d";
+          ctx.fillRect(px, py - (stage + 1) * 4, 3, (stage + 1) * 6);
+          ctx.fillStyle = cared ? "#94bb68" : "#79a25d";
+          ctx.fillRect(px - 4 - stage * 2, py - 6 - stage * 4, 7 + stage * 3, 4);
+          ctx.fillRect(px + 2, py - 10 - stage * 3, 5 + stage * 2, 4);
+          if (cared) {
+            ctx.fillStyle = "#9fc7ba";
+            ctx.fillRect(px + 10, py + 3, 3, 2);
+          }
+        }
+      },
+      ground(m) {
+        const canvas = V.GroundCache.create(m, m.width * T, m.height * T);
+        ;
+        ;
+        const ctx = canvas.getContext("2d");
+        ctx.imageSmoothingEnabled = false;
+        const [grass, road, trim] = m.design.palette;
+        ctx.fillStyle = grass;
+        ctx.fillRect(0, 0, V.GroundCache.width(canvas), V.GroundCache.height(canvas));
+        if (m.theme === "room") {
+          ctx.fillStyle = road;
+          ctx.fillRect(T, 2 * T, (m.width - 2) * T, (m.height - 3) * T);
+          ctx.fillStyle = "#ffffff07";
+          if (m.design.floor === "wood") {
+            for (let y = 2 * T; y < (m.height - 1) * T; y += 12) ctx.fillRect(T, y, (m.width - 2) * T, 1);
+            ctx.fillStyle = "#30292335";
+            for (let y = 2 * T; y < (m.height - 1) * T; y += 48) for (let x = T + y / 48 % 2 * 96; x < (m.width - 1) * T; x += 192) ctx.fillRect(x, y, 1, 48);
+          } else {
+            ctx.fillStyle = "#ffffff05";
+            for (let y = 2 * T; y < (m.height - 1) * T; y += 96) ctx.fillRect(T, y, (m.width - 2) * T, 1);
+          }
+          ctx.fillStyle = "#303b35";
+          ctx.fillRect(T, T, (m.width - 2) * T, T);
+          ctx.fillStyle = trim;
+          ctx.fillRect(T, 2 * T - 9, (m.width - 2) * T, 9);
+          for (const x of [3, 8, 16, 21]) {
+            ctx.fillStyle = "#c9c3a0";
+            ctx.fillRect(x * T, T + 12, 36, 20);
+            ctx.fillStyle = "#edf0c245";
+            ctx.fillRect(x * T + 7, 2 * T, 22, 34);
+          }
+          V.Engine.text(ctx, m.name.toUpperCase(), m.width * T / 2, 83, "#f0e3c6", 14, "center");
+        } else {
+          ctx.fillStyle = road;
+          for (const [x, y, w, h] of m.design.paths || []) ctx.fillRect(x * T, y * T, w * T, h * T);
+          ctx.fillStyle = "#bacead12";
+          for (let y = 1; y < m.height - 1; y++) for (let x = 1; x < m.width - 1; x++) {
+            const path = (m.design.paths || []).some(([px, py, pw, ph]) => x >= px && x < px + pw && y >= py && y < py + ph);
+            if (!path) {
+              ctx.fillRect(x * T + 12, y * T + 22, 6, 3);
+              ctx.fillRect(x * T + 33, y * T + 11, 3, 3);
+            }
+          }
+          ctx.fillStyle = "#1f3c3240";
+          ctx.fillRect(T, T, (m.width - 2) * T, 6);
+          ctx.fillRect(T, (m.height - 1) * T - 6, (m.width - 2) * T, 6);
+        }
+        if (m.id === "hub") V.PlazaArt?.ground(ctx, m);
+        for (const [x, y, w, h, color] of m.design.rugs || []) {
+          ctx.fillStyle = color;
+          ctx.fillRect(x * T, y * T, w * T, h * T);
+          ctx.fillStyle = "#f0d4a029";
+          ctx.fillRect(x * T + 6, y * T + 6, w * T - 12, 3);
+          ctx.fillRect(x * T + 6, (y + h) * T - 9, w * T - 12, 3);
+          ctx.fillRect(x * T + 6, y * T + 6, 3, h * T - 12);
+          ctx.fillRect((x + w) * T - 9, y * T + 6, 3, h * T - 12);
+        }
+        ctx.fillStyle = "#243c35";
+        ctx.fillRect(0, 0, V.GroundCache.width(canvas), 12);
+        ctx.fillRect(0, V.GroundCache.height(canvas) - 12, V.GroundCache.width(canvas), 12);
+        ctx.fillRect(0, 0, 12, V.GroundCache.height(canvas));
+        ctx.fillRect(V.GroundCache.width(canvas) - 12, 0, 12, V.GroundCache.height(canvas));
+        m.cache = canvas;
+      },
+      prop(ctx, family, index, x, y, size = T) {
+        if (family === "world") L.richProp(ctx, index, x, y, size);
+        else if (family === "cozy") {
+          const img = V.Assets.images["cozy-props"];
+          if (img) ctx.drawImage(img, index % 8 * 32, Math.floor(index / 8) * 32, 32, 32, Math.round(x), Math.round(y), size, size);
+        } else V.Assets.prop(ctx, index, x, y, size);
+      },
+      actionOverlay(ctx, o, x, y) {
+        const action = o.action;
+        if (o.character && !V.Assets.ready(V.Assets.images[o.character])) return;
+        if (o.character === "vitor") return;
+        if (action !== "sitting" && o.character && V.Assets.characterCell(o.character) > 32) return;
+        if (["reading", "writing", "drawing"].includes(action)) {
+          ctx.fillStyle = "#e5d7ae";
+          ctx.fillRect(x - 10, y - 25, 20, 10);
+          ctx.fillStyle = "#7d715a";
+          ctx.fillRect(x, y - 25, 2, 10);
+          ctx.fillStyle = "#b5a783";
+          ctx.fillRect(x - 7, y - 21, 5, 1);
+          if (action !== "reading") {
+            ctx.fillStyle = "#7cc6b3";
+            ctx.fillRect(x + 7 + o.frame % 2 * 2, y - 28, 3, 10);
+          }
+        }
+        if (action === "watering") {
+          ctx.fillStyle = "#88b1a4";
+          ctx.fillRect(x + 5, y - 24, 13, 10);
+          ctx.fillRect(x + 17, y - 22, 7, 3);
+          if (!V.settings.reducedMotion) {
+            ctx.fillStyle = "#bbe0db";
+            ctx.fillRect(x + 25, y - 13 + o.frame * 2, 3, 3);
+          }
+        }
+        if (action === "playing") {
+          this.prop(ctx, o.character === "percussionist" ? "base" : "cozy", o.character === "percussionist" ? 25 : 12, x - 14, y - 38, 31);
+        }
+        if (action === "sitting") {
+          ctx.fillStyle = "#2d3c47";
+          ctx.fillRect(x - 12, y - 10, 24, 5);
+          ctx.fillRect(x - 10, y - 6, 7, 5);
+          ctx.fillRect(x + 3, y - 6, 7, 5);
+        }
+      },
+      drawObject(ctx, o, cam, t) {
+        const x = o.x - cam.x, y = o.y - cam.y, near = W.nearest?.id === o.id;
+        if (!o.editorDrawing && (x < -130 || x > (V.Engine.canvas?.width || 960) + 130 || y < -140 || y > (V.Engine.canvas?.height || 540) + 130)) return;
+        if (this.person(o)) {
+          const active = ["working", "watering", "writing", "drawing", "playing", "reading", "conversing"].includes(o.action);
+          const seated = ["sitting", "reading"].includes(o.action) && o.destination?.object?.scene?.kind === "seat";
+          ctx.fillStyle = "#182e2845";
+          ctx.fillRect(x - 13, y + 4, 26, 4);
+          const greeting = !o.walking && (o.action === "greeting" || o.greeting > 0 && o.responding > 0), row = o.walking ? o.dir || 0 : greeting ? 5 : active && o.dir !== 3 ? 4 : o.dir || 0, phase = hash(o.character || o.id), rate = active ? 1.5 + phase % 5 * 0.18 : 3.5, frame = V.settings.reducedMotion ? 0 : o.walking ? o.frame : greeting || active ? Math.floor((this.clock + phase % 17 * 0.29) * rate) % 4 : 0, img = V.Assets.images[o.character];
+          if (!o.walking && seated && o.character !== "vitor" && V.Assets.ready(img)) {
+            V.Assets.spritePart(ctx, o.character, frame, row, 0.75, x - 28, y - 51, 56, 42);
+            this.actionOverlay(ctx, { action: "sitting" }, x, y);
+          } else V.Assets.sprite(ctx, o.character, x, y, row, frame, 56);
+          this.actionOverlay(ctx, o, x, y);
+          const needed = o.type === "npc" && !o.library && !o.hub && !V.state.talked.includes(o.id);
+          if (near || needed) L.marker(ctx, x, y, needed ? "!" : o.type === "resident" && L.missions.some((q) => q.owner === o.resident?.id && !V.state.sideQuests[q.id]?.done) ? "\u25C7" : "\u2026", t.accent);
+        } else if (o.type === "cozy") {
+          if (o.scene.kind === "conversation") {
+            if (near && mGroup(o)?.talking) L.marker(ctx, x, y, "\u2026", "#dccba0");
+            return;
+          }
+          if (o.scene.kind === "seat" && W.current.theme !== "room") this.bench(ctx, x, y - 12, o.scene.dir);
+          else this.prop(ctx, o.scene.family, o.scene.prop, x - 24, y - 38);
+          if (near) {
+            L.marker(ctx, x, y, o.scene.kind === "seat" ? "\u2193" : o.scene.kind === "activity" && V.state.cozy.activities.includes(o.scene.activity) ? "\u2713" : "E", "#dccba0");
+            ctx.strokeStyle = "#ddcba4";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x - 19, y - 13, 38, 20);
+          }
+        } else if (o.type === "reading") {
+          V.Assets.prop(ctx, o.prop, x - 18, y - 27, 36);
+          if (near) L.marker(ctx, x, y, V.state.readings.includes(o.id) ? "\u2713" : o.reading.kind === "book" ? "L" : "N", "#e2c997");
+        } else if (o.type === "water") {
+          const cared = V.state.watered.includes(o.id);
+          ctx.fillStyle = cared ? "#a3c788" : "#98c4c2";
+          ctx.fillRect(x - 3, y - 19, 6, 6);
+          ctx.fillRect(x, y - 22, 3, 3);
+          if (near) L.marker(ctx, x, y, cared ? "\u2713" : "~", "#b8d3b1");
+        } else if (o.type === "animal") {
+          L.drawTownAnimal(ctx, o, x, y);
+          if (near) L.marker(ctx, x, y, "E", "#d1c9a0");
+        } else initial.draw(ctx, o, cam, t);
+      },
+      bubble(ctx, o, cam) {
+        if (V.settings.npcChats === false) return;
+        const x = V.clamp(o.x - cam.x, 116, (V.Engine.canvas?.width || 960) - 116), y = Math.max(90, o.y - cam.y - 78);
+        if (o.chatSpeaking && o.bubble && V.settings.subtitles) {
+          const text = o.bubble, words = text.split(" "), lines = [];
+          let line = "";
+          for (const word of words) {
+            if ((line + " " + word).length > 33) {
+              lines.push(line);
+              line = word;
+            } else line += (line ? " " : "") + word;
+          }
+          if (line) lines.push(line);
+          const shown = lines.slice(0, 3), h = shown.length * 17 + 18;
+          ctx.fillStyle = "#fff0d4";
+          ctx.fillRect(x - 116, y - h, 232, h);
+          ctx.fillStyle = "#d9c29b";
+          ctx.fillRect(x - 116, y - h, 232, 3);
+          ctx.fillRect(x - 3, y, 6, 5);
+          shown.forEach((s, i) => V.Engine.text(ctx, s, x - 106, y - h + 20 + i * 17, "#31453f", 12));
+        } else if (o.iconTime > 0 && o.icon !== null) {
+          ctx.save();
+          ctx.globalAlpha = V.settings.reducedMotion ? 1 : Math.min(1, o.iconTime / 0.35);
+          ctx.fillStyle = "#fff0d4";
+          ctx.fillRect(x - 20, y - 37, 40, 34);
+          ctx.fillRect(x - 3, y - 3, 6, 7);
+          const img = V.Assets.images["cozy-icons"];
+          if (img) ctx.drawImage(img, o.icon * 32, 0, 32, 32, x - 12, y - 32, 24, 24);
+          else {
+            ctx.fillStyle = "#56947a";
+            ctx.fillRect(x - 6, y - 25, 12, 12);
+          }
+          ctx.restore();
+        }
+      },
+      render(ctx) {
+        const m = W.current;
+        if (!m || !V.state) return;
+        this.ensure();
+        const cam = W.camera, t = { accent: m.chapter ? V.content.chapters[m.chapter - 1].color : "#d1be93" };
+        if (!m.cache) this.ground(m);
+        ctx.imageSmoothingEnabled = false;
+        ctx.fillStyle = m.design.palette[0];
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        V.GroundCache.draw(ctx, m.cache, Math.round(-cam.x), Math.round(-cam.y));
+        m.buildings.forEach((b) => W.drawBuilding(ctx, b, cam));
+        if (m.id === "hub") this.fountain(ctx, cam);
+        this.pond(ctx, m, cam);
+        const draws = m.decor.filter((o) => o.x - cam.x > -o.size && o.x - cam.x < ctx.canvas.width + 70 && o.y - cam.y > -o.size && o.y - cam.y < ctx.canvas.height + 80).map((o) => ({ y: o.layer === "ground" ? -1e4 : o.y + o.size * 0.9, kind: "decor", o })).concat(V.RenderView.objects(ctx, m, cam).map((o) => ({ y: o.y, kind: "object", o })), [{ y: V.Player.data.y, kind: "player" }]).sort((a, b) => a.y - b.y);
+        for (const d of draws) {
+          if (d.kind === "player") V.Player.render(ctx);
+          else if (d.kind === "object") this.drawObject(ctx, d.o, cam, t);
+          else {
+            const o = d.o, x = o.x - cam.x, y = o.y - cam.y;
+            if (x > -o.size && x < ctx.canvas.width + 70 && y > -o.size && y < ctx.canvas.height + 80) {
+              if (m.id === "garden" && o.family === "world" && o.prop === 1) this.gardenBed(ctx, o, cam);
+              else if (V.SceneDesign) V.SceneDesign.drawDecor(ctx, o, cam);
+              else this.prop(ctx, o.family, o.prop, x, y, o.size);
+            }
+          }
+        }
+        this.progressDetails(ctx, m, cam);
+        const p = V.Player.data;
+        if (V.PixPresence.following()) V.PixPresence.draw(ctx, p, cam);
+        if (V.Game.scanTarget) {
+          const o = V.Game.scanTarget;
+          ctx.strokeStyle = "#dfc592";
+          ctx.setLineDash([6, 5]);
+          ctx.beginPath();
+          ctx.moveTo(p.x - cam.x, p.y - cam.y);
+          ctx.lineTo(o.x - cam.x, o.y - cam.y);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        V.Engine.drawParticles(ctx, cam);
+        const visible = m.objects.filter((o) => o.x - cam.x > -20 && o.x - cam.x < ctx.canvas.width + 20 && o.y - cam.y > 40 && o.y - cam.y < ctx.canvas.height + 60);
+        visible.filter((o) => o.chatSpeaking).slice(0, 1).forEach((o) => this.bubble(ctx, o, cam));
+        visible.filter((o) => !o.chatSpeaking && o.iconTime > 0).slice(0, visible.some((o) => o.chatSpeaking) || m.protestChantVisible ? 1 : 2).forEach((o) => this.bubble(ctx, o, cam));
+        if (W.transition > 0) {
+          ctx.globalAlpha = W.transition;
+          ctx.fillStyle = "#23372f";
+          ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          ctx.globalAlpha = 1;
+        }
+        W.drawMiniMap();
+      },
+      progressDetails(ctx, m, cam) {
+        if (m.chapter && V.state.completed.includes(m.chapter)) {
+          ctx.fillStyle = "#d3dcb6";
+          ctx.fillRect(14 * T - cam.x, 7 * T - cam.y, 5 * T, 20);
+          V.Engine.text(ctx, "REGISTROS RESTAURADOS", 16.5 * T - cam.x, 7 * T + 14 - cam.y, "#29453b", 10, "center");
+        }
+        if (m.chapter === 4 && V.state.sideQuests.newsroom?.done) {
+          ctx.fillStyle = "#e6d6ad";
+          ctx.fillRect(18 * T - cam.x, 11 * T - cam.y, 99, 23);
+          V.Engine.text(ctx, "EDI\xC7\xC3O REVISADA", 18 * T + 49 - cam.x, 11 * T + 16 - cam.y, "#355244", 10, "center");
+        }
+        if (m.id === "room-5" && V.state.cozy.proposal?.length) {
+          const x = 4 * T - cam.x, y = 5 * T - cam.y;
+          ctx.fillStyle = "#ead7a9";
+          ctx.fillRect(x, y, 150, 54);
+          V.Engine.text(ctx, "PROPOSTA DA COMUNIDADE", x + 75, y + 16, "#395443", 9, "center");
+          V.state.cozy.proposal.forEach((n, i) => V.Engine.text(ctx, ["Sombra para a leitura", "Livros e tradu\xE7\xE3o", "Passagem livre"][n], x + 8, y + 28 + i * 10, "#395443", 9));
+        }
+        if (m.chapter === 5 && V.state.projects.length) {
+          ctx.fillStyle = "#bfcea4";
+          ctx.fillRect(20 * T - cam.x, 15 * T - cam.y, 88, 20);
+          V.Engine.text(ctx, V.state.projects.length + " PROJETOS", 20 * T + 44 - cam.x, 15 * T + 14 - cam.y, "#2f4a3f", 10, "center");
+        }
+        if (m.id === "room-6") {
+          const x = 14 * T - cam.x, y = 3 * T - cam.y;
+          ctx.fillStyle = "#2c5147";
+          ctx.fillRect(x, y, 120, 48);
+          V.Engine.text(ctx, "ARQUIVO VIVO", x + 60, y + 17, "#d1d9bb", 11, "center");
+          V.Engine.text(ctx, V.state.evidence.length + " registros \xB7 " + V.state.readings.length + " leituras", x + 60, y + 35, "#a3cfb7", 10, "center");
+        }
+      },
+      playerStand() {
+        if (!this.seated) return;
+        const old = this.seated;
+        const m = W.current;
+        m?.reservations.delete(old.anchor);
+        if (V.Player.data) {
+          V.Player.data.x = old.from.x;
+          V.Player.data.y = old.from.y;
+          V.Player.data.seated = false;
+        }
+        this.seated = null;
+      },
+      playerSit(o) {
+        const m = W.current, a = m.anchors.get(o.scene.id);
+        if (this.seated) {
+          this.playerStand();
+          V.UI.toast("Voc\xEA levantou.");
+          return;
+        }
+        const occupied = [...m.reservations].some(([id]) => m.anchors.has(id) && V.dist(m.anchors.get(id), a) < 32) || m.objects.some((n) => this.person(n) && V.dist(n, a) < 26);
+        if (occupied) {
+          V.UI.toast("Este lugar est\xE1 ocupado. H\xE1 outro banco por perto.");
+          return;
+        }
+        m.reservations.set(a.id, "player");
+        this.seated = { anchor: a.id, from: { x: V.Player.data.x, y: V.Player.data.y } };
+        V.Player.data.x = a.x;
+        V.Player.data.y = a.y;
+        V.Player.data.dir = a.dir;
+        V.Player.data.seated = true;
+        V.Player.data.moving = false;
+        V.Audio.sfx("observe");
+        V.UI.toast(o.scene.text + " Mova-se para levantar.");
+      },
+      resident(o) {
+        const r = o.resident;
+        if (!V.state.residentTalks.includes(r.id)) {
+          initial.resident(o);
+          return;
+        }
+        const candidates = (r.lines || []).filter((l) => !l.requiresCompleted || V.state.completed.includes(l.requiresCompleted));
+        if (r.repeat && !candidates.some((l) => l.en === r.repeat.en && l.pt === r.repeat.pt)) candidates.push(r.repeat);
+        const line = candidates[(o.visits = (o.visits || 0) + 1) % candidates.length];
+        if (!line) return initial.resident(o);
+        initial.resident({ ...o, resident: { ...r, repeat: { ...line, speaker: r.character } } });
+      },
+      service(o) {
+        const name = V.content.characters[o.character].name, lines = { cora: ["I set aside the rehearsal scores. The recorder is ready. Shall we check the music?", "Separei as partituras do ensaio. O gravador est\xE1 pronto. Vamos conferir a m\xFAsica?"], bento: ["This label still has no date. Shall we check before completing it?", "Esta etiqueta ainda est\xE1 sem data. Vamos conferir antes de completar?"], ines: ["You can ask about the test. We record each trial and compare the conditions.", "Voc\xEA pode perguntar sobre o teste. Registramos cada tentativa e comparamos as condi\xE7\xF5es."], celso: ["This draft has two sources. We still need to check the caption.", "Esse rascunho j\xE1 tem duas fontes. Ainda falta conferir a legenda."], luzia: ["You can speak at the meeting or leave your idea in writing.", "Voc\xEA pode falar na reuni\xE3o ou deixar sua ideia por escrito."], denis: ["I\u2019m checking the origin of the records. The catalogue is open for consultation.", "Estou conferindo a origem dos registros. O cat\xE1logo fica aberto para consulta."] };
+        const [en, pt] = lines[o.character] || ["Let\u2019s check our notes together.", "Vamos conferir nossas anota\xE7\xF5es juntos."];
+        V.Dialogue.start([{ speaker: o.character, en: "Hi! I\u2019m " + name + ". Welcome.", pt: "Oi! Sou " + name + ". Pode chegar." }, { speaker: o.character, en, pt }]);
+      },
+      interact(o) {
+        this.ensure();
+        if (this.person(o)) {
+          o.resumeAction = o.action;
+          o.responding = 3;
+          o.dir = Math.abs(V.Player.data.x - o.x) > Math.abs(V.Player.data.y - o.y) ? V.Player.data.x < o.x ? 1 : 2 : V.Player.data.y < o.y ? 3 : 0;
+          const g = mGroup(o);
+          if (g) this.endChat(W.current, g);
+          if (o.type === "service") {
+            this.service(o);
+            return true;
+          }
+        }
+        if (o.type !== "cozy") return initial.interact(o);
+        const s = o.scene;
+        if (s.kind === "conversation") {
+          const g = W.current.chats.find((g2) => g2.id === s.group);
+          if (g) V.Dialogue.start(g.lines.map((pt, i) => ({ speaker: g.members[i % 2].character, en: g.enLines[i] || "Let\u2019s listen to each other.", pt })));
+          return true;
+        }
+        if (s.kind === "seat") {
+          this.playerSit(o);
+          return true;
+        }
+        if (s.kind === "activity") {
+          this.activity(s.activity);
+          return true;
+        }
+        if (s.kind === "instrument" || s.kind === "listening") {
+          this.music(o);
+          return true;
+        }
+        if (s.kind === "sketch") {
+          this.sketch(o);
+          return true;
+        }
+        if (s.kind === "plant") {
+          this.seeds(o);
+          return true;
+        }
+        if (s.kind === "proposal") {
+          this.proposal(o);
+          return true;
+        }
+        if (s.kind === "shelf") {
+          this.shelf(o);
+          return true;
+        }
+        if (s.kind === "catalog") {
+          L.journal("readings");
+          return true;
+        }
+        this.showScene(o);
+        return true;
+      },
+      sourceLinks(ids) {
+        return (ids || []).map((id) => V.content.sources.find((s) => s.id === id)).filter(Boolean).map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.name)} \u2197</a>`).join("");
+      },
+      showScene(o) {
+        const s = o.scene, done = V.state.cozy.activities.length;
+        let extra = "";
+        if (s.kind === "food") extra = "<p>A hist\xF3ria do of\xEDcio envolve saberes, pessoas e contextos. Viviane \xE9 uma moradora ficcional; as fontes sobre as baianas est\xE3o no arquivo.</p>";
+        if (s.kind === "editorial" && (V.state.sideQuests.newsroom?.done || V.state.flags.networkSources)) extra = '<div class="feedback">\u2713 A edi\xE7\xE3o foi revisada. A manchete registra o que foi confirmado e o que ainda depende de atualiza\xE7\xE3o.</div>';
+        if (s.kind === "backup") extra = `<div class="feedback">${V.state.evidence.length} registros \xB7 ${V.state.readings.length} leituras \xB7 ${done} atividades culturais no caderno.</div>`;
+        if (W.current.id === "garden") extra += `<div class="feedback">${V.state.watered.length}/3 canteiros cuidados \xB7 ${V.state.cozy.seedLabels.length}/3 etiquetas conferidas.</div>`;
+        V.UI.modal(s.title, "UM LUGAR PARA EXPLORAR", `<article class="cozy-paper"><p>${esc(s.text)}</p>${extra}</article>`, `<button id="cozy-close" class="primary">Voltar ao mundo</button><button id="cozy-notebook" class="secondary">Abrir caderno</button>`);
+        V.$("#cozy-close").onclick = () => V.UI.close();
+        V.$("#cozy-notebook").onclick = () => this.journal();
+      },
+      shelf(o) {
+        const readings = V.learning.readings.filter((r) => W.current.id === "library" || r.chapter === W.current.chapter);
+        V.UI.modal(o.scene.title, "INDICA\xC7\xD5ES DE LEITURA", `<p>${esc(o.scene.text)}</p><div class="two-cols">${readings.map((r) => `<button class="book-card" data-cozy-read="${esc(r.id)}"><small>${esc(r.theme)}</small><strong>${esc(r.title)}</strong><span>${V.state.readings.includes(r.id) ? "\u2713 No caderno" : "Abrir leitura"}</span></button>`).join("")}</div>`);
+        V.$$("[data-cozy-read]").forEach((b) => b.onclick = () => L.read(b.dataset.cozyRead));
+      },
+      music(o) {
+        let timbre = V.state.cozy.music[o.id]?.timbre || "triangle";
+        const notes = [60, 64, 67, 64];
+        const show = () => {
+          V.UI.modal(o.scene.title, "FRASE ORIGINAL DO JOGO", `<p>${esc(o.scene.text)}</p><div class="cozy-sequence">${notes.map((n, i) => `<span>${i + 1}<small>${["d\xF3", "mi", "sol", "mi"][i]}</small></span>`).join("")}</div><div class="row"><button class="secondary" data-timbre="triangle">Timbre suave</button><button class="secondary" data-timbre="sine">Timbre arredondado</button></div><p class="note">Compare os timbres com a mesma sequ\xEAncia. A frase n\xE3o \xE9 uma grava\xE7\xE3o de Pixinguinha ou Dona Ivone Lara.</p><div id="cozy-music-feedback" aria-live="polite"></div>`, `<button id="cozy-play" class="primary">Ouvir frase</button><button id="cozy-music-save" class="secondary">Guardar arranjo</button>`);
+          V.$$("[data-timbre]").forEach((b) => b.onclick = () => {
+            timbre = b.dataset.timbre;
+            V.$("#cozy-music-feedback").textContent = "Timbre escolhido. Experimente ouvir a mesma frase.";
+          });
+          V.$("#cozy-play").onclick = () => {
+            V.Audio.unlock();
+            notes.forEach((n, i) => V.Audio.note(n, 0.24, timbre, 0.25, "sfx", i * 0.32));
+            V.$("#cozy-music-feedback").textContent = "1 d\xF3 \u2192 2 mi \u2192 3 sol \u2192 4 mi. Voc\xEA tamb\xE9m pode comparar pela sequ\xEAncia escrita.";
+          };
+          V.$("#cozy-music-save").onclick = () => {
+            V.state.cozy.music[o.id] = { timbre, notes };
+            V.Save.save();
+            V.UI.close();
+            V.UI.toast("Seu arranjo ficou no caderno do bairro.");
+          };
+        };
+        show();
+      },
+      sketch(o) {
+        const choices = ["Duas pessoas conversando perto de um banco", "Uma ave pousada ao lado do caminho", "Uma pessoa lendo \xE0 sombra"];
+        let selected = 0;
+        const show = () => {
+          V.UI.modal(o.scene.title, "UMA CENA ORIGINAL DO BAIRRO", `<p>${esc(o.scene.text)}</p><div class="cozy-sketch"><canvas id="cozy-sketch-preview" width="400" height="180" aria-label="${esc(choices[selected])}"></canvas><small>${esc(choices[selected])}</small></div><div class="stack">${choices.map((t, i) => `<button class="choice-button ${selected === i ? "selected" : ""}" data-sketch="${i}">${esc(t)}</button>`).join("")}</div><p class="note">Este desenho \xE9 uma cria\xE7\xE3o do jogo. As leituras de Rosana Paulino e Maria Auxiliadora apresentam refer\xEAncias reais, com fontes.</p>`, `<button id="cozy-sketch-save" class="primary">Guardar observa\xE7\xE3o</button>`);
+          this.drawSketch(V.$("#cozy-sketch-preview").getContext("2d"), selected);
+          V.$$("[data-sketch]").forEach((b) => b.onclick = () => {
+            selected = +b.dataset.sketch;
+            show();
+          });
+          V.$("#cozy-sketch-save").onclick = () => {
+            const id = o.id + ":" + selected;
+            if (!V.state.cozy.sketches.includes(id)) V.state.cozy.sketches.push(id);
+            V.Save.save();
+            V.UI.close();
+            V.UI.toast("Cena registrada. Voc\xEA pode voltar e escolher outra.");
+          };
+        };
+        show();
+      },
+      seeds(o) {
+        const labels = ["Canteiro 1", "Canteiro 2", "Canteiro 3"];
+        V.UI.modal(o.scene.title, "CONFERIR E ORGANIZAR", `<p>${esc(o.scene.text)}</p><div class="stack">${labels.map((t, i) => `<button class="choice-button" data-seed-label="${i}">${V.state.cozy.seedLabels.includes(i) ? "\u2713 " : ""}${t}: registrar nome e turno de cuidado</button>`).join("")}</div><p class="note">As etiquetas distinguem os canteiros. Aisha organiza a rega na miss\xE3o da comunidade.</p>`, `<button id="cozy-seed-close" class="primary">Guardar etiquetas</button>`);
+        V.$$("[data-seed-label]").forEach((b) => b.onclick = () => {
+          const n = +b.dataset.seedLabel;
+          if (!V.state.cozy.seedLabels.includes(n)) V.state.cozy.seedLabels.push(n);
+          b.textContent = "\u2713 " + labels[n] + ": etiqueta conferida";
+          V.Audio.sfx("collect");
+        });
+        V.$("#cozy-seed-close").onclick = () => {
+          V.Save.save();
+          V.UI.close();
+        };
+      },
+      proposal(o) {
+        let chosen = new Set(V.state.cozy.proposal || []);
+        V.UI.modal(o.scene.title, "PARTICIPA\xC7\xC3O POR ESCRITO", `<p>${esc(o.scene.text)}</p><div class="stack">${["Sombra para a roda de leitura", "Livros e apoio de tradu\xE7\xE3o", "Passagem livre e acess\xEDvel"].map((t, i) => `<button class="choice-button ${chosen.has(i) ? "selected" : ""}" aria-pressed="${chosen.has(i)}" data-proposal="${i}">${chosen.has(i) ? "\u2713 " : ""}${esc(t)}</button>`).join("")}</div><div id="cozy-proposal-feedback" aria-live="polite"></div>`, `<button id="cozy-proposal-save" class="primary">Registrar proposta</button>`);
+        V.$$("[data-proposal]").forEach((b) => b.onclick = () => {
+          chosen.has(+b.dataset.proposal) ? chosen.delete(+b.dataset.proposal) : chosen.add(+b.dataset.proposal);
+          b.classList.toggle("selected", chosen.has(+b.dataset.proposal));
+          b.setAttribute("aria-pressed", String(chosen.has(+b.dataset.proposal)));
+          b.textContent = (chosen.has(+b.dataset.proposal) ? "\u2713 " : "") + ["Sombra para a roda de leitura", "Livros e apoio de tradu\xE7\xE3o", "Passagem livre e acess\xEDvel"][+b.dataset.proposal];
+          V.$("#cozy-proposal-feedback").textContent = [...chosen].map((i) => ["A roda de leitura ter\xE1 uma \xE1rea de sombra.", "A proposta inclui livros e apoio para tradu\xE7\xE3o.", "A circula\xE7\xE3o deve permanecer livre para todos."][i]).join(" ");
+        });
+        V.$("#cozy-proposal-save").onclick = () => {
+          if (!chosen.size) {
+            V.$("#cozy-proposal-feedback").textContent = "Escolha pelo menos uma contribui\xE7\xE3o para registrar.";
+            return;
+          }
+          V.state.cozy.proposal = [...chosen];
+          V.Save.save();
+          V.UI.close();
+          V.UI.toast("A proposta foi guardada para a conversa da comunidade.");
+        };
+      },
+      activity(id) {
+        const a = V.cozyContent.activities.find((a2) => a2.id === id);
+        if (!a) return;
+        let correct = false;
+        V.UI.modal(a.title, "DESCOBERTA CULTURAL \xB7 SEM CRON\xD4METRO", `<article class="cozy-paper"><p>${esc(a.context)}</p><h3>${esc(a.prompt)}</h3></article><div class="stack">${a.options.map((t, i) => `<button class="choice-button" data-cozy-answer="${i}">${String.fromCharCode(65 + i)}. ${esc(t)}</button>`).join("")}</div><div id="cozy-activity-feedback" aria-live="polite"></div><div class="reader-origin">${this.sourceLinks(a.sourceIds)}</div>`, `<button id="cozy-activity-reading" class="secondary">Consultar leitura</button><button id="cozy-activity-save" class="primary" disabled>Guardar descoberta</button>`);
+        V.$$("[data-cozy-answer]").forEach((b) => b.onclick = () => {
+          correct = +b.dataset.cozyAnswer === a.correct;
+          V.$("#cozy-activity-feedback").innerHTML = `<div class="feedback ${correct ? "" : "error"}"><strong>${correct ? "\u2713 Vamos registrar." : "Compare novamente com o contexto."}</strong><p>${esc(a.explanation)}</p></div>`;
+          V.$("#cozy-activity-save").disabled = !correct;
+          V.Audio.sfx(correct ? "correct" : "wrong");
+        });
+        V.$("#cozy-activity-reading").onclick = () => {
+          const r = V.learning.readings.find((r2) => r2.id === a.readingId);
+          if (r) L.read(r.id, 0, () => this.activity(id));
+        };
+        V.$("#cozy-activity-save").onclick = () => {
+          if (!correct) return;
+          if (!V.state.cozy.activities.includes(id)) V.state.cozy.activities.push(id);
+          V.Save.log("descoberta cultural", a.title);
+          V.Save.save();
+          V.UI.close();
+          V.UI.toast("Descoberta guardada no caderno do bairro.");
+        };
+      },
+      drawSketch(ctx, selected) {
+        ctx.imageSmoothingEnabled = false;
+        ctx.fillStyle = "#547b5b";
+        ctx.fillRect(0, 0, 400, 180);
+        ctx.fillStyle = "#baa278";
+        ctx.fillRect(0, 132, 400, 48);
+        this.prop(ctx, "base", 0, 18, 5, 110);
+        this.prop(ctx, "base", 4, 157, 106, 80);
+        if (selected === 0) {
+          V.Assets.sprite(ctx, "elisa", 168, 118, 2, 0, 76);
+          V.Assets.sprite(ctx, "nara", 236, 120, 1, 0, 70);
+        } else if (selected === 1) {
+          const img = V.Assets.images.animals;
+          if (img) ctx.drawImage(img, 0, 3 * 32, 32, 32, 190, 83, 58, 58);
+          this.prop(ctx, "cozy", 39, 262, 103, 52);
+        } else {
+          V.Assets.sprite(ctx, "amara", 198, 120, 0, 0, 78);
+          this.actionOverlay(ctx, { action: "reading" }, 198, 120);
+        }
+      },
+      journal() {
+        this.ensure();
+        const s = V.state.cozy;
+        V.UI.modal("Caderno do bairro", "PESSOAS, LUGARES E DESCOBERTAS", this.nav("neighborhood") + `<div class="notebook-summary"><strong>${s.activities.length}/${V.cozyContent.activities.length} descobertas culturais</strong><span>${s.sketches.length} cenas \xB7 ${Object.keys(s.music).length} arranjos \xB7 ${s.seedLabels.length}/3 etiquetas</span></div><div class="two-cols">${V.cozyContent.activities.map((a) => `<article class="card"><small>${esc(L.location(a.map))}</small><h3>${s.activities.includes(a.id) ? "\u2713 " : ""}${esc(a.title)}</h3><p>${esc(a.en)}</p><small>${esc(a.pt)}</small><p>${s.activities.includes(a.id) ? "Descoberta registrada." : "Encontre a atividade no ambiente indicado."}</p></article>`).join("")}</div>${s.proposal ? '<div class="feedback">Sua proposta escrita est\xE1 registrada para a assembleia.</div>' : ""}`);
+        L.bindNav();
+      },
+      nav(tab) {
+        return initial.nav(tab).replace("</nav>", `<button data-notebook-tab="neighborhood" class="${tab === "neighborhood" ? "active" : ""}">Bairro vivo</button></nav>`);
+      },
+      onLoad() {
+        this.seated = null;
+        const m = W.current;
+        if (!m) return;
+        m.reservations.clear();
+        for (const o of m.objects) {
+          o.bubble = "";
+          o.chatSpeaking = false;
+          o.iconTime = 0;
+          o.responding = 0;
+          o.chatReady = false;
+          o.route = [];
+          o.reserved = null;
+          if (["walking", "conversing"].includes(o.action)) {
+            o.action = "waiting";
+            o.destination = null;
+            o.taskTime = 2 + hash(o.id) % 7;
+          } else if (this.person(o) && o.destination && V.dist(o, o.destination) < 9) this.reserve(m, o, o.destination);
+        }
+        for (const g of m.chats) {
+          g.phase = "rest";
+          g.talking = false;
+          g.clock = 0;
+          g.wait = 8 + hash(g.id) % 12;
+        }
+        if (V.state && !V.state.cozy.visited.includes(m.id)) V.state.cozy.visited.push(m.id);
+        const people = m.objects.filter((o) => this.person(o));
+        if (W.collides(V.Player.data.x, V.Player.data.y, 11) || people.some((o) => V.dist(o, V.Player.data) < 12 + 12 * (o.visualScale || 1))) {
+          const p = this.safe(m, V.Player.data.x / T - 0.5, V.Player.data.y / T - 0.5, people);
+          V.Player.data.x = p.x * T + 24;
+          V.Player.data.y = p.y * T + 24;
+        }
+      }
+    };
+    function mGroup(o) {
+      return (o.group || o.scene?.group) && W.current.chats.find((g) => g.id === (o.group || o.scene?.group));
+    }
+    L.initContent = () => V.Cozy.initContent();
+    L.ensure = () => V.Cozy.ensure();
+    L.build = () => V.Cozy.build();
+    L.update = (dt) => V.Cozy.update(dt);
+    L.ground = (m) => V.Cozy.ground(m);
+    L.render = (ctx) => V.Cozy.render(ctx);
+    L.drawObject = (...args) => V.Cozy.drawObject(...args);
+    L.interact = (o) => V.Cozy.interact(o);
+    L.resident = (o) => V.Cozy.resident(o);
+    L.nav = (tab) => V.Cozy.nav(tab);
+    L.journal = (tab) => tab === "neighborhood" ? V.Cozy.journal() : initial.journal(tab);
+    W.load = function(id, pos = null) {
+      V.Cozy.playerStand();
+      initial.load(id, pos);
+      V.Cozy.onLoad();
+    };
+    W.drawFountain = (ctx, cam) => V.Cozy.fountain(ctx, cam);
+    W.drawBuilding = (...args) => V.Cozy.drawBuilding(...args);
+    W.interactables = function() {
+      return this.current.objects.filter((o) => o.scene?.kind !== "conversation" || mGroup(o)?.talking);
+    };
+    V.Player.nearest = function() {
+      if (!this.data || !W.current) return null;
+      let closest = null, distance = Infinity;
+      for (const o of W.interactables()) {
+        const d = V.dist(this.data, o);
+        if (d < (o.interactionRange || 80) && d < distance) {
+          closest = o;
+          distance = d;
+        }
+      }
+      return closest;
+    };
+    V.Player.update = function(dt) {
+      if (V.Cozy.seated) {
+        const axis = V.Input.axis();
+        if (axis.x || axis.y) V.Cozy.playerStand();
+        else {
+          this.data.moving = false;
+          this.data.frame = 0;
+          return;
+        }
+      }
+      initial.playerUpdate(dt);
+    };
+    V.Player.render = function(ctx) {
+      if (this.data?.seated) {
+        const p = this.data, x = p.x - W.camera.x, y = p.y - W.camera.y, img = V.Assets.images[V.state.character];
+        ctx.fillStyle = "#182e2845";
+        ctx.fillRect(x - 13, y + 4, 26, 4);
+        if (img) V.Assets.spritePart(ctx, V.state.character, 0, p.dir, 0.75, x - 28, y - 51, 56, 42);
+        V.Cozy.actionOverlay(ctx, { action: "sitting" }, x, y);
+      } else initial.playerRender(ctx);
+    };
+    V.Hooks.around(V.Assets, "load", "cozy-world:load:1", () => async function() {
+      const ids = ["amara", "tomas", "elisa", "andre", "viviane", "rui", "jamila", "otavio", "cora", "bento", "ines", "celso", "luzia", "denis", "maite", "aline", "paulo", "nara", "dora", "vitor", "luan", "selma", "enzo"];
+      const entries = ids.flatMap((id) => [[id, "assets/characters/" + id + ".png"], [id + "-portrait", "assets/characters/" + id + "-portrait.png"]]).concat([["cozy-props", "assets/tilesets/cozy-props.png"], ["cozy-icons", "assets/ui/cozy-icons.png"]]);
+      await Promise.all([initial.assets(), document.fonts?.load('16px "VOICES Sans"').catch(() => {
+      }), this.loadEntries(entries)]);
+      return this.errors;
+    });
+  })();
 });

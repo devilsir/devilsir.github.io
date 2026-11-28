@@ -424,18 +424,18 @@
     }
   };
 
-  const assetLoad=V.Assets.load.bind(V.Assets),assetGroup=V.AssetLoader.group.bind(V.AssetLoader);
+  
   const seasonalFiles=new Set(Object.values(atlas).map(a=>a.file));
-  V.AssetLoader.group=key=>seasonalFiles.has(key)?groupName:assetGroup(key);
-  V.Assets.load=async function(...args){
+  V.AssetLoader.addGroupRule("season-visuals:group:1", key => seasonalFiles.has(key)?groupName:undefined);
+  V.Hooks.around(V.Assets, "load", "season-visuals:load:1", assetLoad => async function(...args){
     const [out]=await Promise.all([assetLoad(...args),R.load()]);
     return out;
-  };
-  const groups=V.MapAssets.groups.bind(V.MapAssets);
-  V.MapAssets.groups=function(m){
+  });
+  
+  V.Hooks.around(V.MapAssets, "groups", "season-visuals:groups:1", groups => function(m){
     const out=groups(m);
     return m&&R.exposure(m).open?[...new Set([...out,groupName])]:out;
-  };
+  });
 
   const render=V.Cozy.render.bind(V.Cozy);
   V.Cozy.render=function(c){

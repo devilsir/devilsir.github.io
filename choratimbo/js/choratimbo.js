@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import {OrbitControls} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+import {RoomEnvironment} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js";
 import {FBXLoader} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/FBXLoader.js";
 import {GLTFLoader} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
 import {clone as cloneSkeleton} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/utils/SkeletonUtils.js";
@@ -21,6 +22,8 @@ if(MOBILE_MODE){
   if(loader)loader.textContent="Carregando modo mobile leve…";
 }
 let autoRotate=true;
+let isPointerHolding=false;
+const activeHoldPointers=new Set();
 let flipMode=false;
 let loadedTextures=[];
 
@@ -37,10 +40,19 @@ renderer.setPixelRatio(MOBILE_MODE?MOBILE_CONFIG.pixelRatio:Math.min(devicePixel
 renderer.setSize(innerWidth,innerHeight);
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.16;
+renderer.toneMappingExposure=1.06;
 renderer.shadowMap.enabled=!MOBILE_MODE;
 if(!MOBILE_MODE)renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 container.appendChild(renderer.domElement);
+
+try{
+  const pmremGenerator=new THREE.PMREMGenerator(renderer);
+  const envRT=pmremGenerator.fromScene(new RoomEnvironment(),0.04);
+  scene.environment=envRT.texture;
+  pmremGenerator.dispose();
+}catch(error){
+  console.warn("Studio environment fallback:",error);
+}
 
 const controls=new OrbitControls(camera,renderer.domElement);
 controls.enableDamping=true;
@@ -48,18 +60,67 @@ controls.dampingFactor=.06;
 controls.enablePan=false;
 controls.autoRotate=false;
 
+function setPointerHoldState(holding){
+  isPointerHolding=Boolean(holding);
+}
+function releaseAllHoldPointers(){
+  activeHoldPointers.clear();
+  setPointerHoldState(false);
+}
+renderer.domElement.addEventListener("pointerdown",event=>{
+  activeHoldPointers.add(event.pointerId);
+  setPointerHoldState(true);
+});
+addEventListener("pointerup",event=>{
+  activeHoldPointers.delete(event.pointerId);
+  setPointerHoldState(activeHoldPointers.size>0);
+});
+addEventListener("pointercancel",event=>{
+  activeHoldPointers.delete(event.pointerId);
+  setPointerHoldState(activeHoldPointers.size>0);
+});
+addEventListener("pointermove",event=>{
+  if(event.pointerType==="mouse"&&event.buttons===0&&activeHoldPointers.size>0){
+    releaseAllHoldPointers();
+  }
+});
+addEventListener("blur",releaseAllHoldPointers);
+document.addEventListener("visibilitychange",()=>{if(document.hidden)releaseAllHoldPointers();});
+
 const pivot=new THREE.Group();
 scene.add(pivot);
-scene.add(new THREE.HemisphereLight(0xffffff,0x293241,MOBILE_MODE?1.7:1.85));
-const key=new THREE.DirectionalLight(0xffffff,MOBILE_MODE?2.85:3.35);key.position.set(1.8,3.9,8.8);key.castShadow=!MOBILE_MODE;scene.add(key);
-if(MOBILE_MODE){
-  const mobileFill=new THREE.DirectionalLight(0xffeadf,1.3);mobileFill.position.set(-1.4,1.7,7.4);scene.add(mobileFill);
-}else{
-  const frontFill=new THREE.DirectionalLight(0xfff3ea,2.15);frontFill.position.set(-1.2,1.8,9.6);scene.add(frontFill);
-  const fill=new THREE.DirectionalLight(0xffddc7,1.65);fill.position.set(.2,1.6,6.2);scene.add(fill);
-  const rim=new THREE.DirectionalLight(0xc7dcff,1.15);rim.position.set(-4.5,2.5,-4.0);scene.add(rim);
+scene.add(new THREE.HemisphereLight(0xf6f8ff,0x453730,MOBILE_MODE?0.92:0.82));
+const key=new THREE.DirectionalLight(0xfff6ec,MOBILE_MODE?1.95:2.15);
+key.position.set(2.3,3.3,4.8);
+key.castShadow=!MOBILE_MODE;
+if(!MOBILE_MODE){
+  key.shadow.mapSize.set(2048,2048);
+  key.shadow.camera.near=1;
+  key.shadow.camera.far=14;
+  key.shadow.camera.left=-1.15;
+  key.shadow.camera.right=1.15;
+  key.shadow.camera.top=1.15;
+  key.shadow.camera.bottom=-1.15;
+  key.shadow.bias=-0.0004;
+  key.shadow.normalBias=0.028;
+  key.shadow.radius=4.0;
 }
-const ground=MOBILE_MODE?new THREE.Group():new THREE.Mesh(new THREE.CircleGeometry(200,96),new THREE.ShadowMaterial({opacity:.20}));
+scene.add(key);
+const coolFill=new THREE.DirectionalLight(0xe6f0ff,MOBILE_MODE?1.10:1.25);
+coolFill.position.set(-3.4,1.5,3.8);
+scene.add(coolFill);
+const rimCool=new THREE.DirectionalLight(0xb8d8ff,MOBILE_MODE?0.85:1.10);
+rimCool.position.set(-2.8,2.8,-3.6);
+scene.add(rimCool);
+if(!MOBILE_MODE){
+  const rimWarm=new THREE.DirectionalLight(0xffe5d0,0.95);
+  rimWarm.position.set(3.0,2.0,-3.2);
+  scene.add(rimWarm);
+  const chinBounce=new THREE.DirectionalLight(0xffe8d8,0.55);
+  chinBounce.position.set(0.3,-2.4,2.8);
+  scene.add(chinBounce);
+}
+const ground=MOBILE_MODE?new THREE.Group():new THREE.Mesh(new THREE.CircleGeometry(200,96),new THREE.ShadowMaterial({opacity:.16}));
 if(!MOBILE_MODE){ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;}
 scene.add(ground);
 
@@ -133,22 +194,61 @@ function collectTexture(texture){
 }
 function polishMaterials(object){
   allMaterials(object,(mat,mesh)=>{
-    mesh.castShadow=!MOBILE_MODE;mesh.receiveShadow=!MOBILE_MODE;
+    const matName=String(mat.name||"").toLowerCase();
+    const meshName=String(mesh.name||"").toLowerCase();
+    const isSilverJewelry=matName.includes("jewelry")||matName.includes("silver")||matName.includes("metal")||meshName.includes("piercing")||meshName.includes("argola")||meshName.includes("hardware");
+    const isEye=matName.includes("eye")||matName.includes("cornea")||meshName.includes("eye");
+    const isAlargadorBacking=matName.includes("backing");
+    const isAlargador=!isAlargadorBacking&&(matName.includes("alargador")||meshName.includes("alargador"));
+    const isGlassesTemple=matName==="material.001"||matName.includes("glasses")||matName.includes("temple")||meshName==="plane"||meshName.includes("temple");
+
+    mesh.castShadow=!MOBILE_MODE&&!isEye;
+    mesh.receiveShadow=!MOBILE_MODE;
     mat.side=THREE.DoubleSide;
     mat.transparent=false;
     mat.alphaTest=0;
-    if("roughness" in mat) mat.roughness=.96;
-    if("metalness" in mat) mat.metalness=0;
-    if("envMapIntensity" in mat) mat.envMapIntensity=.08;
-    if("clearcoat" in mat) mat.clearcoat=0;
-    if("reflectivity" in mat) mat.reflectivity=.05;
-    if("shininess" in mat) mat.shininess=8;
-    if(mat.specular && mat.specular.isColor) mat.specular.set(0x111111);
+
+    if(isSilverJewelry){
+      if("roughness" in mat) mat.roughness=0.15;
+      if("metalness" in mat) mat.metalness=0.95;
+      if("envMapIntensity" in mat) mat.envMapIntensity=1.55;
+    }else if(isEye){
+      if("roughness" in mat) mat.roughness=0.11;
+      if("metalness" in mat) mat.metalness=0.02;
+      if("envMapIntensity" in mat) mat.envMapIntensity=1.25;
+      if("clearcoat" in mat) mat.clearcoat=0.75;
+      if("clearcoatRoughness" in mat) mat.clearcoatRoughness=0.06;
+    }else if(isAlargadorBacking){
+      if("roughness" in mat) mat.roughness=0.92;
+      if("metalness" in mat) mat.metalness=0;
+      if("envMapIntensity" in mat) mat.envMapIntensity=0.18;
+    }else if(isAlargador){
+      if("roughness" in mat) mat.roughness=0.24;
+      if("metalness" in mat) mat.metalness=0.22;
+      if("envMapIntensity" in mat) mat.envMapIntensity=0.95;
+    }else if(isGlassesTemple){
+      if("roughness" in mat) mat.roughness=0.45;
+      if("metalness" in mat) mat.metalness=0.04;
+      if("envMapIntensity" in mat) mat.envMapIntensity=0.55;
+    }else{
+      if("roughness" in mat) mat.roughness=0.74;
+      if("metalness" in mat) mat.metalness=0;
+      if("envMapIntensity" in mat) mat.envMapIntensity=0.36;
+      if("clearcoat" in mat) mat.clearcoat=0;
+      if("reflectivity" in mat) mat.reflectivity=0.18;
+      if("shininess" in mat) mat.shininess=18;
+      if(mat.specular && mat.specular.isColor) mat.specular.set(0x1e1e1e);
+    }
+
     if(mat.map){mat.map.colorSpace=THREE.SRGBColorSpace;collectTexture(mat.map);}
     if(mat.emissiveMap){mat.emissiveMap.colorSpace=THREE.SRGBColorSpace;mat.emissiveIntensity=0;collectTexture(mat.emissiveMap);}
     if(mat.normalMap){
       if(MOBILE_MODE){mat.normalMap=null;}
-      else{mat.normalScale=new THREE.Vector2(.85,.85);collectTexture(mat.normalMap);}
+      else{
+        const ns=isEye?0.35:isGlassesTemple?0.55:0.70;
+        mat.normalScale=new THREE.Vector2(ns,ns);
+        collectTexture(mat.normalMap);
+      }
     }
     if(mat.bumpMap){collectTexture(mat.bumpMap);}
     if(mat.roughnessMap)collectTexture(mat.roughnessMap);
@@ -481,7 +581,7 @@ async function init(){
     status.innerHTML='<div class="error">Não consegui carregar o modelo principal. Confira se a pasta assets foi enviada junto com o HTML e se o site está online.</div>';
   }
 }
-const startTime=performance.now();
+const spinSpeed=(Math.PI*2)/8;
 let lastMobileRender=0;
 function animate(frameTime){
   requestAnimationFrame(animate);
@@ -491,8 +591,9 @@ function animate(frameTime){
   if(MOBILE_MODE)lastMobileRender=now;
   const delta=Math.min(.05,(now-lastFrameTime)/1000||0);
   lastFrameTime=now;
-  const seconds=(now-startTime)/1000;
-  if(autoRotate)pivot.rotation.y=seconds/8*Math.PI*2;
+  if(autoRotate&&!isPointerHolding){
+    pivot.rotation.y=(pivot.rotation.y+delta*spinSpeed)%(Math.PI*2);
+  }
   updateFallingActors(delta);
   controls.update();
   renderer.autoClear=true;

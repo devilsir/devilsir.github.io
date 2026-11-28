@@ -1,7 +1,7 @@
 .vehicle-hud[hidden],.vehicle-hud [hidden],.mobile-controls button[hidden]{display:none}
 .vehicle-hud{
   --meter:#81e4c9;
-  position:absolute;bottom:108px;left:50%;transform:translateX(-50%);display:grid;gap:7px;
+  position:relative;display:grid;gap:7px;
   width:min(394px,calc(100vw - 32px));padding:10px 13px 9px;box-sizing:border-box;
   background:linear-gradient(151deg,#1a262b 0%,#0b1418 57%,#131f23 100%);
   color:#eef6f3;border:1px solid #446065;border-top:2px solid var(--vehicle-accent,#69b8ad);
@@ -42,7 +42,7 @@
 .mobile-controls [data-drive]{font-size:10px;font-weight:750;color:#d8f0ee}
 .mobile-controls [data-drive][data-mobile-key="ShiftLeft"]{border-color:#e3bd6680;color:#ffe39f}
 @media(max-width:700px){
-  .vehicle-hud{bottom:151px;width:min(310px,calc(100vw - 26px));padding:7px 10px;gap:3px}
+  .vehicle-hud{width:min(310px,calc(100vw - 26px));padding:7px 10px;gap:3px}
   .vehicle-hud header strong{font-size:12px}
   .vehicle-readouts{grid-template-columns:95px minmax(0,1fr);gap:10px}
   .vehicle-dial{height:77px}.vehicle-dial svg{width:95px}

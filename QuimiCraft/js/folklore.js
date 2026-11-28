@@ -1,41 +1,48 @@
 "use strict";
 
 globalThis.QuimiCraftFolklore = (() => {
-  const strike = (damage, range, windup, cooldown, effect = "physical") =>
-    ({kind: "lunge", damage, range, windup: Math.max(.2, Number((windup * .62).toFixed(2))), cooldown: Math.max(1.0, Number((cooldown * .7).toFixed(2))), effect});
-  const profile = (temperament, hp, walk, run, sense, roam, attack = null, loot = []) =>
+  const strike = (name, damage, range, windup, cooldown, effect = "physical") =>
+    ({kind: "lunge", name, damage, range, windup, cooldown, effect});
+  const profile = (temperament, hp, walk, run, sense, roam, attack, loot = []) =>
     ({temperament, hp, walk, run, sense, roam, strike: attack, loot});
+  const tools = {
+    folklore_sieve: {name:"Peneira de Cruzeta",color:"#caa075",needs:[["stick",4],["wool",1]],detail:"Use durante a formação do redemoinho para prender o Saci por alguns segundos."},
+    curupira_knot: {name:"Nó de Cipó",color:"#81a653",needs:[["stick",2]],detail:"Mostre ao Curupira para distraí-lo enquanto ele tenta desfazer o nó."}
+  };
 
   const creatures = {
     curupira: {
       name: "Curupira", radius: .32, height: 1.62,
-      detail: "Guardião das matas de tradição indígena. Tem cabelo de fogo e pés voltados para trás. Persegue quem derruba árvores ou ataca animais silvestres por perto.",
-      profile: profile("neutral", 64, 1.6, 5.9, 13, 16, strike(18, 2.15, .34, 1.5))
+      detail: "Guardião das matas de tradição indígena. Com pés voltados para trás, engana quem derruba árvores ou caça na mata. Use um Nó de Cipó para distraí-lo.",
+      profile: profile("neutral", 340, 1.75, 6.1, 17, 21, strike("Investida da Trilha Invertida", 32, 2.7, .43, 1.78))
     },
     pink_boto: {
       name: "Boto-cor-de-rosa", radius: .48, height: 1.79,
-      detail: "Encantado dos rios amazônicos. À noite sai da água como um rapaz de branco com chapéu, lembrando as histórias das festas ribeirinhas. Volta ao rio ao amanhecer.",
-      profile: profile("calm", 54, 1.28, 3.4, 7, 8)
+      detail: "Encantado dos rios amazônicos. À noite, o rapaz de branco atrai viajantes para a água. Revelar o que há sob o chapéu faz o boto voltar ao rio, onde se defende com a cauda.",
+      profile: profile("neutral", 295, 1.45, 4.6, 12, 12, {...strike("Encanto das Águas", 29, 6, .95, 3.8, "sonic"),kind:"lure"})
     },
     saci: {
       name: "Saci-Pererê", radius: .32, height: 1.4,
-      detail: "Travesso de gorro vermelho e uma perna só. Anda aos pulos e usa redemoinhos para empurrar viajantes e apagar fogueiras.",
-      profile: profile("calm", 34, 1.65, 4.7, 9, 17)
+      detail: "Travesso de gorro vermelho e uma perna só. Apaga fogueiras e levanta redemoinhos. Uma Peneira de Cruzeta prende o Saci enquanto ele prepara a rajada.",
+      profile: profile("neutral", 270, 1.9, 5.1, 12, 19,
+        {kind:"wind",name:"Redemoinho do Saci",damage:28,range:5.2,vertical:1.8,windup:1.15,cooldown:2.8,effect:"wind"})
     },
     boitata: {
       name: "Boitatá", radius: .48, height: 1.30,
-      detail: "Serpente de fogo do folclore de origem indígena. Vaga à noite e protege os campos de quem ateia fogo, apagando as chamas próximas.",
-      profile: profile("neutral", 92, 1.36, 4.9, 14, 19, strike(21, 2.4, .52, 2, "fire"))
+      detail: "Serpente de fogo de tradição indígena que protege os campos de incêndios. Enfrenta incendiários com o clarão dos olhos. Fique imóvel e desvie o olhar para escapar do clarão.",
+      profile: profile("neutral", 395, 1.5, 5.4, 19, 22,
+        {...strike("Olhos do Boitatá", 39, 10, 1.1, 3.1, "fire"),kind:"shot",elemental:"fire",speed:13,color:0xff9a32,slow:1.1})
     },
     headless_mule: {
       name: "Mula sem Cabeça", radius: .62, height: 1.99,
-      detail: "Nas lendas de tradição ibérica e brasileira, uma mulher amaldiçoada assume a forma da mula. Na noite de quinta para sexta, galopa nas estradas com fogo no lugar da cabeça.",
-      profile: profile("hostile", 102, 1.8, 6.4, 15, 22, strike(24, 2.65, .45, 2, "fire"))
+      detail: "Nas noites de quinta para sexta, a mula amaldiçoada galopa nas estradas e dá coices em chamas. Enfraqueça-a e retire o freio de ferro pela lateral entre duas investidas.",
+      profile: profile("hostile", 445, 2.05, 6.8, 18, 27, strike("Coice em Chamas", 45, 3.1, .64, 2.8, "fire"))
     },
     werewolf: {
       name: "Lobisomem", radius: .54, height: 2.16, silverOnly: true,
       detail: "Na versão de lua cheia da lenda, a maldição transforma um homem em fera. Aparece somente nas noites de lua cheia e só sofre dano de ataques de prata.",
-      profile: profile("hostile", 132, 1.9, 6.2, 17, 26, strike(27, 2.75, .36, 1.55), [["hide", 2, 4]])
+      profile: profile("hostile", 490, 2.05, 6.6, 21, 28,
+        strike("Garras da Lua Cheia", 42, 3, .48, 1.95), [["hide", 2, 4]])
     }
   };
   const phases = [
@@ -60,5 +67,5 @@ globalThis.QuimiCraftFolklore = (() => {
     return type === "pink_boto" && (wetland.test(biome) || /selva tropical|floresta|planície/.test(biome));
   }
   const canDamage = (type, attack) => !creatures[type]?.silverOnly || attack?.silver === true;
-  return {creatures, phases, phase, isNight, active, habitat, canDamage};
+  return {creatures, tools, phases, phase, isNight, active, habitat, canDamage};
 })();

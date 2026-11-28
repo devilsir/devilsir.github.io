@@ -55,8 +55,8 @@
     }
     c.restore();
   }
-  const group=V.AssetLoader.group.bind(V.AssetLoader);
-  V.AssetLoader.group=key=>key.startsWith(file)?'home-collection':group(key);
+  
+  V.AssetLoader.addGroupRule("residential-art:group:1", key => key.startsWith(file)?'home-collection':undefined);
 
   const doors=[
     [16,'Madeira frisada de imbuia','slats','#765238','#bd9362'],
@@ -232,11 +232,11 @@
     c.fillStyle=tint;c.fillRect(-wide,-wide,wide*2,wide*2);c.restore();
   }
 
-  const draw=C.drawObject.bind(C);
-  C.drawObject=function(c,o,cam,t){
+  
+  V.Hooks.around(V.Cozy, "drawObject", "residential-art:drawObject:1", draw => function(c,o,cam,t){
     if(o.type==='room-door'&&door(c,o,cam))return;
     if(o.type==='home-window'&&V.City.privateHome(V.World.current?.design))return;
     return draw(c,o,cam,t);
-  };
+  });
   V.ResidentialArt={items,windows,shadow,door};
 });

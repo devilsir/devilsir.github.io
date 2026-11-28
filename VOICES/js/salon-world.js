@@ -1,38 +1,370 @@
 /* Registered module: salon-world */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("salon-world", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function(){
-'use strict';
-const V=window.V,W=V.World,C=V.Cozy,S=V.SceneDesign,F=V.FastTravel,Arch=V.Architecture,A=V.Appearance,T=48,id='salon-iris',copy=x=>JSON.parse(JSON.stringify(x)),esc=V.escape;
-const design={name:'Salão Íris · beleza e estilo',width:26,height:24,spawn:[13,21.2],floor:'wood',purpose:'Um espaço para experimentar cabelos, roupas e acessórios, com prévia e cores livres.',palette:['#e1d3bb','#477365','#d2929f'],paths:[],decor:[],scenes:[],positions:{},routines:{},anchors:[],zones:[],meeting:[13,14],salonVersion:2,adventure:{version:3,architecture:{walls:[{id:'salon-north',a:[1.5*T,4*T],b:[24.5*T,4*T],height:156,thickness:13,color:'#c4bba8'},{id:'salon-west',a:[1.5*T,4*T],b:[1.5*T,22.8*T],height:156,thickness:13,color:'#c3b19e'},{id:'salon-east',a:[24.5*T,4*T],b:[24.5*T,22.8*T],height:156,thickness:13,color:'#c3b19e'},{id:'home-divider-salon-south',a:[1.5*T,22.8*T],b:[24.5*T,22.8*T],height:150,thickness:13,color:'#b8b7a0',openings:[{u:.5,width:152}]}],mounts:[],signs:[],windows:[]},environment:{indoor:true,sky:'windows',weather:false,ambient:'#ebdfca',snowAllowed:false},lights:[],regions:[],encounters:[],triggers:[]}};
-C.layouts[id]=copy(design);S.defaults[id]=copy(design);S.raw[id]=W.base(id,'community',26,24);S.objectRegistry[id]={};
-const Salon=V.Salon={id,clock:0,hudClock:0,
-build(d=C.layouts[id]){const m=W.base(id,'community',26,24);Object.assign(m,{name:d.name,salon:true,design:d,ambientTime:0,zones:[],chats:[],anchors:new Map(),reservations:new Map(),bubbleBudget:0,archWalls:[],archSolids:[],mounts:[],lifeAnimals:[],geometryRevision:1});m.solids.push({x:0,y:0,w:26*T,h:T},{x:0,y:0,w:T,h:24*T},{x:25*T,y:0,w:T,h:24*T},{x:0,y:23*T,w:26*T,h:T});const add=(type,key,x,y,label,data={})=>{const o={type,id:key,x:x*T,y:y*T,label,interactionRange:100,...data};m.objects.push(o);return o;};
-for(const[x,tab,name]of [[7,'hair','Cabelos'],[13,'outfit','Roupas'],[19,'accessories','Acessórios']]){const vanity=add('salon-prop','salon-vanity-'+tab,x,11.5,'',{art:'salon-vanity',w:2.5*T,h:3.55*T});m.solids.push({x:vanity.x-48,y:vanity.y-22,w:96,h:22,owner:vanity.id});const chair=add('salon-station','salon-chair-'+tab,x,14,'Experimentar '+(tab==='hair'?'cabelos e pinturas':name.toLowerCase()),{art:'salon-chair',w:1.15*T,h:1.75*T,tab});m.solids.push({x:chair.x-22,y:chair.y-18,w:44,h:18,owner:chair.id});}
-const wash=add('salon-wash','salon-wash',6.5,18,'Conhecer o lavatório',{art:'salon-wash',w:2.6*T,h:2.6*T});m.solids.push({x:wash.x-46,y:wash.y-24,w:92,h:24,owner:wash.id});const display=add('salon-station','salon-display',20,18,'Escolher roupas e acessórios',{art:'salon-display',w:2.2*T,h:2.5*T,tab:'outfit'});m.solids.push({x:display.x-40,y:display.y-20,w:80,h:20,owner:display.id});const iris=add('salon-stylist','stylist-iris',14.8,16,'Conversar com Íris');m.solids.push({x:iris.x-10,y:iris.y-9,w:20,h:18,owner:'host-'+iris.id});
-for(const[x,y]of [[9,19],[17,20.5]]){const key='salon-bench-'+x,o=add('cozy',key,x,y,'Sentar no salão',{scene:{id:key,kind:'seat',dir:0,text:'Uma pausa para imaginar seu próximo visual.'}});m.anchors.set(key,{id:key,x:o.x,y:o.y,dir:0,state:'sitting'});m.solids.push({x:o.x-43,y:o.y-25,w:86,h:24,owner:key});}
-add('travel','salon-exit',13,22.1,'Voltar ao mercado',{to:'market',salonLink:true,inside:true});add('salon-info','salon-guide',20.7,21,'Consultar o seu visual');Arch.hydrate(m);for(const o of m.objects){const p=d.positions?.[o.id];if(p){const x=p[0]*T,y=p[1]*T,dx=x-o.x,dy=y-o.y;o.x=x;o.y=y;for(const s of m.solids.filter(s=>s.owner===o.id||s.owner==='host-'+o.id)){s.x+=dx;s.y+=dy;}if(m.anchors.has(o.id))Object.assign(m.anchors.get(o.id),{x,y});}S.objectRegistry[id][o.id]={...o};}return m;},
-ground(m){const canvas=V.GroundCache.create(m, 26*T, 24*T);;;const c=canvas.getContext('2d');c.fillStyle='#39554b';c.fillRect(0,0,V.GroundCache.width(canvas),V.GroundCache.height(canvas));c.fillStyle='#c6b899';c.fillRect(1.5*T,4*T,23*T,19*T);for(let y=4*T;y<23*T;y+=24){const r=(y/24)%3;c.fillStyle=['#d4c5a4','#cab998','#d0bea0'][r];c.fillRect(1.5*T,y,23*T,23);c.fillStyle='#8c7b571c';for(let x=1.5*T+(r%2)*65;x<24.5*T;x+=144)c.fillRect(x,y,1,24);c.fillStyle='#fbf0d324';c.fillRect(1.5*T,y+1,23*T,1);}c.fillStyle='#e7ddc4';c.fillRect(2*T,8.3*T,22*T,3.3*T);for(const[x,label]of [[7,'CABELOS E PINTURAS'],[13,'ROUPAS'],[19,'ACESSÓRIOS']]){c.fillStyle='#b7838b';c.beginPath();c.ellipse(x*T,14*T,1.7*T,.65*T,0,0,Math.PI*2);c.fill();c.strokeStyle='#dfc9a0';c.lineWidth=3;c.stroke();V.MaritimeArt.text(c,label,x*T,15.1*T,12,'#4a5141');}c.fillStyle='#527260';c.fillRect(10.5*T,19.7*T,5*T,2.7*T);c.strokeStyle='#dbc597';c.lineWidth=2;c.strokeRect(10.5*T+6,19.7*T+6,5*T-12,2.7*T-12);V.MaritimeArt.text(c,'SALÃO ÍRIS',13*T,2.1*T,30,'#f2dfbd');V.MaritimeArt.text(c,'ROUPAS · CABELOS · CORES',13*T,2.85*T,12,'#d7c7a5');m.cache=canvas;},
-art(c,key,x,y,w,h){const img=A.images.get(key);if(img)V.GroundedArt.draw(c,img,x-w/2,y-h,w,h);},
-shadow(c,o,cam){const x=o.x-cam.x,y=o.y-cam.y;if(o.art)V.GroundedArt.shadow(c,A.images.get(o.art),x,y,o.w,o.h,{indoor:true,alpha:.15});else if(o.type==='salon-stylist')V.GroundedArt.iris(c,A.images.get('stylist-iris'),x,y,4,V.settings.reducedMotion?0:Math.floor(this.clock*1.8)%4,true);},
-drawObject(c,o,cam){const x=o.x-cam.x,y=o.y-cam.y;if(o.salonLink&&!o.inside){if(o.facade){V.GroundedArt.shadow(c,A.images.get('salon-facade'),x,y,184,112);this.art(c,'salon-facade',x,y,184,112);}else{c.fillStyle='#6c5b43';c.fillRect(x-3,y-38,6,38);c.fillStyle='#3c6554';c.fillRect(x-57,y-58,114,29);V.MaritimeArt.text(c,'SALÃO ÍRIS ↗',x,y-43,11,'#f1ddba');}return;}if(o.art){this.art(c,o.art,x,y,o.w,o.h);if(W.nearest?.id===o.id&&o.type==='salon-station'){c.strokeStyle='#f3c988';c.lineWidth=2;c.beginPath();c.ellipse(x,y+10,39,10,0,0,Math.PI*2);c.stroke();}return;}if(o.type==='salon-stylist'){const image=A.images.get('stylist-iris'),row=W.nearest?.id===o.id?5:4,frame=V.settings.reducedMotion?0:Math.floor(this.clock*1.8)%4;if(image)V.GroundedArt.iris(c,image,x,y,row,frame);if(W.nearest?.id===o.id)V.Maritime.label(c,'Íris · cabeleireira',x,y-77,true);return;}if(o.type==='cozy'&&o.scene?.kind==='seat')return C.bench(c,x,y-15,0);if(o.type==='fast-travel')return F.draw(c,o,cam,this.clock);if(o.inside){c.fillStyle='#b99b6f';c.fillRect(x-55,y-5,110,7);V.MaritimeArt.text(c,'MERCADO',x,y-18,11,'#f5e5bf');return;}if(o.type==='salon-info'){c.fillStyle='#7c6046';c.fillRect(x-25,y-28,50,30);c.fillStyle='#f0dfbf';c.fillRect(x-20,y-24,40,21);V.MaritimeArt.text(c,'i',x,y-13,17,'#4c6753');}},
-render(c){const m=W.current,cam=W.camera;if(!m.cache||!m.salonGrounded){this.ground(m);m.salonGrounded=true;}c.save();c.imageSmoothingEnabled=false;V.GroundCache.draw(c, m.cache, Math.round(-cam.x), Math.round(-cam.y));for(const o of V.RenderView.objects(c,m,cam))this.shadow(c,o,cam);const rows=V.RenderView.objects(c,m,cam,true).map(o=>({y:V.RenderView.depth(o),o,kind:'object'})).concat(Arch.geometry(m.design).walls.map(o=>({y:Math.max(o.a[1],o.b[1]),o,kind:'wall'})),[{y:V.Player.data.y,kind:'player'}]).sort((a,b)=>a.y-b.y);for(const r of rows)if(r.kind==='wall')Arch.drawWall(c,m,r.o,cam);else if(r.kind==='player')V.Player.render(c);else this.drawObject(c,r.o,cam);if(V.PixPresence.following())V.PixPresence.draw(c,V.Player.data,cam);V.Engine.drawParticles(c,cam);if(W.transition>0){c.globalAlpha=W.transition;c.fillStyle='#395a4b';c.fillRect(0,0,c.canvas.width,c.canvas.height);}c.restore();W.drawMiniMap();},
-greet(){V.UI.modal('Íris · cabeleireira','BOAS-VINDAS AO SALÃO',`<article class="salon-greeting"><canvas id="salon-iris-portrait" width="150" height="160" aria-label="Íris, a cabeleireira"></canvas><div><h3>Vamos experimentar um novo visual?</h3><p>Experimente penteados, roupas, pinturas faciais e acessórios. Escolha as cores de cada peça.</p><p>Use o espelho para conferir os lados e as costas. Quando gostar da combinação, toque em <b>Aplicar visual</b>. As trocas são gratuitas.</p><p class="salon-english" lang="en">Your style is your choice. Let’s try something new.</p><small>Seu estilo é uma escolha sua. Vamos experimentar algo novo.</small></div></article>`,`<button id="salon-greet-style" class="primary">Experimentar visual</button><button id="salon-greet-close" class="secondary">Explorar o salão</button>`,true);V.$('.modal').classList.add('salon-modal');const c=V.$('#salon-iris-portrait').getContext('2d'),img=A.images.get('stylist-iris');c.imageSmoothingEnabled=false;if(img)c.drawImage(img,0,5*64,64,64,0,0,150,150);V.$('#salon-greet-style').onclick=()=>A.open();V.$('#salon-greet-close').onclick=()=>V.UI.close();},
-overview(back=null){if(!V.state)return;const stockOnly=V.NewPlayableCharacters.includes(V.state.character);V.UI.modal('Seu visual','SALÃO ÍRIS · ROUPAS, CABELOS E ACESSÓRIOS',`<article class="salon-overview"><canvas id="salon-overview-avatar" width="240" height="230" aria-label="Seu visual atual"></canvas><div><h3>${esc(V.state.name)}</h3><p>${esc(A.describe())}</p>${stockOnly?'<p>Você pode personalizar a cor do seu emblema.</p>':'<p>Visite o Salão Íris para experimentar penteados, roupas, turbantes, pinturas faciais e cores. Você encontra a entrada no mercado e um acesso pela praça.</p><p class="salon-free">Trocas gratuitas · cada perfil guarda seu visual</p>'}</div></article>`,`${stockOnly?'':`<button id="salon-overview-go" class="primary">${W.current?.salon?'Experimentar visual':'Visitar o salão'}</button>`}<button id="salon-overview-emblem" class="secondary">Cor do emblema</button><button id="salon-overview-close" class="secondary">Voltar</button>`,true);V.$('.modal').classList.add('salon-modal');A.draw(V.$('#salon-overview-avatar').getContext('2d'),V.state.character,A.look(),120,215,160,0,0);if(!stockOnly)V.$('#salon-overview-go').onclick=()=>W.current?.salon?A.open():F.travel(id);V.$('#salon-overview-emblem').onclick=()=>A.emblem(()=>this.overview(back));V.$('#salon-overview-close').onclick=()=>{V.UI.close();if(typeof back==='function')back();};},
-wash(){V.UI.modal('Lavatório do salão','CUIDADO E UMA PAUSA',`<article class="sea-entry"><img src="assets/salon/salon-wash.png" alt="Lavatório do salão"><div><p>Íris prepara este espaço para os cuidados com os cabelos. As cadeiras e os espelhos do salão abrem as opções de penteado, roupa e acessórios.</p><p lang="en">Take a seat and choose your new look.</p><small>Sente-se e escolha seu novo visual.</small></div></article>`,`<button id="salon-wash-style" class="primary">Escolher penteado</button><button id="salon-wash-close" class="secondary">Voltar</button>`);V.$('.modal').classList.add('salon-modal');V.$('#salon-wash-style').onclick=()=>A.open('hair');V.$('#salon-wash-close').onclick=()=>V.UI.close();},
-toolbar(){const active=V.Game.screen==='game'&&!!W.current?.salon;document.body.classList.toggle('salon-map',active);let root=V.$('#salon-toolbar');if(!root){root=document.createElement('aside');root.id='salon-toolbar';root.innerHTML='<span>Salão Íris</span><button id="salon-toolbar-look" class="secondary">Meu visual</button><button id="salon-toolbar-iris" class="secondary">Falar com Íris</button>';V.$('#stage').append(root);V.$('#salon-toolbar-look').onclick=()=>A.open();V.$('#salon-toolbar-iris').onclick=()=>this.greet();}root.hidden=!active||V.Game.mode!=='explore'||V.SceneEditor.active;},
-entry(map,facade){const m=W.maps[map];if(!m||m.objects.some(o=>o.id==='salon-entry-'+map))return;const origin=F.point(map)||{x:m.width*T/2,y:(m.height-3)*T};let at=null;for(const radius of [150,210,285,350])for(const[dx,dy]of [[1,0],[-1,0],[0,-1],[0,1],[1,-1],[-1,-1]]){const p={x:origin.x+dx*radius,y:origin.y+dy*radius};if(!at&&F.clear(m,p,17)&&!m.objects.some(o=>V.dist(o,p)<105)&&p.y>170)at=p;}at||=V.Rooms.safe(m,{x:m.width*T/2,y:(m.height-3)*T},14);if(at)m.objects.push({id:'salon-entry-'+map,type:'travel',...at,to:id,salonLink:true,facade,label:'Entrar no Salão Íris',interactionRange:100});},
-seed(){W.maps[id]=this.build();F.point(id);this.entry('market',true);this.entry('hub',true);V.ObjectiveGuide.invalidate();V.Atlas.cache.clear();}
-};
-const init=W.init.bind(W);W.init=function(...a){const r=init(...a);Salon.seed();return r;};const load=W.load.bind(W);W.load=function(map,pos){if(map===id&&!pos)pos={x:13*T,y:21.2*T};const r=load(map,pos);Salon.toolbar();return r;};const ground=C.ground.bind(C);C.ground=function(m){return m.salon?Salon.ground(m):ground(m);};const render=C.render.bind(C);C.render=function(c){return W.current?.salon?Salon.render(c):render(c);};const draw=C.drawObject.bind(C);C.drawObject=function(c,o,cam,t){return o.salonLink||o.type.startsWith('salon-')?Salon.drawObject(c,o,cam):draw(c,o,cam,t);};
-V.Hooks.around(V.Game, 'interact', 'salon-world:interact:1', nextHook => function(o){if(o&&!V.modal&&!V.Dialogue.active&&this.mode==='explore'){if(o.salonLink)return W.load(o.to);if(o.type==='salon-station')return A.open(o.tab);if(o.type==='salon-stylist')return Salon.greet();if(o.type==='salon-wash')return Salon.wash();if(o.type==='salon-info')return Salon.overview();}return nextHook(o);});const all=W.interactables.bind(W);W.interactables=function(){return all().filter(o=>o.type!=='salon-prop');};
-V.Hooks.around(V.Game, 'update', 'salon-world:update:1', nextHook => function(dt){const r=nextHook(dt);if(this.screen==='game'&&this.mode==='explore'&&!V.modal){Salon.clock+=Math.min(.08,dt);Salon.hudClock+=dt;if(Salon.hudClock>.3){Salon.hudClock=0;Salon.toolbar();}}return r;});const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...a){const r=title(...a);Salon.toolbar();return r;};
-const normalise=S.normalise.bind(S);S.normalise=function(doc){if(doc?.maps){doc=copy(doc);doc.maps[id]||=copy(design);}return normalise(doc);};const preview=S.preview.bind(S);S.preview=function(map,d){return map===id?Salon.build(d):preview(map,d);};if(!F.roots.includes(id))F.roots.push(id);F.names[id]=design.name;const category=F.category.bind(F);F.category=function(map){return map===id?'shop':category(map);};Object.assign(V.WorldAtlas.positions(),{[id]:[670,675]});const point=F.point.bind(F);F.point=function(map){const o=point(map);if(map===id&&o){o.x=5*T;o.y=21.2*T;}return o;};
-const guide=V.ObjectiveGuide.update.bind(V.ObjectiveGuide);V.ObjectiveGuide.update=function(dt){if(W.current?.salon){this.path=[];this.nextObject=null;const el=V.$('#adv-route-info');if(el)el.hidden=true;return;}return guide(dt);};const landmark=V.Atlas.landmark.bind(V.Atlas);V.Atlas.landmark=function(c,o,m){if(m.salon||o.salonLink){Salon.shadow(c,o,{x:0,y:0});return Salon.drawObject(c,o,{x:0,y:0});}return landmark(c,o,m);};
-const furniture=['salon-facade','salon-vanity','salon-chair','salon-wash','salon-display'],prop=C.prop.bind(C);C.prop=function(c,family,index,x,y,size,mat){if(family==='salon'){const img=A.images.get(furniture[index]);if(img)V.GroundedArt.fit(c,img,x,y,size,c.canvas===V.Engine.canvas);return;}return prop(c,family,index,x,y,size,mat);};for(const[index,key]of furniture.entries())V.sceneAssets.push({id:key,family:'salon',index,name:({'salon-facade':'Fachada do Salão Íris','salon-vanity':'Espelho e bancada','salon-chair':'Cadeira do salão','salon-wash':'Lavatório','salon-display':'Expositor de roupas e acessórios'})[key],description:'Mobiliário do Salão Íris.',category:'salão',size:2.5,solid:true,layer:'object',solidFootprint:{x:.2,y:.8,width:.6,height:.16}});
-})();
-
+})(function() {
+  (function() {
+    "use strict";
+    const V = window.V, W = V.World, C = V.Cozy, S = V.SceneDesign, F = V.FastTravel, Arch = V.Architecture, A = V.Appearance, T = 48, id = "salon-iris", copy = (x) => JSON.parse(JSON.stringify(x)), esc = V.escape;
+    const design = { name: "Sal\xE3o \xCDris \xB7 beleza e estilo", width: 26, height: 24, spawn: [13, 21.2], floor: "wood", purpose: "Um espa\xE7o para experimentar cabelos, roupas e acess\xF3rios, com pr\xE9via e cores livres.", palette: ["#e1d3bb", "#477365", "#d2929f"], paths: [], decor: [], scenes: [], positions: {}, routines: {}, anchors: [], zones: [], meeting: [13, 14], salonVersion: 2, adventure: { version: 3, architecture: { walls: [{ id: "salon-north", a: [1.5 * T, 4 * T], b: [24.5 * T, 4 * T], height: 156, thickness: 13, color: "#c4bba8" }, { id: "salon-west", a: [1.5 * T, 4 * T], b: [1.5 * T, 22.8 * T], height: 156, thickness: 13, color: "#c3b19e" }, { id: "salon-east", a: [24.5 * T, 4 * T], b: [24.5 * T, 22.8 * T], height: 156, thickness: 13, color: "#c3b19e" }, { id: "home-divider-salon-south", a: [1.5 * T, 22.8 * T], b: [24.5 * T, 22.8 * T], height: 150, thickness: 13, color: "#b8b7a0", openings: [{ u: 0.5, width: 152 }] }], mounts: [], signs: [], windows: [] }, environment: { indoor: true, sky: "windows", weather: false, ambient: "#ebdfca", snowAllowed: false }, lights: [], regions: [], encounters: [], triggers: [] } };
+    C.layouts[id] = copy(design);
+    S.defaults[id] = copy(design);
+    S.raw[id] = W.base(id, "community", 26, 24);
+    S.objectRegistry[id] = {};
+    const Salon = V.Salon = {
+      id,
+      clock: 0,
+      hudClock: 0,
+      build(d = C.layouts[id]) {
+        const m = W.base(id, "community", 26, 24);
+        Object.assign(m, { name: d.name, salon: true, design: d, ambientTime: 0, zones: [], chats: [], anchors: new Map(), reservations: new Map(), bubbleBudget: 0, archWalls: [], archSolids: [], mounts: [], lifeAnimals: [], geometryRevision: 1 });
+        m.solids.push({ x: 0, y: 0, w: 26 * T, h: T }, { x: 0, y: 0, w: T, h: 24 * T }, { x: 25 * T, y: 0, w: T, h: 24 * T }, { x: 0, y: 23 * T, w: 26 * T, h: T });
+        const add = (type, key, x, y, label, data = {}) => {
+          const o = { type, id: key, x: x * T, y: y * T, label, interactionRange: 100, ...data };
+          m.objects.push(o);
+          return o;
+        };
+        for (const [x, tab, name] of [[7, "hair", "Cabelos"], [13, "outfit", "Roupas"], [19, "accessories", "Acess\xF3rios"]]) {
+          const vanity = add("salon-prop", "salon-vanity-" + tab, x, 11.5, "", { art: "salon-vanity", w: 2.5 * T, h: 3.55 * T });
+          m.solids.push({ x: vanity.x - 48, y: vanity.y - 22, w: 96, h: 22, owner: vanity.id });
+          const chair = add("salon-station", "salon-chair-" + tab, x, 14, "Experimentar " + (tab === "hair" ? "cabelos e pinturas" : name.toLowerCase()), { art: "salon-chair", w: 1.15 * T, h: 1.75 * T, tab });
+          m.solids.push({ x: chair.x - 22, y: chair.y - 18, w: 44, h: 18, owner: chair.id });
+        }
+        const wash = add("salon-wash", "salon-wash", 6.5, 18, "Conhecer o lavat\xF3rio", { art: "salon-wash", w: 2.6 * T, h: 2.6 * T });
+        m.solids.push({ x: wash.x - 46, y: wash.y - 24, w: 92, h: 24, owner: wash.id });
+        const display = add("salon-station", "salon-display", 20, 18, "Escolher roupas e acess\xF3rios", { art: "salon-display", w: 2.2 * T, h: 2.5 * T, tab: "outfit" });
+        m.solids.push({ x: display.x - 40, y: display.y - 20, w: 80, h: 20, owner: display.id });
+        const iris = add("salon-stylist", "stylist-iris", 14.8, 16, "Conversar com \xCDris");
+        m.solids.push({ x: iris.x - 10, y: iris.y - 9, w: 20, h: 18, owner: "host-" + iris.id });
+        for (const [x, y] of [[9, 19], [17, 20.5]]) {
+          const key = "salon-bench-" + x, o = add("cozy", key, x, y, "Sentar no sal\xE3o", { scene: { id: key, kind: "seat", dir: 0, text: "Uma pausa para imaginar seu pr\xF3ximo visual." } });
+          m.anchors.set(key, { id: key, x: o.x, y: o.y, dir: 0, state: "sitting" });
+          m.solids.push({ x: o.x - 43, y: o.y - 25, w: 86, h: 24, owner: key });
+        }
+        add("travel", "salon-exit", 13, 22.1, "Voltar ao mercado", { to: "market", salonLink: true, inside: true });
+        add("salon-info", "salon-guide", 20.7, 21, "Consultar o seu visual");
+        Arch.hydrate(m);
+        for (const o of m.objects) {
+          const p = d.positions?.[o.id];
+          if (p) {
+            const x = p[0] * T, y = p[1] * T, dx = x - o.x, dy = y - o.y;
+            o.x = x;
+            o.y = y;
+            for (const s of m.solids.filter((s2) => s2.owner === o.id || s2.owner === "host-" + o.id)) {
+              s.x += dx;
+              s.y += dy;
+            }
+            if (m.anchors.has(o.id)) Object.assign(m.anchors.get(o.id), { x, y });
+          }
+          S.objectRegistry[id][o.id] = { ...o };
+        }
+        return m;
+      },
+      ground(m) {
+        const canvas = V.GroundCache.create(m, 26 * T, 24 * T);
+        ;
+        ;
+        const c = canvas.getContext("2d");
+        c.fillStyle = "#39554b";
+        c.fillRect(0, 0, V.GroundCache.width(canvas), V.GroundCache.height(canvas));
+        c.fillStyle = "#c6b899";
+        c.fillRect(1.5 * T, 4 * T, 23 * T, 19 * T);
+        for (let y = 4 * T; y < 23 * T; y += 24) {
+          const r = y / 24 % 3;
+          c.fillStyle = ["#d4c5a4", "#cab998", "#d0bea0"][r];
+          c.fillRect(1.5 * T, y, 23 * T, 23);
+          c.fillStyle = "#8c7b571c";
+          for (let x = 1.5 * T + r % 2 * 65; x < 24.5 * T; x += 144) c.fillRect(x, y, 1, 24);
+          c.fillStyle = "#fbf0d324";
+          c.fillRect(1.5 * T, y + 1, 23 * T, 1);
+        }
+        c.fillStyle = "#e7ddc4";
+        c.fillRect(2 * T, 8.3 * T, 22 * T, 3.3 * T);
+        for (const [x, label] of [[7, "CABELOS E PINTURAS"], [13, "ROUPAS"], [19, "ACESS\xD3RIOS"]]) {
+          c.fillStyle = "#b7838b";
+          c.beginPath();
+          c.ellipse(x * T, 14 * T, 1.7 * T, 0.65 * T, 0, 0, Math.PI * 2);
+          c.fill();
+          c.strokeStyle = "#dfc9a0";
+          c.lineWidth = 3;
+          c.stroke();
+          V.MaritimeArt.text(c, label, x * T, 15.1 * T, 12, "#4a5141");
+        }
+        c.fillStyle = "#527260";
+        c.fillRect(10.5 * T, 19.7 * T, 5 * T, 2.7 * T);
+        c.strokeStyle = "#dbc597";
+        c.lineWidth = 2;
+        c.strokeRect(10.5 * T + 6, 19.7 * T + 6, 5 * T - 12, 2.7 * T - 12);
+        V.MaritimeArt.text(c, "SAL\xC3O \xCDRIS", 13 * T, 2.1 * T, 30, "#f2dfbd");
+        V.MaritimeArt.text(c, "ROUPAS \xB7 CABELOS \xB7 CORES", 13 * T, 2.85 * T, 12, "#d7c7a5");
+        m.cache = canvas;
+      },
+      art(c, key, x, y, w, h) {
+        const img = A.images.get(key);
+        if (img) V.GroundedArt.draw(c, img, x - w / 2, y - h, w, h);
+      },
+      shadow(c, o, cam) {
+        const x = o.x - cam.x, y = o.y - cam.y;
+        if (o.art) V.GroundedArt.shadow(c, A.images.get(o.art), x, y, o.w, o.h, { indoor: true, alpha: 0.15 });
+        else if (o.type === "salon-stylist") V.GroundedArt.iris(c, A.images.get("stylist-iris"), x, y, 4, V.settings.reducedMotion ? 0 : Math.floor(this.clock * 1.8) % 4, true);
+      },
+      drawObject(c, o, cam) {
+        const x = o.x - cam.x, y = o.y - cam.y;
+        if (o.salonLink && !o.inside) {
+          if (o.facade) {
+            V.GroundedArt.shadow(c, A.images.get("salon-facade"), x, y, 184, 112);
+            this.art(c, "salon-facade", x, y, 184, 112);
+          } else {
+            c.fillStyle = "#6c5b43";
+            c.fillRect(x - 3, y - 38, 6, 38);
+            c.fillStyle = "#3c6554";
+            c.fillRect(x - 57, y - 58, 114, 29);
+            V.MaritimeArt.text(c, "SAL\xC3O \xCDRIS \u2197", x, y - 43, 11, "#f1ddba");
+          }
+          return;
+        }
+        if (o.art) {
+          this.art(c, o.art, x, y, o.w, o.h);
+          if (W.nearest?.id === o.id && o.type === "salon-station") {
+            c.strokeStyle = "#f3c988";
+            c.lineWidth = 2;
+            c.beginPath();
+            c.ellipse(x, y + 10, 39, 10, 0, 0, Math.PI * 2);
+            c.stroke();
+          }
+          return;
+        }
+        if (o.type === "salon-stylist") {
+          const image = A.images.get("stylist-iris"), row = W.nearest?.id === o.id ? 5 : 4, frame = V.settings.reducedMotion ? 0 : Math.floor(this.clock * 1.8) % 4;
+          if (image) V.GroundedArt.iris(c, image, x, y, row, frame);
+          if (W.nearest?.id === o.id) V.Maritime.label(c, "\xCDris \xB7 cabeleireira", x, y - 77, true);
+          return;
+        }
+        if (o.type === "cozy" && o.scene?.kind === "seat") return C.bench(c, x, y - 15, 0);
+        if (o.type === "fast-travel") return F.draw(c, o, cam, this.clock);
+        if (o.inside) {
+          c.fillStyle = "#b99b6f";
+          c.fillRect(x - 55, y - 5, 110, 7);
+          V.MaritimeArt.text(c, "MERCADO", x, y - 18, 11, "#f5e5bf");
+          return;
+        }
+        if (o.type === "salon-info") {
+          c.fillStyle = "#7c6046";
+          c.fillRect(x - 25, y - 28, 50, 30);
+          c.fillStyle = "#f0dfbf";
+          c.fillRect(x - 20, y - 24, 40, 21);
+          V.MaritimeArt.text(c, "i", x, y - 13, 17, "#4c6753");
+        }
+      },
+      render(c) {
+        const m = W.current, cam = W.camera;
+        if (!m.cache || !m.salonGrounded) {
+          this.ground(m);
+          m.salonGrounded = true;
+        }
+        c.save();
+        c.imageSmoothingEnabled = false;
+        V.GroundCache.draw(c, m.cache, Math.round(-cam.x), Math.round(-cam.y));
+        for (const o of V.RenderView.objects(c, m, cam)) this.shadow(c, o, cam);
+        const rows = V.RenderView.objects(c, m, cam, true).map((o) => ({ y: V.RenderView.depth(o), o, kind: "object" })).concat(Arch.geometry(m.design).walls.map((o) => ({ y: Math.max(o.a[1], o.b[1]), o, kind: "wall" })), [{ y: V.Player.data.y, kind: "player" }]).sort((a, b) => a.y - b.y);
+        for (const r of rows) if (r.kind === "wall") Arch.drawWall(c, m, r.o, cam);
+        else if (r.kind === "player") V.Player.render(c);
+        else this.drawObject(c, r.o, cam);
+        if (V.PixPresence.following()) V.PixPresence.draw(c, V.Player.data, cam);
+        V.Engine.drawParticles(c, cam);
+        if (W.transition > 0) {
+          c.globalAlpha = W.transition;
+          c.fillStyle = "#395a4b";
+          c.fillRect(0, 0, c.canvas.width, c.canvas.height);
+        }
+        c.restore();
+        W.drawMiniMap();
+      },
+      greet() {
+        if (window.VoicesApp && !window.VoicesApp.featureReady("salon")) return window.VoicesApp.withFeature("salon", () => {
+          A.load();
+          return this.greet();
+        });
+        V.UI.modal("\xCDris \xB7 cabeleireira", "BOAS-VINDAS AO SAL\xC3O", `<article class="salon-greeting"><canvas id="salon-iris-portrait" width="150" height="160" aria-label="\xCDris, a cabeleireira"></canvas><div><h3>Vamos experimentar um novo visual?</h3><p>Experimente penteados, roupas, pinturas faciais e acess\xF3rios. Escolha as cores de cada pe\xE7a.</p><p>Use o espelho para conferir os lados e as costas. Quando gostar da combina\xE7\xE3o, toque em <b>Aplicar visual</b>. As trocas s\xE3o gratuitas.</p><p class="salon-english" lang="en">Your style is your choice. Let\u2019s try something new.</p><small>Seu estilo \xE9 uma escolha sua. Vamos experimentar algo novo.</small></div></article>`, `<button id="salon-greet-style" class="primary">Experimentar visual</button><button id="salon-greet-close" class="secondary">Explorar o sal\xE3o</button>`, true);
+        V.$(".modal").classList.add("salon-modal");
+        const c = V.$("#salon-iris-portrait").getContext("2d"), img = A.images.get("stylist-iris");
+        c.imageSmoothingEnabled = false;
+        if (img) c.drawImage(img, 0, 5 * 64, 64, 64, 0, 0, 150, 150);
+        V.$("#salon-greet-style").onclick = () => A.open();
+        V.$("#salon-greet-close").onclick = () => V.UI.close();
+      },
+      overview(back = null) {
+        if (!V.state) return;
+        if (window.VoicesApp && !window.VoicesApp.featureReady("salon")) return window.VoicesApp.withFeature("salon", () => {
+          A.load();
+          return this.overview(back);
+        });
+        const stockOnly = V.NewPlayableCharacters.includes(V.state.character);
+        V.UI.modal("Seu visual", "SAL\xC3O \xCDRIS \xB7 ROUPAS, CABELOS E ACESS\xD3RIOS", `<article class="salon-overview"><canvas id="salon-overview-avatar" width="240" height="230" aria-label="Seu visual atual"></canvas><div><h3>${esc(V.state.name)}</h3><p>${esc(A.describe())}</p>${stockOnly ? "<p>Voc\xEA pode personalizar a cor do seu emblema.</p>" : '<p>Visite o Sal\xE3o \xCDris para experimentar penteados, roupas, turbantes, pinturas faciais e cores. Voc\xEA encontra a entrada no mercado e um acesso pela pra\xE7a.</p><p class="salon-free">Trocas gratuitas \xB7 cada perfil guarda seu visual</p>'}</div></article>`, `${stockOnly ? "" : `<button id="salon-overview-go" class="primary">${W.current?.salon ? "Experimentar visual" : "Visitar o sal\xE3o"}</button>`}<button id="salon-overview-emblem" class="secondary">Cor do emblema</button><button id="salon-overview-close" class="secondary">Voltar</button>`, true);
+        V.$(".modal").classList.add("salon-modal");
+        A.draw(V.$("#salon-overview-avatar").getContext("2d"), V.state.character, A.look(), 120, 215, 160, 0, 0);
+        if (!stockOnly) V.$("#salon-overview-go").onclick = () => W.current?.salon ? A.open() : F.travel(id);
+        V.$("#salon-overview-emblem").onclick = () => A.emblem(() => this.overview(back));
+        V.$("#salon-overview-close").onclick = () => {
+          V.UI.close();
+          if (typeof back === "function") back();
+        };
+      },
+      wash() {
+        if (window.VoicesApp && !window.VoicesApp.featureReady("salon")) return window.VoicesApp.withFeature("salon", () => {
+          A.load();
+          return this.wash();
+        });
+        V.UI.modal("Lavat\xF3rio do sal\xE3o", "CUIDADO E UMA PAUSA", `<article class="sea-entry"><img src="assets/salon/salon-wash.png" alt="Lavat\xF3rio do sal\xE3o"><div><p>\xCDris prepara este espa\xE7o para os cuidados com os cabelos. As cadeiras e os espelhos do sal\xE3o abrem as op\xE7\xF5es de penteado, roupa e acess\xF3rios.</p><p lang="en">Take a seat and choose your new look.</p><small>Sente-se e escolha seu novo visual.</small></div></article>`, `<button id="salon-wash-style" class="primary">Escolher penteado</button><button id="salon-wash-close" class="secondary">Voltar</button>`);
+        V.$(".modal").classList.add("salon-modal");
+        V.$("#salon-wash-style").onclick = () => A.open("hair");
+        V.$("#salon-wash-close").onclick = () => V.UI.close();
+      },
+      toolbar() {
+        const active = V.Game.screen === "game" && !!W.current?.salon;
+        document.body.classList.toggle("salon-map", active);
+        let root = V.$("#salon-toolbar");
+        if (!root) {
+          root = document.createElement("aside");
+          root.id = "salon-toolbar";
+          root.innerHTML = '<span>Sal\xE3o \xCDris</span><button id="salon-toolbar-look" class="secondary">Meu visual</button><button id="salon-toolbar-iris" class="secondary">Falar com \xCDris</button>';
+          V.$("#stage").append(root);
+          V.$("#salon-toolbar-look").onclick = () => A.open();
+          V.$("#salon-toolbar-iris").onclick = () => this.greet();
+        }
+        root.hidden = !active || V.Game.mode !== "explore" || V.SceneEditor.active;
+      },
+      entry(map, facade) {
+        const m = W.maps[map];
+        if (!m || m.objects.some((o) => o.id === "salon-entry-" + map)) return;
+        const origin = F.point(map) || { x: m.width * T / 2, y: (m.height - 3) * T };
+        let at = null;
+        for (const radius of [150, 210, 285, 350]) for (const [dx, dy] of [[1, 0], [-1, 0], [0, -1], [0, 1], [1, -1], [-1, -1]]) {
+          const p = { x: origin.x + dx * radius, y: origin.y + dy * radius };
+          if (!at && F.clear(m, p, 17) && !m.objects.some((o) => V.dist(o, p) < 105) && p.y > 170) at = p;
+        }
+        at ||= V.Rooms.safe(m, { x: m.width * T / 2, y: (m.height - 3) * T }, 14);
+        if (at) m.objects.push({ id: "salon-entry-" + map, type: "travel", ...at, to: id, salonLink: true, facade, label: "Entrar no Sal\xE3o \xCDris", interactionRange: 100 });
+      },
+      seed() {
+        W.maps[id] = this.build();
+        F.point(id);
+        this.entry("market", true);
+        this.entry("hub", true);
+        V.ObjectiveGuide.invalidate();
+        V.Atlas.cache.clear();
+      }
+    };
+    V.Hooks.around(V.World, "init", "salon-world:init:1", (init) => function(...a) {
+      const r = init(...a);
+      Salon.seed();
+      return r;
+    });
+    const load = W.load.bind(W);
+    W.load = function(map, pos) {
+      if (map === id && !pos) pos = { x: 13 * T, y: 21.2 * T };
+      const r = load(map, pos);
+      Salon.toolbar();
+      return r;
+    };
+    const ground = C.ground.bind(C);
+    C.ground = function(m) {
+      return m.salon ? Salon.ground(m) : ground(m);
+    };
+    const render = C.render.bind(C);
+    C.render = function(c) {
+      return W.current?.salon ? Salon.render(c) : render(c);
+    };
+    V.Hooks.around(V.Cozy, "drawObject", "salon-world:drawObject:1", (draw) => function(c, o, cam, t) {
+      return o.salonLink || o.type.startsWith("salon-") ? Salon.drawObject(c, o, cam) : draw(c, o, cam, t);
+    });
+    V.Hooks.around(V.Game, "interact", "salon-world:interact:1", (nextHook) => function(o) {
+      if (o && !V.modal && !V.Dialogue.active && this.mode === "explore") {
+        if (o.salonLink) return W.load(o.to);
+        if (o.type === "salon-station") return A.open(o.tab);
+        if (o.type === "salon-stylist") return Salon.greet();
+        if (o.type === "salon-wash") return Salon.wash();
+        if (o.type === "salon-info") return Salon.overview();
+      }
+      return nextHook(o);
+    });
+    const all = W.interactables.bind(W);
+    W.interactables = function() {
+      return all().filter((o) => o.type !== "salon-prop");
+    };
+    V.Hooks.around(V.Game, "update", "salon-world:update:1", (nextHook) => function(dt) {
+      const r = nextHook(dt);
+      if (this.screen === "game" && this.mode === "explore" && !V.modal) {
+        Salon.clock += Math.min(0.08, dt);
+        Salon.hudClock += dt;
+        if (Salon.hudClock > 0.3) {
+          Salon.hudClock = 0;
+          Salon.toolbar();
+        }
+      }
+      return r;
+    });
+    V.Hooks.around(V.Game, "toTitle", "salon-world:toTitle:1", (title) => function(...a) {
+      const r = title(...a);
+      Salon.toolbar();
+      return r;
+    });
+    const normalise = S.normalise.bind(S);
+    S.normalise = function(doc) {
+      if (doc?.maps) {
+        doc = copy(doc);
+        doc.maps[id] ||= copy(design);
+      }
+      return normalise(doc);
+    };
+    const preview = S.preview.bind(S);
+    S.preview = function(map, d) {
+      return map === id ? Salon.build(d) : preview(map, d);
+    };
+    if (!F.roots.includes(id)) F.roots.push(id);
+    F.names[id] = design.name;
+    const category = F.category.bind(F);
+    F.category = function(map) {
+      return map === id ? "shop" : category(map);
+    };
+    Object.assign(V.WorldAtlas.positions(), { [id]: [670, 675] });
+    const point = F.point.bind(F);
+    F.point = function(map) {
+      const o = point(map);
+      if (map === id && o) {
+        o.x = 5 * T;
+        o.y = 21.2 * T;
+      }
+      return o;
+    };
+    const guide = V.ObjectiveGuide.update.bind(V.ObjectiveGuide);
+    V.ObjectiveGuide.update = function(dt) {
+      if (W.current?.salon) {
+        this.path = [];
+        this.nextObject = null;
+        const el = V.$("#adv-route-info");
+        if (el) el.hidden = true;
+        return;
+      }
+      return guide(dt);
+    };
+    V.Hooks.around(V.Atlas, "landmark", "salon-world:landmark:1", (landmark) => function(c, o, m) {
+      if (m.salon || o.salonLink) {
+        Salon.shadow(c, o, { x: 0, y: 0 });
+        return Salon.drawObject(c, o, { x: 0, y: 0 });
+      }
+      return landmark(c, o, m);
+    });
+    const furniture = ["salon-facade", "salon-vanity", "salon-chair", "salon-wash", "salon-display"], prop = C.prop.bind(C);
+    C.prop = function(c, family, index, x, y, size, mat) {
+      if (family === "salon") {
+        const img = A.images.get(furniture[index]);
+        if (img) V.GroundedArt.fit(c, img, x, y, size, c.canvas === V.Engine.canvas);
+        return;
+      }
+      return prop(c, family, index, x, y, size, mat);
+    };
+    for (const [index, key] of furniture.entries()) V.sceneAssets.push({ id: key, family: "salon", index, name: { "salon-facade": "Fachada do Sal\xE3o \xCDris", "salon-vanity": "Espelho e bancada", "salon-chair": "Cadeira do sal\xE3o", "salon-wash": "Lavat\xF3rio", "salon-display": "Expositor de roupas e acess\xF3rios" }[key], description: "Mobili\xE1rio do Sal\xE3o \xCDris.", category: "sal\xE3o", size: 2.5, solid: true, layer: "object", solidFootprint: { x: 0.2, y: 0.8, width: 0.6, height: 0.16 } });
+  })();
 });

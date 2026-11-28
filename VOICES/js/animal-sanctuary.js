@@ -1,50 +1,338 @@
 /* Registered module: animal-sanctuary */
-(function (initialize) {
+(function(initialize) {
   if (window.VoicesModules) window.VoicesModules.define("animal-sanctuary", initialize);
-  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else if (window.VOICES_MODULE_MODE) throw new Error("Module loader is missing");
   else initialize();
-})(function () {
-(function(){
-'use strict';
-const V=window.V,M=V.AnimalMuseum,B=V.AnimalMuseumData,D=V.NatureData,A=V.NatureArt,W=V.World,C=V.Cozy,S=V.SceneDesign,F=V.FastTravel,T=48,copy=x=>JSON.parse(JSON.stringify(x)),esc=V.escape,ID='animal-museum',HALL='animal-fossil-hall';
-A.names.push('bones-africa','bones-brazil','bones-community','sanctuary-staff','sanctuary-homes');
-const cell=A.cell.bind(A);A.cell=function(...args){const f=cell(...args);if(f.sheet==='sanctuary-homes')f.rows=2;return f;};
-const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=function(key){if(/assets\/nature\/bones-/.test(key))return'animal-bones';if(/assets\/nature\/sanctuary-(?:homes|staff)\./.test(key))return'sanctuary';return group(key);};
-const K=V.AnimalSanctuary={
- ids:[ID,HALL],
- design(id){const hall=id===HALL,height=hall?64:Math.max(68,Math.ceil(D.species.length/4)*8+12);return{name:hall?'Galeria dos Fósseis e da Anatomia':'Museu dos Animais',width:48,height,spawn:[24,height-4],floor:hall?'stone':'grass',purpose:hall?'Fósseis e anatomia de todos os animais do passeio.':'Recintos, viveiros, água e cuidado com a fauna.',palette:['#d6c7a5','#44694f','#b19460'],paths:[],decor:[],scenes:[],positions:{},routines:{},anchors:[],meeting:[24,height-6],adventure:{version:3,architecture:{walls:[],windows:[],mounts:[],signs:[]},environment:{indoor:hall,sky:'automatic',weather:!hall,ambient:'#e0d3b2'},lights:[],regions:[],encounters:[],triggers:[]}};},
- setup(){for(const id of this.ids){const d=this.design(id);C.layouts[id]||=copy(d);S.defaults[id]||=copy(d);S.raw[id]=W.base(id,'community',d.width,d.height);S.objectRegistry[id]||={};F.names[id]=d.name;}},
- base(id,d){const m=W.base(id,'community',d.width,d.height);Object.assign(m,{name:d.name,design:d,animalMuseum:true,sanctuary:true,fossilHall:id===HALL,natureWater:[],sanctuaryClock:0,ambientTime:0,decor:[],zones:[],chats:[],anchors:new Map(),reservations:new Map(),bubbleBudget:0,archWalls:[],archSolids:[],mounts:[],lifeAnimals:[],geometryRevision:2});m.solids.push({x:0,y:0,w:m.width*T,h:2*T},{x:0,y:0,w:T,h:m.height*T},{x:(m.width-1)*T,y:0,w:T,h:m.height*T},{x:0,y:(m.height-1)*T,w:m.width*T,h:T});return m;},
- travel(m,id,x,y,to,label){m.objects.push({id,type:'travel',animalMuseumDoor:true,x:x*T,y:y*T,to,label,interactionRange:105});},
- build(id=ID,d=C.layouts[id]){const minimum=id===ID?Math.max(68,Math.ceil(D.species.length/4)*8+12):64;if(d.height<minimum)d={...d,height:minimum,spawn:[24,minimum-4],meeting:[24,minimum-6]};const m=this.base(id,d);if(id===HALL){const add=(f,i)=>{const col=[5,12,19,29,36,43][i%6],y=(6+Math.floor(i/6)*5.8)*T,x=col*T;m.objects.push({id:'animal-fossil-'+f.id,type:'animal-museum-fossil',animalEntry:f.id,x,y,label:(f.comparative?'Comparar anatomia: ':'Examinar fóssil: ')+f.name,interactionRange:115});m.solids.push({x:x-57,y:y-18,w:114,h:34,owner:'animal-fossil-'+f.id});};B.fossils.forEach(add);(B.anatomy||[]).forEach((f,i)=>add(f,18+i));this.travel(m,'fossil-hall-exit',24,61,ID,'Voltar aos recintos dos animais');return m;}
-  D.species.forEach((s,i)=>{const col=[6,17,31,42][i%4],row=Math.floor(i/4),b={x:(col-4)*T,y:(4+row*8)*T,w:8*T,h:5.2*T},aviary=!!s.flightArt,water=s.waterArt,pen={id:'animal-pen-'+s.id,type:'animal-museum-pen',animalEntry:s.id,x:col*T,y:b.y+b.h+47,bounds:b,aviary,label:(aviary?'Viveiro: ':'Recinto: ')+s.name,interactionRange:120};m.objects.push(pen);m.solids.push({...b,owner:pen.id});let pond=null;if(water){pond={x:b.x+b.w*.39,y:b.y+25,w:b.w*.55,h:b.h-47,owner:'pen-water-'+s.id};m.natureWater.push(pond);}const onlyWater=s.motion==='water',size=Math.min(s.size,128),range={x:onlyWater?pond.x+size*.52:b.x+size*.55,y:b.y+Math.max(size+36,155),w:onlyWater?Math.max(15,pond.w-size*1.03):b.w-size*1.12,h:Math.max(14,b.h-Math.max(size+36,155)-24)};
-   if(s.motion==='perch'){range.x=b.x+b.w*.5-size*.25;range.y=b.y+b.h-30;range.w=size*.5;range.h=0;}
-   const o={id:'sanctuary-animal-'+s.id,type:'sanctuary-animal',species:s.id,pen:pen.id,x:range.x+range.w*.35,y:range.y+range.h*.5,bounds:range,phase:i*.41,walk:0,walking:true,dir:1,target:0,rest:0,displaySize:size};if(s.motion==='perch')o.perch={x:b.x+b.w*.5,y:range.y};m.objects.push(o);pen.animal=o.id;
-  });
-  this.travel(m,'animal-museum-fossils',32,m.height-5,HALL,'Entrar na Galeria dos Fósseis e da Anatomia');this.travel(m,'animal-museum-exit',24,m.height-2,'hub','Sair para a Praça das Vozes');return m;
- },
- update(m,dt){if(m.sanctuaryTick===V.Engine.time)return;m.sanctuaryTick=V.Engine.time;dt=V.clamp(dt,0,.1);m.sanctuaryClock+=dt;if(V.settings.npcMovement===false||V.settings.reducedMotion)return;for(const o of m.objects.filter(o=>o.type==='sanctuary-animal')){o.phase+=dt;if(o.rest>0){o.rest-=dt;o.walking=false;continue;}const b=o.bounds,points=[[.12,.25],[.86,.2],[.85,.8],[.15,.7]],p=points[o.target%4],x=b.x+b.w*p[0],y=b.y+b.h*p[1],dx=x-o.x,dy=y-o.y,len=Math.hypot(dx,dy),speed=D.species.find(s=>s.id===o.species).motion==='perch'?5:D.species.find(s=>s.id===o.species).flightArt?33:20,step=Math.min(len,speed*dt);if(len<2){o.target++;o.rest=1.2+(o.target%3)*.6;o.walking=false;continue;}o.x+=dx/len*step;o.y+=dy/len*step;o.dir=dx<0?-1:1;o.walking=true;o.walk+=dt;}},
- fence(c,b,aviary,front=false){c.save();const y=front?b.y+b.h:b.y,h=aviary?70:39;c.strokeStyle=aviary?'#b2c3ac88':'#c6bc8b';c.lineWidth=1;if(aviary){for(let x=b.x+5;x<b.x+b.w;x+=16){c.beginPath();c.moveTo(x,y-h);c.lineTo(x,y+8);c.stroke();}for(let yy=y-h;yy<y+8;yy+=12){c.beginPath();c.moveTo(b.x,yy);c.lineTo(b.x+b.w,yy);c.stroke();}}else{c.fillStyle='#9b8054';c.fillRect(b.x,y-28,b.w,5);c.fillRect(b.x,y-9,b.w,5);}for(let x=b.x;x<=b.x+b.w;x+=48){c.fillStyle='#564c35';c.fillRect(x-4,y-h,8,h+13);c.fillStyle='#b7a274';c.fillRect(x-3,y-h,5,4);}if(!front){c.strokeStyle='#766744';c.lineWidth=4;for(const x of [b.x,b.x+b.w]){c.beginPath();c.moveTo(x,b.y-20);c.lineTo(x,b.y+b.h+8);c.stroke();}}c.restore();},
- penGround(c,pen,m){const s=D.species.find(s=>s.id===pen.animalEntry),b=pen.bounds;c.fillStyle=s.country==='Brasil'?'#719462':'#afa16c';c.fillRect(b.x,b.y,b.w,b.h);for(let y=b.y+10;y<b.y+b.h;y+=25)for(let x=b.x+12;x<b.x+b.w;x+=29){c.fillStyle=(x+y)%3?'#91a87577':'#c5bb8277';c.fillRect(x,y,3,7);}const pond=m.natureWater.find(p=>p.owner==='pen-water-'+s.id);if(pond){c.fillStyle='#9ab394';c.fillRect(pond.x-7,pond.y-7,pond.w+14,pond.h+14);c.fillStyle='#508c8c';c.fillRect(pond.x,pond.y,pond.w,pond.h);c.fillStyle='#91c3b4';for(let yy=pond.y+15;yy<pond.y+pond.h;yy+=26)for(let xx=pond.x+15;xx<pond.x+pond.w;xx+=57)c.fillRect(xx,yy,24,2);}A.frame(c,'sanctuary-homes',1,pen.aviary?2:3,b.x+5,b.y+20,95,105);this.fence(c,b,pen.aviary,false);},
- ground(m){const canvas=V.GroundCache.create(m, m.width*T, m.height*T);;;const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.fillStyle=m.fossilHall?'#d7c8a7':'#a6b18b';c.fillRect(0,0,V.GroundCache.width(canvas),V.GroundCache.height(canvas));for(let y=2*T;y<V.GroundCache.height(canvas)-T;y+=24)for(let x=T;x<V.GroundCache.width(canvas)-T;x+=48){c.fillStyle=m.fossilHall?(x/48+y/24)%3?'#dfd1b2':'#e8dcbd':(x/48+y/24)%3?'#c9c2a0':'#d9cfac';c.fillRect(x+(y%48?24:0),y,45,21);}c.fillStyle='#4e7356';c.fillRect(22*T,2*T,4*T,(m.height-3)*T);c.fillStyle='#b8af82';c.fillRect(22*T+9,2*T,4*T-18,(m.height-3)*T);
-  if(!m.fossilHall){for(const p of m.objects.filter(o=>o.type==='animal-museum-pen'))this.penGround(c,p,m);V.Engine.text(c,'MUSEU DOS ANIMAIS · RECINTOS E VIVEIROS',24*T,2.4*T,'#2f573f',23,'center');V.Engine.text(c,'Água · abrigo · espaço · cuidado diário',24*T,(m.height-8)*T,'#3b6246',15,'center');}else{for(const[row,label]of [[0,'GALERIA DO TEMPO · FÓSSEIS'],[3,'ANATOMIA · COMPARE OS ANIMAIS DO JOGO']]){const y=(3+row*5.8)*T;c.fillStyle='#315846';c.fillRect(T*2,y-22,T*44,43);V.Engine.text(c,label,24*T,y+6,'#f0dfb3',22,'center');}V.Engine.text(c,'Fósseis e esqueletos de comparação têm fichas diferentes',24*T,57.8*T,'#52664c',13,'center');}m.cache=canvas;},
- draw(c,o,cam){if(o.type==='sanctuary-animal'){const s=D.species.find(s=>s.id===o.species);V.Wildlife.drawAnimal(c,s,o,cam,W.maps[o.sanctuaryMap]||W.current,o.displaySize);return true;}if(o.type==='animal-museum-pen'){const b=o.bounds,x=o.x-cam.x,y=o.y-cam.y;this.fence(c,{x:b.x-cam.x,y:b.y-cam.y,w:b.w,h:b.h},o.aviary,true);c.fillStyle='#755d3e';c.fillRect(x-5,y-14,10,26);c.fillStyle='#f1dfb6';c.fillRect(x-107,y-30,214,38);V.Engine.text(c,D.species.find(s=>s.id===o.animalEntry).name,x,y-7,'#315440',12,'center');if(W.nearest?.id===o.id)V.Maritime.label(c,o.label,x,y+34,true);return true;}
-  if(o.type==='animal-museum-fossil'){const e=M.entry(o.animalEntry);if(!e)return true;const x=o.x-cam.x,y=o.y-cam.y,size=e.comparative?140:e.id==='eremotherium'?183:165;c.fillStyle=e.comparative?'#aeb8a1':'#76927e';c.fillRect(x-85,y-87,170,100);A.frame(c,e.sheet||'museum-fauna',e.row,e.col,x-size/2,y-size+10,size,size);c.fillStyle='#e8dbb9';c.fillRect(x-95,y+19,190,38);V.Engine.text(c,e.name.length>24?e.name.slice(0,23)+'…':e.name,x,y+34,'#365541',11,'center');V.Engine.text(c,e.comparative?'ANATOMIA ATUAL':'FÓSSIL · RECONSTRUÇÃO',x,y+49,'#7b6942',8,'center');return true;}
-  return false;
- },
- render(c){const m=W.current,cam=W.camera;if(!m.cache)this.ground(m);c.save();c.imageSmoothingEnabled=false;V.GroundCache.draw(c, m.cache, -Math.round(cam.x), -Math.round(cam.y));for(const a of [...V.RenderView.objects(c,m,cam,true).map(o=>({y:V.RenderView.depth(o),o})),{y:V.Player.data.y,player:true}].sort((a,b)=>a.y-b.y)){if(a.player)V.Player.render(c);else if(!this.draw(c,a.o,cam)&&!M.draw(c,a.o,cam))C.drawObject(c,a.o,cam);}if(V.PixPresence.following())V.PixPresence.draw(c,V.Player.data,cam);if(W.transition>0){c.globalAlpha=W.transition;c.fillStyle='#294b3e';c.fillRect(0,0,c.canvas.width,c.canvas.height);}c.restore();W.drawMiniMap();}
-};
-M.setup=()=>K.setup();M.build=(d=C.layouts[ID])=>K.build(ID,d);M.ground=m=>K.ground(m);M.render=c=>K.render(c);
-const seed=M.seed.bind(M);M.seed=function(...args){const out=seed(...args);W.maps[HALL]=K.build(HALL);F.point(HALL);for(const id of K.ids)for(const o of W.maps[id].objects)if(o.type==='sanctuary-animal')o.sanctuaryMap=id;return out;};K.setup();
-const preview=S.preview.bind(S);S.preview=function(id,d){return id===HALL?K.build(id,d):preview(id,d);};
-const load=W.load.bind(W);W.load=function(id,pos){if(K.ids.includes(id)){const m=W.maps[id],spawn=C.layouts[id].spawn,wanted=pos||{x:spawn[0]*T,y:spawn[1]*T};pos=V.Rooms.safe(m,wanted,14)||{x:spawn[0]*T,y:spawn[1]*T};}return load(id,pos);};
-const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m){const list=groups(m);if(m?.sanctuary)list.push('sanctuary');if(m?.fossilHall)list.push('animal-bones');return[...new Set(list)];};
-const category=F.category.bind(F);F.category=id=>id===HALL?'culture':category(id);const root=F.root.bind(F);F.root=id=>id===HALL?'hub':root(id);
-const update=C.update.bind(C);C.update=function(dt){const out=update(dt);if(W.current?.sanctuary&&!V.modal&&!V.Dialogue.active)K.update(W.current,dt);return out;};
-const draw=M.draw.bind(M);M.draw=function(c,o,cam){if(K.draw(c,o,cam))return true;if(o.animalMuseumDoor&&!o.animalFacade){const x=o.x-cam.x,y=o.y-cam.y;c.fillStyle='#315542';c.fillRect(x-110,y-43,220,34);V.Engine.text(c,o.to===HALL?'FÓSSEIS E ANATOMIA':o.to===ID?'RECINTOS DOS ANIMAIS':'PRAÇA DAS VOZES',x,y-20,'#f0ddb1',11,'center');return true;}return draw(c,o,cam);};
-const interactables=W.interactables.bind(W);W.interactables=(...args)=>interactables(...args).filter(o=>o.type!=='sanctuary-animal');
-const exhibit=M.exhibit.bind(M);M.exhibit=function(id,...args){const entry=M.entry(id);if(entry)V.MapAssets.ensure(entry.kind==='fossil'?['animal-bones','animal-museum']:['nature','wildlife'],'Preparando a ficha do animal').then(()=>M.paintModels());const out=exhibit(id,...args),e=M.entry(id),footer=V.$('.modal-footer');if(!e||!footer)return out;const link=e.kind==='animal'?'anatomy-'+e.id:e.comparative?e.related:null;if(link&&M.entry(link)){const b=document.createElement('button');b.className='secondary';b.id='animal-compare-bones';b.textContent=e.kind==='animal'?'Ver anatomia e passado':'Comparar com uma peça fóssil';b.onclick=()=>M.exhibit(link);footer.prepend(b);}if(V.DuoPanels?.enabled()){const owner=M.owner();V.DuoPanels.bind(V.DuoPanels.root(owner),owner);}return out;};
-const catalog=M.catalog.bind(M);M.catalog=function(...args){V.MapAssets.ensure(['nature','wildlife','animal-museum','animal-bones'],'Preparando a coleção').then(()=>M.paintModels());return catalog(...args);};
-})();
-
+})(function() {
+  (function() {
+    "use strict";
+    const V = window.V, M = V.AnimalMuseum, B = V.AnimalMuseumData, D = V.NatureData, A = V.NatureArt, W = V.World, C = V.Cozy, S = V.SceneDesign, F = V.FastTravel, T = 48, copy = (x) => JSON.parse(JSON.stringify(x)), esc = V.escape, ID = "animal-museum", HALL = "animal-fossil-hall";
+    A.names.push("bones-africa", "bones-brazil", "bones-community", "sanctuary-staff", "sanctuary-homes");
+    const cell = A.cell.bind(A);
+    A.cell = function(...args) {
+      const f = cell(...args);
+      if (f.sheet === "sanctuary-homes") f.rows = 2;
+      return f;
+    };
+    V.AssetLoader.addGroupRule("animal-sanctuary:group:1", function(key) {
+      if (/assets\/nature\/bones-/.test(key)) return "animal-bones";
+      if (/assets\/nature\/sanctuary-(?:homes|staff)\./.test(key)) return "sanctuary";
+      return void 0;
+    });
+    const K = V.AnimalSanctuary = {
+      ids: [ID, HALL],
+      design(id) {
+        const hall = id === HALL, height = hall ? 64 : Math.max(68, Math.ceil(D.species.length / 4) * 8 + 12);
+        return { name: hall ? "Galeria dos F\xF3sseis e da Anatomia" : "Museu dos Animais", width: 48, height, spawn: [24, height - 4], floor: hall ? "stone" : "grass", purpose: hall ? "F\xF3sseis e anatomia de todos os animais do passeio." : "Recintos, viveiros, \xE1gua e cuidado com a fauna.", palette: ["#d6c7a5", "#44694f", "#b19460"], paths: [], decor: [], scenes: [], positions: {}, routines: {}, anchors: [], meeting: [24, height - 6], adventure: { version: 3, architecture: { walls: [], windows: [], mounts: [], signs: [] }, environment: { indoor: hall, sky: "automatic", weather: !hall, ambient: "#e0d3b2" }, lights: [], regions: [], encounters: [], triggers: [] } };
+      },
+      setup() {
+        for (const id of this.ids) {
+          const d = this.design(id);
+          C.layouts[id] ||= copy(d);
+          S.defaults[id] ||= copy(d);
+          S.raw[id] = W.base(id, "community", d.width, d.height);
+          S.objectRegistry[id] ||= {};
+          F.names[id] = d.name;
+        }
+      },
+      base(id, d) {
+        const m = W.base(id, "community", d.width, d.height);
+        Object.assign(m, { name: d.name, design: d, animalMuseum: true, sanctuary: true, fossilHall: id === HALL, natureWater: [], sanctuaryClock: 0, ambientTime: 0, decor: [], zones: [], chats: [], anchors: new Map(), reservations: new Map(), bubbleBudget: 0, archWalls: [], archSolids: [], mounts: [], lifeAnimals: [], geometryRevision: 2 });
+        m.solids.push({ x: 0, y: 0, w: m.width * T, h: 2 * T }, { x: 0, y: 0, w: T, h: m.height * T }, { x: (m.width - 1) * T, y: 0, w: T, h: m.height * T }, { x: 0, y: (m.height - 1) * T, w: m.width * T, h: T });
+        return m;
+      },
+      travel(m, id, x, y, to, label) {
+        m.objects.push({ id, type: "travel", animalMuseumDoor: true, x: x * T, y: y * T, to, label, interactionRange: 105 });
+      },
+      build(id = ID, d = C.layouts[id]) {
+        const minimum = id === ID ? Math.max(68, Math.ceil(D.species.length / 4) * 8 + 12) : 64;
+        if (d.height < minimum) d = { ...d, height: minimum, spawn: [24, minimum - 4], meeting: [24, minimum - 6] };
+        const m = this.base(id, d);
+        if (id === HALL) {
+          const add = (f, i) => {
+            const col = [5, 12, 19, 29, 36, 43][i % 6], y = (6 + Math.floor(i / 6) * 5.8) * T, x = col * T;
+            m.objects.push({ id: "animal-fossil-" + f.id, type: "animal-museum-fossil", animalEntry: f.id, x, y, label: (f.comparative ? "Comparar anatomia: " : "Examinar f\xF3ssil: ") + f.name, interactionRange: 115 });
+            m.solids.push({ x: x - 57, y: y - 18, w: 114, h: 34, owner: "animal-fossil-" + f.id });
+          };
+          B.fossils.forEach(add);
+          (B.anatomy || []).forEach((f, i) => add(f, 18 + i));
+          this.travel(m, "fossil-hall-exit", 24, 61, ID, "Voltar aos recintos dos animais");
+          return m;
+        }
+        D.species.forEach((s, i) => {
+          const col = [6, 17, 31, 42][i % 4], row = Math.floor(i / 4), b = { x: (col - 4) * T, y: (4 + row * 8) * T, w: 8 * T, h: 5.2 * T }, aviary = !!s.flightArt, water = s.waterArt, pen = { id: "animal-pen-" + s.id, type: "animal-museum-pen", animalEntry: s.id, x: col * T, y: b.y + b.h + 47, bounds: b, aviary, label: (aviary ? "Viveiro: " : "Recinto: ") + s.name, interactionRange: 120 };
+          m.objects.push(pen);
+          m.solids.push({ ...b, owner: pen.id });
+          let pond = null;
+          if (water) {
+            pond = { x: b.x + b.w * 0.39, y: b.y + 25, w: b.w * 0.55, h: b.h - 47, owner: "pen-water-" + s.id };
+            m.natureWater.push(pond);
+          }
+          const onlyWater = s.motion === "water", size = Math.min(s.size, 128), range = { x: onlyWater ? pond.x + size * 0.52 : b.x + size * 0.55, y: b.y + Math.max(size + 36, 155), w: onlyWater ? Math.max(15, pond.w - size * 1.03) : b.w - size * 1.12, h: Math.max(14, b.h - Math.max(size + 36, 155) - 24) };
+          if (s.motion === "perch") {
+            range.x = b.x + b.w * 0.5 - size * 0.25;
+            range.y = b.y + b.h - 30;
+            range.w = size * 0.5;
+            range.h = 0;
+          }
+          const o = { id: "sanctuary-animal-" + s.id, type: "sanctuary-animal", species: s.id, pen: pen.id, x: range.x + range.w * 0.35, y: range.y + range.h * 0.5, bounds: range, phase: i * 0.41, walk: 0, walking: true, dir: 1, target: 0, rest: 0, displaySize: size };
+          if (s.motion === "perch") o.perch = { x: b.x + b.w * 0.5, y: range.y };
+          m.objects.push(o);
+          pen.animal = o.id;
+        });
+        this.travel(m, "animal-museum-fossils", 32, m.height - 5, HALL, "Entrar na Galeria dos F\xF3sseis e da Anatomia");
+        this.travel(m, "animal-museum-exit", 24, m.height - 2, "hub", "Sair para a Pra\xE7a das Vozes");
+        return m;
+      },
+      update(m, dt) {
+        if (m.sanctuaryTick === V.Engine.time) return;
+        m.sanctuaryTick = V.Engine.time;
+        dt = V.clamp(dt, 0, 0.1);
+        m.sanctuaryClock += dt;
+        if (V.settings.npcMovement === false || V.settings.reducedMotion) return;
+        for (const o of m.objects.filter((o2) => o2.type === "sanctuary-animal")) {
+          o.phase += dt;
+          if (o.rest > 0) {
+            o.rest -= dt;
+            o.walking = false;
+            continue;
+          }
+          const b = o.bounds, points = [[0.12, 0.25], [0.86, 0.2], [0.85, 0.8], [0.15, 0.7]], p = points[o.target % 4], x = b.x + b.w * p[0], y = b.y + b.h * p[1], dx = x - o.x, dy = y - o.y, len = Math.hypot(dx, dy), speed = D.species.find((s) => s.id === o.species).motion === "perch" ? 5 : D.species.find((s) => s.id === o.species).flightArt ? 33 : 20, step = Math.min(len, speed * dt);
+          if (len < 2) {
+            o.target++;
+            o.rest = 1.2 + o.target % 3 * 0.6;
+            o.walking = false;
+            continue;
+          }
+          o.x += dx / len * step;
+          o.y += dy / len * step;
+          o.dir = dx < 0 ? -1 : 1;
+          o.walking = true;
+          o.walk += dt;
+        }
+      },
+      fence(c, b, aviary, front = false) {
+        c.save();
+        const y = front ? b.y + b.h : b.y, h = aviary ? 70 : 39;
+        c.strokeStyle = aviary ? "#b2c3ac88" : "#c6bc8b";
+        c.lineWidth = 1;
+        if (aviary) {
+          for (let x = b.x + 5; x < b.x + b.w; x += 16) {
+            c.beginPath();
+            c.moveTo(x, y - h);
+            c.lineTo(x, y + 8);
+            c.stroke();
+          }
+          for (let yy = y - h; yy < y + 8; yy += 12) {
+            c.beginPath();
+            c.moveTo(b.x, yy);
+            c.lineTo(b.x + b.w, yy);
+            c.stroke();
+          }
+        } else {
+          c.fillStyle = "#9b8054";
+          c.fillRect(b.x, y - 28, b.w, 5);
+          c.fillRect(b.x, y - 9, b.w, 5);
+        }
+        for (let x = b.x; x <= b.x + b.w; x += 48) {
+          c.fillStyle = "#564c35";
+          c.fillRect(x - 4, y - h, 8, h + 13);
+          c.fillStyle = "#b7a274";
+          c.fillRect(x - 3, y - h, 5, 4);
+        }
+        if (!front) {
+          c.strokeStyle = "#766744";
+          c.lineWidth = 4;
+          for (const x of [b.x, b.x + b.w]) {
+            c.beginPath();
+            c.moveTo(x, b.y - 20);
+            c.lineTo(x, b.y + b.h + 8);
+            c.stroke();
+          }
+        }
+        c.restore();
+      },
+      penGround(c, pen, m) {
+        const s = D.species.find((s2) => s2.id === pen.animalEntry), b = pen.bounds;
+        c.fillStyle = s.country === "Brasil" ? "#719462" : "#afa16c";
+        c.fillRect(b.x, b.y, b.w, b.h);
+        for (let y = b.y + 10; y < b.y + b.h; y += 25) for (let x = b.x + 12; x < b.x + b.w; x += 29) {
+          c.fillStyle = (x + y) % 3 ? "#91a87577" : "#c5bb8277";
+          c.fillRect(x, y, 3, 7);
+        }
+        const pond = m.natureWater.find((p) => p.owner === "pen-water-" + s.id);
+        if (pond) {
+          c.fillStyle = "#9ab394";
+          c.fillRect(pond.x - 7, pond.y - 7, pond.w + 14, pond.h + 14);
+          c.fillStyle = "#508c8c";
+          c.fillRect(pond.x, pond.y, pond.w, pond.h);
+          c.fillStyle = "#91c3b4";
+          for (let yy = pond.y + 15; yy < pond.y + pond.h; yy += 26) for (let xx = pond.x + 15; xx < pond.x + pond.w; xx += 57) c.fillRect(xx, yy, 24, 2);
+        }
+        A.frame(c, "sanctuary-homes", 1, pen.aviary ? 2 : 3, b.x + 5, b.y + 20, 95, 105);
+        this.fence(c, b, pen.aviary, false);
+      },
+      ground(m) {
+        const canvas = V.GroundCache.create(m, m.width * T, m.height * T);
+        ;
+        ;
+        const c = canvas.getContext("2d");
+        c.imageSmoothingEnabled = false;
+        c.fillStyle = m.fossilHall ? "#d7c8a7" : "#a6b18b";
+        c.fillRect(0, 0, V.GroundCache.width(canvas), V.GroundCache.height(canvas));
+        for (let y = 2 * T; y < V.GroundCache.height(canvas) - T; y += 24) for (let x = T; x < V.GroundCache.width(canvas) - T; x += 48) {
+          c.fillStyle = m.fossilHall ? (x / 48 + y / 24) % 3 ? "#dfd1b2" : "#e8dcbd" : (x / 48 + y / 24) % 3 ? "#c9c2a0" : "#d9cfac";
+          c.fillRect(x + (y % 48 ? 24 : 0), y, 45, 21);
+        }
+        c.fillStyle = "#4e7356";
+        c.fillRect(22 * T, 2 * T, 4 * T, (m.height - 3) * T);
+        c.fillStyle = "#b8af82";
+        c.fillRect(22 * T + 9, 2 * T, 4 * T - 18, (m.height - 3) * T);
+        if (!m.fossilHall) {
+          for (const p of m.objects.filter((o) => o.type === "animal-museum-pen")) this.penGround(c, p, m);
+          V.Engine.text(c, "MUSEU DOS ANIMAIS \xB7 RECINTOS E VIVEIROS", 24 * T, 2.4 * T, "#2f573f", 23, "center");
+          V.Engine.text(c, "\xC1gua \xB7 abrigo \xB7 espa\xE7o \xB7 cuidado di\xE1rio", 24 * T, (m.height - 8) * T, "#3b6246", 15, "center");
+        } else {
+          for (const [row, label] of [[0, "GALERIA DO TEMPO \xB7 F\xD3SSEIS"], [3, "ANATOMIA \xB7 COMPARE OS ANIMAIS DO JOGO"]]) {
+            const y = (3 + row * 5.8) * T;
+            c.fillStyle = "#315846";
+            c.fillRect(T * 2, y - 22, T * 44, 43);
+            V.Engine.text(c, label, 24 * T, y + 6, "#f0dfb3", 22, "center");
+          }
+          V.Engine.text(c, "F\xF3sseis e esqueletos de compara\xE7\xE3o t\xEAm fichas diferentes", 24 * T, 57.8 * T, "#52664c", 13, "center");
+        }
+        m.cache = canvas;
+      },
+      draw(c, o, cam) {
+        if (o.type === "sanctuary-animal") {
+          const s = D.species.find((s2) => s2.id === o.species);
+          V.Wildlife.drawAnimal(c, s, o, cam, W.maps[o.sanctuaryMap] || W.current, o.displaySize);
+          return true;
+        }
+        if (o.type === "animal-museum-pen") {
+          const b = o.bounds, x = o.x - cam.x, y = o.y - cam.y;
+          this.fence(c, { x: b.x - cam.x, y: b.y - cam.y, w: b.w, h: b.h }, o.aviary, true);
+          c.fillStyle = "#755d3e";
+          c.fillRect(x - 5, y - 14, 10, 26);
+          c.fillStyle = "#f1dfb6";
+          c.fillRect(x - 107, y - 30, 214, 38);
+          V.Engine.text(c, D.species.find((s) => s.id === o.animalEntry).name, x, y - 7, "#315440", 12, "center");
+          if (W.nearest?.id === o.id) V.Maritime.label(c, o.label, x, y + 34, true);
+          return true;
+        }
+        if (o.type === "animal-museum-fossil") {
+          const e = M.entry(o.animalEntry);
+          if (!e) return true;
+          const x = o.x - cam.x, y = o.y - cam.y, size = e.comparative ? 140 : e.id === "eremotherium" ? 183 : 165;
+          c.fillStyle = e.comparative ? "#aeb8a1" : "#76927e";
+          c.fillRect(x - 85, y - 87, 170, 100);
+          A.frame(c, e.sheet || "museum-fauna", e.row, e.col, x - size / 2, y - size + 10, size, size);
+          c.fillStyle = "#e8dbb9";
+          c.fillRect(x - 95, y + 19, 190, 38);
+          V.Engine.text(c, e.name.length > 24 ? e.name.slice(0, 23) + "\u2026" : e.name, x, y + 34, "#365541", 11, "center");
+          V.Engine.text(c, e.comparative ? "ANATOMIA ATUAL" : "F\xD3SSIL \xB7 RECONSTRU\xC7\xC3O", x, y + 49, "#7b6942", 8, "center");
+          return true;
+        }
+        return false;
+      },
+      render(c) {
+        const m = W.current, cam = W.camera;
+        if (!m.cache) this.ground(m);
+        c.save();
+        c.imageSmoothingEnabled = false;
+        V.GroundCache.draw(c, m.cache, -Math.round(cam.x), -Math.round(cam.y));
+        for (const a of [...V.RenderView.objects(c, m, cam, true).map((o) => ({ y: V.RenderView.depth(o), o })), { y: V.Player.data.y, player: true }].sort((a2, b) => a2.y - b.y)) {
+          if (a.player) V.Player.render(c);
+          else if (!this.draw(c, a.o, cam) && !M.draw(c, a.o, cam)) C.drawObject(c, a.o, cam);
+        }
+        if (V.PixPresence.following()) V.PixPresence.draw(c, V.Player.data, cam);
+        if (W.transition > 0) {
+          c.globalAlpha = W.transition;
+          c.fillStyle = "#294b3e";
+          c.fillRect(0, 0, c.canvas.width, c.canvas.height);
+        }
+        c.restore();
+        W.drawMiniMap();
+      }
+    };
+    M.setup = () => K.setup();
+    M.build = (d = C.layouts[ID]) => K.build(ID, d);
+    M.ground = (m) => K.ground(m);
+    M.render = (c) => K.render(c);
+    const seed = M.seed.bind(M);
+    M.seed = function(...args) {
+      const out = seed(...args);
+      W.maps[HALL] = K.build(HALL);
+      F.point(HALL);
+      for (const id of K.ids) for (const o of W.maps[id].objects) if (o.type === "sanctuary-animal") o.sanctuaryMap = id;
+      return out;
+    };
+    K.setup();
+    const preview = S.preview.bind(S);
+    S.preview = function(id, d) {
+      return id === HALL ? K.build(id, d) : preview(id, d);
+    };
+    const load = W.load.bind(W);
+    W.load = function(id, pos) {
+      if (K.ids.includes(id)) {
+        const m = W.maps[id], spawn = C.layouts[id].spawn, wanted = pos || { x: spawn[0] * T, y: spawn[1] * T };
+        pos = V.Rooms.safe(m, wanted, 14) || { x: spawn[0] * T, y: spawn[1] * T };
+      }
+      return load(id, pos);
+    };
+    V.MapAssets.addGroupRule("animal-sanctuary:groups:1", function(m, list) {
+      if (m?.sanctuary) list.push("sanctuary");
+      if (m?.fossilHall) list.push("animal-bones");
+    });
+    const category = F.category.bind(F);
+    F.category = (id) => id === HALL ? "culture" : category(id);
+    const root = F.root.bind(F);
+    F.root = (id) => id === HALL ? "hub" : root(id);
+    const update = C.update.bind(C);
+    C.update = function(dt) {
+      const out = update(dt);
+      if (W.current?.sanctuary && !V.modal && !V.Dialogue.active) K.update(W.current, dt);
+      return out;
+    };
+    const draw = M.draw.bind(M);
+    M.draw = function(c, o, cam) {
+      if (K.draw(c, o, cam)) return true;
+      if (o.animalMuseumDoor && !o.animalFacade) {
+        const x = o.x - cam.x, y = o.y - cam.y;
+        c.fillStyle = "#315542";
+        c.fillRect(x - 110, y - 43, 220, 34);
+        V.Engine.text(c, o.to === HALL ? "F\xD3SSEIS E ANATOMIA" : o.to === ID ? "RECINTOS DOS ANIMAIS" : "PRA\xC7A DAS VOZES", x, y - 20, "#f0ddb1", 11, "center");
+        return true;
+      }
+      return draw(c, o, cam);
+    };
+    const interactables = W.interactables.bind(W);
+    W.interactables = (...args) => interactables(...args).filter((o) => o.type !== "sanctuary-animal");
+    const exhibit = M.exhibit.bind(M);
+    M.exhibit = function(id, ...args) {
+      const entry = M.entry(id);
+      if (entry) V.MapAssets.ensure(entry.kind === "fossil" ? ["animal-bones", "animal-museum"] : ["nature", "wildlife"], "Preparando a ficha do animal").then(() => M.paintModels());
+      const out = exhibit(id, ...args), e = M.entry(id), footer = V.$(".modal-footer");
+      if (!e || !footer) return out;
+      const link = e.kind === "animal" ? "anatomy-" + e.id : e.comparative ? e.related : null;
+      if (link && M.entry(link)) {
+        const b = document.createElement("button");
+        b.className = "secondary";
+        b.id = "animal-compare-bones";
+        b.textContent = e.kind === "animal" ? "Ver anatomia e passado" : "Comparar com uma pe\xE7a f\xF3ssil";
+        b.onclick = () => M.exhibit(link);
+        footer.prepend(b);
+      }
+      if (V.DuoPanels?.enabled()) {
+        const owner = M.owner();
+        V.DuoPanels.bind(V.DuoPanels.root(owner), owner);
+      }
+      return out;
+    };
+    const catalog = M.catalog.bind(M);
+    M.catalog = function(...args) {
+      V.MapAssets.ensure(["nature", "wildlife", "animal-museum", "animal-bones"], "Preparando a cole\xE7\xE3o").then(() => M.paintModels());
+      return catalog(...args);
+    };
+  })();
 });
