@@ -1,0 +1,54 @@
+# Central de Projetos
+
+> Jogos, simuladores científicos, recursos educacionais e ferramentas disponíveis no navegador.
+
+Este catálogo contém apenas projetos públicos. Consulte a Central de Projetos para informações atualizadas, objetivos educacionais e referências.
+
+- [Central de Projetos](https://devilsir.github.io/)
+- [Sitemap](https://devilsir.github.io/sitemap.xml)
+
+## Química, física e visualização
+
+- [Café Lab](https://devilsir.github.io/animacoes/cafe_lab/): Simulador de preparo de café, extração, concentração, diluição e titulação.
+- [Cargas e Atração](https://devilsir.github.io/animacoes/cargas_atracao/): Simulador de eletrostática, forças, campo elétrico, atrito e indução.
+- [Geometria Molecular 3D — Simulador VSEPR](https://devilsir.github.io/animacoes/geometria-3d/): Explore modelos de geometrias lineares, angulares, tetraédricas e outras. Gire as estruturas, compare os ângulos de referência e observe a influência dos pares não ligantes.
+- [Hotel Alchy — Laboratório de Química 3D](https://devilsir.github.io/animacoes/hotel-alchy/): Monte um laboratório com bancadas, vidrarias e equipamentos de segurança. Prepare misturas, teste combinações de reagentes e cumpra encomendas para liberar itens.
+- [Íons 3D — Átomos, cátions e ânions](https://devilsir.github.io/animacoes/ions-3d-visualizador/): Visualize modelos de átomos neutros e íons em 3D. Altere o número de prótons e a carga para acompanhar a distribuição eletrônica em camadas e as mudanças na eletrosfera.
+- [Lab 3D de Neutralização — Titulação ácido-base](https://devilsir.github.io/animacoes/lab-3d-de-neutralizacao/): Escolha ácido, base e indicador, ajuste concentrações e controle o volume adicionado pela bureta. Compare curvas de pH e explore a reação de neutralização.
+- [Marcha dos Cátions — Laboratório interativo](https://devilsir.github.io/animacoes/marcha-cations-poema/): Acompanhe as estrofes de um poema por quatro cenas de análise qualitativa. Observe precipitados, mudanças de cor e testes de chama e organize evidências em um fluxograma editável.
+- [RPG Raio Atômico — Campus Periodicum](https://devilsir.github.io/animacoes/rpg_raio_atomico/): Explore o Campus Periodicum e resolva enigmas na Floresta da Blindagem e no Pântano Isoeletrônico. Use tendências da tabela periódica, camadas eletrônicas e número de prótons para comparar raios.
+- [Visualizador de Raio](https://devilsir.github.io/animacoes/visualizador_raio/): Comparação de raios atômicos e iônicos na mesma escala, com atividades guiadas.
+- [Quebra-Cabeça Iônico e Covalente](https://devilsir.github.io/animacoes/quebra-cabeca-ionico-covalente/): No modo iônico, combine cátions e ânions até zerar a carga total e confira a fórmula. No modo covalente, conecte átomos com ligações simples, duplas ou triplas e observe os elétrons de valência.
+- [QuimiCraft](https://devilsir.github.io/QuimiCraft/): Jogo educativo voxel com missões de Química, tabela periódica e reações.
+- [CHEMCORE: Ruptura Elemental](https://devilsir.github.io/CHEMCORE-Ruptura-Elemental/): Jogo de ação e Química para o Ensino Médio. As missões apresentam desafios sobre a organização e transformação da matéria, com uso da tabela periódica e experimentos no laboratório.
+- [ORBITAL! Defense](https://devilsir.github.io/orbital-defense/): Jogo de defesa orbital para explorar gravidade, trajetórias e leis de Kepler.
+- [CHEMSCAPE: Duas Leis](https://devilsir.github.io/Chemscape/): Aventura de alquimia que usa catálise e precipitação como ideias para discutir Química.
+
+## Biologia e educação
+
+- [Festa Genética — Floricultura e Dossiê 46](https://devilsir.github.io/Festa%20Gen%C3%A9tica/): Explore padrões de herança em uma floricultura interativa. Faça cruzamentos, compare os descendentes e investigue casos envolvendo tipos sanguíneos ABO e Rh no Dossiê 46.
+- [CitoLab 3D — Laboratório virtual de Biologia](https://devilsir.github.io/C%C3%A9lulas/): Compare células animais, vegetais e bacterianas e explore organelas. Acompanhe mitose, meiose, replicação do DNA, síntese de proteínas e processos de metabolismo. Prepare lâminas virtuais e observe amostras em microscópios.
+- [Roleta Química — Quiz de ciências e inglês](https://devilsir.github.io/RoletaQuimica/): Gire a roleta para responder perguntas de Química, Física e Biologia. O modo Café com Ciência aborda preparo, temperatura, pressão e fermentação; há também modos de Inglês para o 6º ao 9º ano.
+- [Scanner de Gabarito](https://devilsir.github.io/Gabarito%20scanner/): Leitor de folhas de respostas de múltipla escolha com revisão de marcações.
+- [Leitor de Livros](https://devilsir.github.io/Leitor-Livros/): Reconhecimento de texto em páginas fotografadas e leitura em voz alta.
+
+## Língua inglesa e palavras
+
+- [Lexicon Aegis — Aprendizagem de inglês](https://devilsir.github.io/LEXICON-AEGIS/): Plataforma gamificada de Língua Inglesa para o 6º ao 9º ano, com leitura, vocabulário, missões, seleção de ano e nível de apoio. O modo docente reúne relatórios da turma.
+- [ECHOBOUND: The Lost Language](https://devilsir.github.io/Echobound%20the%20lost%20language/): Aventura em um arquipélago para recuperar palavras de uma língua perdida. Os diálogos e as pistas ajudam a interpretar palavras em inglês pelo contexto.
+- [English Quest: The Lost Signal](https://devilsir.github.io/English-Quest-The-Lost-Signal/): Aventura de inglês para o 6º ao 9º ano. Uma transmissão misteriosa orienta desafios com pistas escritas, áudios e minijogos, para atividades individuais ou em turma.
+- [VOICES: Reboot the Story](https://devilsir.github.io/VOICES/): RPG educacional ambientado em New Harmony. Diálogos e missões em inglês ajudam a recuperar memórias e conhecer histórias e culturas negras, com espaço para refletir sobre ancestralidade, diversidade e racismo.
+- [CHAT CHAOS: Survive the Internet](https://devilsir.github.io/CHAT_CHAOS/): Jogo de inglês sobre gírias, abreviações e mensagens da internet.
+- [Roda a Roda — Jogo de palavras](https://devilsir.github.io/rodaaroda/): Treine vocabulário e raciocínio com enigmas de palavras. Gire a roda, descubra letras e use as pistas para encontrar a resposta, individualmente ou em grupo.
+
+## Jogos, experiências e portfólio
+
+- [Chora Timbó — Cena interativa 3D](https://devilsir.github.io/choratimbo/): Experiência de humor em 3D. Interaja com o personagem e descubra suas animações e reações sonoras.
+- [Effects Lab — Modelos, animações e efeitos 3D](https://devilsir.github.io/effects/): Escolha um personagem, mude suas ações e teste efeitos visuais de fogo, gelo, luz e outros elementos. Explore como animações e efeitos se combinam em experiências 3D.
+- [Lucas Xavier Nardelli — Sobre o autor](https://devilsir.github.io/Sobre/): Portfólio de programação, modelagem 3D, jogos e recursos educacionais. O retrato interativo apresenta projetos e ferramentas desenvolvidos pelo autor.
+- [GPT World: A Voz Partida](https://devilsir.github.io/GPT%20World/): RPG de fantasia em que a entidade GPT se dividiu em dois fragmentos. Converse com personagens e descubra a disputa pelo poder de escrever a realidade.
+- [Wonder World: Atração Final](https://devilsir.github.io/Wonder%20World/): Jogo de terror e exploração em primeira pessoa. Investigue um complexo de entretenimento abandonado e descubra os mistérios de suas atrações.
+- [O Pequeno Museu da Lilith](https://devilsir.github.io/Pequeno%20Museu%20da%20Lilith/): Memorial interativo dedicado à Lilith. Explore as salas, objetos e lembranças reunidas no museu.
+- [Pocket Companions — Companheiros virtuais 3D](https://devilsir.github.io/Pocket-Companions/): Escolha Apollo, Lilith ou Pietro e cuide de um companheiro virtual. Alimente, brinque e acompanhe a evolução do pet à medida que interage com ele.
+- [Noctis Eclipse — RPG de fantasia sombria](https://devilsir.github.io/Noctis%20Eclipse/): Crie um vampiro ou lobisomem, personalize o personagem e explore um mundo de fantasia sombria. Enfrente combates e desenvolva habilidades ao longo da aventura.
+

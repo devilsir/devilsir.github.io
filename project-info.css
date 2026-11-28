@@ -1,0 +1,62 @@
+/* Painel editorial independente. Nenhum seletor global ou alteração de layout do jogo. */
+#ds-project-info.ds-project-info {
+  position: fixed !important;
+  inset: auto auto max(8px, env(safe-area-inset-bottom, 0px)) 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 1100 !important;
+  width: max-content !important;
+  max-width: calc(100vw - 24px) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #e9f2ff !important;
+  font: 400 14px/1.5 system-ui, -apple-system, sans-serif !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  letter-spacing: normal !important;
+  isolation: isolate;
+  box-sizing: border-box;
+}
+#ds-project-info > summary {
+  display: list-item !important;
+  width: max-content !important;
+  max-width: 100%;
+  margin: 0 auto !important;
+  padding: 7px 13px !important;
+  border: 1px solid #6d839b !important;
+  border-radius: 20px !important;
+  background: #111c2b !important;
+  color: #f0f5ff !important;
+  font: 600 12px/1.35 system-ui, sans-serif !important;
+  text-align: center !important;
+  cursor: pointer !important;
+}
+#ds-project-info > summary:focus-visible,
+#ds-project-info a:focus-visible { outline: 2px solid #f3d477 !important; outline-offset: 3px; }
+#ds-project-info[open] { width: min(560px, calc(100vw - 24px)) !important; }
+#ds-project-info[open] > summary { margin-bottom: 6px !important; }
+#ds-project-info .ds-project-info__content {
+  box-sizing: border-box !important;
+  max-height: min(55vh, 400px) !important;
+  overflow: auto !important;
+  overscroll-behavior: contain;
+  padding: 15px 18px !important;
+  margin: 0 !important;
+  border: 1px solid #6d839b !important;
+  border-radius: 12px !important;
+  background: #111c2b !important;
+  color: #e9f2ff !important;
+  font: 400 14px/1.5 system-ui, sans-serif !important;
+  box-shadow: 0 8px 26px #0009 !important;
+  text-align: left !important;
+  letter-spacing: normal !important;
+}
+#ds-project-info h1, #ds-project-info h2, #ds-project-info h3 { color: #f0f5ff !important; margin: 0 0 8px !important; font: 650 18px/1.25 system-ui, sans-serif !important; text-transform: none !important; letter-spacing: normal !important; text-shadow: none !important; }
+#ds-project-info h3 { font-size: 14px !important; margin-top: 12px !important; }
+#ds-project-info p { color: #e9f2ff !important; margin: 0 0 10px !important; font: 400 14px/1.5 system-ui, sans-serif !important; text-align: left !important; }
+#ds-project-info ul { margin: 0 0 10px !important; padding: 0 0 0 20px !important; list-style: disc !important; }
+#ds-project-info li { margin: 3px 0 !important; color: #e9f2ff !important; }
+#ds-project-info a { color: #9ed5ff !important; text-decoration: underline !important; font: inherit !important; }
+:fullscreen #ds-project-info { display: none !important; }
+#ds-project-info[hidden] { display: none !important; }
